@@ -15,7 +15,6 @@ import {
     MapPin,
     Menu,
     PhoneCall,
-    PlayCircle,
     Send,
     Sprout,
     Users,
@@ -800,27 +799,25 @@ export default function Welcome() {
                                 </p>
                                 <div className="flex flex-wrap gap-4 pt-4">
                                     <a
-                                        href="#layanan"
+                                        href="#profil"
                                         className={`${primaryButtonClassName} shadow-village-floating`}
                                     >
-                                        Akses Layanan
+                                        Kenali Desa
+                                        <ArrowRight
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </a>
+                                    <a
+                                        href="#layanan"
+                                        className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/35 bg-white/10 px-5 py-3 font-semibold text-white backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none"
+                                    >
+                                        Lihat Layanan
                                         <ChevronDown
                                             aria-hidden="true"
                                             className="size-4"
                                         />
                                     </a>
-                                    <button
-                                        type="button"
-                                        disabled
-                                        title="Video profil akan segera tersedia"
-                                        className="inline-flex min-h-11 cursor-not-allowed items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 font-semibold text-white/80 backdrop-blur-md"
-                                    >
-                                        <PlayCircle
-                                            aria-hidden="true"
-                                            className="size-5"
-                                        />
-                                        Video Profil
-                                    </button>
                                 </div>
                             </div>
 

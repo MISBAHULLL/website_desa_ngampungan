@@ -74,3 +74,13 @@ test('the public navigation contains the PRD menu hierarchy', function () {
         expect($navigationSource)->toContain("label: '{$expectedMenu}'");
     }
 });
+
+test('the hero uses actionable PRD calls to action', function () {
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('Kenali Desa')
+        ->toContain('Lihat Layanan')
+        ->not->toContain('Video Profil');
+});
