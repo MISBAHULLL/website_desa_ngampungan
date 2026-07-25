@@ -27,13 +27,189 @@ import { useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { dashboard, login } from '@/routes';
 
-const navigationItems = [
-    { label: 'Beranda', href: '#beranda' },
-    { label: 'Profil Desa', href: '#profil' },
-    { label: 'Layanan', href: '#layanan' },
-    { label: 'Kabar Desa', href: '#berita' },
-    { label: 'Kontak', href: '#kontak' },
-] as const;
+type NavigationChild = {
+    label: string;
+    description: string;
+    href: string;
+};
+
+type NavigationItem =
+    | {
+          type: 'link';
+          label: string;
+          href: string;
+      }
+    | {
+          type: 'dropdown';
+          label: string;
+          children: NavigationChild[];
+      };
+
+const navigationItems: NavigationItem[] = [
+    { type: 'link', label: 'Beranda', href: '#beranda' },
+    {
+        type: 'dropdown',
+        label: 'Profil',
+        children: [
+            {
+                label: 'Selayang Pandang',
+                description: 'Gambaran umum Desa Ngampungan.',
+                href: '#profil',
+            },
+            {
+                label: 'Visi dan Misi',
+                description: 'Arah dan tujuan pembangunan desa.',
+                href: '#profil',
+            },
+            {
+                label: 'Sejarah Desa',
+                description: 'Perjalanan dan asal-usul desa.',
+                href: '#profil',
+            },
+            {
+                label: 'Data Wilayah',
+                description: 'Demografi dan karakter wilayah.',
+                href: '#profil',
+            },
+        ],
+    },
+    {
+        type: 'dropdown',
+        label: 'Pemerintahan',
+        children: [
+            {
+                label: 'Kepala Desa',
+                description: 'Profil pimpinan Desa Ngampungan.',
+                href: '#profil',
+            },
+            {
+                label: 'Struktur Organisasi',
+                description: 'Susunan pemerintahan desa.',
+                href: '#profil',
+            },
+            {
+                label: 'Perangkat Desa',
+                description: 'Daftar aparatur pemerintah desa.',
+                href: '#profil',
+            },
+            {
+                label: 'Lembaga Desa',
+                description: 'Lembaga kemasyarakatan desa.',
+                href: '#profil',
+            },
+        ],
+    },
+    {
+        type: 'dropdown',
+        label: 'Informasi',
+        children: [
+            {
+                label: 'Berita',
+                description: 'Kabar terbaru dari lingkungan desa.',
+                href: '#berita',
+            },
+            {
+                label: 'Pengumuman',
+                description: 'Informasi resmi untuk masyarakat.',
+                href: '#berita',
+            },
+            {
+                label: 'Agenda',
+                description: 'Jadwal kegiatan desa mendatang.',
+                href: '#berita',
+            },
+            {
+                label: 'Galeri',
+                description: 'Dokumentasi kegiatan dan potensi desa.',
+                href: '#berita',
+            },
+        ],
+    },
+    {
+        type: 'dropdown',
+        label: 'Transparansi',
+        children: [
+            {
+                label: 'APBDes',
+                description: 'Ringkasan anggaran pendapatan dan belanja.',
+                href: '#layanan',
+            },
+            {
+                label: 'Statistik Penduduk',
+                description: 'Data kependudukan Desa Ngampungan.',
+                href: '#profil',
+            },
+            {
+                label: 'Produk Hukum',
+                description: 'Peraturan dan keputusan desa.',
+                href: '#layanan',
+            },
+            {
+                label: 'Dokumen Publik',
+                description: 'Dokumen desa yang dapat diakses warga.',
+                href: '#layanan',
+            },
+        ],
+    },
+    {
+        type: 'dropdown',
+        label: 'Potensi Desa',
+        children: [
+            {
+                label: 'UMKM',
+                description: 'Produk dan usaha unggulan warga.',
+                href: '#profil',
+            },
+            {
+                label: 'Pertanian',
+                description: 'Komoditas dan kegiatan pertanian desa.',
+                href: '#profil',
+            },
+            {
+                label: 'Wisata',
+                description: 'Destinasi dan daya tarik lokal.',
+                href: '#profil',
+            },
+            {
+                label: 'Potensi Lainnya',
+                description: 'Sumber daya unggulan lainnya.',
+                href: '#profil',
+            },
+        ],
+    },
+    {
+        type: 'dropdown',
+        label: 'Pelayanan',
+        children: [
+            {
+                label: 'Informasi Pelayanan',
+                description: 'Jam dan alur pelayanan kantor desa.',
+                href: '#layanan',
+            },
+            {
+                label: 'Persyaratan Surat',
+                description: 'Dokumen yang perlu disiapkan warga.',
+                href: '#layanan',
+            },
+            {
+                label: 'Pengajuan Surat',
+                description: 'Akses pengajuan administrasi desa.',
+                href: '#layanan',
+            },
+            {
+                label: 'Pengaduan',
+                description: 'Sampaikan aspirasi atau laporan warga.',
+                href: '#layanan',
+            },
+            {
+                label: 'Pelacakan Status',
+                description: 'Pantau proses layanan yang diajukan.',
+                href: '#layanan',
+            },
+        ],
+    },
+    { type: 'link', label: 'Kontak', href: '#kontak' },
+];
 
 const villageStatistics = [
     {
@@ -154,10 +330,198 @@ function NavigationLink({
         <a
             href={href}
             onClick={onClick}
-            className="min-h-11 py-3 transition-colors hover:text-village-primary focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+            className="flex min-h-11 items-center py-3 transition-colors hover:text-village-primary focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
         >
             {label}
         </a>
+    );
+}
+
+function DesktopNavigation() {
+    const [openMenu, setOpenMenu] = useState<string | null>(null);
+
+    return (
+        <div aria-label="Navigasi utama desktop" className="hidden xl:block">
+            <ul className="flex list-none items-center">
+                {navigationItems.map((item, index) => (
+                    <li
+                        key={item.label}
+                        className="relative"
+                        onMouseEnter={() =>
+                            item.type === 'dropdown' && setOpenMenu(item.label)
+                        }
+                        onMouseLeave={() => setOpenMenu(null)}
+                        onBlur={(event) => {
+                            if (
+                                !event.currentTarget.contains(
+                                    event.relatedTarget,
+                                )
+                            ) {
+                                setOpenMenu(null);
+                            }
+                        }}
+                    >
+                        {item.type === 'link' ? (
+                            <a
+                                href={item.href}
+                                className="flex min-h-11 items-center justify-center rounded-lg px-2.5 py-2.5 text-sm font-medium text-current transition-colors hover:bg-current/10 focus-visible:bg-current/10 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none"
+                            >
+                                {item.label}
+                            </a>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    aria-expanded={openMenu === item.label}
+                                    aria-controls={`desktop-submenu-${index}`}
+                                    onFocus={() => setOpenMenu(item.label)}
+                                    onClick={() =>
+                                        setOpenMenu(
+                                            openMenu === item.label
+                                                ? null
+                                                : item.label,
+                                        )
+                                    }
+                                    onKeyDown={(event) => {
+                                        if (event.key === 'Escape') {
+                                            setOpenMenu(null);
+                                            event.currentTarget.focus();
+                                        }
+                                    }}
+                                    className="flex min-h-11 items-center justify-center gap-1 rounded-lg px-2.5 py-2.5 text-sm font-medium text-current transition-colors hover:bg-current/10 focus-visible:bg-current/10 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none"
+                                >
+                                    {item.label}
+                                    <ChevronDown
+                                        aria-hidden="true"
+                                        className={`size-3.5 transition-transform duration-200 ${
+                                            openMenu === item.label
+                                                ? 'rotate-180'
+                                                : ''
+                                        }`}
+                                    />
+                                </button>
+
+                                {openMenu === item.label && (
+                                    <div
+                                        id={`desktop-submenu-${index}`}
+                                        aria-label={`Submenu ${item.label}`}
+                                        onMouseEnter={() =>
+                                            setOpenMenu(item.label)
+                                        }
+                                        className={`absolute top-full z-50 w-80 rounded-2xl border border-village-border bg-white p-2 text-village-ink shadow-village-floating ${
+                                            index >= navigationItems.length - 3
+                                                ? 'right-0'
+                                                : 'left-0'
+                                        }`}
+                                    >
+                                        <ul className="grid gap-1">
+                                            {item.children.map((child) => (
+                                                <li key={child.label}>
+                                                    <a
+                                                        href={child.href}
+                                                        onClick={() =>
+                                                            setOpenMenu(null)
+                                                        }
+                                                        className="group/link flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:bg-village-primary-light focus-visible:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                                    >
+                                                        <span
+                                                            aria-hidden="true"
+                                                            className="mt-1.5 size-1.5 shrink-0 rounded-full bg-village-accent transition-transform group-hover/link:scale-125"
+                                                        />
+                                                        <span>
+                                                            <span className="block font-semibold">
+                                                                {child.label}
+                                                            </span>
+                                                            <span className="mt-0.5 block text-xs leading-relaxed text-village-muted">
+                                                                {
+                                                                    child.description
+                                                                }
+                                                            </span>
+                                                        </span>
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+function MobileNavigationItem({
+    item,
+    isExpanded,
+    onToggle,
+    onNavigate,
+}: {
+    item: NavigationItem;
+    isExpanded: boolean;
+    onToggle: () => void;
+    onNavigate: () => void;
+}) {
+    if (item.type === 'link') {
+        return (
+            <div className="border-b border-village-border">
+                <NavigationLink
+                    href={item.href}
+                    label={item.label}
+                    onClick={onNavigate}
+                />
+            </div>
+        );
+    }
+
+    const panelId = `mobile-submenu-${item.label
+        .toLocaleLowerCase('id')
+        .replace(/\s+/g, '-')}`;
+
+    return (
+        <div className="border-b border-village-border">
+            <button
+                type="button"
+                aria-expanded={isExpanded}
+                aria-controls={panelId}
+                onClick={onToggle}
+                className="flex min-h-12 w-full items-center justify-between gap-4 py-3 text-left transition-colors hover:text-village-primary focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+            >
+                <span>{item.label}</span>
+                <ChevronDown
+                    aria-hidden="true"
+                    className={`size-4 shrink-0 transition-transform duration-200 ${
+                        isExpanded ? 'rotate-180' : ''
+                    }`}
+                />
+            </button>
+
+            {isExpanded && (
+                <div
+                    id={panelId}
+                    role="region"
+                    aria-label={`Submenu ${item.label}`}
+                    className="grid gap-1 pb-3"
+                >
+                    {item.children.map((child) => (
+                        <a
+                            key={child.label}
+                            href={child.href}
+                            onClick={onNavigate}
+                            className="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-village-muted transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                        >
+                            <span
+                                aria-hidden="true"
+                                className="size-1.5 shrink-0 rounded-full bg-village-accent"
+                            />
+                            {child.label}
+                        </a>
+                    ))}
+                </div>
+            )}
+        </div>
     );
 }
 
@@ -213,8 +577,16 @@ export default function Welcome() {
     const { auth } = usePage().props;
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
+        null,
+    );
     const [isMessageSent, setIsMessageSent] = useState(false);
     const portalHref = auth.user ? dashboard() : login();
+
+    const closeMobileNavigation = () => {
+        setIsMobileMenuOpen(false);
+        setExpandedMobileMenu(null);
+    };
 
     useEffect(() => {
         const updateNavbar = () => setIsScrolled(window.scrollY > 50);
@@ -233,6 +605,7 @@ export default function Welcome() {
         const closeOnEscape = (event: KeyboardEvent) => {
             if (event.key === 'Escape') {
                 setIsMobileMenuOpen(false);
+                setExpandedMobileMenu(null);
             }
         };
 
@@ -273,6 +646,13 @@ export default function Welcome() {
             </Head>
 
             <div className="village-landing min-h-screen bg-village-canvas text-village-ink selection:bg-village-primary-light selection:text-village-primary-dark">
+                <a
+                    href="#main-content"
+                    className="fixed top-2 left-2 z-[60] -translate-y-20 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-village-primary-dark shadow-lg transition-transform focus:translate-y-0 focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:outline-none"
+                >
+                    Lewati ke konten utama
+                </a>
+
                 <div className="fixed inset-x-0 top-0 z-50">
                     <UtilityBar isAuthenticated={Boolean(auth.user)} />
 
@@ -293,22 +673,11 @@ export default function Welcome() {
                                 <SiteLogo />
                             </a>
 
-                            <div className="hidden items-center gap-8 text-sm font-medium lg:flex">
-                                {navigationItems.map((item) => (
-                                    <a
-                                        key={item.href}
-                                        href={item.href}
-                                        className="group relative py-3 text-current/90 transition-colors hover:text-current focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none"
-                                    >
-                                        {item.label}
-                                        <span className="absolute inset-x-0 bottom-1 h-0.5 origin-left scale-x-0 bg-current transition-transform group-hover:scale-x-100" />
-                                    </a>
-                                ))}
-                            </div>
+                            <DesktopNavigation />
 
                             <a
                                 href="#layanan"
-                                className={`${primaryButtonClassName} hidden lg:inline-flex`}
+                                className={`${primaryButtonClassName} hidden xl:inline-flex`}
                             >
                                 Akses Layanan
                                 <ArrowRight
@@ -327,9 +696,11 @@ export default function Welcome() {
                                 aria-controls="mobile-navigation"
                                 aria-expanded={isMobileMenuOpen}
                                 onClick={() =>
-                                    setIsMobileMenuOpen((isOpen) => !isOpen)
+                                    isMobileMenuOpen
+                                        ? closeMobileNavigation()
+                                        : setIsMobileMenuOpen(true)
                                 }
-                                className="flex size-11 items-center justify-center rounded-xl transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none lg:hidden"
+                                className="flex size-11 items-center justify-center rounded-xl transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none xl:hidden"
                             >
                                 {isMobileMenuOpen ? (
                                     <X aria-hidden="true" />
@@ -344,39 +715,43 @@ export default function Welcome() {
                 {isMobileMenuOpen && (
                     <div
                         id="mobile-navigation"
-                        className="fixed inset-0 z-40 lg:hidden"
+                        className="fixed inset-0 z-40 xl:hidden"
                     >
                         <button
                             type="button"
                             aria-label="Tutup menu navigasi"
                             className="absolute inset-0 bg-village-primary-dark/35 backdrop-blur-sm"
-                            onClick={() => setIsMobileMenuOpen(false)}
+                            onClick={closeMobileNavigation}
                         />
                         <div
                             role="dialog"
                             aria-modal="true"
                             aria-label="Menu navigasi"
-                            className="relative ml-auto flex min-h-full w-[min(88%,24rem)] flex-col gap-6 bg-white px-6 pt-40 pb-8 shadow-2xl sm:pt-36"
+                            className="relative ml-auto flex h-full w-[min(90%,26rem)] flex-col gap-6 overflow-y-auto bg-white px-6 pt-40 pb-8 shadow-2xl sm:pt-36"
                         >
                             <div className="flex flex-col gap-1 text-lg font-semibold text-village-ink">
                                 {navigationItems.map((item) => (
-                                    <div
-                                        key={item.href}
-                                        className="border-b border-village-border"
-                                    >
-                                        <NavigationLink
-                                            href={item.href}
-                                            label={item.label}
-                                            onClick={() =>
-                                                setIsMobileMenuOpen(false)
-                                            }
-                                        />
-                                    </div>
+                                    <MobileNavigationItem
+                                        key={item.label}
+                                        item={item}
+                                        isExpanded={
+                                            expandedMobileMenu === item.label
+                                        }
+                                        onToggle={() =>
+                                            setExpandedMobileMenu(
+                                                expandedMobileMenu ===
+                                                    item.label
+                                                    ? null
+                                                    : item.label,
+                                            )
+                                        }
+                                        onNavigate={closeMobileNavigation}
+                                    />
                                 ))}
                             </div>
                             <a
                                 href="#layanan"
-                                onClick={() => setIsMobileMenuOpen(false)}
+                                onClick={closeMobileNavigation}
                                 className={`${primaryButtonClassName} mt-auto w-full`}
                             >
                                 Akses Layanan
@@ -389,7 +764,7 @@ export default function Welcome() {
                     </div>
                 )}
 
-                <main>
+                <main id="main-content">
                     <header
                         id="beranda"
                         className="relative flex min-h-[90vh] scroll-mt-44 items-center overflow-hidden pt-44 pb-16 sm:scroll-mt-40 sm:pt-40"
