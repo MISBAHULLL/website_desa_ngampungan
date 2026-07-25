@@ -59,6 +59,23 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --color-village-primary: #206b49;
+    --color-village-primary-dark: #123d2a;
+    --color-village-primary-light: #ddf3e8;
+    --color-village-secondary: #b77a45;
+    --color-village-accent: #dfaf47;
+    --color-village-canvas: #f7f8f4;
+    --color-village-surface-muted: #f1f5f1;
+    --color-village-ink: #18211c;
+    --color-village-muted: #647069;
+    --color-village-border: #dfe5e0;
+    --color-village-success: #2f855a;
+    --color-village-error: #c2413b;
+    --color-village-info: #2563a6;
+
+    --shadow-village-soft: 0 10px 35px rgba(13, 43, 30, 0.07);
+    --shadow-village-floating: 0 20px 40px rgba(18, 61, 42, 0.15);
 }
 
 :root {
@@ -139,5 +156,35 @@
 
     body {
         @apply bg-background text-foreground;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+@layer components {
+    .village-landing {
+        font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    }
+
+    .village-heading-1 {
+        font-size: clamp(2.75rem, 6vw, 5.5rem);
+        font-weight: 700;
+        line-height: 1.02;
+        letter-spacing: -0.035em;
+    }
+
+    .village-heading-2 {
+        font-size: clamp(2rem, 4vw, 3.25rem);
+        font-weight: 700;
+        line-height: 1.12;
+        letter-spacing: -0.025em;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
     }
 }

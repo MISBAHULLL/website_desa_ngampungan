@@ -1,389 +1,977 @@
 import { Head, Link, usePage } from '@inertiajs/react';
+import {
+    ArrowRight,
+    CalendarDays,
+    ChevronDown,
+    CircleAlert,
+    Clock3,
+    Facebook,
+    FileText,
+    FolderOpen,
+    Instagram,
+    LogIn,
+    Mail,
+    MailOpen,
+    MapPin,
+    Menu,
+    PhoneCall,
+    PlayCircle,
+    Send,
+    Sprout,
+    Users,
+    X,
+    Youtube,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import type { FormEvent } from 'react';
 import { dashboard, login } from '@/routes';
-import { register } from '@/routes';
+
+const navigationItems = [
+    { label: 'Beranda', href: '#beranda' },
+    { label: 'Profil Desa', href: '#profil' },
+    { label: 'Layanan', href: '#layanan' },
+    { label: 'Kabar Desa', href: '#berita' },
+    { label: 'Kontak', href: '#kontak' },
+] as const;
+
+const villageStatistics = [
+    {
+        label: 'Populasi',
+        value: '3.420',
+        suffix: '+',
+        description: 'Jiwa terdaftar',
+    },
+    {
+        label: 'Luas Wilayah',
+        value: '450',
+        suffix: 'ha',
+        description: 'Sebagian besar persawahan',
+    },
+    {
+        label: 'Prestasi',
+        value: '12',
+        description: 'Penghargaan tingkat kabupaten',
+    },
+    {
+        label: 'UMKM',
+        value: '85',
+        suffix: '+',
+        description: 'Usaha warga aktif',
+    },
+] as const;
+
+type Service = {
+    title: string;
+    description: string;
+    icon: LucideIcon;
+    iconClassName: string;
+};
+
+const services: Service[] = [
+    {
+        title: 'Kependudukan',
+        description: 'Informasi KK, KTP, dan mutasi penduduk.',
+        icon: Users,
+        iconClassName:
+            'text-village-primary group-hover:bg-village-primary-light',
+    },
+    {
+        title: 'Lapor Panen',
+        description: 'Pelaporan komoditas dan jadwal distribusi tani.',
+        icon: Sprout,
+        iconClassName: 'text-village-secondary group-hover:bg-orange-100',
+    },
+    {
+        title: 'Lapor Darurat',
+        description: 'Kanal pelaporan infrastruktur dan keamanan.',
+        icon: CircleAlert,
+        iconClassName: 'text-village-error group-hover:bg-red-50',
+    },
+];
+
+const newsItems = [
+    {
+        category: 'Pertanian',
+        categoryClassName: 'text-village-primary',
+        date: '12 Agustus 2026',
+        title: 'Panen Raya Padi Organik Kelompok Tani “Maju Makmur” Capai Target',
+        excerpt:
+            'Keberhasilan implementasi pupuk organik mandiri tahun ini terbukti meningkatkan hasil panen gabah kering hingga 20% dibandingkan musim sebelumnya.',
+        image: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1000&auto=format&fit=crop',
+        alt: 'Petani saat panen raya di area persawahan',
+    },
+    {
+        category: 'Kesehatan',
+        categoryClassName: 'text-village-info',
+        date: '05 Agustus 2026',
+        title: 'Program Posyandu Lansia Rutin Digelar, Pantau Kesehatan Mandiri',
+        excerpt:
+            'Pemerintah desa bekerja sama dengan Puskesmas setempat kembali mengadakan cek kesehatan gratis khusus untuk warga lansia di balai desa.',
+        image: 'https://images.unsplash.com/photo-1549473889-14f410d83298?q=80&w=1000&auto=format&fit=crop',
+        alt: 'Kegiatan pelayanan kesehatan masyarakat desa',
+    },
+    {
+        category: 'UMKM & Budaya',
+        categoryClassName: 'text-village-secondary',
+        date: '28 Juli 2026',
+        title: 'Pengrajin Bambu Ngampungan Tembus Pasar Ekspor Kerajinan',
+        excerpt:
+            'Inovasi desain yang menggabungkan motif tradisional dan kebutuhan modern membuat kerajinan lokal ini diminati konsumen luar daerah.',
+        image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=1000&auto=format&fit=crop',
+        alt: 'Produk kerajinan lokal untuk pasar ekspor',
+    },
+] as const;
+
+const primaryButtonClassName =
+    'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-village-primary px-5 py-3 font-semibold text-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-village-primary-dark hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2';
+
+function SiteLogo({ compact = false }: { compact?: boolean }) {
+    return (
+        <div className="flex items-center gap-3">
+            <img
+                src="/assets/logo_kabupaten_jombang.png"
+                alt="Logo Kabupaten Jombang"
+                className={`${compact ? 'h-10 w-8' : 'h-12 w-10'} shrink-0 object-contain drop-shadow-sm`}
+            />
+            <span className="text-lg leading-tight font-bold">
+                Desa <br /> Ngampungan
+            </span>
+        </div>
+    );
+}
+
+function NavigationLink({
+    href,
+    label,
+    onClick,
+}: {
+    href: string;
+    label: string;
+    onClick?: () => void;
+}) {
+    return (
+        <a
+            href={href}
+            onClick={onClick}
+            className="min-h-11 py-3 transition-colors hover:text-village-primary focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+        >
+            {label}
+        </a>
+    );
+}
+
+function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
+    const adminHref = isAuthenticated ? dashboard() : login();
+
+    return (
+        <aside
+            aria-label="Informasi cepat Desa Ngampungan"
+            className="bg-village-primary-dark text-village-primary-light"
+        >
+            <div className="mx-auto grid max-w-[1280px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 px-5 py-2 text-[0.6875rem] leading-4 font-medium sm:text-xs lg:flex lg:min-h-9 lg:gap-5 lg:px-12 lg:py-1.5">
+                <div className="col-start-1 row-start-1 flex min-w-0 items-start gap-1.5 lg:col-auto lg:row-auto lg:items-center">
+                    <MapPin
+                        aria-hidden="true"
+                        className="mt-0.5 size-3.5 shrink-0 text-village-accent lg:mt-0"
+                    />
+                    <span>Jl. Raya Ngampungan No. 1, Bareng, Jombang</span>
+                </div>
+
+                <div className="col-start-1 row-start-2 flex items-center gap-1.5 whitespace-nowrap lg:col-auto lg:row-auto lg:border-l lg:border-white/15 lg:pl-5">
+                    <Clock3
+                        aria-hidden="true"
+                        className="size-3.5 shrink-0 text-village-accent"
+                    />
+                    <span>Sen–Kam 08.00–15.00 · Jum 08.00–11.30</span>
+                </div>
+
+                <a
+                    href="tel:+6281234567890"
+                    className="col-start-2 row-start-1 flex items-center gap-1.5 justify-self-end whitespace-nowrap transition-colors hover:text-white focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:outline-none lg:col-auto lg:row-auto lg:ml-auto"
+                >
+                    <PhoneCall
+                        aria-hidden="true"
+                        className="size-3.5 shrink-0 text-village-accent"
+                    />
+                    <span>0812-3456-7890</span>
+                </a>
+
+                <Link
+                    href={adminHref}
+                    className="col-start-2 row-start-2 inline-flex min-h-7 items-center gap-1.5 justify-self-end rounded-sm font-semibold text-white/90 underline-offset-4 transition-colors hover:text-village-accent hover:underline focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:outline-none lg:col-auto lg:row-auto lg:border-l lg:border-white/15 lg:pl-5"
+                >
+                    <LogIn aria-hidden="true" className="size-3.5" />
+                    Admin
+                </Link>
+            </div>
+        </aside>
+    );
+}
 
 export default function Welcome() {
     const { auth } = usePage().props;
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMessageSent, setIsMessageSent] = useState(false);
+    const portalHref = auth.user ? dashboard() : login();
+
+    useEffect(() => {
+        const updateNavbar = () => setIsScrolled(window.scrollY > 50);
+
+        updateNavbar();
+        window.addEventListener('scroll', updateNavbar, { passive: true });
+
+        return () => window.removeEventListener('scroll', updateNavbar);
+    }, []);
+
+    useEffect(() => {
+        if (!isMobileMenuOpen) {
+            return;
+        }
+
+        const closeOnEscape = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        document.body.style.overflow = 'hidden';
+        window.addEventListener('keydown', closeOnEscape);
+
+        return () => {
+            document.body.style.overflow = '';
+            window.removeEventListener('keydown', closeOnEscape);
+        };
+    }, [isMobileMenuOpen]);
+
+    const submitMessage = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        setIsMessageSent(true);
+        event.currentTarget.reset();
+    };
+
+    const hasSolidNavbar = isScrolled || isMobileMenuOpen;
 
     return (
         <>
-            <Head title="Welcome" />
-            <div className="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] lg:justify-center lg:p-8 dark:bg-[#0a0a0a]">
-                <header className="mb-6 w-full max-w-[335px] text-sm not-has-[nav]:hidden lg:max-w-4xl">
-                    <nav className="flex items-center justify-end gap-4">
-                        {auth.user ? (
-                            <Link
-                                href={dashboard()}
-                                className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+            <Head title="Website Resmi Desa Ngampungan">
+                <meta
+                    name="description"
+                    content="Pusat informasi dan layanan digital resmi Desa Ngampungan, Kecamatan Bareng, Kabupaten Jombang."
+                />
+                <link rel="preconnect" href="https://fonts.googleapis.com" />
+                <link
+                    rel="preconnect"
+                    href="https://fonts.gstatic.com"
+                    crossOrigin="anonymous"
+                />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+                    rel="stylesheet"
+                />
+            </Head>
+
+            <div className="village-landing min-h-screen bg-village-canvas text-village-ink selection:bg-village-primary-light selection:text-village-primary-dark">
+                <div className="fixed inset-x-0 top-0 z-50">
+                    <UtilityBar isAuthenticated={Boolean(auth.user)} />
+
+                    <nav
+                        aria-label="Navigasi utama"
+                        className={`border-b py-3 transition-all duration-300 ${
+                            hasSolidNavbar
+                                ? 'border-village-border bg-white/95 text-village-ink shadow-sm backdrop-blur-xl'
+                                : 'border-transparent bg-transparent text-white'
+                        }`}
+                    >
+                        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-5 lg:px-12">
+                            <a
+                                href="#beranda"
+                                aria-label="Kembali ke beranda Desa Ngampungan"
+                                className="rounded-md focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                             >
-                                Dashboard
-                            </Link>
-                        ) : (
-                            <>
-                                <Link
-                                    href={login()}
-                                    className="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
-                                >
-                                    Log in
-                                </Link>
-                                <Link
-                                    href={register()}
-                                    className="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
-                                >
-                                    Register
-                                </Link>
-                            </>
-                        )}
-                    </nav>
-                </header>
-                <div className="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-                    <main className="flex w-full max-w-[335px] flex-col-reverse lg:max-w-4xl lg:flex-row">
-                        <div className="flex-1 rounded-br-lg rounded-bl-lg bg-white p-6 pb-12 text-[13px] leading-[20px] shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-tl-lg lg:rounded-br-none lg:p-20 dark:bg-[#161615] dark:text-[#EDEDEC] dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]">
-                            <h1 className="mb-1 font-medium">
-                                Let's get started
-                            </h1>
-                            <p className="mb-2 text-[#706f6c] dark:text-[#A1A09A]">
-                                Laravel has an incredibly rich ecosystem.
-                                <br />
-                                We suggest starting with the following.
-                            </p>
-                            <ul className="mb-4 flex flex-col lg:mb-6">
-                                <li className="relative flex items-center gap-4 py-2 before:absolute before:top-1/2 before:bottom-0 before:left-[0.4rem] before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A]">
-                                    <span className="relative bg-white py-1 dark:bg-[#161615]">
-                                        <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#e3e3e0] bg-[#FDFDFC] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] dark:border-[#3E3E3A] dark:bg-[#161615]">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A]" />
-                                        </span>
-                                    </span>
-                                    <span>
-                                        Read the
-                                        <a
-                                            href="https://laravel.com/docs"
-                                            target="_blank"
-                                            className="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
-                                        >
-                                            <span>Documentation</span>
-                                            <svg
-                                                width={10}
-                                                height={11}
-                                                viewBox="0 0 10 11"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-2.5 w-2.5"
-                                            >
-                                                <path
-                                                    d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001"
-                                                    stroke="currentColor"
-                                                    strokeLinecap="square"
-                                                />
-                                            </svg>
-                                        </a>
-                                    </span>
-                                </li>
-                                <li className="relative flex items-center gap-4 py-2 before:absolute before:top-0 before:bottom-1/2 before:left-[0.4rem] before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A]">
-                                    <span className="relative bg-white py-1 dark:bg-[#161615]">
-                                        <span className="flex h-3.5 w-3.5 items-center justify-center rounded-full border border-[#e3e3e0] bg-[#FDFDFC] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.03),0px_1px_2px_0px_rgba(0,0,0,0.06)] dark:border-[#3E3E3A] dark:bg-[#161615]">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-[#dbdbd7] dark:bg-[#3E3E3A]" />
-                                        </span>
-                                    </span>
-                                    <span>
-                                        Watch video tutorials at
-                                        <a
-                                            href="https://laracasts.com"
-                                            target="_blank"
-                                            className="ml-1 inline-flex items-center space-x-1 font-medium text-[#f53003] underline underline-offset-4 dark:text-[#FF4433]"
-                                        >
-                                            <span>Laracasts</span>
-                                            <svg
-                                                width={10}
-                                                height={11}
-                                                viewBox="0 0 10 11"
-                                                fill="none"
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                className="h-2.5 w-2.5"
-                                            >
-                                                <path
-                                                    d="M7.70833 6.95834V2.79167H3.54167M2.5 8L7.5 3.00001"
-                                                    stroke="currentColor"
-                                                    strokeLinecap="square"
-                                                />
-                                            </svg>
-                                        </a>
-                                    </span>
-                                </li>
-                            </ul>
-                            <ul className="flex gap-3 text-sm leading-normal">
-                                <li>
+                                <SiteLogo />
+                            </a>
+
+                            <div className="hidden items-center gap-8 text-sm font-medium lg:flex">
+                                {navigationItems.map((item) => (
                                     <a
-                                        href="https://cloud.laravel.com"
-                                        target="_blank"
-                                        className="inline-block rounded-sm border border-black bg-[#1b1b18] px-5 py-1.5 text-sm leading-normal text-white hover:border-black hover:bg-black dark:border-[#eeeeec] dark:bg-[#eeeeec] dark:text-[#1C1C1A] dark:hover:border-white dark:hover:bg-white"
+                                        key={item.href}
+                                        href={item.href}
+                                        className="group relative py-3 text-current/90 transition-colors hover:text-current focus-visible:rounded-md focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none"
                                     >
-                                        Deploy now
+                                        {item.label}
+                                        <span className="absolute inset-x-0 bottom-1 h-0.5 origin-left scale-x-0 bg-current transition-transform group-hover:scale-x-100" />
                                     </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div className="relative -mb-px aspect-[335/364] w-full shrink-0 overflow-hidden rounded-t-lg bg-[#fff2f2] lg:mb-0 lg:-ml-px lg:aspect-auto lg:w-[438px] lg:rounded-t-none lg:rounded-r-lg dark:bg-[#1D0002]">
-                            {/* Laravel Logo */}
-                            <svg
-                                className="w-full max-w-none translate-y-0 text-[#F53003] opacity-100 transition-all duration-750 dark:text-[#F61500] starting:opacity-0 motion-safe:starting:translate-y-6"
-                                viewBox="0 0 438 104"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                                ))}
+                            </div>
+
+                            <a
+                                href="#layanan"
+                                className={`${primaryButtonClassName} hidden lg:inline-flex`}
                             >
-                                <path
-                                    d="M17.2036 -3H0V102.197H49.5189V86.7187H17.2036V-3Z"
-                                    fill="currentColor"
+                                Akses Layanan
+                                <ArrowRight
+                                    aria-hidden="true"
+                                    className="size-4"
                                 />
-                                <path
-                                    d="M110.256 41.6337C108.061 38.1275 104.945 35.3731 100.905 33.3681C96.8667 31.3647 92.8016 30.3618 88.7131 30.3618C83.4247 30.3618 78.5885 31.3389 74.201 33.2923C69.8111 35.2456 66.0474 37.928 62.9059 41.3333C59.7643 44.7401 57.3198 48.6726 55.5754 53.1293C53.8287 57.589 52.9572 62.274 52.9572 67.1813C52.9572 72.1925 53.8287 76.8995 55.5754 81.3069C57.3191 85.7173 59.7636 89.6241 62.9059 93.0293C66.0474 96.4361 69.8119 99.1155 74.201 101.069C78.5885 103.022 83.4247 103.999 88.7131 103.999C92.8016 103.999 96.8667 102.997 100.905 100.994C104.945 98.9911 108.061 96.2359 110.256 92.7282V102.195H126.563V32.1642H110.256V41.6337ZM108.76 75.7472C107.762 78.4531 106.366 80.8078 104.572 82.8112C102.776 84.8161 100.606 86.4183 98.0637 87.6206C95.5202 88.823 92.7004 89.4238 89.6103 89.4238C86.5178 89.4238 83.7252 88.823 81.2324 87.6206C78.7388 86.4183 76.5949 84.8161 74.7998 82.8112C73.004 80.8078 71.6319 78.4531 70.6856 75.7472C69.7356 73.0421 69.2644 70.1868 69.2644 67.1821C69.2644 64.1758 69.7356 61.3205 70.6856 58.6154C71.6319 55.9102 73.004 53.5571 74.7998 51.5522C76.5949 49.5495 78.738 47.9451 81.2324 46.7427C83.7252 45.5404 86.5178 44.9396 89.6103 44.9396C92.7012 44.9396 95.5202 45.5404 98.0637 46.7427C100.606 47.9451 102.776 49.5487 104.572 51.5522C106.367 53.5571 107.762 55.9102 108.76 58.6154C109.756 61.3205 110.256 64.1758 110.256 67.1821C110.256 70.1868 109.756 73.0421 108.76 75.7472Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M242.805 41.6337C240.611 38.1275 237.494 35.3731 233.455 33.3681C229.416 31.3647 225.351 30.3618 221.262 30.3618C215.974 30.3618 211.138 31.3389 206.75 33.2923C202.36 35.2456 198.597 37.928 195.455 41.3333C192.314 44.7401 189.869 48.6726 188.125 53.1293C186.378 57.589 185.507 62.274 185.507 67.1813C185.507 72.1925 186.378 76.8995 188.125 81.3069C189.868 85.7173 192.313 89.6241 195.455 93.0293C198.597 96.4361 202.361 99.1155 206.75 101.069C211.138 103.022 215.974 103.999 221.262 103.999C225.351 103.999 229.416 102.997 233.455 100.994C237.494 98.9911 240.611 96.2359 242.805 92.7282V102.195H259.112V32.1642H242.805V41.6337ZM241.31 75.7472C240.312 78.4531 238.916 80.8078 237.122 82.8112C235.326 84.8161 233.156 86.4183 230.614 87.6206C228.07 88.823 225.251 89.4238 222.16 89.4238C219.068 89.4238 216.275 88.823 213.782 87.6206C211.289 86.4183 209.145 84.8161 207.35 82.8112C205.554 80.8078 204.182 78.4531 203.236 75.7472C202.286 73.0421 201.814 70.1868 201.814 67.1821C201.814 64.1758 202.286 61.3205 203.236 58.6154C204.182 55.9102 205.554 53.5571 207.35 51.5522C209.145 49.5495 211.288 47.9451 213.782 46.7427C216.275 45.5404 219.068 44.9396 222.16 44.9396C225.251 44.9396 228.07 45.5404 230.614 46.7427C233.156 47.9451 235.326 49.5487 237.122 51.5522C238.917 53.5571 240.312 55.9102 241.31 58.6154C242.306 61.3205 242.806 64.1758 242.806 67.1821C242.805 70.1868 242.305 73.0421 241.31 75.7472Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M438 -3H421.694V102.197H438V-3Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M139.43 102.197H155.735V48.2834H183.712V32.1665H139.43V102.197Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M324.49 32.1665L303.995 85.794L283.498 32.1665H266.983L293.748 102.197H314.242L341.006 32.1665H324.49Z"
-                                    fill="currentColor"
-                                />
-                                <path
-                                    d="M376.571 30.3656C356.603 30.3656 340.797 46.8497 340.797 67.1828C340.797 89.6597 356.094 104 378.661 104C391.29 104 399.354 99.1488 409.206 88.5848L398.189 80.0226C398.183 80.031 389.874 90.9895 377.468 90.9895C363.048 90.9895 356.977 79.3111 356.977 73.269H411.075C413.917 50.1328 398.775 30.3656 376.571 30.3656ZM357.02 61.0967C357.145 59.7487 359.023 43.3761 376.442 43.3761C393.861 43.3761 395.978 59.7464 396.099 61.0967H357.02Z"
-                                    fill="currentColor"
-                                />
-                            </svg>
+                            </a>
 
-                            {/* 13 */}
-                            <svg
-                                className="relative -mt-[6.6rem] -ml-8 w-[438px] max-w-none [--stroke-color:#1B1B18] lg:ml-0 dark:[--stroke-color:#FF750F]"
-                                viewBox="0 0 440 392"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
+                            <button
+                                type="button"
+                                aria-label={
+                                    isMobileMenuOpen
+                                        ? 'Tutup menu navigasi'
+                                        : 'Buka menu navigasi'
+                                }
+                                aria-controls="mobile-navigation"
+                                aria-expanded={isMobileMenuOpen}
+                                onClick={() =>
+                                    setIsMobileMenuOpen((isOpen) => !isOpen)
+                                }
+                                className="flex size-11 items-center justify-center rounded-xl transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none lg:hidden"
                             >
-                                <g className="text-[#1B1B18] opacity-100 mix-blend-darken transition-all delay-300 duration-750 dark:text-black dark:mix-blend-normal starting:opacity-0">
-                                    <mask
-                                        id="path-1-mask"
-                                        maskUnits="userSpaceOnUse"
-                                        x="-0.328613"
-                                        y="103"
-                                        width="338"
-                                        height="299"
-                                        fill="black"
-                                    >
-                                        <rect
-                                            fill="white"
-                                            x="-0.328613"
-                                            y="103"
-                                            width="338"
-                                            height="299"
-                                        />
-                                        <path d="M234.936 400.8C204.136 400.8 178.936 392.4 159.336 375.6C140.136 358.8 130.536 337 130.536 310.2H200.736C200.736 318.2 203.736 324.8 209.736 330C215.736 335.2 223.736 337.8 233.736 337.8C243.336 337.8 251.136 335 257.136 329.4C263.536 323.8 266.736 316.6 266.736 307.8C266.736 299.8 263.936 293.2 258.336 288C252.736 282.8 245.536 280.2 236.736 280.2H199.536V218.4H236.736C243.536 218.4 249.336 216 254.136 211.2C258.936 206.4 261.336 200.4 261.336 193.2C261.336 184.8 258.736 178.2 253.536 173.4C248.336 168.6 241.736 166.2 233.736 166.2C226.536 166.2 220.336 168.4 215.136 172.8C210.336 177.2 207.936 182.8 207.936 189.6H141.336C141.336 164.8 150.136 144.6 167.736 129C185.336 113 207.936 105 235.536 105C263.136 105 285.536 112.2 302.736 126.6C320.336 141 329.136 160 329.136 183.6C329.136 200.8 324.536 214.8 315.336 225.6C306.136 236 294.336 243.2 279.936 247.2C297.136 252 310.736 260.2 320.736 271.8C331.136 283.4 336.336 298 336.336 315.6C336.336 340.4 326.936 360.8 308.136 376.8C289.336 392.8 264.936 400.8 234.936 400.8Z" />
-                                        <path d="M26.8714 167.6H1.67139V105.2H94.6714V400.2H26.8714V167.6Z" />
-                                    </mask>
-                                    <path
-                                        d="M234.936 400.8C204.136 400.8 178.936 392.4 159.336 375.6C140.136 358.8 130.536 337 130.536 310.2H200.736C200.736 318.2 203.736 324.8 209.736 330C215.736 335.2 223.736 337.8 233.736 337.8C243.336 337.8 251.136 335 257.136 329.4C263.536 323.8 266.736 316.6 266.736 307.8C266.736 299.8 263.936 293.2 258.336 288C252.736 282.8 245.536 280.2 236.736 280.2H199.536V218.4H236.736C243.536 218.4 249.336 216 254.136 211.2C258.936 206.4 261.336 200.4 261.336 193.2C261.336 184.8 258.736 178.2 253.536 173.4C248.336 168.6 241.736 166.2 233.736 166.2C226.536 166.2 220.336 168.4 215.136 172.8C210.336 177.2 207.936 182.8 207.936 189.6H141.336C141.336 164.8 150.136 144.6 167.736 129C185.336 113 207.936 105 235.536 105C263.136 105 285.536 112.2 302.736 126.6C320.336 141 329.136 160 329.136 183.6C329.136 200.8 324.536 214.8 315.336 225.6C306.136 236 294.336 243.2 279.936 247.2C297.136 252 310.736 260.2 320.736 271.8C331.136 283.4 336.336 298 336.336 315.6C336.336 340.4 326.936 360.8 308.136 376.8C289.336 392.8 264.936 400.8 234.936 400.8Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M26.8714 167.6H1.67139V105.2H94.6714V400.2H26.8714V167.6Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M234.936 400.8C204.136 400.8 178.936 392.4 159.336 375.6C140.136 358.8 130.536 337 130.536 310.2H200.736C200.736 318.2 203.736 324.8 209.736 330C215.736 335.2 223.736 337.8 233.736 337.8C243.336 337.8 251.136 335 257.136 329.4C263.536 323.8 266.736 316.6 266.736 307.8C266.736 299.8 263.936 293.2 258.336 288C252.736 282.8 245.536 280.2 236.736 280.2H199.536V218.4H236.736C243.536 218.4 249.336 216 254.136 211.2C258.936 206.4 261.336 200.4 261.336 193.2C261.336 184.8 258.736 178.2 253.536 173.4C248.336 168.6 241.736 166.2 233.736 166.2C226.536 166.2 220.336 168.4 215.136 172.8C210.336 177.2 207.936 182.8 207.936 189.6H141.336C141.336 164.8 150.136 144.6 167.736 129C185.336 113 207.936 105 235.536 105C263.136 105 285.536 112.2 302.736 126.6C320.336 141 329.136 160 329.136 183.6C329.136 200.8 324.536 214.8 315.336 225.6C306.136 236 294.336 243.2 279.936 247.2C297.136 252 310.736 260.2 320.736 271.8C331.136 283.4 336.336 298 336.336 315.6C336.336 340.4 326.936 360.8 308.136 376.8C289.336 392.8 264.936 400.8 234.936 400.8Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-1-mask)"
-                                    />
-                                    <path
-                                        d="M26.8714 167.6H1.67139V105.2H94.6714V400.2H26.8714V167.6Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-1-mask)"
-                                    />
-                                </g>
-
-                                <g className="text-[#F3BEC7] opacity-100 transition-all delay-400 duration-750 dark:text-[#4B0600] starting:opacity-0 motion-safe:starting:-translate-x-[26px]">
-                                    <mask
-                                        id="path-2-mask"
-                                        maskUnits="userSpaceOnUse"
-                                        x="25.3357"
-                                        y="103"
-                                        width="338"
-                                        height="299"
-                                        fill="black"
-                                    >
-                                        <rect
-                                            fill="white"
-                                            x="25.3357"
-                                            y="103"
-                                            width="338"
-                                            height="299"
-                                        />
-                                        <path d="M260.6 400.8C229.8 400.8 204.6 392.4 185 375.6C165.8 358.8 156.2 337 156.2 310.2H226.4C226.4 318.2 229.4 324.8 235.4 330C241.4 335.2 249.4 337.8 259.4 337.8C269 337.8 276.8 335 282.8 329.4C289.2 323.8 292.4 316.6 292.4 307.8C292.4 299.8 289.6 293.2 284 288C278.4 282.8 271.2 280.2 262.4 280.2H225.2V218.4H262.4C269.2 218.4 275 216 279.8 211.2C284.6 206.4 287 200.4 287 193.2C287 184.8 284.4 178.2 279.2 173.4C274 168.6 267.4 166.2 259.4 166.2C252.2 166.2 246 168.4 240.8 172.8C236 177.2 233.6 182.8 233.6 189.6H167C167 164.8 175.8 144.6 193.4 129C211 113 233.6 105 261.2 105C288.8 105 311.2 112.2 328.4 126.6C346 141 354.8 160 354.8 183.6C354.8 200.8 350.2 214.8 341 225.6C331.8 236 320 243.2 305.6 247.2C322.8 252 336.4 260.2 346.4 271.8C356.8 283.4 362 298 362 315.6C362 340.4 352.6 360.8 333.8 376.8C315 392.8 290.6 400.8 260.6 400.8Z" />
-                                        <path d="M52.5357 167.6H27.3357V105.2H120.336V400.2H52.5357V167.6Z" />
-                                    </mask>
-                                    <path
-                                        d="M260.6 400.8C229.8 400.8 204.6 392.4 185 375.6C165.8 358.8 156.2 337 156.2 310.2H226.4C226.4 318.2 229.4 324.8 235.4 330C241.4 335.2 249.4 337.8 259.4 337.8C269 337.8 276.8 335 282.8 329.4C289.2 323.8 292.4 316.6 292.4 307.8C292.4 299.8 289.6 293.2 284 288C278.4 282.8 271.2 280.2 262.4 280.2H225.2V218.4H262.4C269.2 218.4 275 216 279.8 211.2C284.6 206.4 287 200.4 287 193.2C287 184.8 284.4 178.2 279.2 173.4C274 168.6 267.4 166.2 259.4 166.2C252.2 166.2 246 168.4 240.8 172.8C236 177.2 233.6 182.8 233.6 189.6H167C167 164.8 175.8 144.6 193.4 129C211 113 233.6 105 261.2 105C288.8 105 311.2 112.2 328.4 126.6C346 141 354.8 160 354.8 183.6C354.8 200.8 350.2 214.8 341 225.6C331.8 236 320 243.2 305.6 247.2C322.8 252 336.4 260.2 346.4 271.8C356.8 283.4 362 298 362 315.6C362 340.4 352.6 360.8 333.8 376.8C315 392.8 290.6 400.8 260.6 400.8Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M52.5357 167.6H27.3357V105.2H120.336V400.2H52.5357V167.6Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M260.6 400.8C229.8 400.8 204.6 392.4 185 375.6C165.8 358.8 156.2 337 156.2 310.2H226.4C226.4 318.2 229.4 324.8 235.4 330C241.4 335.2 249.4 337.8 259.4 337.8C269 337.8 276.8 335 282.8 329.4C289.2 323.8 292.4 316.6 292.4 307.8C292.4 299.8 289.6 293.2 284 288C278.4 282.8 271.2 280.2 262.4 280.2H225.2V218.4H262.4C269.2 218.4 275 216 279.8 211.2C284.6 206.4 287 200.4 287 193.2C287 184.8 284.4 178.2 279.2 173.4C274 168.6 267.4 166.2 259.4 166.2C252.2 166.2 246 168.4 240.8 172.8C236 177.2 233.6 182.8 233.6 189.6H167C167 164.8 175.8 144.6 193.4 129C211 113 233.6 105 261.2 105C288.8 105 311.2 112.2 328.4 126.6C346 141 354.8 160 354.8 183.6C354.8 200.8 350.2 214.8 341 225.6C331.8 236 320 243.2 305.6 247.2C322.8 252 336.4 260.2 346.4 271.8C356.8 283.4 362 298 362 315.6C362 340.4 352.6 360.8 333.8 376.8C315 392.8 290.6 400.8 260.6 400.8Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-2-mask)"
-                                    />
-                                    <path
-                                        d="M52.5357 167.6H27.3357V105.2H120.336V400.2H52.5357V167.6Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-2-mask)"
-                                    />
-                                </g>
-
-                                <g className="text-[#F8B803] opacity-100 mix-blend-color transition-all delay-400 duration-750 dark:text-[#391800] dark:mix-blend-hard-light starting:opacity-0 motion-safe:starting:-translate-x-[51px]">
-                                    <mask
-                                        id="path-3-mask"
-                                        maskUnits="userSpaceOnUse"
-                                        x="51"
-                                        y="103"
-                                        width="338"
-                                        height="299"
-                                        fill="black"
-                                    >
-                                        <rect
-                                            fill="white"
-                                            x="51"
-                                            y="103"
-                                            width="338"
-                                            height="299"
-                                        />
-                                        <path d="M286.264 400.8C255.464 400.8 230.264 392.4 210.664 375.6C191.464 358.8 181.864 337 181.864 310.2H252.064C252.064 318.2 255.064 324.8 261.064 330C267.064 335.2 275.064 337.8 285.064 337.8C294.664 337.8 302.464 335 308.464 329.4C314.864 323.8 318.064 316.6 318.064 307.8C318.064 299.8 315.264 293.2 309.664 288C304.064 282.8 296.864 280.2 288.064 280.2H250.864V218.4H288.064C294.864 218.4 300.664 216 305.464 211.2C310.264 206.4 312.664 200.4 312.664 193.2C312.664 184.8 310.064 178.2 304.864 173.4C299.664 168.6 293.064 166.2 285.064 166.2C277.864 166.2 271.664 168.4 266.464 172.8C261.664 177.2 259.264 182.8 259.264 189.6H192.664C192.664 164.8 201.464 144.6 219.064 129C236.664 113 259.264 105 286.864 105C314.464 105 336.864 112.2 354.064 126.6C371.664 141 380.464 160 380.464 183.6C380.464 200.8 375.864 214.8 366.664 225.6C357.464 236 345.664 243.2 331.264 247.2C348.464 252 362.064 260.2 372.064 271.8C382.464 283.4 387.664 298 387.664 315.6C387.664 340.4 378.264 360.8 359.464 376.8C340.664 392.8 316.264 400.8 286.264 400.8Z" />
-                                        <path d="M78.2 167.6H53V105.2H146V400.2H78.2V167.6Z" />
-                                    </mask>
-                                    <path
-                                        d="M286.264 400.8C255.464 400.8 230.264 392.4 210.664 375.6C191.464 358.8 181.864 337 181.864 310.2H252.064C252.064 318.2 255.064 324.8 261.064 330C267.064 335.2 275.064 337.8 285.064 337.8C294.664 337.8 302.464 335 308.464 329.4C314.864 323.8 318.064 316.6 318.064 307.8C318.064 299.8 315.264 293.2 309.664 288C304.064 282.8 296.864 280.2 288.064 280.2H250.864V218.4H288.064C294.864 218.4 300.664 216 305.464 211.2C310.264 206.4 312.664 200.4 312.664 193.2C312.664 184.8 310.064 178.2 304.864 173.4C299.664 168.6 293.064 166.2 285.064 166.2C277.864 166.2 271.664 168.4 266.464 172.8C261.664 177.2 259.264 182.8 259.264 189.6H192.664C192.664 164.8 201.464 144.6 219.064 129C236.664 113 259.264 105 286.864 105C314.464 105 336.864 112.2 354.064 126.6C371.664 141 380.464 160 380.464 183.6C380.464 200.8 375.864 214.8 366.664 225.6C357.464 236 345.664 243.2 331.264 247.2C348.464 252 362.064 260.2 372.064 271.8C382.464 283.4 387.664 298 387.664 315.6C387.664 340.4 378.264 360.8 359.464 376.8C340.664 392.8 316.264 400.8 286.264 400.8Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M78.2 167.6H53V105.2H146V400.2H78.2V167.6Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M286.264 400.8C255.464 400.8 230.264 392.4 210.664 375.6C191.464 358.8 181.864 337 181.864 310.2H252.064C252.064 318.2 255.064 324.8 261.064 330C267.064 335.2 275.064 337.8 285.064 337.8C294.664 337.8 302.464 335 308.464 329.4C314.864 323.8 318.064 316.6 318.064 307.8C318.064 299.8 315.264 293.2 309.664 288C304.064 282.8 296.864 280.2 288.064 280.2H250.864V218.4H288.064C294.864 218.4 300.664 216 305.464 211.2C310.264 206.4 312.664 200.4 312.664 193.2C312.664 184.8 310.064 178.2 304.864 173.4C299.664 168.6 293.064 166.2 285.064 166.2C277.864 166.2 271.664 168.4 266.464 172.8C261.664 177.2 259.264 182.8 259.264 189.6H192.664C192.664 164.8 201.464 144.6 219.064 129C236.664 113 259.264 105 286.864 105C314.464 105 336.864 112.2 354.064 126.6C371.664 141 380.464 160 380.464 183.6C380.464 200.8 375.864 214.8 366.664 225.6C357.464 236 345.664 243.2 331.264 247.2C348.464 252 362.064 260.2 372.064 271.8C382.464 283.4 387.664 298 387.664 315.6C387.664 340.4 378.264 360.8 359.464 376.8C340.664 392.8 316.264 400.8 286.264 400.8Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-3-mask)"
-                                    />
-                                    <path
-                                        d="M78.2 167.6H53V105.2H146V400.2H78.2V167.6Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-3-mask)"
-                                    />
-                                </g>
-
-                                <g className="text-[#F3BEC7] opacity-100 mix-blend-multiply transition-all delay-400 duration-750 dark:text-[#733000] dark:mix-blend-normal starting:opacity-0 motion-safe:starting:-translate-x-[78px]">
-                                    <mask
-                                        id="path-4-mask"
-                                        maskUnits="userSpaceOnUse"
-                                        x="76.6643"
-                                        y="103"
-                                        width="338"
-                                        height="299"
-                                        fill="black"
-                                    >
-                                        <rect
-                                            fill="white"
-                                            x="76.6643"
-                                            y="103"
-                                            width="338"
-                                            height="299"
-                                        />
-                                        <path d="M311.929 400.8C281.129 400.8 255.929 392.4 236.329 375.6C217.129 358.8 207.529 337 207.529 310.2H277.729C277.729 318.2 280.729 324.8 286.729 330C292.729 335.2 300.729 337.8 310.729 337.8C320.329 337.8 328.129 335 334.129 329.4C340.529 323.8 343.729 316.6 343.729 307.8C343.729 299.8 340.929 293.2 335.329 288C329.729 282.8 322.529 280.2 313.729 280.2H276.529V218.4H313.729C320.529 218.4 326.329 216 331.129 211.2C335.929 206.4 338.329 200.4 338.329 193.2C338.329 184.8 335.729 178.2 330.529 173.4C325.329 168.6 318.729 166.2 310.729 166.2C303.529 166.2 297.329 168.4 292.129 172.8C287.329 177.2 284.929 182.8 284.929 189.6H218.329C218.329 164.8 227.129 144.6 244.729 129C262.329 113 284.929 105 312.529 105C340.129 105 362.529 112.2 379.729 126.6C397.329 141 406.129 160 406.129 183.6C406.129 200.8 401.529 214.8 392.329 225.6C383.129 236 371.329 243.2 356.929 247.2C374.129 252 387.729 260.2 397.729 271.8C408.129 283.4 413.329 298 413.329 315.6C413.329 340.4 403.929 360.8 385.129 376.8C366.329 392.8 341.929 400.8 311.929 400.8Z" />
-                                        <path d="M103.864 167.6H78.6643V105.2H171.664V400.2H103.864V167.6Z" />
-                                    </mask>
-                                    <path
-                                        d="M311.929 400.8C281.129 400.8 255.929 392.4 236.329 375.6C217.129 358.8 207.529 337 207.529 310.2H277.729C277.729 318.2 280.729 324.8 286.729 330C292.729 335.2 300.729 337.8 310.729 337.8C320.329 337.8 328.129 335 334.129 329.4C340.529 323.8 343.729 316.6 343.729 307.8C343.729 299.8 340.929 293.2 335.329 288C329.729 282.8 322.529 280.2 313.729 280.2H276.529V218.4H313.729C320.529 218.4 326.329 216 331.129 211.2C335.929 206.4 338.329 200.4 338.329 193.2C338.329 184.8 335.729 178.2 330.529 173.4C325.329 168.6 318.729 166.2 310.729 166.2C303.529 166.2 297.329 168.4 292.129 172.8C287.329 177.2 284.929 182.8 284.929 189.6H218.329C218.329 164.8 227.129 144.6 244.729 129C262.329 113 284.929 105 312.529 105C340.129 105 362.529 112.2 379.729 126.6C397.329 141 406.129 160 406.129 183.6C406.129 200.8 401.529 214.8 392.329 225.6C383.129 236 371.329 243.2 356.929 247.2C374.129 252 387.729 260.2 397.729 271.8C408.129 283.4 413.329 298 413.329 315.6C413.329 340.4 403.929 360.8 385.129 376.8C366.329 392.8 341.929 400.8 311.929 400.8Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M103.864 167.6H78.6643V105.2H171.664V400.2H103.864V167.6Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M311.929 400.8C281.129 400.8 255.929 392.4 236.329 375.6C217.129 358.8 207.529 337 207.529 310.2H277.729C277.729 318.2 280.729 324.8 286.729 330C292.729 335.2 300.729 337.8 310.729 337.8C320.329 337.8 328.129 335 334.129 329.4C340.529 323.8 343.729 316.6 343.729 307.8C343.729 299.8 340.929 293.2 335.329 288C329.729 282.8 322.529 280.2 313.729 280.2H276.529V218.4H313.729C320.529 218.4 326.329 216 331.129 211.2C335.929 206.4 338.329 200.4 338.329 193.2C338.329 184.8 335.729 178.2 330.529 173.4C325.329 168.6 318.729 166.2 310.729 166.2C303.529 166.2 297.329 168.4 292.129 172.8C287.329 177.2 284.929 182.8 284.929 189.6H218.329C218.329 164.8 227.129 144.6 244.729 129C262.329 113 284.929 105 312.529 105C340.129 105 362.529 112.2 379.729 126.6C397.329 141 406.129 160 406.129 183.6C406.129 200.8 401.529 214.8 392.329 225.6C383.129 236 371.329 243.2 356.929 247.2C374.129 252 387.729 260.2 397.729 271.8C408.129 283.4 413.329 298 413.329 315.6C413.329 340.4 403.929 360.8 385.129 376.8C366.329 392.8 341.929 400.8 311.929 400.8Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-4-mask)"
-                                    />
-                                    <path
-                                        d="M103.864 167.6H78.6643V105.2H171.664V400.2H103.864V167.6Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-4-mask)"
-                                    />
-                                </g>
-
-                                <g className="text-[#F3BEC7] opacity-100 mix-blend-hard-light transition-all delay-400 duration-750 dark:text-[#4B0600] starting:opacity-0 motion-safe:starting:-translate-x-[102px]">
-                                    <mask
-                                        id="path-5-mask"
-                                        maskUnits="userSpaceOnUse"
-                                        x="102.329"
-                                        y="103"
-                                        width="338"
-                                        height="299"
-                                        fill="black"
-                                    >
-                                        <rect
-                                            fill="white"
-                                            x="102.329"
-                                            y="103"
-                                            width="338"
-                                            height="299"
-                                        />
-                                        <path d="M337.593 400.8C306.793 400.8 281.593 392.4 261.993 375.6C242.793 358.8 233.193 337 233.193 310.2H303.393C303.393 318.2 306.393 324.8 312.393 330C318.393 335.2 326.393 337.8 336.393 337.8C345.993 337.8 353.793 335 359.793 329.4C366.193 323.8 369.393 316.6 369.393 307.8C369.393 299.8 366.593 293.2 360.993 288C355.393 282.8 348.193 280.2 339.393 280.2H302.193V218.4H339.393C346.193 218.4 351.993 216 356.793 211.2C361.593 206.4 363.993 200.4 363.993 193.2C363.993 184.8 361.393 178.2 356.193 173.4C350.993 168.6 344.393 166.2 336.393 166.2C329.193 166.2 322.993 168.4 317.793 172.8C312.993 177.2 310.593 182.8 310.593 189.6H243.993C243.993 164.8 252.793 144.6 270.393 129C287.993 113 310.593 105 338.193 105C365.793 105 388.193 112.2 405.393 126.6C422.993 141 431.793 160 431.793 183.6C431.793 200.8 427.193 214.8 417.993 225.6C408.793 236 396.993 243.2 382.593 247.2C399.793 252 413.393 260.2 423.393 271.8C433.793 283.4 438.993 298 438.993 315.6C438.993 340.4 429.593 360.8 410.793 376.8C391.993 392.8 367.593 400.8 337.593 400.8Z" />
-                                        <path d="M129.529 167.6H104.329V105.2H197.329V400.2H129.529V167.6Z" />
-                                    </mask>
-                                    <path
-                                        d="M337.593 400.8C306.793 400.8 281.593 392.4 261.993 375.6C242.793 358.8 233.193 337 233.193 310.2H303.393C303.393 318.2 306.393 324.8 312.393 330C318.393 335.2 326.393 337.8 336.393 337.8C345.993 337.8 353.793 335 359.793 329.4C366.193 323.8 369.393 316.6 369.393 307.8C369.393 299.8 366.593 293.2 360.993 288C355.393 282.8 348.193 280.2 339.393 280.2H302.193V218.4H339.393C346.193 218.4 351.993 216 356.793 211.2C361.593 206.4 363.993 200.4 363.993 193.2C363.993 184.8 361.393 178.2 356.193 173.4C350.993 168.6 344.393 166.2 336.393 166.2C329.193 166.2 322.993 168.4 317.793 172.8C312.993 177.2 310.593 182.8 310.593 189.6H243.993C243.993 164.8 252.793 144.6 270.393 129C287.993 113 310.593 105 338.193 105C365.793 105 388.193 112.2 405.393 126.6C422.993 141 431.793 160 431.793 183.6C431.793 200.8 427.193 214.8 417.993 225.6C408.793 236 396.993 243.2 382.593 247.2C399.793 252 413.393 260.2 423.393 271.8C433.793 283.4 438.993 298 438.993 315.6C438.993 340.4 429.593 360.8 410.793 376.8C391.993 392.8 367.593 400.8 337.593 400.8Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M129.529 167.6H104.329V105.2H197.329V400.2H129.529V167.6Z"
-                                        fill="currentColor"
-                                    />
-                                    <path
-                                        d="M337.593 400.8C306.793 400.8 281.593 392.4 261.993 375.6C242.793 358.8 233.193 337 233.193 310.2H303.393C303.393 318.2 306.393 324.8 312.393 330C318.393 335.2 326.393 337.8 336.393 337.8C345.993 337.8 353.793 335 359.793 329.4C366.193 323.8 369.393 316.6 369.393 307.8C369.393 299.8 366.593 293.2 360.993 288C355.393 282.8 348.193 280.2 339.393 280.2H302.193V218.4H339.393C346.193 218.4 351.993 216 356.793 211.2C361.593 206.4 363.993 200.4 363.993 193.2C363.993 184.8 361.393 178.2 356.193 173.4C350.993 168.6 344.393 166.2 336.393 166.2C329.193 166.2 322.993 168.4 317.793 172.8C312.993 177.2 310.593 182.8 310.593 189.6H243.993C243.993 164.8 252.793 144.6 270.393 129C287.993 113 310.593 105 338.193 105C365.793 105 388.193 112.2 405.393 126.6C422.993 141 431.793 160 431.793 183.6C431.793 200.8 427.193 214.8 417.993 225.6C408.793 236 396.993 243.2 382.593 247.2C399.793 252 413.393 260.2 423.393 271.8C433.793 283.4 438.993 298 438.993 315.6C438.993 340.4 429.593 360.8 410.793 376.8C391.993 392.8 367.593 400.8 337.593 400.8Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-5-mask)"
-                                    />
-                                    <path
-                                        d="M129.529 167.6H104.329V105.2H197.329V400.2H129.529V167.6Z"
-                                        stroke="var(--stroke-color)"
-                                        strokeWidth="2.4"
-                                        mask="url(#path-5-mask)"
-                                    />
-                                </g>
-                            </svg>
-                            <div className="absolute inset-0 rounded-t-lg shadow-[inset_0px_0px_0px_1px_rgba(26,26,0,0.16)] lg:rounded-t-none lg:rounded-r-lg dark:shadow-[inset_0px_0px_0px_1px_#fffaed2d]"></div>
+                                {isMobileMenuOpen ? (
+                                    <X aria-hidden="true" />
+                                ) : (
+                                    <Menu aria-hidden="true" />
+                                )}
+                            </button>
                         </div>
-                    </main>
+                    </nav>
                 </div>
-                <div className="hidden h-14.5 lg:block"></div>
+
+                {isMobileMenuOpen && (
+                    <div
+                        id="mobile-navigation"
+                        className="fixed inset-0 z-40 lg:hidden"
+                    >
+                        <button
+                            type="button"
+                            aria-label="Tutup menu navigasi"
+                            className="absolute inset-0 bg-village-primary-dark/35 backdrop-blur-sm"
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        />
+                        <div
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Menu navigasi"
+                            className="relative ml-auto flex min-h-full w-[min(88%,24rem)] flex-col gap-6 bg-white px-6 pt-40 pb-8 shadow-2xl sm:pt-36"
+                        >
+                            <div className="flex flex-col gap-1 text-lg font-semibold text-village-ink">
+                                {navigationItems.map((item) => (
+                                    <div
+                                        key={item.href}
+                                        className="border-b border-village-border"
+                                    >
+                                        <NavigationLink
+                                            href={item.href}
+                                            label={item.label}
+                                            onClick={() =>
+                                                setIsMobileMenuOpen(false)
+                                            }
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                            <a
+                                href="#layanan"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className={`${primaryButtonClassName} mt-auto w-full`}
+                            >
+                                Akses Layanan
+                                <ArrowRight
+                                    aria-hidden="true"
+                                    className="size-4"
+                                />
+                            </a>
+                        </div>
+                    </div>
+                )}
+
+                <main>
+                    <header
+                        id="beranda"
+                        className="relative flex min-h-[90vh] scroll-mt-44 items-center overflow-hidden pt-44 pb-16 sm:scroll-mt-40 sm:pt-40"
+                    >
+                        <div className="absolute inset-0">
+                            <img
+                                src="https://images.unsplash.com/photo-1559884743-74a57598c6c7?q=80&w=2076&auto=format&fit=crop"
+                                alt="Pemandangan sawah yang mewakili lanskap Desa Ngampungan"
+                                className="size-full object-cover object-center"
+                            />
+                            <div className="absolute inset-0 bg-village-primary-dark/75 mix-blend-multiply" />
+                            <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-village-canvas to-transparent" />
+                        </div>
+
+                        <div className="relative z-10 mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-5 lg:grid-cols-12 lg:px-12">
+                            <div className="flex flex-col gap-6 lg:col-span-7 xl:col-span-8">
+                                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wider text-white uppercase backdrop-blur-md">
+                                    <span className="size-2 animate-pulse rounded-full bg-village-accent" />
+                                    Sistem Informasi Desa Terpadu
+                                </div>
+                                <h1 className="village-heading-1 text-white">
+                                    Harmoni Warga,
+                                    <br />
+                                    <span className="text-village-primary-light">
+                                        Kemajuan Bersama.
+                                    </span>
+                                </h1>
+                                <p className="max-w-2xl text-lg leading-relaxed text-white/90 md:text-xl">
+                                    Website resmi Desa Ngampungan. Melayani
+                                    kebutuhan administrasi warga dan menyajikan
+                                    informasi terkini seputar potensi, budaya,
+                                    dan pembangunan desa.
+                                </p>
+                                <div className="flex flex-wrap gap-4 pt-4">
+                                    <a
+                                        href="#layanan"
+                                        className={`${primaryButtonClassName} shadow-village-floating`}
+                                    >
+                                        Akses Layanan
+                                        <ChevronDown
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </a>
+                                    <button
+                                        type="button"
+                                        disabled
+                                        title="Video profil akan segera tersedia"
+                                        className="inline-flex min-h-11 cursor-not-allowed items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 font-semibold text-white/80 backdrop-blur-md"
+                                    >
+                                        <PlayCircle
+                                            aria-hidden="true"
+                                            className="size-5"
+                                        />
+                                        Video Profil
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="lg:col-span-5 xl:col-span-4">
+                                <div className="rounded-3xl border border-white/50 bg-white/80 p-6 shadow-village-floating backdrop-blur-2xl transition duration-300 hover:-translate-y-1">
+                                    <div className="flex items-start justify-between gap-4">
+                                        <div>
+                                            <h2 className="text-xl font-bold text-village-ink">
+                                                Jam Pelayanan
+                                            </h2>
+                                            <p className="mt-1 text-sm text-village-muted">
+                                                Kantor Kepala Desa Ngampungan
+                                            </p>
+                                        </div>
+                                        <div className="flex size-10 items-center justify-center rounded-full bg-village-primary-light text-village-primary">
+                                            <Clock3
+                                                aria-hidden="true"
+                                                className="size-5"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-6 flex flex-col text-sm">
+                                        <div className="flex items-center justify-between gap-4 border-b border-village-border/60 py-3">
+                                            <span className="font-medium">
+                                                Senin–Kamis
+                                            </span>
+                                            <span className="text-right text-village-muted">
+                                                08.00–15.00 WIB
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between gap-4 border-b border-village-border/60 py-3">
+                                            <span className="font-medium">
+                                                Jumat
+                                            </span>
+                                            <span className="text-right text-village-muted">
+                                                08.00–11.30 WIB
+                                            </span>
+                                        </div>
+                                        <div className="flex items-center justify-between gap-4 py-3 text-village-muted">
+                                            <span className="font-medium">
+                                                Sabtu–Minggu
+                                            </span>
+                                            <span className="text-right">
+                                                Tutup (layanan online)
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-3 border-t border-village-border/60 pt-5">
+                                        <div className="flex items-center gap-3">
+                                            <span className="relative flex size-3">
+                                                <span className="absolute inline-flex size-full animate-ping rounded-full bg-village-success opacity-75" />
+                                                <span className="relative inline-flex size-3 rounded-full bg-village-success" />
+                                            </span>
+                                            <span className="text-sm font-semibold">
+                                                Layanan darurat 24/7 aktif
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </header>
+
+                    <section
+                        id="profil"
+                        aria-labelledby="profil-heading"
+                        className="relative z-20 -mt-8 scroll-mt-24 bg-village-canvas py-12"
+                    >
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <h2 id="profil-heading" className="sr-only">
+                                Profil singkat Desa Ngampungan
+                            </h2>
+                            <div className="grid grid-cols-2 gap-6 rounded-3xl border border-village-border bg-white p-6 shadow-village-soft md:grid-cols-4 md:gap-0 md:p-10">
+                                {villageStatistics.map((statistic, index) => (
+                                    <div
+                                        key={statistic.label}
+                                        className={`${index >= 2 ? 'border-t pt-6 md:border-t-0 md:pt-0' : ''} ${index > 0 ? 'md:border-l md:pl-8' : ''} border-village-border text-center md:text-left`}
+                                    >
+                                        <p className="text-xs font-semibold tracking-wide text-village-muted uppercase sm:text-sm">
+                                            {statistic.label}
+                                        </p>
+                                        <p className="mt-1 text-3xl font-bold text-village-primary-dark md:text-4xl">
+                                            {statistic.value}
+                                            {'suffix' in statistic &&
+                                                statistic.suffix && (
+                                                    <span className="text-xl text-village-accent md:text-2xl">
+                                                        {statistic.suffix}
+                                                    </span>
+                                                )}
+                                        </p>
+                                        <p className="mt-1 text-xs text-village-muted">
+                                            {statistic.description}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section
+                        id="layanan"
+                        aria-labelledby="layanan-heading"
+                        className="scroll-mt-20 bg-village-canvas py-16 md:py-24"
+                    >
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <div className="max-w-2xl">
+                                <h2
+                                    id="layanan-heading"
+                                    className="village-heading-2"
+                                >
+                                    Akses Layanan Cepat
+                                </h2>
+                                <p className="mt-4 text-lg leading-relaxed text-village-muted">
+                                    Pusat layanan mandiri warga Desa Ngampungan.
+                                    Ajukan surat, laporkan masalah, dan cek
+                                    status kependudukan dari rumah.
+                                </p>
+                            </div>
+
+                            <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
+                                <Link
+                                    href={portalHref}
+                                    className="group flex min-h-80 flex-col justify-between rounded-3xl bg-village-primary-light p-6 transition hover:-translate-y-1 hover:bg-[#c9ebd8] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-2"
+                                >
+                                    <div className="flex size-14 items-center justify-center rounded-2xl bg-village-primary text-white shadow-lg transition-transform group-hover:scale-105">
+                                        <FileText
+                                            aria-hidden="true"
+                                            className="size-6"
+                                        />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-2xl font-bold text-village-primary-dark">
+                                            Administrasi & Surat
+                                        </h3>
+                                        <p className="mt-2 text-village-primary-dark/80">
+                                            Pengajuan Surat Keterangan Usaha,
+                                            Surat Domisili, dan Pengantar RT/RW.
+                                        </p>
+                                    </div>
+                                </Link>
+
+                                {services.map((service) => {
+                                    const Icon = service.icon;
+
+                                    return (
+                                        <Link
+                                            key={service.title}
+                                            href={portalHref}
+                                            className="group flex min-h-64 flex-col justify-between rounded-3xl border border-village-border bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-village-primary hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                        >
+                                            <div
+                                                className={`flex size-12 items-center justify-center rounded-xl bg-village-surface-muted transition-colors ${service.iconClassName}`}
+                                            >
+                                                <Icon
+                                                    aria-hidden="true"
+                                                    className="size-5"
+                                                />
+                                            </div>
+                                            <div>
+                                                <h3 className="text-lg font-bold">
+                                                    {service.title}
+                                                </h3>
+                                                <p className="mt-2 text-sm leading-relaxed text-village-muted">
+                                                    {service.description}
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    );
+                                })}
+
+                                <Link
+                                    href={portalHref}
+                                    className="group flex items-center justify-between gap-6 rounded-3xl border border-village-border bg-white p-6 transition-colors hover:border-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-3"
+                                >
+                                    <div className="flex items-center gap-6">
+                                        <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-village-surface-muted">
+                                            <FolderOpen
+                                                aria-hidden="true"
+                                                className="size-7 text-village-primary"
+                                            />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-xl font-bold">
+                                                Transparansi Dana Desa
+                                            </h3>
+                                            <p className="mt-1 text-sm text-village-muted md:text-base">
+                                                Akses laporan realisasi APBDes
+                                                tahun berjalan secara terbuka.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="hidden size-6 shrink-0 text-village-primary transition-transform group-hover:translate-x-2 sm:block"
+                                    />
+                                </Link>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section
+                        id="berita"
+                        aria-labelledby="berita-heading"
+                        className="scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
+                    >
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                                <div className="max-w-xl">
+                                    <h2
+                                        id="berita-heading"
+                                        className="village-heading-2"
+                                    >
+                                        Kabar & Potensi Desa
+                                    </h2>
+                                    <p className="mt-4 text-lg text-village-muted">
+                                        Berita terkini, agenda warga, dan cerita
+                                        lokal dari Ngampungan.
+                                    </p>
+                                </div>
+                                <a
+                                    href="#berita"
+                                    className="inline-flex min-h-11 w-fit shrink-0 items-center justify-center rounded-xl border border-village-border px-5 py-3 font-semibold transition hover:border-village-ink hover:bg-white focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                >
+                                    Lihat Semua Kabar
+                                </a>
+                            </div>
+
+                            <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
+                                {newsItems.map((newsItem) => (
+                                    <article
+                                        key={newsItem.title}
+                                        className="group overflow-hidden rounded-3xl border border-village-border bg-white transition-shadow hover:shadow-village-soft"
+                                    >
+                                        <div className="relative aspect-4/3 overflow-hidden">
+                                            <img
+                                                src={newsItem.image}
+                                                alt={newsItem.alt}
+                                                loading="lazy"
+                                                className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                            />
+                                            <div
+                                                className={`absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold backdrop-blur ${newsItem.categoryClassName}`}
+                                            >
+                                                {newsItem.category}
+                                            </div>
+                                        </div>
+                                        <div className="p-6">
+                                            <div className="flex items-center gap-2 text-xs text-village-muted">
+                                                <CalendarDays
+                                                    aria-hidden="true"
+                                                    className="size-4"
+                                                />
+                                                <time>{newsItem.date}</time>
+                                            </div>
+                                            <h3 className="mt-3 text-xl leading-snug font-bold transition-colors group-hover:text-village-primary">
+                                                <a
+                                                    href="#berita"
+                                                    className="focus-visible:underline focus-visible:outline-none"
+                                                >
+                                                    {newsItem.title}
+                                                </a>
+                                            </h3>
+                                            <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-village-muted">
+                                                {newsItem.excerpt}
+                                            </p>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section
+                        id="kontak"
+                        aria-labelledby="kontak-heading"
+                        className="scroll-mt-20 border-t border-village-border bg-white py-16 md:py-24"
+                    >
+                        <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-5 lg:grid-cols-2 lg:px-12">
+                            <div>
+                                <div className="flex size-12 items-center justify-center rounded-xl bg-village-primary-light text-village-primary">
+                                    <MailOpen
+                                        aria-hidden="true"
+                                        className="size-6"
+                                    />
+                                </div>
+                                <h2
+                                    id="kontak-heading"
+                                    className="village-heading-2 mt-6"
+                                >
+                                    Punya Saran atau Pertanyaan?
+                                </h2>
+                                <p className="mt-4 text-lg leading-relaxed text-village-muted">
+                                    Tinggalkan pesan Anda. Kami senantiasa
+                                    berupaya meningkatkan pelayanan untuk
+                                    kesejahteraan masyarakat Desa Ngampungan.
+                                </p>
+                                <div className="mt-8 flex items-center gap-4 font-medium">
+                                    <PhoneCall
+                                        aria-hidden="true"
+                                        className="size-5 text-village-primary"
+                                    />
+                                    <span>
+                                        Call Center: 0812-3456-7890 (WA/Telp)
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="rounded-3xl border border-village-border bg-white p-6 shadow-village-soft md:p-8">
+                                <form
+                                    onSubmit={submitMessage}
+                                    className="flex flex-col gap-5"
+                                >
+                                    <div>
+                                        <label
+                                            htmlFor="nama"
+                                            className="text-sm font-semibold tracking-wide"
+                                        >
+                                            Nama Lengkap
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="nama"
+                                            name="nama"
+                                            required
+                                            className="mt-2 w-full rounded-xl border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                            placeholder="Masukkan nama Anda"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="kategori"
+                                            className="text-sm font-semibold tracking-wide"
+                                        >
+                                            Kategori Pesan
+                                        </label>
+                                        <select
+                                            id="kategori"
+                                            name="kategori"
+                                            className="mt-2 w-full rounded-xl border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                        >
+                                            <option>Pertanyaan Umum</option>
+                                            <option>Pengaduan Layanan</option>
+                                            <option>Usulan Pembangunan</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label
+                                            htmlFor="pesan"
+                                            className="text-sm font-semibold tracking-wide"
+                                        >
+                                            Isi Pesan
+                                        </label>
+                                        <textarea
+                                            id="pesan"
+                                            name="pesan"
+                                            rows={4}
+                                            required
+                                            className="mt-2 w-full resize-none rounded-xl border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                            placeholder="Tuliskan pesan Anda di sini..."
+                                        />
+                                    </div>
+                                    {isMessageSent && (
+                                        <p
+                                            role="status"
+                                            className="rounded-xl bg-village-primary-light px-4 py-3 text-sm text-village-primary-dark"
+                                        >
+                                            Simulasi berhasil. Pesan belum
+                                            dikirim ke server karena endpoint
+                                            kontak belum tersedia.
+                                        </p>
+                                    )}
+                                    <button
+                                        type="submit"
+                                        className={`${primaryButtonClassName} w-full`}
+                                    >
+                                        Kirim Pesan
+                                        <Send
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+
+                <footer className="bg-village-primary-dark pt-16 pb-8 text-white/80">
+                    <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
+                            <div className="flex flex-col gap-4">
+                                <div className="text-white">
+                                    <SiteLogo compact />
+                                </div>
+                                <p className="text-sm leading-relaxed text-village-primary-light/70">
+                                    Pusat informasi dan layanan digital resmi
+                                    Desa Ngampungan. Mewujudkan tata kelola desa
+                                    yang transparan, inovatif, dan berbudaya.
+                                </p>
+                            </div>
+
+                            <FooterLinks
+                                title="Pemerintahan"
+                                links={[
+                                    'Visi & Misi',
+                                    'Struktur Organisasi',
+                                    'Lembaga Desa',
+                                    'Transparansi Dana',
+                                ]}
+                            />
+                            <FooterLinks
+                                title="Layanan Warga"
+                                links={[
+                                    'Administrasi Kependudukan',
+                                    'Layanan Pertanahan',
+                                    'Perizinan Usaha (SKU)',
+                                    'Pengaduan Masyarakat',
+                                ]}
+                            />
+
+                            <div>
+                                <h2 className="text-sm font-bold tracking-widest text-white uppercase">
+                                    Kontak & Lokasi
+                                </h2>
+                                <ul className="mt-4 flex flex-col gap-3 text-sm">
+                                    <li className="flex items-start gap-2">
+                                        <MapPin
+                                            aria-hidden="true"
+                                            className="mt-0.5 size-4 shrink-0 text-village-accent"
+                                        />
+                                        <span>
+                                            Jl. Raya Ngampungan No. 1, Kec.
+                                            Bareng, Kab. Jombang, Jawa Timur
+                                            61474
+                                        </span>
+                                    </li>
+                                    <li className="flex items-center gap-2">
+                                        <Mail
+                                            aria-hidden="true"
+                                            className="size-4 shrink-0 text-village-accent"
+                                        />
+                                        <span>pemdes@ngampungan.desa.id</span>
+                                    </li>
+                                </ul>
+                                <div className="mt-6 flex gap-4">
+                                    <SocialLink
+                                        label="Facebook"
+                                        icon={Facebook}
+                                    />
+                                    <SocialLink
+                                        label="Instagram"
+                                        icon={Instagram}
+                                    />
+                                    <SocialLink
+                                        label="YouTube"
+                                        icon={Youtube}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 text-sm text-village-primary-light/50 md:flex-row">
+                            <p>
+                                © 2026 Pemerintah Desa Ngampungan. Hak cipta
+                                dilindungi.
+                            </p>
+                            <div className="flex gap-4">
+                                <a
+                                    href="#kontak"
+                                    className="transition-colors hover:text-white"
+                                >
+                                    Kebijakan Privasi
+                                </a>
+                                <a
+                                    href="#kontak"
+                                    className="transition-colors hover:text-white"
+                                >
+                                    Syarat Ketentuan
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
             </div>
         </>
+    );
+}
+
+function FooterLinks({ title, links }: { title: string; links: string[] }) {
+    return (
+        <div>
+            <h2 className="text-sm font-bold tracking-widest text-white uppercase">
+                {title}
+            </h2>
+            <ul className="mt-4 flex flex-col gap-3 text-sm">
+                {links.map((link) => (
+                    <li key={link}>
+                        <a
+                            href="#layanan"
+                            className="transition-colors hover:text-white"
+                        >
+                            {link}
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+
+function SocialLink({
+    label,
+    icon: Icon,
+}: {
+    label: string;
+    icon: LucideIcon;
+}) {
+    return (
+        <a
+            href="#kontak"
+            aria-label={label}
+            className="flex size-11 items-center justify-center rounded-full bg-white/5 text-white transition-colors hover:bg-village-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+        >
+            <Icon aria-hidden="true" className="size-5" />
+        </a>
     );
 }
