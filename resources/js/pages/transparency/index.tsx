@@ -1,6 +1,7 @@
 import { Head } from '@inertiajs/react';
 import {
     CalendarDays,
+    FileDown,
     FileText,
     Info,
     Landmark,
@@ -9,7 +10,10 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { PublicPageShell } from '@/components/public-page-shell';
-import { dummyApbdesSummary } from '@/lib/dummy-transparency';
+import {
+    dummyApbdesSummary,
+    dummyPublicDocuments,
+} from '@/lib/dummy-transparency';
 import type { ApbdesMetricKey } from '@/lib/dummy-transparency';
 
 const metricPresentation: Record<
@@ -250,21 +254,111 @@ export default function TransparencyIndex() {
                 aria-labelledby="public-documents-heading"
                 className="border-t border-village-border bg-village-surface-muted py-12 md:py-16"
             >
-                <div className="mx-auto max-w-[900px] px-5 text-center">
-                    <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-white text-village-primary shadow-sm">
-                        <FileText aria-hidden="true" className="size-6" />
-                    </span>
-                    <h2
-                        id="public-documents-heading"
-                        className="mt-5 text-2xl font-bold tracking-tight md:text-3xl"
-                    >
-                        Dokumen Publik Belum Tersedia
-                    </h2>
-                    <p className="mx-auto mt-4 max-w-2xl leading-7 text-village-muted">
-                        Dokumen APBDes dan laporan realisasi akan ditampilkan
-                        setelah berkas resmi selesai diverifikasi dan
-                        dipublikasikan.
-                    </p>
+                <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                    <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                        <div className="max-w-2xl">
+                            <p className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
+                                Arsip Transparansi
+                            </p>
+                            <h2
+                                id="public-documents-heading"
+                                className="mt-3 text-3xl font-bold tracking-tight md:text-4xl"
+                            >
+                                Dokumen Publik Terbaru
+                            </h2>
+                            <p className="mt-4 leading-7 text-village-muted">
+                                Contoh susunan dokumen anggaran yang kelak dapat
+                                diakses warga setelah berkas resmi diterbitkan.
+                            </p>
+                        </div>
+                        <p className="text-sm font-semibold text-village-muted">
+                            {dummyPublicDocuments.length} dokumen
+                        </p>
+                    </div>
+
+                    <div className="mt-8 flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
+                        <Info
+                            aria-hidden="true"
+                            className="mt-0.5 size-5 shrink-0"
+                        />
+                        <p>
+                            <strong>Metadata simulasi.</strong> File PDF belum
+                            disertakan sehingga dokumen belum dapat diunduh.
+                        </p>
+                    </div>
+
+                    <div className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                        {dummyPublicDocuments.map((document) => (
+                            <article
+                                key={document.id}
+                                className="flex h-full flex-col border border-village-border bg-white p-6 shadow-sm transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-village-primary/35 hover:shadow-lg"
+                            >
+                                <div className="flex items-start justify-between gap-4">
+                                    <span className="flex size-11 shrink-0 items-center justify-center bg-village-primary-light text-village-primary">
+                                        <FileText
+                                            aria-hidden="true"
+                                            className="size-5"
+                                        />
+                                    </span>
+                                    <span className="border border-[#efdcae] bg-[#fff8ea] px-2.5 py-1 text-[0.6875rem] font-bold tracking-[0.12em] text-[#755018] uppercase">
+                                        Simulasi
+                                    </span>
+                                </div>
+
+                                <p className="mt-6 text-xs font-bold tracking-[0.15em] text-village-primary uppercase">
+                                    {document.category}
+                                </p>
+                                <h3 className="mt-2 text-xl leading-7 font-bold text-village-ink">
+                                    {document.title}
+                                </h3>
+
+                                <dl className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 border-t border-village-border pt-5 text-sm">
+                                    <div>
+                                        <dt className="text-village-muted">
+                                            Tahun
+                                        </dt>
+                                        <dd className="mt-1 font-semibold text-village-ink">
+                                            {document.year}
+                                        </dd>
+                                    </div>
+                                    <div>
+                                        <dt className="text-village-muted">
+                                            Berkas
+                                        </dt>
+                                        <dd className="mt-1 font-semibold text-village-ink">
+                                            {document.format} ·{' '}
+                                            {document.fileSize}
+                                        </dd>
+                                    </div>
+                                    <div className="col-span-2">
+                                        <dt className="text-village-muted">
+                                            Tanggal dokumen
+                                        </dt>
+                                        <dd className="mt-1 font-semibold text-village-ink">
+                                            <time
+                                                dateTime={document.documentDate}
+                                            >
+                                                {document.documentDateLabel}
+                                            </time>
+                                        </dd>
+                                    </div>
+                                </dl>
+
+                                <button
+                                    type="button"
+                                    disabled
+                                    aria-disabled="true"
+                                    className="mt-6 inline-flex min-h-11 w-full cursor-not-allowed items-center justify-center gap-2 border border-village-border bg-village-surface-muted px-4 py-2.5 text-sm font-bold text-village-muted opacity-75"
+                                >
+                                    <FileDown
+                                        aria-hidden="true"
+                                        className="size-4"
+                                    />
+                                    File belum tersedia
+                                </button>
+                            </article>
+                        ))}
+                    </div>
                 </div>
             </section>
         </PublicPageShell>

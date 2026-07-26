@@ -56,14 +56,22 @@ test('the homepage exposes an accessible APBDes summary', function () {
         ->toContain('Belanja Desa')
         ->toContain('Pembiayaan Neto')
         ->toContain('Perkiraan SILPA')
-        ->toContain('allocations');
+        ->toContain('allocations')
+        ->toContain('dummyPublicDocuments')
+        ->toContain('Laporan Realisasi APBDes Semester I Tahun 2026')
+        ->toContain('APBDes Desa Ngampungan Tahun Anggaran 2026')
+        ->toContain('Peraturan Desa tentang Penetapan APBDes Tahun 2026');
 
     expect($transparencyPageSource)
         ->not->toBeFalse()
         ->toContain('Transparansi Desa')
         ->toContain('Alokasi per Bidang')
-        ->toContain('Dokumen Publik Belum Tersedia')
-        ->toContain('role="progressbar"');
+        ->toContain('Dokumen Publik Terbaru')
+        ->toContain('dummyPublicDocuments.map')
+        ->toContain('aria-disabled="true"')
+        ->toContain('File belum tersedia')
+        ->toContain('role="progressbar"')
+        ->not->toContain('Dokumen Publik Belum Tersedia');
 });
 
 test('the homepage presents news and announcements as distinct information sections', function () {
