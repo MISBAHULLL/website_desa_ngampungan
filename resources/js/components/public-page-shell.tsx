@@ -4,8 +4,9 @@ import type { ReactNode } from 'react';
 import { home } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as newsIndex } from '@/routes/news';
+import { index as transparencyIndex } from '@/routes/transparency';
 
-type PublicSection = 'news' | 'announcements';
+type PublicSection = 'news' | 'announcements' | 'transparency';
 
 export function PublicPageShell({
     activeSection,
@@ -83,6 +84,16 @@ export function PublicPageShell({
                             Pengumuman
                         </Link>
                         <Link
+                            href={transparencyIndex()}
+                            className={
+                                activeSection === 'transparency'
+                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
+                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
+                            }
+                        >
+                            Transparansi
+                        </Link>
+                        <Link
                             href={home()}
                             className="ml-2 inline-flex min-h-11 items-center gap-2 rounded-xl border border-village-border px-4 py-2.5 text-sm font-semibold transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
@@ -121,6 +132,12 @@ export function PublicPageShell({
                             className="hover:text-village-primary"
                         >
                             Pengumuman
+                        </Link>
+                        <Link
+                            href={transparencyIndex()}
+                            className="hover:text-village-primary"
+                        >
+                            Transparansi
                         </Link>
                     </div>
                 </div>

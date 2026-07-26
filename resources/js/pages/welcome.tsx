@@ -8,9 +8,10 @@ import {
     Clock3,
     Facebook,
     FileText,
-    FolderOpen,
     House,
+    Info,
     Instagram,
+    Landmark,
     LogIn,
     Mail,
     MailOpen,
@@ -21,7 +22,9 @@ import {
     Ruler,
     Send,
     Sprout,
+    TrendingUp,
     Users,
+    WalletCards,
     X,
     Youtube,
 } from 'lucide-react';
@@ -35,9 +38,12 @@ import {
     featuredDummyNewsArticle,
     latestDummyNewsArticles,
 } from '@/lib/dummy-public-content';
+import { dummyApbdesSummary } from '@/lib/dummy-transparency';
+import type { ApbdesMetricKey } from '@/lib/dummy-transparency';
 import { dashboard, login } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
+import { index as transparencyIndex } from '@/routes/transparency';
 
 type NavigationChild = {
     label: string;
@@ -144,7 +150,7 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'APBDes',
                 description: 'Ringkasan anggaran pendapatan dan belanja.',
-                href: '#layanan',
+                href: transparencyIndex.url(),
             },
             {
                 label: 'Statistik Penduduk',
@@ -294,6 +300,31 @@ const services: Service[] = [
         iconClassName: 'text-village-error group-hover:bg-red-50',
     },
 ];
+
+const apbdesMetricPresentation: Record<
+    ApbdesMetricKey,
+    {
+        icon: LucideIcon;
+        iconClassName: string;
+    }
+> = {
+    income: {
+        icon: TrendingUp,
+        iconClassName: 'bg-village-primary-light text-village-primary',
+    },
+    expense: {
+        icon: FileText,
+        iconClassName: 'bg-[#fff2cf] text-[#94620d]',
+    },
+    netFinancing: {
+        icon: WalletCards,
+        iconClassName: 'bg-[#e7f1fb] text-village-info',
+    },
+    estimatedSilpa: {
+        icon: Landmark,
+        iconClassName: 'bg-village-surface-muted text-village-primary-dark',
+    },
+};
 
 const primaryButtonClassName =
     'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-village-primary px-5 py-3 font-semibold text-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-village-primary-dark hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2';
@@ -1086,7 +1117,7 @@ export default function Welcome() {
                             <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
                                 <Link
                                     href={portalHref}
-                                    className="group flex min-h-80 flex-col justify-between rounded-3xl bg-village-primary-light p-6 transition hover:-translate-y-1 hover:bg-[#c9ebd8] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-2"
+                                    className="group flex min-h-80 flex-col justify-between rounded-3xl bg-village-primary-light p-6 transition hover:-translate-y-1 hover:bg-[#c9ebd8] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-2 lg:row-span-2"
                                 >
                                     <div className="flex size-14 items-center justify-center rounded-2xl bg-village-primary text-white shadow-lg transition-transform group-hover:scale-105">
                                         <FileText
@@ -1105,14 +1136,14 @@ export default function Welcome() {
                                     </div>
                                 </Link>
 
-                                {services.map((service) => {
+                                {services.map((service, index) => {
                                     const Icon = service.icon;
 
                                     return (
                                         <Link
                                             key={service.title}
                                             href={portalHref}
-                                            className="group flex min-h-64 flex-col justify-between rounded-3xl border border-village-border bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-village-primary hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                            className={`group flex min-h-52 flex-col justify-between rounded-3xl border border-village-border bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-village-primary hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none ${index === services.length - 1 ? 'md:col-span-2 lg:col-span-2' : ''}`}
                                         >
                                             <div
                                                 className={`flex size-12 items-center justify-center rounded-xl bg-village-surface-muted transition-colors ${service.iconClassName}`}
@@ -1133,33 +1164,172 @@ export default function Welcome() {
                                         </Link>
                                     );
                                 })}
+                            </div>
+                        </div>
+                    </section>
 
-                                <Link
-                                    href={portalHref}
-                                    className="group flex items-center justify-between gap-6 rounded-3xl border border-village-border bg-white p-6 transition-colors hover:border-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-3"
-                                >
-                                    <div className="flex items-center gap-6">
-                                        <div className="flex size-16 shrink-0 items-center justify-center rounded-full bg-village-surface-muted">
-                                            <FolderOpen
+                    <section
+                        id="transparansi"
+                        aria-labelledby="transparansi-heading"
+                        className="scroll-mt-48 bg-village-primary-dark py-16 md:py-24 xl:scroll-mt-32"
+                    >
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <div className="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 md:flex-row md:items-end">
+                                <div className="max-w-3xl">
+                                    <p className="text-xs font-bold tracking-[0.2em] text-village-accent uppercase">
+                                        Transparansi Anggaran
+                                    </p>
+                                    <h2
+                                        id="transparansi-heading"
+                                        className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
+                                    >
+                                        Ringkasan APBDes{' '}
+                                        {dummyApbdesSummary.year}
+                                    </h2>
+                                    <p className="mt-4 max-w-2xl text-base leading-7 text-white/70 md:text-lg">
+                                        Gambaran singkat rencana pendapatan,
+                                        belanja, dan pembiayaan Desa Ngampungan
+                                        pada tahun anggaran berjalan.
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-col gap-3 md:items-end">
+                                    <div className="flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
+                                        <span
+                                            aria-hidden="true"
+                                            className="size-2 rounded-full bg-village-accent"
+                                        />
+                                        Tahun Anggaran{' '}
+                                        <time
+                                            dateTime={dummyApbdesSummary.year}
+                                        >
+                                            {dummyApbdesSummary.year}
+                                        </time>
+                                    </div>
+                                    <Link
+                                        href={transparencyIndex()}
+                                        prefetch
+                                        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-village-primary-dark transition hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:ring-offset-2 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none"
+                                    >
+                                        Lihat Transparansi Lengkap
+                                        <ArrowRight
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </Link>
+                                </div>
+                            </div>
+
+                            <div className="mt-10 grid gap-5 lg:grid-cols-12">
+                                <dl className="grid gap-4 sm:grid-cols-2 lg:col-span-8">
+                                    {dummyApbdesSummary.metrics.map(
+                                        (metric) => {
+                                            const presentation =
+                                                apbdesMetricPresentation[
+                                                    metric.key
+                                                ];
+                                            const MetricIcon =
+                                                presentation.icon;
+
+                                            return (
+                                                <div
+                                                    key={metric.label}
+                                                    className="border-t-4 border-village-accent bg-white p-6 shadow-sm sm:p-7"
+                                                >
+                                                    <div className="flex items-start justify-between gap-5">
+                                                        <dt className="text-sm font-bold tracking-wide text-village-muted uppercase">
+                                                            {metric.label}
+                                                        </dt>
+                                                        <span
+                                                            className={`flex size-11 shrink-0 items-center justify-center rounded-full ${presentation.iconClassName}`}
+                                                        >
+                                                            <MetricIcon
+                                                                aria-hidden="true"
+                                                                className="size-5"
+                                                            />
+                                                        </span>
+                                                    </div>
+                                                    <dd className="mt-6 text-3xl font-bold tracking-tight text-village-ink sm:text-4xl">
+                                                        {metric.value}
+                                                    </dd>
+                                                    <p className="mt-3 text-sm leading-6 text-village-muted">
+                                                        {metric.description}
+                                                    </p>
+                                                </div>
+                                            );
+                                        },
+                                    )}
+                                </dl>
+
+                                <aside className="flex flex-col justify-between bg-village-primary-light p-6 sm:p-8 lg:col-span-4">
+                                    <div>
+                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                            Realisasi Belanja
+                                        </p>
+                                        <p className="mt-4 text-5xl font-bold tracking-tight text-village-primary-dark">
+                                            {
+                                                dummyApbdesSummary.realizationPercentage
+                                            }
+                                            <span className="text-2xl">%</span>
+                                        </p>
+                                        <p className="mt-4 leading-7 text-village-primary-dark/75">
+                                            {dummyApbdesSummary.realizedAmount}{' '}
+                                            telah terealisasi dari pagu{' '}
+                                            {dummyApbdesSummary.budgetAmount}.
+                                        </p>
+
+                                        <div
+                                            role="progressbar"
+                                            aria-label={`Realisasi belanja ${dummyApbdesSummary.realizationPercentage} persen`}
+                                            aria-valuemin={0}
+                                            aria-valuemax={100}
+                                            aria-valuenow={
+                                                dummyApbdesSummary.realizationPercentage
+                                            }
+                                            className="mt-7 h-3 overflow-hidden rounded-full bg-white/80"
+                                        >
+                                            <span
                                                 aria-hidden="true"
-                                                className="size-7 text-village-primary"
+                                                className="block h-full rounded-full bg-village-primary"
+                                                style={{
+                                                    width: `${dummyApbdesSummary.realizationPercentage}%`,
+                                                }}
                                             />
                                         </div>
-                                        <div>
-                                            <h3 className="text-xl font-bold">
-                                                Transparansi Dana Desa
-                                            </h3>
-                                            <p className="mt-1 text-sm text-village-muted md:text-base">
-                                                Akses laporan realisasi APBDes
-                                                tahun berjalan secara terbuka.
-                                            </p>
-                                        </div>
                                     </div>
-                                    <ArrowRight
-                                        aria-hidden="true"
-                                        className="hidden size-6 shrink-0 text-village-primary transition-transform group-hover:translate-x-2 sm:block"
-                                    />
-                                </Link>
+
+                                    <div className="mt-10 border-t border-village-primary/20 pt-5">
+                                        <p className="text-xs font-semibold tracking-wide text-village-primary-dark/60 uppercase">
+                                            Pembaruan terakhir
+                                        </p>
+                                        <p className="mt-1 font-bold text-village-primary-dark">
+                                            <time
+                                                dateTime={
+                                                    dummyApbdesSummary.updatedAt
+                                                }
+                                            >
+                                                {
+                                                    dummyApbdesSummary.updatedLabel
+                                                }
+                                            </time>
+                                        </p>
+                                    </div>
+                                </aside>
+                            </div>
+
+                            <div className="mt-5 flex items-start gap-3 border border-white/15 bg-white/10 p-4 text-sm leading-6 text-white/75">
+                                <Info
+                                    aria-hidden="true"
+                                    className="mt-0.5 size-5 shrink-0 text-village-accent"
+                                />
+                                <p>
+                                    <strong className="text-white">
+                                        Data simulasi tampilan.
+                                    </strong>{' '}
+                                    Angka akan diganti setelah data APBDes
+                                    diverifikasi oleh Pemerintah Desa
+                                    Ngampungan.
+                                </p>
                             </div>
                         </div>
                     </section>

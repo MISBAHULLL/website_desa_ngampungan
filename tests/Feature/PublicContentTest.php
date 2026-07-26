@@ -26,6 +26,46 @@ test('the public announcement index renders its Inertia page', function () {
             ->component('announcements/index'));
 });
 
+test('the public transparency index renders its Inertia page', function () {
+    $this->get(route('transparency.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('transparency/index'));
+});
+
+test('the homepage exposes an accessible APBDes summary', function () {
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+    $transparencyDataSource = file_get_contents(resource_path('js/lib/dummy-transparency.ts'));
+    $transparencyPageSource = file_get_contents(resource_path('js/pages/transparency/index.tsx'));
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('id="transparansi"')
+        ->toContain('dummyApbdesSummary')
+        ->toContain('Ringkasan APBDes')
+        ->toContain('Lihat Transparansi Lengkap')
+        ->toContain('transparencyIndex()')
+        ->toContain('role="progressbar"')
+        ->toContain('aria-valuenow')
+        ->toContain('Data simulasi tampilan')
+        ->not->toContain('Transparansi Dana Desa');
+
+    expect($transparencyDataSource)
+        ->not->toBeFalse()
+        ->toContain('Pendapatan Desa')
+        ->toContain('Belanja Desa')
+        ->toContain('Pembiayaan Neto')
+        ->toContain('Perkiraan SILPA')
+        ->toContain('allocations');
+
+    expect($transparencyPageSource)
+        ->not->toBeFalse()
+        ->toContain('Transparansi Desa')
+        ->toContain('Alokasi per Bidang')
+        ->toContain('Dokumen Publik Belum Tersedia')
+        ->toContain('role="progressbar"');
+});
+
 test('the homepage presents news and announcements as distinct information sections', function () {
     $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
     $newsIndexSource = file_get_contents(resource_path('js/pages/news/index.tsx'));
