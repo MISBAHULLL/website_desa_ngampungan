@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\NewsController;
+use App\Http\Controllers\Public\PotentialController;
 use App\Http\Controllers\Public\TransparencyController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,6 +14,11 @@ Route::get('pengumuman', [AnnouncementController::class, 'index'])
     ->name('announcements.index');
 Route::get('transparansi', TransparencyController::class)
     ->name('transparency.index');
+Route::get('potensi', [PotentialController::class, 'index'])
+    ->name('potentials.index');
+Route::get('potensi/{slug}', [PotentialController::class, 'show'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('potentials.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');

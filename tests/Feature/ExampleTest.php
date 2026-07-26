@@ -63,7 +63,9 @@ test('the public navigation contains the PRD menu hierarchy', function () {
         'UMKM',
         'Pertanian',
         'Wisata',
-        'Potensi Lainnya',
+        'Budaya',
+        'Kuliner',
+        'Jasa',
         'Informasi Pelayanan',
         'Persyaratan Surat',
         'Pengajuan Surat',
@@ -74,6 +76,45 @@ test('the public navigation contains the PRD menu hierarchy', function () {
     foreach ($expectedMenus as $expectedMenu) {
         expect($navigationSource)->toContain("label: '{$expectedMenu}'");
     }
+});
+
+test('the homepage exposes the PRD village potential categories', function () {
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+    $potentialDataSource = file_get_contents(resource_path('js/lib/dummy-village-potentials.ts'));
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('id="potensi"')
+        ->toContain('role="tablist"')
+        ->toContain('role="tabpanel"')
+        ->toContain('aria-selected')
+        ->toContain('activePotentialCategory')
+        ->toContain('VillagePotentialCarousel')
+        ->toContain('.slice(0, 3)')
+        ->toContain('Temukan usaha dan potensi warga')
+        ->toContain('Buka Direktori')
+        ->toContain('Lihat semua')
+        ->toContain('Data simulasi frontend')
+        ->toContain("query: { category: 'umkm' }")
+        ->toContain("query: { category: 'services' }")
+        ->not->toContain("label: 'Potensi Lainnya'");
+
+    expect($potentialDataSource)
+        ->not->toBeFalse()
+        ->toContain("label: 'UMKM'")
+        ->toContain("label: 'Pertanian'")
+        ->toContain("label: 'Wisata'")
+        ->toContain("label: 'Budaya'")
+        ->toContain("label: 'Kuliner'")
+        ->toContain("label: 'Jasa'")
+        ->toContain('dummyVillagePotentialEntries')
+        ->toContain('Anyaman Bambu Maju Karya')
+        ->toContain('Kriya Kayu Ngampungan')
+        ->toContain('Kelompok Tani Maju Makmur')
+        ->toContain('Keripik Pisang Mbok Yati')
+        ->toContain("image: 'https://images.unsplash.com/")
+        ->toContain('findDummyVillagePotentialEntry')
+        ->toContain('satisfies readonly VillagePotentialEntry[]');
 });
 
 test('the hero uses actionable PRD calls to action', function () {

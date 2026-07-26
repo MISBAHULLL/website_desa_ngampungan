@@ -4,9 +4,10 @@ import type { ReactNode } from 'react';
 import { home } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as newsIndex } from '@/routes/news';
+import { index as potentialsIndex } from '@/routes/potentials';
 import { index as transparencyIndex } from '@/routes/transparency';
 
-type PublicSection = 'news' | 'announcements' | 'transparency';
+type PublicSection = 'news' | 'announcements' | 'transparency' | 'potentials';
 
 export function PublicPageShell({
     activeSection,
@@ -61,7 +62,7 @@ export function PublicPageShell({
 
                     <nav
                         aria-label="Navigasi halaman publik"
-                        className="hidden items-center gap-2 md:flex"
+                        className="hidden items-center gap-2 lg:flex"
                     >
                         <Link
                             href={newsIndex()}
@@ -94,6 +95,16 @@ export function PublicPageShell({
                             Transparansi
                         </Link>
                         <Link
+                            href={potentialsIndex()}
+                            className={
+                                activeSection === 'potentials'
+                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
+                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
+                            }
+                        >
+                            Potensi Desa
+                        </Link>
+                        <Link
                             href={home()}
                             className="ml-2 inline-flex min-h-11 items-center gap-2 rounded-xl border border-village-border px-4 py-2.5 text-sm font-semibold transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
@@ -105,7 +116,7 @@ export function PublicPageShell({
                     <Link
                         href={home()}
                         aria-label="Kembali ke Beranda"
-                        className="flex size-11 items-center justify-center rounded-xl border border-village-border text-village-primary transition hover:border-village-primary hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:hidden"
+                        className="flex size-11 items-center justify-center rounded-xl border border-village-border text-village-primary transition hover:border-village-primary hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
                     >
                         <ArrowLeft aria-hidden="true" className="size-4" />
                     </Link>
@@ -138,6 +149,12 @@ export function PublicPageShell({
                             className="hover:text-village-primary"
                         >
                             Transparansi
+                        </Link>
+                        <Link
+                            href={potentialsIndex()}
+                            className="hover:text-village-primary"
+                        >
+                            Potensi Desa
                         </Link>
                     </div>
                 </div>

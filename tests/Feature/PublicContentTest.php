@@ -33,6 +33,77 @@ test('the public transparency index renders its Inertia page', function () {
             ->component('transparency/index'));
 });
 
+test('the public potential directory accepts a supported category filter', function () {
+    $this->get(route('potentials.index', ['category' => 'umkm']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('potentials/index')
+            ->where('initialCategory', 'umkm'));
+});
+
+test('the public potential directory falls back to all for an unknown category', function () {
+    $this->get(route('potentials.index', ['category' => 'unknown']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('potentials/index')
+            ->where('initialCategory', 'all'));
+});
+
+test('the public potential detail passes the dummy slug to its Inertia page', function () {
+    $slug = 'anyaman-bambu-maju-karya';
+
+    $this->get(route('potentials.show', $slug))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('potentials/show')
+            ->where('slug', $slug));
+});
+
+test('the village potential directory exposes listing and profile information', function () {
+    $indexSource = file_get_contents(resource_path('js/pages/potentials/index.tsx'));
+    $showSource = file_get_contents(resource_path('js/pages/potentials/show.tsx'));
+    $cardSource = file_get_contents(resource_path('js/components/village-potential-card.tsx'));
+    $carouselSource = file_get_contents(resource_path('js/components/village-potential-carousel.tsx'));
+
+    expect($indexSource)
+        ->not->toBeFalse()
+        ->toContain('Direktori Potensi Desa')
+        ->toContain('Cari nama, produk, atau pengelola')
+        ->toContain('villagePotentialCategories.map')
+        ->toContain('VillagePotentialCard')
+        ->toContain('initialCategory');
+
+    expect($showSource)
+        ->not->toBeFalse()
+        ->toContain('Informasi pengelola')
+        ->toContain('Produk dan Layanan')
+        ->toContain('Peta lokasi usaha')
+        ->toContain('Peta simulasi')
+        ->toContain('Kontak belum aktif')
+        ->toContain('aria-disabled="true"');
+
+    expect($cardSource)
+        ->not->toBeFalse()
+        ->toContain('potentialShow(entry.slug)')
+        ->toContain('src={entry.image}')
+        ->toContain('loading="lazy"')
+        ->toContain('onError={() => setIsImageUnavailable(true)}')
+        ->toContain('Foto ilustrasi')
+        ->toContain('Lihat profil')
+        ->toContain('viewTransition');
+
+    expect($carouselSource)
+        ->not->toBeFalse()
+        ->toContain("type CarouselPosition = 'active' | 'previous' | 'next' | 'hidden'")
+        ->toContain('perspective-[1400px]')
+        ->toContain('translateX(-52%) scale(0.78) rotateY(10deg)')
+        ->toContain('aria-roledescription="carousel"')
+        ->toContain('onPointerDown={handlePointerDown}')
+        ->toContain("event.key === 'ArrowRight'")
+        ->toContain('Kartu potensi berikutnya')
+        ->toContain('potentialShow(entry.slug)');
+});
+
 test('the homepage exposes an accessible APBDes summary', function () {
     $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
     $transparencyDataSource = file_get_contents(resource_path('js/lib/dummy-transparency.ts'));

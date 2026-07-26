@@ -33,6 +33,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import { PublicAnnouncementCard } from '@/components/public-announcement-card';
 import { PublicNewsCard } from '@/components/public-news-card';
+import { VillagePotentialCarousel } from '@/components/village-potential-carousel';
 import {
     activeDummyAnnouncements,
     featuredDummyNewsArticle,
@@ -40,9 +41,16 @@ import {
 } from '@/lib/dummy-public-content';
 import { dummyApbdesSummary } from '@/lib/dummy-transparency';
 import type { ApbdesMetricKey } from '@/lib/dummy-transparency';
+import {
+    findVillagePotentialCategory,
+    getDummyVillagePotentialEntries,
+    villagePotentialCategories,
+} from '@/lib/dummy-village-potentials';
+import type { VillagePotentialKey } from '@/lib/dummy-village-potentials';
 import { dashboard, login } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
+import { index as potentialsIndex } from '@/routes/potentials';
 import { index as transparencyIndex } from '@/routes/transparency';
 
 type NavigationChild = {
@@ -176,22 +184,44 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'UMKM',
                 description: 'Produk dan usaha unggulan warga.',
-                href: '#profil',
+                href: potentialsIndex.url({
+                    query: { category: 'umkm' },
+                }),
             },
             {
                 label: 'Pertanian',
                 description: 'Komoditas dan kegiatan pertanian desa.',
-                href: '#profil',
+                href: potentialsIndex.url({
+                    query: { category: 'agriculture' },
+                }),
             },
             {
                 label: 'Wisata',
                 description: 'Destinasi dan daya tarik lokal.',
-                href: '#profil',
+                href: potentialsIndex.url({
+                    query: { category: 'tourism' },
+                }),
             },
             {
-                label: 'Potensi Lainnya',
-                description: 'Sumber daya unggulan lainnya.',
-                href: '#profil',
+                label: 'Budaya',
+                description: 'Tradisi dan kesenian masyarakat desa.',
+                href: potentialsIndex.url({
+                    query: { category: 'culture' },
+                }),
+            },
+            {
+                label: 'Kuliner',
+                description: 'Produk pangan dan cita rasa lokal.',
+                href: potentialsIndex.url({
+                    query: { category: 'culinary' },
+                }),
+            },
+            {
+                label: 'Jasa',
+                description: 'Keterampilan dan layanan warga.',
+                href: potentialsIndex.url({
+                    query: { category: 'services' },
+                }),
             },
         ],
     },
@@ -610,8 +640,16 @@ export default function Welcome() {
     const [isMessageSent, setIsMessageSent] = useState(false);
     const [isFeaturedImageUnavailable, setIsFeaturedImageUnavailable] =
         useState(false);
+    const [activePotentialCategory, setActivePotentialCategory] =
+        useState<VillagePotentialKey>('umkm');
     const featuredImageRef = useRef<HTMLImageElement>(null);
     const portalHref = auth.user ? dashboard() : login();
+    const activePotentialMetadata = findVillagePotentialCategory(
+        activePotentialCategory,
+    );
+    const activePotentialEntries = getDummyVillagePotentialEntries(
+        activePotentialCategory,
+    ).slice(0, 3);
 
     const closeMobileNavigation = () => {
         setIsMobileMenuOpen(false);
@@ -1329,6 +1367,137 @@ export default function Welcome() {
                                     Angka akan diganti setelah data APBDes
                                     diverifikasi oleh Pemerintah Desa
                                     Ngampungan.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section
+                        id="potensi"
+                        aria-labelledby="potensi-heading"
+                        className="scroll-mt-48 overflow-hidden border-b border-village-border bg-white py-16 md:py-24 xl:scroll-mt-32"
+                    >
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                                <div className="max-w-3xl">
+                                    <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                                        Direktori Potensi Desa
+                                    </p>
+                                    <h2
+                                        id="potensi-heading"
+                                        className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+                                    >
+                                        Temukan usaha dan potensi warga
+                                    </h2>
+                                    <p className="mt-4 max-w-2xl text-base leading-7 text-village-muted md:text-lg">
+                                        Pilih kategori untuk melihat profil,
+                                        produk, pengelola, dan lokasi potensi
+                                        yang tersedia.
+                                    </p>
+                                </div>
+
+                                <Link
+                                    href={potentialsIndex()}
+                                    prefetch
+                                    className="inline-flex min-h-11 w-fit items-center gap-2 border border-village-border bg-village-canvas px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                >
+                                    Buka Direktori
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-4"
+                                    />
+                                </Link>
+                            </div>
+
+                            <div
+                                role="tablist"
+                                aria-label="Filter kategori potensi desa"
+                                className="mt-7 flex gap-2 overflow-x-auto pb-2"
+                            >
+                                {villagePotentialCategories.map((category) => (
+                                    <button
+                                        key={category.key}
+                                        type="button"
+                                        role="tab"
+                                        id={`potential-tab-${category.key}`}
+                                        aria-controls="homepage-potential-panel"
+                                        aria-selected={
+                                            activePotentialCategory ===
+                                            category.key
+                                        }
+                                        onClick={() =>
+                                            setActivePotentialCategory(
+                                                category.key,
+                                            )
+                                        }
+                                        className={
+                                            activePotentialCategory ===
+                                            category.key
+                                                ? 'min-h-11 shrink-0 bg-village-primary px-4 py-2.5 text-sm font-bold text-white'
+                                                : 'min-h-11 shrink-0 border border-village-border bg-village-canvas px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none'
+                                        }
+                                    >
+                                        {category.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div
+                                id="homepage-potential-panel"
+                                role="tabpanel"
+                                aria-labelledby={`potential-tab-${activePotentialCategory}`}
+                                className="mt-7"
+                            >
+                                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+                                    <div>
+                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                            {activePotentialMetadata.eyebrow}
+                                        </p>
+                                        <h3 className="mt-2 text-2xl font-bold tracking-tight">
+                                            {activePotentialMetadata.label}
+                                        </h3>
+                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-village-muted">
+                                            {
+                                                activePotentialMetadata.description
+                                            }
+                                        </p>
+                                    </div>
+                                    <Link
+                                        href={potentialsIndex({
+                                            query: {
+                                                category:
+                                                    activePotentialCategory,
+                                            },
+                                        })}
+                                        prefetch
+                                        className="inline-flex min-h-11 w-fit items-center gap-2 text-sm font-bold text-village-primary transition hover:text-village-primary-dark focus-visible:underline focus-visible:outline-none"
+                                    >
+                                        Lihat semua{' '}
+                                        {activePotentialMetadata.label}
+                                        <ArrowRight
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </Link>
+                                </div>
+
+                                <VillagePotentialCarousel
+                                    key={activePotentialCategory}
+                                    entries={activePotentialEntries}
+                                    label={`Potensi kategori ${activePotentialMetadata.label}`}
+                                />
+                            </div>
+
+                            <div className="mt-7 flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
+                                <Info
+                                    aria-hidden="true"
+                                    className="mt-0.5 size-5 shrink-0"
+                                />
+                                <p>
+                                    <strong>Data simulasi frontend.</strong>{' '}
+                                    Profil, produk, pengelola, kontak, dan
+                                    lokasi akan diganti setelah data resmi
+                                    diverifikasi.
                                 </p>
                             </div>
                         </div>
