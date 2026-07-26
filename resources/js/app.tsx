@@ -18,6 +18,7 @@ createInertiaApp({
             case name.startsWith('transparency/'):
             case name.startsWith('potentials/'):
             case name.startsWith('profile/'):
+            case name.startsWith('government/'):
                 return null;
             case name.startsWith('auth/'):
                 return AuthLayout;

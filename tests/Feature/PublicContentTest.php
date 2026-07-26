@@ -81,6 +81,95 @@ test('the village profile page exposes profile sections, breadcrumb, and SEO met
         ->toContain("name.startsWith('profile/')");
 });
 
+test('the public village government renders its Inertia page with a canonical URL', function () {
+    $this->get(route('government.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('government/index')
+            ->where('canonicalUrl', route('government.index')));
+});
+
+test('the public village official detail passes its slug and canonical URL', function () {
+    $slug = 'kusnadi-s-sos';
+
+    $this->get(route('government.officials.show', $slug))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('government/show')
+            ->where('slug', $slug)
+            ->where('canonicalUrl', route('government.officials.show', $slug)));
+});
+
+test('the village government module exposes organization, officials, institutions, and detail profiles', function () {
+    $governmentIndexSource = file_get_contents(resource_path('js/pages/government/index.tsx'));
+    $governmentShowSource = file_get_contents(resource_path('js/pages/government/show.tsx'));
+    $governmentDataSource = file_get_contents(resource_path('js/lib/dummy-village-government.ts'));
+    $organizationChartSource = file_get_contents(resource_path('js/components/village-organization-chart.tsx'));
+    $officialCardSource = file_get_contents(resource_path('js/components/village-official-card.tsx'));
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+    $appSource = file_get_contents(resource_path('js/app.tsx'));
+
+    expect($governmentIndexSource)
+        ->not->toBeFalse()
+        ->toContain('head-key="canonical"')
+        ->toContain('aria-label="Breadcrumb"')
+        ->toContain('id="kepala-desa"')
+        ->toContain('id="struktur-organisasi"')
+        ->toContain('id="perangkat-desa"')
+        ->toContain('id="lembaga-desa"')
+        ->toContain('VillageOrganizationChart')
+        ->toContain('VillageOfficialCard')
+        ->toContain('officialFilters.map')
+        ->toContain('dummyVillageInstitutions.map')
+        ->toContain('Data simulasi frontend');
+
+    expect($governmentShowSource)
+        ->not->toBeFalse()
+        ->toContain('findDummyVillageOfficial')
+        ->toContain('Profil perangkat tidak ditemukan')
+        ->toContain('Tugas dan Tanggung Jawab')
+        ->toContain('Pendidikan dan Riwayat Jabatan')
+        ->toContain('Fokus Pelayanan')
+        ->toContain('Perangkat Terkait')
+        ->toContain('<title>{`${official.name} - ${official.position}`}</title>')
+        ->toContain('head-key="canonical"');
+
+    expect($governmentDataSource)
+        ->not->toBeFalse()
+        ->toContain('dummyVillageOfficials')
+        ->toContain('dummyVillageInstitutions')
+        ->toContain("position: 'Kepala Desa'")
+        ->toContain("position: 'Sekretaris Desa'")
+        ->toContain("position: 'Kasi Pemerintahan'")
+        ->toContain("acronym: 'BPD'")
+        ->toContain("acronym: 'PKK'")
+        ->toContain('findDummyVillageOfficial');
+
+    expect($organizationChartSource)
+        ->not->toBeFalse()
+        ->toContain('Bagan struktur organisasi Pemerintah Desa Ngampungan')
+        ->toContain('officialShow(official.slug)')
+        ->toContain('Pelaksana Kewilayahan');
+
+    expect($officialCardSource)
+        ->not->toBeFalse()
+        ->toContain('officialShow(official.slug)')
+        ->toContain('Lihat profil')
+        ->toContain('Data simulasi');
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('governmentIndex.url()')
+        ->toContain('#kepala-desa')
+        ->toContain('#struktur-organisasi')
+        ->toContain('#perangkat-desa')
+        ->toContain('#lembaga-desa');
+
+    expect($appSource)
+        ->not->toBeFalse()
+        ->toContain("name.startsWith('government/')");
+});
+
 test('the public news index renders its Inertia page', function () {
     $this->get(route('news.index'))
         ->assertOk()

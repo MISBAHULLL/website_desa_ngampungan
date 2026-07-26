@@ -3,13 +3,19 @@ import { ArrowLeft, MapPin, PhoneCall } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { home } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
+import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
 import { index as transparencyIndex } from '@/routes/transparency';
 
 type PublicSection =
-    'profile' | 'news' | 'announcements' | 'transparency' | 'potentials';
+    | 'government'
+    | 'profile'
+    | 'news'
+    | 'announcements'
+    | 'transparency'
+    | 'potentials';
 
 export function PublicPageShell({
     activeSection,
@@ -75,6 +81,16 @@ export function PublicPageShell({
                             }
                         >
                             Profil
+                        </Link>
+                        <Link
+                            href={governmentIndex()}
+                            className={
+                                activeSection === 'government'
+                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
+                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
+                            }
+                        >
+                            Pemerintahan
                         </Link>
                         <Link
                             href={newsIndex()}
@@ -143,12 +159,18 @@ export function PublicPageShell({
                         © 2026 Pemerintah Desa Ngampungan. Data konten masih
                         berupa dummy frontend.
                     </p>
-                    <div className="flex items-center gap-5">
+                    <div className="flex flex-wrap items-center gap-5">
                         <Link
                             href={villageProfileIndex()}
                             className="hover:text-village-primary"
                         >
                             Profil
+                        </Link>
+                        <Link
+                            href={governmentIndex()}
+                            className="hover:text-village-primary"
+                        >
+                            Pemerintahan
                         </Link>
                         <Link
                             href={newsIndex()}

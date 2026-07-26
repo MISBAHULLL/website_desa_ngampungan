@@ -52,6 +52,7 @@ import {
 import type { VillagePotentialKey } from '@/lib/dummy-village-potentials';
 import { dashboard, login } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
+import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
@@ -110,22 +111,22 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'Kepala Desa',
                 description: 'Profil pimpinan Desa Ngampungan.',
-                href: '#sambutan-kepala-desa',
+                href: `${governmentIndex.url()}#kepala-desa`,
             },
             {
                 label: 'Struktur Organisasi',
                 description: 'Susunan pemerintahan desa.',
-                href: '#profil',
+                href: `${governmentIndex.url()}#struktur-organisasi`,
             },
             {
                 label: 'Perangkat Desa',
                 description: 'Daftar aparatur pemerintah desa.',
-                href: '#profil',
+                href: `${governmentIndex.url()}#perangkat-desa`,
             },
             {
                 label: 'Lembaga Desa',
                 description: 'Lembaga kemasyarakatan desa.',
-                href: '#profil',
+                href: `${governmentIndex.url()}#lembaga-desa`,
             },
         ],
     },
