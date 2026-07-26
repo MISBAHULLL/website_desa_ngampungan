@@ -1,6 +1,7 @@
 import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
+    BellRing,
     CalendarDays,
     ChevronDown,
     CircleAlert,
@@ -8,13 +9,16 @@ import {
     Facebook,
     FileText,
     FolderOpen,
+    House,
     Instagram,
     LogIn,
     Mail,
     MailOpen,
     MapPin,
     Menu,
+    Newspaper,
     PhoneCall,
+    Ruler,
     Send,
     Sprout,
     Users,
@@ -22,9 +26,18 @@ import {
     Youtube,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { PublicAnnouncementCard } from '@/components/public-announcement-card';
+import { PublicNewsCard } from '@/components/public-news-card';
+import {
+    activeDummyAnnouncements,
+    featuredDummyNewsArticle,
+    latestDummyNewsArticles,
+} from '@/lib/dummy-public-content';
 import { dashboard, login } from '@/routes';
+import { index as announcementsIndex } from '@/routes/announcements';
+import { index as newsIndex, show as newsShow } from '@/routes/news';
 
 type NavigationChild = {
     label: string;
@@ -79,7 +92,7 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'Kepala Desa',
                 description: 'Profil pimpinan Desa Ngampungan.',
-                href: '#profil',
+                href: '#sambutan-kepala-desa',
             },
             {
                 label: 'Struktur Organisasi',
@@ -110,7 +123,7 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'Pengumuman',
                 description: 'Informasi resmi untuk masyarakat.',
-                href: '#berita',
+                href: '#pengumuman',
             },
             {
                 label: 'Agenda',
@@ -210,29 +223,46 @@ const navigationItems: NavigationItem[] = [
     { type: 'link', label: 'Kontak', href: '#kontak' },
 ];
 
-const villageStatistics = [
+const dummyVillageStatistics = [
     {
-        label: 'Populasi',
+        label: 'Total Penduduk',
         value: '3.420',
-        suffix: '+',
-        description: 'Jiwa terdaftar',
+        suffix: 'jiwa',
+        description: 'Penduduk yang tercatat dalam administrasi desa.',
+        icon: Users,
+        index: '01',
+        accentClassName: 'bg-village-primary',
+        iconClassName: 'bg-village-primary-light text-village-primary',
+    },
+    {
+        label: 'Jumlah KK',
+        value: '1.120',
+        suffix: 'KK',
+        description: 'Kepala keluarga yang terdata.',
+        icon: House,
+        index: '02',
+        accentClassName: 'bg-village-accent',
+        iconClassName: 'bg-[#fff2cf] text-[#94620d]',
+    },
+    {
+        label: 'Jumlah Dusun',
+        value: '4',
+        suffix: 'dusun',
+        description: 'Wilayah administratif tingkat dusun.',
+        icon: MapPin,
+        index: '03',
+        accentClassName: 'bg-village-info',
+        iconClassName: 'bg-[#e7f1fb] text-village-info',
     },
     {
         label: 'Luas Wilayah',
         value: '450',
         suffix: 'ha',
-        description: 'Sebagian besar persawahan',
-    },
-    {
-        label: 'Prestasi',
-        value: '12',
-        description: 'Penghargaan tingkat kabupaten',
-    },
-    {
-        label: 'UMKM',
-        value: '85',
-        suffix: '+',
-        description: 'Usaha warga aktif',
+        description: 'Total luas wilayah administratif desa.',
+        icon: Ruler,
+        index: '04',
+        accentClassName: 'bg-village-primary-dark',
+        iconClassName: 'bg-village-primary-light text-village-primary-dark',
     },
 ] as const;
 
@@ -264,39 +294,6 @@ const services: Service[] = [
         iconClassName: 'text-village-error group-hover:bg-red-50',
     },
 ];
-
-const newsItems = [
-    {
-        category: 'Pertanian',
-        categoryClassName: 'text-village-primary',
-        date: '12 Agustus 2026',
-        title: 'Panen Raya Padi Organik Kelompok Tani “Maju Makmur” Capai Target',
-        excerpt:
-            'Keberhasilan implementasi pupuk organik mandiri tahun ini terbukti meningkatkan hasil panen gabah kering hingga 20% dibandingkan musim sebelumnya.',
-        image: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1000&auto=format&fit=crop',
-        alt: 'Petani saat panen raya di area persawahan',
-    },
-    {
-        category: 'Kesehatan',
-        categoryClassName: 'text-village-info',
-        date: '05 Agustus 2026',
-        title: 'Program Posyandu Lansia Rutin Digelar, Pantau Kesehatan Mandiri',
-        excerpt:
-            'Pemerintah desa bekerja sama dengan Puskesmas setempat kembali mengadakan cek kesehatan gratis khusus untuk warga lansia di balai desa.',
-        image: 'https://images.unsplash.com/photo-1549473889-14f410d83298?q=80&w=1000&auto=format&fit=crop',
-        alt: 'Kegiatan pelayanan kesehatan masyarakat desa',
-    },
-    {
-        category: 'UMKM & Budaya',
-        categoryClassName: 'text-village-secondary',
-        date: '28 Juli 2026',
-        title: 'Pengrajin Bambu Ngampungan Tembus Pasar Ekspor Kerajinan',
-        excerpt:
-            'Inovasi desain yang menggabungkan motif tradisional dan kebutuhan modern membuat kerajinan lokal ini diminati konsumen luar daerah.',
-        image: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=1000&auto=format&fit=crop',
-        alt: 'Produk kerajinan lokal untuk pasar ekspor',
-    },
-] as const;
 
 const primaryButtonClassName =
     'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-village-primary px-5 py-3 font-semibold text-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-village-primary-dark hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2';
@@ -580,6 +577,9 @@ export default function Welcome() {
         null,
     );
     const [isMessageSent, setIsMessageSent] = useState(false);
+    const [isFeaturedImageUnavailable, setIsFeaturedImageUnavailable] =
+        useState(false);
+    const featuredImageRef = useRef<HTMLImageElement>(null);
     const portalHref = auth.user ? dashboard() : login();
 
     const closeMobileNavigation = () => {
@@ -594,6 +594,14 @@ export default function Welcome() {
         window.addEventListener('scroll', updateNavbar, { passive: true });
 
         return () => window.removeEventListener('scroll', updateNavbar);
+    }, []);
+
+    useEffect(() => {
+        const featuredImage = featuredImageRef.current;
+
+        if (featuredImage?.complete && featuredImage.naturalWidth === 0) {
+            setIsFeaturedImageUnavailable(true);
+        }
     }, []);
 
     useEffect(() => {
@@ -889,32 +897,168 @@ export default function Welcome() {
                         className="relative z-20 -mt-8 scroll-mt-24 bg-village-canvas py-12"
                     >
                         <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                            <h2 id="profil-heading" className="sr-only">
-                                Profil singkat Desa Ngampungan
-                            </h2>
-                            <div className="grid grid-cols-2 gap-6 rounded-3xl border border-village-border bg-white p-6 shadow-village-soft md:grid-cols-4 md:gap-0 md:p-10">
-                                {villageStatistics.map((statistic, index) => (
-                                    <div
-                                        key={statistic.label}
-                                        className={`${index >= 2 ? 'border-t pt-6 md:border-t-0 md:pt-0' : ''} ${index > 0 ? 'md:border-l md:pl-8' : ''} border-village-border text-center md:text-left`}
+                            <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                                <div>
+                                    <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                                        Desa dalam Angka
+                                    </p>
+                                    <h2
+                                        id="profil-heading"
+                                        className="mt-3 text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
                                     >
-                                        <p className="text-xs font-semibold tracking-wide text-village-muted uppercase sm:text-sm">
-                                            {statistic.label}
-                                        </p>
-                                        <p className="mt-1 text-3xl font-bold text-village-primary-dark md:text-4xl">
-                                            {statistic.value}
-                                            {'suffix' in statistic &&
-                                                statistic.suffix && (
-                                                    <span className="text-xl text-village-accent md:text-2xl">
+                                        Statistik Desa Ngampungan
+                                    </h2>
+                                </div>
+                                <p className="w-fit rounded-full border border-village-border bg-white px-4 py-2 text-xs font-semibold text-village-muted shadow-sm">
+                                    Data sementara ·{' '}
+                                    <time dateTime="2026">2026</time>
+                                </p>
+                            </div>
+
+                            <div className="mt-8 grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
+                                {dummyVillageStatistics.map((statistic) => {
+                                    const StatisticIcon = statistic.icon;
+
+                                    return (
+                                        <article
+                                            key={statistic.label}
+                                            className="group relative isolate flex min-h-60 flex-col justify-between overflow-hidden rounded-3xl border border-village-border bg-white p-5 shadow-village-soft ring-1 ring-village-ink/[0.02] transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-village-primary/35 hover:shadow-village-floating active:scale-[0.985] motion-reduce:transform-none motion-reduce:transition-none sm:p-6"
+                                        >
+                                            <span
+                                                aria-hidden="true"
+                                                className={`absolute inset-x-6 top-0 h-1 rounded-b-full ${statistic.accentClassName}`}
+                                            />
+                                            <span
+                                                aria-hidden="true"
+                                                className="absolute top-4 right-5 -z-10 text-4xl font-black tracking-tighter text-village-primary/[0.06]"
+                                            >
+                                                {statistic.index}
+                                            </span>
+
+                                            <div>
+                                                <div
+                                                    className={`flex size-11 items-center justify-center rounded-2xl transition-transform duration-300 ease-out group-hover:-translate-y-1 group-active:scale-90 motion-reduce:transform-none motion-reduce:transition-none sm:size-12 ${statistic.iconClassName}`}
+                                                >
+                                                    <StatisticIcon
+                                                        aria-hidden="true"
+                                                        className="size-5"
+                                                    />
+                                                </div>
+                                                <p className="mt-6 text-[0.6875rem] font-bold tracking-[0.14em] text-village-muted uppercase sm:text-xs">
+                                                    {statistic.label}
+                                                </p>
+                                            </div>
+
+                                            <div className="mt-8">
+                                                <p className="flex origin-bottom-left flex-wrap items-baseline gap-x-2 gap-y-1 transition-transform duration-300 ease-out group-hover:scale-[1.06] group-active:scale-[1.1] motion-reduce:transform-none motion-reduce:transition-none">
+                                                    <span className="text-3xl font-bold tracking-tight text-village-primary-dark sm:text-4xl">
+                                                        {statistic.value}
+                                                    </span>
+                                                    <span className="text-xs font-semibold text-village-primary sm:text-sm">
                                                         {statistic.suffix}
                                                     </span>
-                                                )}
-                                        </p>
-                                        <p className="mt-1 text-xs text-village-muted">
-                                            {statistic.description}
-                                        </p>
-                                    </div>
-                                ))}
+                                                </p>
+                                                <p className="mt-3 text-xs leading-5 text-village-muted sm:text-sm sm:leading-6">
+                                                    {statistic.description}
+                                                </p>
+                                            </div>
+
+                                            <span
+                                                aria-hidden="true"
+                                                className="absolute right-4 bottom-4 size-5 rounded-br-lg border-r-2 border-b-2 border-village-primary/15 transition-all duration-300 group-hover:size-7 group-hover:border-village-primary/35 motion-reduce:transition-none"
+                                            />
+                                        </article>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    </section>
+
+                    <section
+                        id="sambutan-kepala-desa"
+                        aria-labelledby="sambutan-kepala-desa-heading"
+                        className="scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
+                    >
+                        <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-5 lg:grid-cols-12 lg:gap-16 lg:px-12">
+                            <div className="lg:col-span-5">
+                                <div className="group relative isolate mx-auto max-w-sm lg:mx-0">
+                                    <div
+                                        aria-hidden="true"
+                                        className="absolute inset-y-5 -right-3 -z-10 w-full rounded-[2rem] rounded-tr-[5rem] border border-village-primary/20 bg-village-primary-light/70 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:translate-y-1 motion-reduce:transform-none motion-reduce:transition-none"
+                                    />
+                                    <figure className="relative aspect-[4/5] overflow-hidden rounded-[2rem] rounded-tr-[5rem] border border-village-border bg-village-canvas shadow-village-soft transition-[transform,box-shadow,border-color] duration-300 ease-out group-hover:-translate-y-1 group-hover:border-village-primary/45 group-hover:shadow-village-floating motion-reduce:transform-none motion-reduce:transition-none">
+                                        <img
+                                            src="/assets/Kepala_desa.png"
+                                            alt="Ilustrasi Kepala Desa Ngampungan"
+                                            className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transform-none motion-reduce:transition-none"
+                                        />
+                                        <div
+                                            aria-hidden="true"
+                                            className="pointer-events-none absolute inset-3 rounded-[1.4rem] rounded-tr-[4.25rem] border border-white/75 shadow-[inset_0_0_0_1px_rgb(21_73_51/0.08)]"
+                                        />
+                                        <div className="absolute top-5 left-5 flex items-center gap-2 rounded-full border border-village-border/80 bg-white/90 px-3 py-2 text-[0.625rem] font-bold tracking-[0.16em] text-village-primary-dark uppercase shadow-sm backdrop-blur-sm">
+                                            <span
+                                                aria-hidden="true"
+                                                className="size-1.5 rounded-full bg-village-accent"
+                                            />
+                                            Pemerintah Desa
+                                        </div>
+                                        <div
+                                            aria-hidden="true"
+                                            className="absolute bottom-6 left-0 h-16 w-1.5 rounded-r-full bg-village-accent shadow-sm"
+                                        />
+                                        <div className="absolute right-5 bottom-5 flex size-12 items-center justify-center rounded-2xl border border-village-border/80 bg-white/90 p-2.5 shadow-md backdrop-blur-sm">
+                                            <img
+                                                src="/assets/logo_kabupaten_jombang.png"
+                                                alt=""
+                                                className="h-full w-full object-contain"
+                                            />
+                                        </div>
+                                    </figure>
+                                </div>
+                            </div>
+
+                            <div className="lg:col-span-7">
+                                <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                                    Sambutan Kepala Desa
+                                </p>
+                                <blockquote className="mt-4">
+                                    <h2
+                                        id="sambutan-kepala-desa-heading"
+                                        className="max-w-3xl text-3xl leading-tight font-bold tracking-tight text-village-ink sm:text-4xl lg:text-5xl"
+                                    >
+                                        Melayani dengan Transparan dan Dekat
+                                        dengan Warga
+                                    </h2>
+                                </blockquote>
+
+                                <div className="mt-7 max-w-3xl space-y-5 text-base leading-8 text-village-muted">
+                                    <p>
+                                        Salam hangat bagi seluruh warga Desa
+                                        Ngampungan. Kehadiran platform digital
+                                        ini merupakan komitmen kami untuk
+                                        menghadirkan tata kelola pemerintahan
+                                        desa yang modern, terbuka, dan inklusif.
+                                    </p>
+                                    <p>
+                                        Kami percaya bahwa dengan teknologi,
+                                        jarak antara pemerintah desa dan warga
+                                        akan semakin dekat. Visi kami adalah
+                                        membangun Ngampungan menjadi desa yang
+                                        mandiri secara ekonomi, namun tetap
+                                        menjunjung tinggi nilai-nilai kearifan
+                                        lokal dan gotong royong.
+                                    </p>
+                                </div>
+
+                                <div className="mt-8 border-t border-village-border pt-6">
+                                    <p className="text-base font-bold text-village-ink">
+                                        Kusnadi, S.Sos
+                                    </p>
+                                    <p className="mt-1 text-sm font-medium text-village-primary">
+                                        Kepala Desa Ngampungan
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -1026,68 +1170,222 @@ export default function Welcome() {
                         className="scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
                     >
                         <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-                                <div className="max-w-xl">
+                            <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                                <div className="max-w-2xl">
+                                    <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                                        Kabar Desa
+                                    </p>
                                     <h2
                                         id="berita-heading"
-                                        className="village-heading-2"
+                                        className="village-heading-2 mt-3"
                                     >
-                                        Kabar & Potensi Desa
+                                        Berita Desa
                                     </h2>
                                     <p className="mt-4 text-lg text-village-muted">
-                                        Berita terkini, agenda warga, dan cerita
-                                        lokal dari Ngampungan.
+                                        Ikuti kegiatan, pembangunan, dan cerita
+                                        terbaru dari Desa Ngampungan.
                                     </p>
                                 </div>
-                                <a
-                                    href="#berita"
-                                    className="inline-flex min-h-11 w-fit shrink-0 items-center justify-center rounded-xl border border-village-border px-5 py-3 font-semibold transition hover:border-village-ink hover:bg-white focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                <Link
+                                    href={newsIndex()}
+                                    prefetch
+                                    className="inline-flex min-h-11 w-fit items-center gap-2 rounded-xl border border-village-border bg-white px-5 py-3 text-sm font-bold transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                                 >
-                                    Lihat Semua Kabar
-                                </a>
+                                    Lihat Semua Berita
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-4"
+                                    />
+                                </Link>
                             </div>
 
-                            <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-                                {newsItems.map((newsItem) => (
-                                    <article
-                                        key={newsItem.title}
-                                        className="group overflow-hidden rounded-3xl border border-village-border bg-white transition-shadow hover:shadow-village-soft"
+                            <div className="mt-10">
+                                <article className="group grid overflow-hidden rounded-3xl border border-village-border bg-white shadow-village-soft lg:grid-cols-12">
+                                    <Link
+                                        href={newsShow(
+                                            featuredDummyNewsArticle.slug,
+                                        )}
+                                        prefetch
+                                        className="relative block min-h-72 overflow-hidden bg-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset lg:col-span-7"
                                     >
-                                        <div className="relative aspect-4/3 overflow-hidden">
+                                        {isFeaturedImageUnavailable ? (
+                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_38%),linear-gradient(145deg,var(--color-village-primary-dark),var(--color-village-primary))] px-8 text-center text-white">
+                                                <span className="flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/10">
+                                                    <Newspaper
+                                                        aria-hidden="true"
+                                                        className="size-7"
+                                                    />
+                                                </span>
+                                                <span className="max-w-xs text-sm leading-6 font-semibold text-white/85">
+                                                    Dokumentasi berita belum
+                                                    tersedia
+                                                </span>
+                                            </div>
+                                        ) : (
                                             <img
-                                                src={newsItem.image}
-                                                alt={newsItem.alt}
-                                                loading="lazy"
-                                                className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                                ref={featuredImageRef}
+                                                src={
+                                                    featuredDummyNewsArticle.image
+                                                }
+                                                alt={
+                                                    featuredDummyNewsArticle.alt
+                                                }
+                                                onError={() =>
+                                                    setIsFeaturedImageUnavailable(
+                                                        true,
+                                                    )
+                                                }
+                                                className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
                                             />
-                                            <div
-                                                className={`absolute top-4 left-4 rounded-full bg-white/90 px-3 py-1 text-xs font-bold backdrop-blur ${newsItem.categoryClassName}`}
+                                        )}
+                                        <span className="absolute top-5 left-5 rounded-full bg-village-accent px-3 py-1.5 text-xs font-bold text-village-ink shadow-sm">
+                                            Berita Utama
+                                        </span>
+                                    </Link>
+
+                                    <div className="flex flex-col justify-center p-6 md:p-8 lg:col-span-5 lg:p-10">
+                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                            {featuredDummyNewsArticle.category}
+                                        </p>
+                                        <h3 className="mt-4 text-2xl leading-tight font-bold md:text-3xl">
+                                            <Link
+                                                href={newsShow(
+                                                    featuredDummyNewsArticle.slug,
+                                                )}
+                                                prefetch
+                                                className="transition-colors hover:text-village-primary focus-visible:underline focus-visible:outline-none"
                                             >
-                                                {newsItem.category}
-                                            </div>
+                                                {featuredDummyNewsArticle.title}
+                                            </Link>
+                                        </h3>
+                                        <div className="mt-5 flex items-center gap-2 text-xs text-village-muted">
+                                            <CalendarDays
+                                                aria-hidden="true"
+                                                className="size-4"
+                                            />
+                                            <time
+                                                dateTime={
+                                                    featuredDummyNewsArticle.publishedAt
+                                                }
+                                            >
+                                                {
+                                                    featuredDummyNewsArticle.publishedLabel
+                                                }
+                                            </time>
                                         </div>
-                                        <div className="p-6">
-                                            <div className="flex items-center gap-2 text-xs text-village-muted">
-                                                <CalendarDays
-                                                    aria-hidden="true"
-                                                    className="size-4"
-                                                />
-                                                <time>{newsItem.date}</time>
-                                            </div>
-                                            <h3 className="mt-3 text-xl leading-snug font-bold transition-colors group-hover:text-village-primary">
-                                                <a
-                                                    href="#berita"
-                                                    className="focus-visible:underline focus-visible:outline-none"
-                                                >
-                                                    {newsItem.title}
-                                                </a>
-                                            </h3>
-                                            <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-village-muted">
-                                                {newsItem.excerpt}
-                                            </p>
-                                        </div>
-                                    </article>
-                                ))}
+                                        <p className="mt-5 leading-7 text-village-muted">
+                                            {featuredDummyNewsArticle.excerpt}
+                                        </p>
+                                        <Link
+                                            href={newsShow(
+                                                featuredDummyNewsArticle.slug,
+                                            )}
+                                            prefetch
+                                            className="mt-7 inline-flex w-fit items-center gap-2 text-sm font-bold text-village-primary hover:text-village-primary-dark"
+                                        >
+                                            Baca berita
+                                            <ArrowRight
+                                                aria-hidden="true"
+                                                className="size-4"
+                                            />
+                                        </Link>
+                                    </div>
+                                </article>
+
+                                <div className="mt-10 flex items-end justify-between gap-5">
+                                    <div>
+                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                            Kabar lainnya
+                                        </p>
+                                        <h3 className="mt-2 text-2xl font-bold">
+                                            Berita Lainnya
+                                        </h3>
+                                    </div>
+                                    <span className="text-sm text-village-muted">
+                                        {latestDummyNewsArticles.length} berita
+                                    </span>
+                                </div>
+
+                                <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                    {latestDummyNewsArticles.map((article) => (
+                                        <PublicNewsCard
+                                            key={article.slug}
+                                            article={article}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section
+                        id="pengumuman"
+                        aria-labelledby="pengumuman-heading"
+                        className="scroll-mt-20 border-t border-village-border bg-white py-16 md:py-24"
+                    >
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                                <div className="max-w-2xl">
+                                    <div className="flex items-center gap-3">
+                                        <span className="flex size-10 items-center justify-center rounded-full bg-village-primary-light text-village-primary">
+                                            <BellRing
+                                                aria-hidden="true"
+                                                className="size-5"
+                                            />
+                                        </span>
+                                        <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                                            Pemberitahuan Resmi
+                                        </p>
+                                    </div>
+                                    <h2
+                                        id="pengumuman-heading"
+                                        className="village-heading-2 mt-4"
+                                    >
+                                        Pengumuman Desa
+                                    </h2>
+                                    <p className="mt-4 text-lg text-village-muted">
+                                        Periksa jadwal layanan dan informasi
+                                        resmi yang sedang berlaku untuk warga.
+                                    </p>
+                                </div>
+
+                                <Link
+                                    href={announcementsIndex()}
+                                    prefetch
+                                    className="inline-flex min-h-11 w-fit items-center gap-2 rounded-xl border border-village-border bg-white px-5 py-3 text-sm font-bold transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                >
+                                    Lihat Semua Pengumuman
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-4"
+                                    />
+                                </Link>
+                            </div>
+
+                            <div className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                                <div>
+                                    <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                        Masih berlaku
+                                    </p>
+                                    <h3 className="mt-2 text-2xl font-bold">
+                                        Pengumuman Aktif
+                                    </h3>
+                                </div>
+                                <p className="text-sm text-village-muted">
+                                    Informasi kedaluwarsa dipindahkan ke arsip.
+                                </p>
+                            </div>
+
+                            <div className="mt-6 grid gap-5 lg:grid-cols-3">
+                                {activeDummyAnnouncements
+                                    .slice(0, 3)
+                                    .map((announcement) => (
+                                        <PublicAnnouncementCard
+                                            key={announcement.id}
+                                            announcement={announcement}
+                                            compact
+                                        />
+                                    ))}
                             </div>
                         </div>
                     </section>
