@@ -2,6 +2,85 @@
 
 use Inertia\Testing\AssertableInertia as Assert;
 
+test('the public village profile renders its Inertia page with a canonical URL', function () {
+    $this->get(route('profile.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('profile/index')
+            ->where('canonicalUrl', route('profile.index')));
+});
+
+test('the village profile page exposes profile sections, breadcrumb, and SEO metadata', function () {
+    $profilePageSource = file_get_contents(resource_path('js/pages/profile/index.tsx'));
+    $profileDataSource = file_get_contents(resource_path('js/lib/dummy-village-profile.ts'));
+    $administrativeMapSource = file_get_contents(resource_path('js/components/village-administrative-map.tsx'));
+    $demographicExplorerSource = file_get_contents(resource_path('js/components/village-demographic-explorer.tsx'));
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+    $appSource = file_get_contents(resource_path('js/app.tsx'));
+
+    expect($profilePageSource)
+        ->not->toBeFalse()
+        ->toContain('aria-label="Breadcrumb"')
+        ->toContain('head-key="description"')
+        ->toContain('head-key="canonical"')
+        ->toContain('property="og:title"')
+        ->toContain('id="selayang-pandang"')
+        ->toContain('id="visi-misi"')
+        ->toContain('id="sejarah-desa"')
+        ->toContain('id="data-wilayah"')
+        ->toContain('id="pembagian-wilayah"')
+        ->toContain('id="penggunaan-lahan"')
+        ->toContain('id="peta-administratif"')
+        ->toContain('id="demografi"')
+        ->toContain('dummyVillageIdentity.map')
+        ->toContain('dummyAdministrativeBoundaries.map')
+        ->toContain('dummyAdministrativeDivisions.map')
+        ->toContain('dummyLandUseComposition.map')
+        ->toContain('VillageAdministrativeMap')
+        ->toContain('VillageDemographicExplorer')
+        ->toContain('Konten simulasi frontend');
+
+    expect($profileDataSource)
+        ->not->toBeFalse()
+        ->toContain('Kode Desa')
+        ->toContain('Tahun Pembentukan')
+        ->toContain('dummyAdministrativeDivisions')
+        ->toContain('dummyLandUseComposition')
+        ->toContain("key: 'gender'")
+        ->toContain("key: 'age'")
+        ->toContain("key: 'education'")
+        ->toContain("key: 'occupation'")
+        ->toContain("key: 'religion'")
+        ->toContain("key: 'residency'");
+
+    expect($administrativeMapSource)
+        ->not->toBeFalse()
+        ->toContain('role="img"')
+        ->toContain('Peta administratif simulasi Desa Ngampungan')
+        ->toContain('Bukan peta ukur')
+        ->toContain('data geospasial resmi');
+
+    expect($demographicExplorerSource)
+        ->not->toBeFalse()
+        ->toContain('role="tablist"')
+        ->toContain('role="tab"')
+        ->toContain('role="tabpanel"')
+        ->toContain('aria-selected')
+        ->toContain('role="progressbar"');
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('villageProfileIndex.url()')
+        ->toContain('#selayang-pandang')
+        ->toContain('#visi-misi')
+        ->toContain('#sejarah-desa')
+        ->toContain('#data-wilayah');
+
+    expect($appSource)
+        ->not->toBeFalse()
+        ->toContain("name.startsWith('profile/')");
+});
+
 test('the public news index renders its Inertia page', function () {
     $this->get(route('news.index'))
         ->assertOk()

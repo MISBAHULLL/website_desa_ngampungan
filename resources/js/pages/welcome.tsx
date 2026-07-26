@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Form, Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
     BellRing,
@@ -6,6 +6,7 @@ import {
     ChevronDown,
     CircleAlert,
     Clock3,
+    ExternalLink,
     Facebook,
     FileText,
     House,
@@ -30,9 +31,11 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import type { FormEvent } from 'react';
+import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
+import InputError from '@/components/input-error';
 import { PublicAnnouncementCard } from '@/components/public-announcement-card';
 import { PublicNewsCard } from '@/components/public-news-card';
+import { Spinner } from '@/components/ui/spinner';
 import { VillagePotentialCarousel } from '@/components/village-potential-carousel';
 import {
     activeDummyAnnouncements,
@@ -51,6 +54,7 @@ import { dashboard, login } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
+import { index as villageProfileIndex } from '@/routes/profile';
 import { index as transparencyIndex } from '@/routes/transparency';
 
 type NavigationChild = {
@@ -80,22 +84,22 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'Selayang Pandang',
                 description: 'Gambaran umum Desa Ngampungan.',
-                href: '#profil',
+                href: `${villageProfileIndex.url()}#selayang-pandang`,
             },
             {
                 label: 'Visi dan Misi',
                 description: 'Arah dan tujuan pembangunan desa.',
-                href: '#profil',
+                href: `${villageProfileIndex.url()}#visi-misi`,
             },
             {
                 label: 'Sejarah Desa',
                 description: 'Perjalanan dan asal-usul desa.',
-                href: '#profil',
+                href: `${villageProfileIndex.url()}#sejarah-desa`,
             },
             {
                 label: 'Data Wilayah',
                 description: 'Demografi dan karakter wilayah.',
-                href: '#profil',
+                href: `${villageProfileIndex.url()}#data-wilayah`,
             },
         ],
     },
@@ -637,7 +641,6 @@ export default function Welcome() {
     const [expandedMobileMenu, setExpandedMobileMenu] = useState<string | null>(
         null,
     );
-    const [isMessageSent, setIsMessageSent] = useState(false);
     const [isFeaturedImageUnavailable, setIsFeaturedImageUnavailable] =
         useState(false);
     const [activePotentialCategory, setActivePotentialCategory] =
@@ -693,12 +696,6 @@ export default function Welcome() {
             window.removeEventListener('keydown', closeOnEscape);
         };
     }, [isMobileMenuOpen]);
-
-    const submitMessage = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        setIsMessageSent(true);
-        event.currentTarget.reset();
-    };
 
     const hasSolidNavbar = isScrolled || isMobileMenuOpen;
 
@@ -1732,113 +1729,337 @@ export default function Welcome() {
                     <section
                         id="kontak"
                         aria-labelledby="kontak-heading"
-                        className="scroll-mt-20 border-t border-village-border bg-white py-16 md:py-24"
+                        className="scroll-mt-48 border-t border-village-border bg-village-canvas py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-5 lg:grid-cols-2 lg:px-12">
-                            <div>
-                                <div className="flex size-12 items-center justify-center rounded-xl bg-village-primary-light text-village-primary">
-                                    <MailOpen
-                                        aria-hidden="true"
-                                        className="size-6"
-                                    />
+                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                            <div className="grid gap-8 border-b border-village-border pb-9 lg:grid-cols-[1fr_auto] lg:items-end">
+                                <div className="max-w-3xl">
+                                    <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                                        Lokasi dan Kontak
+                                    </p>
+                                    <h2
+                                        id="kontak-heading"
+                                        className="village-heading-2 mt-3"
+                                    >
+                                        Terhubung dengan Pemerintah Desa
+                                    </h2>
+                                    <p className="mt-4 max-w-2xl text-lg leading-relaxed text-village-muted">
+                                        Temukan kantor desa atau kirimkan
+                                        pertanyaan dan aspirasi secara langsung.
+                                        Setiap pesan akan tercatat di sistem
+                                        pengelola desa.
+                                    </p>
                                 </div>
-                                <h2
-                                    id="kontak-heading"
-                                    className="village-heading-2 mt-6"
-                                >
-                                    Punya Saran atau Pertanyaan?
-                                </h2>
-                                <p className="mt-4 text-lg leading-relaxed text-village-muted">
-                                    Tinggalkan pesan Anda. Kami senantiasa
-                                    berupaya meningkatkan pelayanan untuk
-                                    kesejahteraan masyarakat Desa Ngampungan.
-                                </p>
-                                <div className="mt-8 flex items-center gap-4 font-medium">
-                                    <PhoneCall
-                                        aria-hidden="true"
-                                        className="size-5 text-village-primary"
-                                    />
-                                    <span>
-                                        Call Center: 0812-3456-7890 (WA/Telp)
-                                    </span>
+
+                                <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
+                                    <a
+                                        href="tel:+6281234567890"
+                                        className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                    >
+                                        <PhoneCall
+                                            aria-hidden="true"
+                                            className="size-5 text-village-primary"
+                                        />
+                                        0812-3456-7890
+                                    </a>
+                                    <a
+                                        href="mailto:pemdes@ngampungan.desa.id"
+                                        className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                    >
+                                        <Mail
+                                            aria-hidden="true"
+                                            className="size-5 text-village-primary"
+                                        />
+                                        pemdes@ngampungan.desa.id
+                                    </a>
                                 </div>
                             </div>
 
-                            <div className="rounded-3xl border border-village-border bg-white p-6 shadow-village-soft md:p-8">
-                                <form
-                                    onSubmit={submitMessage}
-                                    className="flex flex-col gap-5"
-                                >
-                                    <div>
-                                        <label
-                                            htmlFor="nama"
-                                            className="text-sm font-semibold tracking-wide"
-                                        >
-                                            Nama Lengkap
-                                        </label>
-                                        <input
-                                            type="text"
-                                            id="nama"
-                                            name="nama"
-                                            required
-                                            className="mt-2 w-full rounded-xl border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
-                                            placeholder="Masukkan nama Anda"
+                            <div className="mt-9 grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                                <div className="overflow-hidden border border-village-border bg-white shadow-village-soft">
+                                    <div className="relative aspect-[4/3] min-h-[330px] bg-village-primary-light">
+                                        <iframe
+                                            title="Peta lokasi Kantor Desa Ngampungan"
+                                            src="https://www.openstreetmap.org/export/embed.html?bbox=112.3256%2C-7.6410%2C112.3456%2C-7.6290&layer=mapnik&marker=-7.6350%2C112.3356"
+                                            loading="lazy"
+                                            referrerPolicy="no-referrer-when-downgrade"
+                                            className="absolute inset-0 size-full border-0"
                                         />
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="kategori"
-                                            className="text-sm font-semibold tracking-wide"
-                                        >
-                                            Kategori Pesan
-                                        </label>
-                                        <select
-                                            id="kategori"
-                                            name="kategori"
-                                            className="mt-2 w-full rounded-xl border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
-                                        >
-                                            <option>Pertanyaan Umum</option>
-                                            <option>Pengaduan Layanan</option>
-                                            <option>Usulan Pembangunan</option>
-                                        </select>
-                                    </div>
-                                    <div>
-                                        <label
-                                            htmlFor="pesan"
-                                            className="text-sm font-semibold tracking-wide"
-                                        >
-                                            Isi Pesan
-                                        </label>
-                                        <textarea
-                                            id="pesan"
-                                            name="pesan"
-                                            rows={4}
-                                            required
-                                            className="mt-2 w-full resize-none rounded-xl border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
-                                            placeholder="Tuliskan pesan Anda di sini..."
-                                        />
-                                    </div>
-                                    {isMessageSent && (
-                                        <p
-                                            role="status"
-                                            className="rounded-xl bg-village-primary-light px-4 py-3 text-sm text-village-primary-dark"
-                                        >
-                                            Simulasi berhasil. Pesan belum
-                                            dikirim ke server karena endpoint
-                                            kontak belum tersedia.
+                                        <p className="absolute top-4 left-4 border border-white/35 bg-village-primary-dark/90 px-3 py-2 text-[0.6875rem] font-bold tracking-[0.13em] text-white uppercase shadow-lg backdrop-blur-sm">
+                                            Titik lokasi simulasi
                                         </p>
-                                    )}
-                                    <button
-                                        type="submit"
-                                        className={`${primaryButtonClassName} w-full`}
+                                    </div>
+
+                                    <div className="grid gap-5 p-6 sm:grid-cols-[1fr_auto] sm:items-end">
+                                        <div>
+                                            <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                                Kantor Desa Ngampungan
+                                            </p>
+                                            <address className="mt-2 text-sm leading-6 text-village-muted not-italic">
+                                                Jl. Raya Ngampungan No. 1, Kec.
+                                                Bareng, Kab. Jombang, Jawa Timur
+                                                61474
+                                            </address>
+                                            <p className="mt-2 text-xs leading-5 text-[#8a6218]">
+                                                Koordinat masih berupa data
+                                                simulasi dan perlu diverifikasi.
+                                            </p>
+                                        </div>
+                                        <a
+                                            href="https://www.openstreetmap.org/?mlat=-7.6350&mlon=112.3356#map=16/-7.6350/112.3356"
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex min-h-11 items-center justify-center gap-2 border border-village-border px-4 text-sm font-bold text-village-primary transition hover:border-village-primary hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                        >
+                                            Buka Peta
+                                            <ExternalLink
+                                                aria-hidden="true"
+                                                className="size-4"
+                                            />
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div className="border border-village-border bg-white p-6 shadow-village-soft md:p-8">
+                                    <div className="flex items-start gap-4 border-b border-village-border pb-6">
+                                        <span className="flex size-11 shrink-0 items-center justify-center bg-village-primary-light text-village-primary">
+                                            <MailOpen
+                                                aria-hidden="true"
+                                                className="size-5"
+                                            />
+                                        </span>
+                                        <div>
+                                            <h3 className="text-xl font-bold text-village-ink">
+                                                Kirim Pesan
+                                            </h3>
+                                            <p className="mt-1 text-sm leading-6 text-village-muted">
+                                                Isi data dengan benar agar
+                                                petugas dapat menindaklanjuti.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <Form
+                                        action={storeContactMessage()}
+                                        resetOnSuccess
+                                        options={{ preserveScroll: true }}
+                                        className="mt-6 flex flex-col gap-5"
                                     >
-                                        Kirim Pesan
-                                        <Send
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
-                                    </button>
-                                </form>
+                                        {({
+                                            errors,
+                                            processing,
+                                            recentlySuccessful,
+                                        }) => (
+                                            <>
+                                                <div
+                                                    aria-hidden="true"
+                                                    className="absolute -left-[9999px]"
+                                                >
+                                                    <label htmlFor="contact-website">
+                                                        Website
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        id="contact-website"
+                                                        name="website"
+                                                        tabIndex={-1}
+                                                        autoComplete="off"
+                                                    />
+                                                </div>
+
+                                                <div className="grid gap-5 sm:grid-cols-2">
+                                                    <div>
+                                                        <label
+                                                            htmlFor="contact-name"
+                                                            className="text-sm font-semibold tracking-wide"
+                                                        >
+                                                            Nama Lengkap
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            id="contact-name"
+                                                            name="name"
+                                                            required
+                                                            minLength={3}
+                                                            maxLength={100}
+                                                            autoComplete="name"
+                                                            aria-invalid={
+                                                                errors.name
+                                                                    ? true
+                                                                    : undefined
+                                                            }
+                                                            className="mt-2 w-full border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                                            placeholder="Nama Anda"
+                                                        />
+                                                        <InputError
+                                                            message={
+                                                                errors.name
+                                                            }
+                                                            className="mt-2"
+                                                        />
+                                                    </div>
+
+                                                    <div>
+                                                        <label
+                                                            htmlFor="contact-channel"
+                                                            className="text-sm font-semibold tracking-wide"
+                                                        >
+                                                            WhatsApp atau Email
+                                                        </label>
+                                                        <input
+                                                            type="text"
+                                                            id="contact-channel"
+                                                            name="contact"
+                                                            required
+                                                            minLength={6}
+                                                            maxLength={150}
+                                                            autoComplete="email"
+                                                            aria-invalid={
+                                                                errors.contact
+                                                                    ? true
+                                                                    : undefined
+                                                            }
+                                                            className="mt-2 w-full border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                                            placeholder="0812... / nama@email.com"
+                                                        />
+                                                        <InputError
+                                                            message={
+                                                                errors.contact
+                                                            }
+                                                            className="mt-2"
+                                                        />
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="contact-category"
+                                                        className="text-sm font-semibold tracking-wide"
+                                                    >
+                                                        Kategori Pesan
+                                                    </label>
+                                                    <select
+                                                        id="contact-category"
+                                                        name="category"
+                                                        required
+                                                        defaultValue="general"
+                                                        aria-invalid={
+                                                            errors.category
+                                                                ? true
+                                                                : undefined
+                                                        }
+                                                        className="mt-2 w-full border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                                    >
+                                                        <option value="general">
+                                                            Pertanyaan Umum
+                                                        </option>
+                                                        <option value="service_complaint">
+                                                            Pengaduan Layanan
+                                                        </option>
+                                                        <option value="development_proposal">
+                                                            Usulan Pembangunan
+                                                        </option>
+                                                    </select>
+                                                    <InputError
+                                                        message={
+                                                            errors.category
+                                                        }
+                                                        className="mt-2"
+                                                    />
+                                                </div>
+
+                                                <div>
+                                                    <label
+                                                        htmlFor="contact-message"
+                                                        className="text-sm font-semibold tracking-wide"
+                                                    >
+                                                        Isi Pesan
+                                                    </label>
+                                                    <textarea
+                                                        id="contact-message"
+                                                        name="message"
+                                                        rows={5}
+                                                        required
+                                                        minLength={10}
+                                                        maxLength={3000}
+                                                        aria-invalid={
+                                                            errors.message
+                                                                ? true
+                                                                : undefined
+                                                        }
+                                                        className="mt-2 w-full resize-none border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                                        placeholder="Tuliskan pesan secara jelas..."
+                                                    />
+                                                    <div className="mt-2 flex items-start justify-between gap-4">
+                                                        <InputError
+                                                            message={
+                                                                errors.message
+                                                            }
+                                                        />
+                                                        <span className="ml-auto text-xs text-village-muted">
+                                                            Maks. 3.000 karakter
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <label className="flex items-start gap-3 text-sm leading-6 text-village-muted">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="consent"
+                                                        value="1"
+                                                        required
+                                                        className="mt-1 size-4 shrink-0 accent-village-primary"
+                                                    />
+                                                    <span>
+                                                        Saya menyetujui
+                                                        penyimpanan data ini
+                                                        untuk keperluan tindak
+                                                        lanjut pesan.
+                                                    </span>
+                                                </label>
+                                                <InputError
+                                                    message={errors.consent}
+                                                />
+                                                <InputError
+                                                    message={errors.website}
+                                                />
+
+                                                {recentlySuccessful && (
+                                                    <p
+                                                        role="status"
+                                                        className="border border-village-primary/20 bg-village-primary-light px-4 py-3 text-sm leading-6 font-medium text-village-primary-dark"
+                                                    >
+                                                        Pesan berhasil disimpan.
+                                                        Petugas desa dapat
+                                                        melihatnya dari
+                                                        dashboard.
+                                                    </p>
+                                                )}
+
+                                                <button
+                                                    type="submit"
+                                                    disabled={processing}
+                                                    className={`${primaryButtonClassName} w-full disabled:cursor-not-allowed disabled:opacity-65`}
+                                                >
+                                                    {processing ? (
+                                                        <>
+                                                            <Spinner className="size-4" />
+                                                            Menyimpan Pesan
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            Kirim Pesan
+                                                            <Send
+                                                                aria-hidden="true"
+                                                                className="size-4"
+                                                            />
+                                                        </>
+                                                    )}
+                                                </button>
+                                            </>
+                                        )}
+                                    </Form>
+                                </div>
                             </div>
                         </div>
                     </section>

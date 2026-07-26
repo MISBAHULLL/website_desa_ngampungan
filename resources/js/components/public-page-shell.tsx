@@ -5,9 +5,11 @@ import { home } from '@/routes';
 import { index as announcementsIndex } from '@/routes/announcements';
 import { index as newsIndex } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
+import { index as villageProfileIndex } from '@/routes/profile';
 import { index as transparencyIndex } from '@/routes/transparency';
 
-type PublicSection = 'news' | 'announcements' | 'transparency' | 'potentials';
+type PublicSection =
+    'profile' | 'news' | 'announcements' | 'transparency' | 'potentials';
 
 export function PublicPageShell({
     activeSection,
@@ -64,6 +66,16 @@ export function PublicPageShell({
                         aria-label="Navigasi halaman publik"
                         className="hidden items-center gap-2 lg:flex"
                     >
+                        <Link
+                            href={villageProfileIndex()}
+                            className={
+                                activeSection === 'profile'
+                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
+                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
+                            }
+                        >
+                            Profil
+                        </Link>
                         <Link
                             href={newsIndex()}
                             className={
@@ -132,6 +144,12 @@ export function PublicPageShell({
                         berupa dummy frontend.
                     </p>
                     <div className="flex items-center gap-5">
+                        <Link
+                            href={villageProfileIndex()}
+                            className="hover:text-village-primary"
+                        >
+                            Profil
+                        </Link>
                         <Link
                             href={newsIndex()}
                             className="hover:text-village-primary"
