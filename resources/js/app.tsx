@@ -15,6 +15,8 @@ createInertiaApp({
             case name === 'welcome':
             case name.startsWith('news/'):
             case name.startsWith('announcements/'):
+            case name.startsWith('agenda/'):
+            case name.startsWith('gallery/'):
             case name.startsWith('transparency/'):
             case name.startsWith('potentials/'):
             case name.startsWith('profile/'):

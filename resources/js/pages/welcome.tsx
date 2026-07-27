@@ -51,7 +51,9 @@ import {
 } from '@/lib/dummy-village-potentials';
 import type { VillagePotentialKey } from '@/lib/dummy-village-potentials';
 import { dashboard, login } from '@/routes';
+import { index as agendasIndex } from '@/routes/agendas';
 import { index as announcementsIndex } from '@/routes/announcements';
+import { index as galleryIndex } from '@/routes/gallery';
 import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
@@ -137,22 +139,22 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'Berita',
                 description: 'Kabar terbaru dari lingkungan desa.',
-                href: '#berita',
+                href: newsIndex.url(),
             },
             {
                 label: 'Pengumuman',
                 description: 'Informasi resmi untuk masyarakat.',
-                href: '#pengumuman',
+                href: announcementsIndex.url(),
             },
             {
                 label: 'Agenda',
                 description: 'Jadwal kegiatan desa mendatang.',
-                href: '#berita',
+                href: agendasIndex.url(),
             },
             {
                 label: 'Galeri',
                 description: 'Dokumentasi kegiatan dan potensi desa.',
-                href: '#berita',
+                href: galleryIndex.url(),
             },
         ],
     },

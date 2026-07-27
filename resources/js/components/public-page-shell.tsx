@@ -1,8 +1,11 @@
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, MapPin, PhoneCall } from 'lucide-react';
+import { ArrowLeft, ChevronDown, MapPin, PhoneCall } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { home } from '@/routes';
+import { index as agendasIndex } from '@/routes/agendas';
 import { index as announcementsIndex } from '@/routes/announcements';
+import { index as galleryIndex } from '@/routes/gallery';
 import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
@@ -14,8 +17,120 @@ type PublicSection =
     | 'profile'
     | 'news'
     | 'announcements'
+    | 'agenda'
+    | 'gallery'
     | 'transparency'
     | 'potentials';
+
+const informationLinks = [
+    {
+        label: 'Berita',
+        description: 'Kabar dan artikel terbaru desa.',
+        href: newsIndex(),
+        section: 'news',
+    },
+    {
+        label: 'Pengumuman',
+        description: 'Pemberitahuan resmi untuk warga.',
+        href: announcementsIndex(),
+        section: 'announcements',
+    },
+    {
+        label: 'Agenda',
+        description: 'Jadwal kegiatan dan pelayanan.',
+        href: agendasIndex(),
+        section: 'agenda',
+    },
+    {
+        label: 'Galeri',
+        description: 'Dokumentasi visual Desa Ngampungan.',
+        href: galleryIndex(),
+        section: 'gallery',
+    },
+] as const;
+
+function PublicInformationNavigation({
+    activeSection,
+}: {
+    activeSection: PublicSection;
+}) {
+    const [isOpen, setIsOpen] = useState(false);
+    const isActive = informationLinks.some(
+        (link) => link.section === activeSection,
+    );
+
+    return (
+        <div
+            className="relative"
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+            onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                    setIsOpen(false);
+                }
+            }}
+        >
+            <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls="public-information-menu"
+                onFocus={() => setIsOpen(true)}
+                onClick={() => setIsOpen((open) => !open)}
+                onKeyDown={(event) => {
+                    if (event.key === 'Escape') {
+                        setIsOpen(false);
+                        event.currentTarget.focus();
+                    }
+                }}
+                className={
+                    isActive
+                        ? 'flex min-h-10 items-center gap-1.5 rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
+                        : 'flex min-h-10 items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
+                }
+            >
+                Informasi
+                <ChevronDown
+                    aria-hidden="true"
+                    className={`size-3.5 transition-transform ${
+                        isOpen ? 'rotate-180' : ''
+                    }`}
+                />
+            </button>
+
+            {isOpen && (
+                <div
+                    id="public-information-menu"
+                    className="absolute top-full left-1/2 z-50 w-72 -translate-x-1/2 pt-2"
+                    onMouseEnter={() => setIsOpen(true)}
+                >
+                    <div className="border border-village-border bg-white p-2 shadow-village-floating">
+                        {informationLinks.map((link) => (
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                onClick={() => setIsOpen(false)}
+                                className="group flex items-start gap-3 p-3 transition hover:bg-village-primary-light focus-visible:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                            >
+                                <span
+                                    aria-hidden="true"
+                                    className="mt-2 size-1.5 shrink-0 rounded-full bg-village-accent transition-transform group-hover:scale-125"
+                                />
+                                <span>
+                                    <span className="block text-sm font-bold text-village-ink">
+                                        {link.label}
+                                    </span>
+                                    <span className="mt-0.5 block text-xs leading-5 text-village-muted">
+                                        {link.description}
+                                    </span>
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
 
 export function PublicPageShell({
     activeSection,
@@ -92,26 +207,9 @@ export function PublicPageShell({
                         >
                             Pemerintahan
                         </Link>
-                        <Link
-                            href={newsIndex()}
-                            className={
-                                activeSection === 'news'
-                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
-                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
-                            }
-                        >
-                            Berita
-                        </Link>
-                        <Link
-                            href={announcementsIndex()}
-                            className={
-                                activeSection === 'announcements'
-                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
-                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
-                            }
-                        >
-                            Pengumuman
-                        </Link>
+                        <PublicInformationNavigation
+                            activeSection={activeSection}
+                        />
                         <Link
                             href={transparencyIndex()}
                             className={
@@ -183,6 +281,18 @@ export function PublicPageShell({
                             className="hover:text-village-primary"
                         >
                             Pengumuman
+                        </Link>
+                        <Link
+                            href={agendasIndex()}
+                            className="hover:text-village-primary"
+                        >
+                            Agenda
+                        </Link>
+                        <Link
+                            href={galleryIndex()}
+                            className="hover:text-village-primary"
+                        >
+                            Galeri
                         </Link>
                         <Link
                             href={transparencyIndex()}

@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\ContactMessageController;
+use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PotentialController;
 use App\Http\Controllers\Public\TransparencyController;
@@ -26,6 +28,8 @@ Route::get('berita', [NewsController::class, 'index'])->name('news.index');
 Route::get('berita/{slug}', [NewsController::class, 'show'])->name('news.show');
 Route::get('pengumuman', [AnnouncementController::class, 'index'])
     ->name('announcements.index');
+Route::get('agenda', AgendaController::class)->name('agendas.index');
+Route::get('galeri', GalleryController::class)->name('gallery.index');
 Route::get('transparansi', TransparencyController::class)
     ->name('transparency.index');
 Route::get('potensi', [PotentialController::class, 'index'])

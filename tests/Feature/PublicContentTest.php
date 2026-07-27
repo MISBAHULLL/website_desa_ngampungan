@@ -194,6 +194,97 @@ test('the public announcement index renders its Inertia page', function () {
             ->component('announcements/index'));
 });
 
+test('the public agenda index renders its Inertia page with a canonical URL', function () {
+    $this->get(route('agendas.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('agenda/index')
+            ->where('canonicalUrl', route('agendas.index')));
+});
+
+test('the public gallery index renders its Inertia page with a canonical URL', function () {
+    $this->get(route('gallery.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('gallery/index')
+            ->where('canonicalUrl', route('gallery.index')));
+});
+
+test('the agenda and gallery modules expose filters, inline details, and an accessible lightbox', function () {
+    $agendaPageSource = file_get_contents(resource_path('js/pages/agenda/index.tsx'));
+    $agendaDataSource = file_get_contents(resource_path('js/lib/dummy-village-agendas.ts'));
+    $agendaCardSource = file_get_contents(resource_path('js/components/village-agenda-card.tsx'));
+    $galleryPageSource = file_get_contents(resource_path('js/pages/gallery/index.tsx'));
+    $galleryDataSource = file_get_contents(resource_path('js/lib/dummy-village-gallery.ts'));
+    $galleryLightboxSource = file_get_contents(resource_path('js/components/village-gallery-lightbox.tsx'));
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+    $publicShellSource = file_get_contents(resource_path('js/components/public-page-shell.tsx'));
+    $appSource = file_get_contents(resource_path('js/app.tsx'));
+
+    expect($agendaPageSource)
+        ->not->toBeFalse()
+        ->toContain('head-key="canonical"')
+        ->toContain('aria-label="Breadcrumb"')
+        ->toContain('role="tablist"')
+        ->toContain('agendaCategories.map')
+        ->toContain('VillageAgendaCard')
+        ->toContain('data simulasi');
+
+    expect($agendaDataSource)
+        ->not->toBeFalse()
+        ->toContain('dummyVillageAgendas')
+        ->toContain("status: 'upcoming'")
+        ->toContain("status: 'completed'")
+        ->toContain('featuredDummyVillageAgenda');
+
+    expect($agendaCardSource)
+        ->not->toBeFalse()
+        ->toContain('aria-expanded={isExpanded}')
+        ->toContain('Lihat rincian')
+        ->toContain('agenda.contact');
+
+    expect($galleryPageSource)
+        ->not->toBeFalse()
+        ->toContain('head-key="canonical"')
+        ->toContain('aria-label="Breadcrumb"')
+        ->toContain('dummyVillageGalleryCategories.map')
+        ->toContain('VillageGalleryLightbox')
+        ->toContain('Data simulasi frontend');
+
+    expect($galleryDataSource)
+        ->not->toBeFalse()
+        ->toContain('dummyVillageGalleryPhotos')
+        ->toContain('dummyVillageGalleryCategories')
+        ->toContain("category: 'Kegiatan Desa'")
+        ->toContain("category: 'Pembangunan'")
+        ->toContain("category: 'UMKM'")
+        ->toContain("category: 'Alam & Pertanian'");
+
+    expect($galleryLightboxSource)
+        ->not->toBeFalse()
+        ->toContain('role="dialog"')
+        ->toContain('aria-modal="true"')
+        ->toContain("event.key === 'Escape'")
+        ->toContain("event.key === 'ArrowLeft'")
+        ->toContain("event.key === 'ArrowRight'");
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('agendasIndex.url()')
+        ->toContain('galleryIndex.url()');
+
+    expect($publicShellSource)
+        ->not->toBeFalse()
+        ->toContain('PublicInformationNavigation')
+        ->toContain("section: 'agenda'")
+        ->toContain("section: 'gallery'");
+
+    expect($appSource)
+        ->not->toBeFalse()
+        ->toContain("name.startsWith('agenda/')")
+        ->toContain("name.startsWith('gallery/')");
+});
+
 test('the public transparency index renders its Inertia page', function () {
     $this->get(route('transparency.index'))
         ->assertOk()
