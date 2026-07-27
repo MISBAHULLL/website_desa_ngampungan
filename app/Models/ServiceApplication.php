@@ -7,6 +7,7 @@ use Database\Factories\ServiceApplicationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
@@ -21,6 +22,9 @@ use Illuminate\Support\Carbon;
  * @property string $address
  * @property string $purpose
  * @property ServiceApplicationStatus $status
+ * @property string|null $admin_notes
+ * @property int|null $reviewed_by
+ * @property Carbon|null $reviewed_at
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property Carbon $submitted_at
@@ -37,6 +41,9 @@ use Illuminate\Support\Carbon;
     'address',
     'purpose',
     'status',
+    'admin_notes',
+    'reviewed_by',
+    'reviewed_at',
     'ip_address',
     'user_agent',
     'submitted_at',
@@ -62,6 +69,7 @@ class ServiceApplication extends Model
         'phone',
         'address',
         'purpose',
+        'admin_notes',
         'ip_address',
         'user_agent',
     ];
@@ -75,6 +83,14 @@ class ServiceApplication extends Model
     }
 
     /**
+     * @return BelongsTo<User, $this>
+     */
+    public function reviewer(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'reviewed_by');
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array
@@ -85,8 +101,10 @@ class ServiceApplication extends Model
             'phone' => 'encrypted',
             'address' => 'encrypted',
             'purpose' => 'encrypted',
+            'admin_notes' => 'encrypted',
             'status' => ServiceApplicationStatus::class,
             'submitted_at' => 'immutable_datetime',
+            'reviewed_at' => 'immutable_datetime',
         ];
     }
 }

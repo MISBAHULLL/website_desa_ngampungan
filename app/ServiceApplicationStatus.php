@@ -10,4 +10,16 @@ enum ServiceApplicationStatus: string
     case Approved = 'approved';
     case Rejected = 'rejected';
     case Completed = 'completed';
+
+    public function label(): string
+    {
+        return match ($this) {
+            self::Submitted => 'Pengajuan masuk',
+            self::InReview => 'Sedang diperiksa',
+            self::NeedsRevision => 'Perlu perbaikan',
+            self::Approved => 'Disetujui',
+            self::Rejected => 'Ditolak',
+            self::Completed => 'Selesai',
+        };
+    }
 }

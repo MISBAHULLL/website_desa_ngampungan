@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\ServiceApplicationController as AdminServiceApplicationController;
+use App\Http\Controllers\Admin\ServiceApplicationDocumentController as AdminServiceApplicationDocumentController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\ContactMessageController;
@@ -63,6 +65,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'dashboard/pesan/{contactMessage}',
         [AdminContactMessageController::class, 'updateStatus'],
     )->name('admin.contact-messages.update-status');
+    Route::get(
+        'dashboard/layanan',
+        [AdminServiceApplicationController::class, 'index'],
+    )->name('admin.service-applications.index');
+    Route::get(
+        'dashboard/layanan/{serviceApplication}',
+        [AdminServiceApplicationController::class, 'show'],
+    )->name('admin.service-applications.show');
+    Route::patch(
+        'dashboard/layanan/{serviceApplication}',
+        [AdminServiceApplicationController::class, 'update'],
+    )->name('admin.service-applications.update');
+    Route::get(
+        'dashboard/layanan/{serviceApplication}/dokumen/{document}',
+        AdminServiceApplicationDocumentController::class,
+    )
+        ->scopeBindings()
+        ->name('admin.service-applications.documents.download');
 });
 
 require __DIR__.'/settings.php';
