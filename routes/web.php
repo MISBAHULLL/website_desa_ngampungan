@@ -7,6 +7,7 @@ use App\Http\Controllers\Public\ContactMessageController;
 use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PotentialController;
+use App\Http\Controllers\Public\ServiceApplicationController;
 use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
@@ -34,8 +35,15 @@ Route::get('galeri', GalleryController::class)->name('gallery.index');
 Route::get('layanan', [ServiceController::class, 'index'])
     ->name('services.index');
 Route::get('layanan/{slug}', [ServiceController::class, 'show'])
-    ->where('slug', '[a-z0-9-]+')
+    ->whereIn('slug', array_keys((array) config('village_services.services')))
     ->name('services.show');
+Route::post(
+    'layanan/{slug}/pengajuan',
+    ServiceApplicationController::class,
+)
+    ->whereIn('slug', array_keys((array) config('village_services.services')))
+    ->middleware('throttle:service-applications')
+    ->name('service-applications.store');
 Route::get('transparansi', TransparencyController::class)
     ->name('transparency.index');
 Route::get('potensi', [PotentialController::class, 'index'])

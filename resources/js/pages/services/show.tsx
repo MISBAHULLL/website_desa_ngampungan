@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageServiceApplicationForm } from '@/components/village-service-application-form';
+import type { ServiceApplicationSuccess } from '@/components/village-service-application-form';
 import {
     findDummyVillageService,
     findDummyVillageServiceApplicationDetail,
@@ -28,11 +29,13 @@ import { index as servicesIndex } from '@/routes/services';
 type ServiceShowPageProps = {
     slug: string;
     canonicalUrl: string;
+    serviceApplicationSuccess: ServiceApplicationSuccess | null;
 };
 
 export default function ServiceShow({
     slug,
     canonicalUrl,
+    serviceApplicationSuccess,
 }: ServiceShowPageProps) {
     const service = findDummyVillageService(slug);
     const detail = findDummyVillageServiceApplicationDetail(slug);
@@ -76,7 +79,7 @@ export default function ServiceShow({
                 <meta
                     head-key="description"
                     name="description"
-                    content={`${service.shortDescription} Lihat persyaratan dan coba alur pengajuan frontend.`}
+                    content={`${service.shortDescription} Lihat persyaratan dan ajukan layanan secara daring.`}
                 />
                 <meta
                     head-key="og:title"
@@ -155,7 +158,7 @@ export default function ServiceShow({
                             href="#form-pengajuan"
                             className="mt-8 inline-flex min-h-12 items-center gap-2 bg-village-accent px-5 py-3 text-sm font-bold text-village-primary-dark transition hover:bg-white"
                         >
-                            Mulai simulasi pengajuan
+                            Mulai pengajuan
                             <ArrowDown aria-hidden="true" className="size-4" />
                         </a>
                     </div>
@@ -336,7 +339,7 @@ export default function ServiceShow({
                                 href="#form-pengajuan"
                                 className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 bg-village-primary px-4 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark"
                             >
-                                Coba formulir
+                                Ajukan layanan
                                 <ArrowDown
                                     aria-hidden="true"
                                     className="size-4"
@@ -418,18 +421,18 @@ export default function ServiceShow({
                 <div className="mx-auto max-w-[1080px] px-5 lg:px-12">
                     <div className="max-w-3xl">
                         <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                            Simulasi Pengajuan
+                            Pengajuan Daring
                         </p>
                         <h2
                             id="application-form-heading"
                             className="mt-3 text-3xl font-bold tracking-tight md:text-4xl"
                         >
-                            Coba alur formulir layanan
+                            Ajukan layanan kepada pemerintah desa
                         </h2>
                         <p className="mt-4 leading-7 text-village-muted">
-                            Form ini membantu menilai pengalaman warga sebelum
-                            sistem penyimpanan dan penerusan ke admin
-                            dikembangkan pada tahap berikutnya.
+                            Lengkapi data dan dokumen persyaratan. Sistem akan
+                            menyimpan pengajuan serta membuat nomor referensi
+                            yang perlu Anda catat.
                         </p>
                     </div>
 
@@ -437,6 +440,7 @@ export default function ServiceShow({
                         <VillageServiceApplicationForm
                             service={service}
                             detail={detail}
+                            submissionSuccess={serviceApplicationSuccess}
                         />
                     </div>
 

@@ -387,10 +387,12 @@ test('the second service increment exposes requirements, process, and a client-o
         ->toContain('validateDocuments')
         ->toContain('type="file"')
         ->toContain('maximumFileSize')
-        ->toContain('Selesaikan simulasi')
-        ->toContain('Data dan dokumen tidak disimpan')
-        ->not->toContain('router.post')
-        ->not->toContain('<Form');
+        ->toContain('ServiceApplicationController(service.slug)')
+        ->toContain('forceFormData: true')
+        ->toContain('Kirim pengajuan')
+        ->toContain('Pengajuan berhasil diterima sistem')
+        ->toContain('privacy_consent')
+        ->not->toContain('SIM-');
 
     expect($serviceDataSource)
         ->not->toBeFalse()

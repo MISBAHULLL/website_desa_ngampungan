@@ -1,3 +1,4 @@
+import { Link, useForm } from '@inertiajs/react';
 import {
     ArrowLeft,
     ArrowRight,
@@ -5,41 +6,46 @@ import {
     CheckCircle2,
     FileText,
     Info,
-    RotateCcw,
+    LoaderCircle,
+    LockKeyhole,
     ShieldAlert,
     Upload,
     UserRound,
 } from 'lucide-react';
 import { useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
+import ServiceApplicationController from '@/actions/App/Http/Controllers/Public/ServiceApplicationController';
 import InputError from '@/components/input-error';
 import type {
     VillageService,
     VillageServiceApplicationDetail,
 } from '@/lib/dummy-village-services';
+import { show as serviceShow } from '@/routes/services';
+
+export type ServiceApplicationSuccess = {
+    referenceNumber: string;
+    serviceTitle: string;
+    submittedAt: string;
+};
 
 type ApplicationFormProps = {
     service: VillageService;
     detail: VillageServiceApplicationDetail;
+    submissionSuccess: ServiceApplicationSuccess | null;
 };
 
-type ApplicantData = {
-    fullName: string;
-    nationalId: string;
+type ServiceApplicationFormData = {
+    applicant_name: string;
+    national_id: string;
     phone: string;
     address: string;
     purpose: string;
+    documents: Record<string, File | null>;
+    privacy_consent: boolean;
+    website: string;
 };
 
-type FieldErrors = Partial<Record<keyof ApplicantData | string, string>>;
-
-const initialApplicantData: ApplicantData = {
-    fullName: '',
-    nationalId: '',
-    phone: '',
-    address: '',
-    purpose: '',
-};
+type ClientErrors = Record<string, string | undefined>;
 
 const maximumFileSize = 2 * 1024 * 1024;
 
@@ -47,19 +53,16 @@ const formSteps = [
     {
         number: 1,
         label: 'Data Pemohon',
-        description: 'Identitas dan keperluan',
         icon: UserRound,
     },
     {
         number: 2,
         label: 'Dokumen',
-        description: 'Berkas persyaratan',
         icon: Upload,
     },
     {
         number: 3,
         label: 'Periksa',
-        description: 'Konfirmasi pengajuan',
         icon: FileText,
     },
 ] as const;
@@ -81,68 +84,81 @@ function maskNationalId(nationalId: string): string {
 export function VillageServiceApplicationForm({
     service,
     detail,
+    submissionSuccess,
 }: ApplicationFormProps) {
     const formRef = useRef<HTMLFormElement>(null);
     const [currentStep, setCurrentStep] = useState(1);
-    const [applicantData, setApplicantData] =
-        useState<ApplicantData>(initialApplicantData);
-    const [documents, setDocuments] = useState<Record<string, File | null>>({});
-    const [errors, setErrors] = useState<FieldErrors>({});
-    const [hasAcceptedSimulation, setHasAcceptedSimulation] = useState(false);
-    const [simulationReference, setSimulationReference] = useState<
-        string | null
-    >(null);
+    const [clientErrors, setClientErrors] = useState<ClientErrors>({});
+    const [isSuccessDismissed, setIsSuccessDismissed] = useState(false);
+    const form = useForm<ServiceApplicationFormData>({
+        applicant_name: '',
+        national_id: '',
+        phone: '',
+        address: '',
+        purpose: '',
+        documents: Object.fromEntries(
+            detail.requiredDocuments.map((document) => [document.key, null]),
+        ),
+        privacy_consent: false,
+        website: '',
+    });
 
-    const updateApplicantData = (field: keyof ApplicantData, value: string) => {
-        setApplicantData((currentData) => ({
-            ...currentData,
-            [field]: value,
-        }));
-        setErrors((currentErrors) => ({
+    const serverErrors = form.errors as Record<string, string | undefined>;
+    const visibleSuccess = isSuccessDismissed ? null : submissionSuccess;
+
+    const clearFieldError = (field: string) => {
+        setClientErrors((currentErrors) => ({
             ...currentErrors,
             [field]: undefined,
         }));
+        form.clearErrors();
     };
 
+    const fieldError = (
+        clientField: string,
+        serverField = clientField,
+    ): string | undefined =>
+        clientErrors[clientField] ?? serverErrors[serverField];
+
     const validateApplicantData = (): boolean => {
-        const nextErrors: FieldErrors = {};
+        const nextErrors: ClientErrors = {};
 
-        if (applicantData.fullName.trim().length < 3) {
-            nextErrors.fullName = 'Nama lengkap minimal 3 karakter.';
+        if (form.data.applicant_name.trim().length < 3) {
+            nextErrors.applicant_name = 'Nama lengkap minimal 3 karakter.';
         }
 
-        if (!/^\d{16}$/.test(applicantData.nationalId)) {
-            nextErrors.nationalId = 'NIK simulasi harus terdiri dari 16 angka.';
+        if (!/^\d{16}$/.test(form.data.national_id)) {
+            nextErrors.national_id = 'NIK harus terdiri dari 16 angka.';
         }
 
-        if (!/^(\+62|62|0)\d{8,13}$/.test(applicantData.phone)) {
+        if (!/^(\+62|62|0)\d{8,13}$/.test(form.data.phone)) {
             nextErrors.phone = 'Masukkan nomor telepon Indonesia yang valid.';
         }
 
-        if (applicantData.address.trim().length < 10) {
+        if (form.data.address.trim().length < 10) {
             nextErrors.address = 'Alamat minimal 10 karakter.';
         }
 
-        if (applicantData.purpose.trim().length < 10) {
+        if (form.data.purpose.trim().length < 10) {
             nextErrors.purpose = 'Tujuan pengajuan minimal 10 karakter.';
         }
 
-        setErrors(nextErrors);
+        setClientErrors(nextErrors);
 
         return Object.keys(nextErrors).length === 0;
     };
 
     const validateDocuments = (): boolean => {
-        const nextErrors: FieldErrors = {};
+        const nextErrors: ClientErrors = {};
 
         detail.requiredDocuments.forEach((document) => {
-            if (document.required && !documents[document.key]) {
+            if (document.required && !form.data.documents[document.key]) {
                 nextErrors[`document-${document.key}`] =
                     `${document.label} wajib dipilih.`;
             }
         });
 
-        setErrors(nextErrors);
+        setClientErrors(nextErrors);
 
         return Object.keys(nextErrors).length === 0;
     };
@@ -155,11 +171,11 @@ export function VillageServiceApplicationForm({
         const errorKey = `document-${documentKey}`;
 
         if (file && file.size > maximumFileSize) {
-            setDocuments((currentDocuments) => ({
-                ...currentDocuments,
+            form.setData('documents', {
+                ...form.data.documents,
                 [documentKey]: null,
-            }));
-            setErrors((currentErrors) => ({
+            });
+            setClientErrors((currentErrors) => ({
                 ...currentErrors,
                 [errorKey]: 'Ukuran berkas maksimal 2 MB.',
             }));
@@ -168,14 +184,11 @@ export function VillageServiceApplicationForm({
             return;
         }
 
-        setDocuments((currentDocuments) => ({
-            ...currentDocuments,
+        form.setData('documents', {
+            ...form.data.documents,
             [documentKey]: file,
-        }));
-        setErrors((currentErrors) => ({
-            ...currentErrors,
-            [errorKey]: undefined,
-        }));
+        });
+        clearFieldError(errorKey);
     };
 
     const continueToNextStep = () => {
@@ -191,44 +204,64 @@ export function VillageServiceApplicationForm({
     };
 
     const returnToPreviousStep = () => {
-        setErrors({});
+        setClientErrors({});
+        form.clearErrors();
         setCurrentStep((step) => Math.max(step - 1, 1));
     };
 
-    const submitSimulation = (event: FormEvent<HTMLFormElement>) => {
+    const submitApplication = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
-        if (!hasAcceptedSimulation) {
-            setErrors({
-                simulationConsent:
-                    'Konfirmasi pemahaman simulasi sebelum melanjutkan.',
+        if (!form.data.privacy_consent) {
+            setClientErrors({
+                privacy_consent:
+                    'Persetujuan penyimpanan data wajib diberikan.',
             });
 
             return;
         }
 
-        const referenceSuffix = service.slug
-            .split('-')
-            .map((word) => word.charAt(0))
-            .join('')
-            .slice(0, 4)
-            .toUpperCase();
+        form.submit(ServiceApplicationController(service.slug), {
+            forceFormData: true,
+            preserveScroll: true,
+            onError: (errors) => {
+                const errorKeys = Object.keys(errors);
 
-        setSimulationReference(`SIM-${referenceSuffix}-0001`);
-        setErrors({});
+                if (
+                    errorKeys.some((key) =>
+                        [
+                            'applicant_name',
+                            'national_id',
+                            'phone',
+                            'address',
+                            'purpose',
+                        ].includes(key),
+                    )
+                ) {
+                    setCurrentStep(1);
+                } else if (
+                    errorKeys.some((key) => key.startsWith('documents'))
+                ) {
+                    setCurrentStep(2);
+                }
+            },
+            onSuccess: () => {
+                formRef.current?.reset();
+                form.reset();
+                setClientErrors({});
+                setCurrentStep(1);
+                setIsSuccessDismissed(false);
+            },
+        });
     };
 
-    const resetSimulation = () => {
-        formRef.current?.reset();
-        setApplicantData(initialApplicantData);
-        setDocuments({});
-        setErrors({});
-        setHasAcceptedSimulation(false);
-        setSimulationReference(null);
+    const startAnotherApplication = () => {
+        setIsSuccessDismissed(true);
+        form.reset();
         setCurrentStep(1);
     };
 
-    if (simulationReference) {
+    if (visibleSuccess) {
         return (
             <div
                 role="status"
@@ -239,44 +272,52 @@ export function VillageServiceApplicationForm({
                         <CheckCircle2 aria-hidden="true" className="size-6" />
                     </span>
                     <p className="mt-6 text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                        Pratinjau Berhasil Dibuat
+                        Pengajuan Tersimpan
                     </p>
                     <h3 className="mt-2 text-2xl font-bold">
-                        Simulasi pengajuan sudah lengkap
+                        Pengajuan berhasil diterima sistem
                     </h3>
                     <p className="mt-3 max-w-2xl leading-7 text-village-muted">
-                        Nomor simulasi{' '}
+                        Nomor referensi{' '}
                         <strong className="text-village-ink">
-                            {simulationReference}
-                        </strong>
-                        . Data dan dokumen tidak disimpan, tidak diunggah, dan
-                        tidak masuk ke sistem admin.
+                            {visibleSuccess.referenceNumber}
+                        </strong>{' '}
+                        untuk {visibleSuccess.serviceTitle} telah dibuat pada{' '}
+                        {visibleSuccess.submittedAt} WIB.
                     </p>
 
-                    <div className="mt-6 flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
-                        <Info
+                    <div className="mt-6 flex items-start gap-3 border border-village-primary/20 bg-village-primary-light p-4 text-sm leading-6 text-village-primary-dark">
+                        <LockKeyhole
                             aria-hidden="true"
                             className="mt-0.5 size-5 shrink-0"
                         />
-                        Nomor ini hanya contoh tampilan dan tidak dapat dipakai
-                        untuk melacak layanan.
+                        Data tersimpan terenkripsi dan dokumen berada di
+                        penyimpanan privat. Simpan nomor referensi ini. Fitur
+                        pelacakan akan dibuat pada tahap berikutnya.
                     </div>
 
-                    <button
-                        type="button"
-                        onClick={resetSimulation}
-                        className="mt-6 inline-flex min-h-11 items-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary"
-                    >
-                        <RotateCcw aria-hidden="true" className="size-4" />
-                        Ulangi simulasi
-                    </button>
+                    <div className="mt-6 flex flex-wrap gap-3">
+                        <button
+                            type="button"
+                            onClick={startAnotherApplication}
+                            className="inline-flex min-h-11 items-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark"
+                        >
+                            Ajukan layanan lagi
+                        </button>
+                        <Link
+                            href={serviceShow(service.slug)}
+                            className="inline-flex min-h-11 items-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary"
+                        >
+                            Muat ulang halaman
+                        </Link>
+                    </div>
                 </div>
             </div>
         );
     }
 
     return (
-        <form ref={formRef} noValidate onSubmit={submitSimulation}>
+        <form ref={formRef} noValidate onSubmit={submitApplication}>
             <ol
                 aria-label="Tahapan formulir pengajuan"
                 className="grid border border-village-border bg-white md:grid-cols-3"
@@ -329,27 +370,46 @@ export function VillageServiceApplicationForm({
             </ol>
 
             <div className="mt-5 border border-village-border bg-white p-5 md:p-8">
-                <div className="flex items-start gap-3 border border-village-info/25 bg-[#f3f8fd] p-4 text-sm leading-6 text-[#315f7a]">
+                <div className="flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
                     <ShieldAlert
                         aria-hidden="true"
                         className="mt-0.5 size-5 shrink-0"
                     />
                     <p>
-                        <strong>Mode simulasi frontend.</strong> Gunakan data
-                        dan berkas contoh. Jangan masukkan NIK, alamat, nomor
-                        telepon, atau dokumen pribadi asli.
+                        <strong>Sistem masih dalam tahap pengembangan.</strong>{' '}
+                        Data yang dikirim akan tersimpan di database
+                        pengembangan dan dokumen di penyimpanan privat. Gunakan
+                        data uji sampai persyaratan dikonfirmasi pemerintah
+                        desa.
                     </p>
                 </div>
 
-                {Object.values(errors).some(Boolean) && (
+                {(Object.values(clientErrors).some(Boolean) ||
+                    Object.values(serverErrors).some(Boolean)) && (
                     <div
                         role="alert"
                         className="mt-5 border-l-4 border-village-error bg-red-50 px-4 py-3 text-sm font-semibold text-red-800"
                     >
-                        Periksa kembali bagian yang ditandai sebelum
-                        melanjutkan.
+                        Pengajuan belum dapat dikirim. Periksa kembali bagian
+                        yang ditandai.
                     </div>
                 )}
+
+                <div
+                    aria-hidden="true"
+                    className="absolute -left-[10000px] size-px overflow-hidden"
+                >
+                    <label htmlFor="application-website">Website</label>
+                    <input
+                        id="application-website"
+                        tabIndex={-1}
+                        autoComplete="off"
+                        value={form.data.website}
+                        onChange={(event) =>
+                            form.setData('website', event.target.value)
+                        }
+                    />
+                </div>
 
                 {currentStep === 1 && (
                     <fieldset className="mt-8">
@@ -357,8 +417,8 @@ export function VillageServiceApplicationForm({
                             Data pemohon
                         </legend>
                         <p className="mt-2 text-sm leading-6 text-village-muted">
-                            Isikan data contoh untuk melihat alur validasi
-                            formulir.
+                            Data ini digunakan petugas untuk memverifikasi dan
+                            menghubungi pemohon.
                         </p>
 
                         <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -374,22 +434,24 @@ export function VillageServiceApplicationForm({
                                 </label>
                                 <input
                                     id="applicant-name"
-                                    value={applicantData.fullName}
-                                    onChange={(event) =>
-                                        updateApplicantData(
-                                            'fullName',
+                                    value={form.data.applicant_name}
+                                    onChange={(event) => {
+                                        form.setData(
+                                            'applicant_name',
                                             event.target.value,
-                                        )
-                                    }
-                                    aria-invalid={Boolean(errors.fullName)}
+                                        );
+                                        clearFieldError('applicant_name');
+                                    }}
+                                    aria-invalid={Boolean(
+                                        fieldError('applicant_name'),
+                                    )}
                                     aria-describedby="applicant-name-error"
-                                    autoComplete="off"
-                                    placeholder="Contoh: Budi Santoso"
+                                    autoComplete="name"
                                     className="mt-2 min-h-12 w-full border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
                                 />
                                 <InputError
                                     id="applicant-name-error"
-                                    message={errors.fullName}
+                                    message={fieldError('applicant_name')}
                                     className="mt-2"
                                 />
                             </div>
@@ -399,7 +461,7 @@ export function VillageServiceApplicationForm({
                                     htmlFor="applicant-national-id"
                                     className="text-sm font-bold"
                                 >
-                                    NIK simulasi{' '}
+                                    NIK{' '}
                                     <span className="text-village-error">
                                         *
                                     </span>
@@ -408,25 +470,27 @@ export function VillageServiceApplicationForm({
                                     id="applicant-national-id"
                                     inputMode="numeric"
                                     maxLength={16}
-                                    value={applicantData.nationalId}
-                                    onChange={(event) =>
-                                        updateApplicantData(
-                                            'nationalId',
+                                    value={form.data.national_id}
+                                    onChange={(event) => {
+                                        form.setData(
+                                            'national_id',
                                             event.target.value.replace(
                                                 /\D/g,
                                                 '',
                                             ),
-                                        )
-                                    }
-                                    aria-invalid={Boolean(errors.nationalId)}
+                                        );
+                                        clearFieldError('national_id');
+                                    }}
+                                    aria-invalid={Boolean(
+                                        fieldError('national_id'),
+                                    )}
                                     aria-describedby="applicant-national-id-error"
                                     autoComplete="off"
-                                    placeholder="16 angka contoh"
                                     className="mt-2 min-h-12 w-full border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
                                 />
                                 <InputError
                                     id="applicant-national-id-error"
-                                    message={errors.nationalId}
+                                    message={fieldError('national_id')}
                                     className="mt-2"
                                 />
                             </div>
@@ -436,7 +500,7 @@ export function VillageServiceApplicationForm({
                                     htmlFor="applicant-phone"
                                     className="text-sm font-bold"
                                 >
-                                    Nomor telepon simulasi{' '}
+                                    Nomor telepon{' '}
                                     <span className="text-village-error">
                                         *
                                     </span>
@@ -444,25 +508,25 @@ export function VillageServiceApplicationForm({
                                 <input
                                     id="applicant-phone"
                                     type="tel"
-                                    value={applicantData.phone}
-                                    onChange={(event) =>
-                                        updateApplicantData(
+                                    value={form.data.phone}
+                                    onChange={(event) => {
+                                        form.setData(
                                             'phone',
                                             event.target.value.replace(
                                                 /[^\d+]/g,
                                                 '',
                                             ),
-                                        )
-                                    }
-                                    aria-invalid={Boolean(errors.phone)}
+                                        );
+                                        clearFieldError('phone');
+                                    }}
+                                    aria-invalid={Boolean(fieldError('phone'))}
                                     aria-describedby="applicant-phone-error"
-                                    autoComplete="off"
-                                    placeholder="Contoh: 081234567890"
+                                    autoComplete="tel"
                                     className="mt-2 min-h-12 w-full border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
                                 />
                                 <InputError
                                     id="applicant-phone-error"
-                                    message={errors.phone}
+                                    message={fieldError('phone')}
                                     className="mt-2"
                                 />
                             </div>
@@ -472,7 +536,7 @@ export function VillageServiceApplicationForm({
                                     htmlFor="applicant-address"
                                     className="text-sm font-bold"
                                 >
-                                    Alamat simulasi{' '}
+                                    Alamat{' '}
                                     <span className="text-village-error">
                                         *
                                     </span>
@@ -480,22 +544,24 @@ export function VillageServiceApplicationForm({
                                 <textarea
                                     id="applicant-address"
                                     rows={3}
-                                    value={applicantData.address}
-                                    onChange={(event) =>
-                                        updateApplicantData(
+                                    value={form.data.address}
+                                    onChange={(event) => {
+                                        form.setData(
                                             'address',
                                             event.target.value,
-                                        )
-                                    }
-                                    aria-invalid={Boolean(errors.address)}
+                                        );
+                                        clearFieldError('address');
+                                    }}
+                                    aria-invalid={Boolean(
+                                        fieldError('address'),
+                                    )}
                                     aria-describedby="applicant-address-error"
-                                    autoComplete="off"
-                                    placeholder="Contoh alamat, bukan alamat asli"
+                                    autoComplete="street-address"
                                     className="mt-2 w-full resize-y border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
                                 />
                                 <InputError
                                     id="applicant-address-error"
-                                    message={errors.address}
+                                    message={fieldError('address')}
                                     className="mt-2"
                                 />
                             </div>
@@ -513,21 +579,23 @@ export function VillageServiceApplicationForm({
                                 <textarea
                                     id="application-purpose"
                                     rows={4}
-                                    value={applicantData.purpose}
-                                    onChange={(event) =>
-                                        updateApplicantData(
+                                    value={form.data.purpose}
+                                    onChange={(event) => {
+                                        form.setData(
                                             'purpose',
                                             event.target.value,
-                                        )
-                                    }
-                                    aria-invalid={Boolean(errors.purpose)}
+                                        );
+                                        clearFieldError('purpose');
+                                    }}
+                                    aria-invalid={Boolean(
+                                        fieldError('purpose'),
+                                    )}
                                     aria-describedby="application-purpose-error"
-                                    placeholder="Jelaskan kebutuhan layanan secara ringkas"
                                     className="mt-2 w-full resize-y border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
                                 />
                                 <InputError
                                     id="application-purpose-error"
-                                    message={errors.purpose}
+                                    message={fieldError('purpose')}
                                     className="mt-2"
                                 />
                             </div>
@@ -541,14 +609,15 @@ export function VillageServiceApplicationForm({
                             Dokumen persyaratan
                         </legend>
                         <p className="mt-2 text-sm leading-6 text-village-muted">
-                            Pilih berkas contoh berformat PDF, JPG, JPEG, atau
-                            PNG dengan ukuran maksimal 2 MB.
+                            PDF, JPG, JPEG, atau PNG. Maksimal 2 MB per berkas.
                         </p>
 
                         <div className="mt-6 grid gap-4">
                             {detail.requiredDocuments.map((document) => {
-                                const errorKey = `document-${document.key}`;
-                                const selectedFile = documents[document.key];
+                                const clientErrorKey = `document-${document.key}`;
+                                const serverErrorKey = `documents.${document.key}`;
+                                const selectedFile =
+                                    form.data.documents[document.key];
 
                                 return (
                                     <div
@@ -599,13 +668,16 @@ export function VillageServiceApplicationForm({
                                                 )
                                             }
                                             aria-invalid={Boolean(
-                                                errors[errorKey],
+                                                fieldError(
+                                                    clientErrorKey,
+                                                    serverErrorKey,
+                                                ),
                                             )}
-                                            aria-describedby={`${errorKey}-status ${errorKey}-error`}
+                                            aria-describedby={`${clientErrorKey}-status ${clientErrorKey}-error`}
                                             className="sr-only"
                                         />
                                         <p
-                                            id={`${errorKey}-status`}
+                                            id={`${clientErrorKey}-status`}
                                             className="mt-3 text-xs font-semibold text-village-muted"
                                         >
                                             {selectedFile
@@ -613,8 +685,11 @@ export function VillageServiceApplicationForm({
                                                 : 'Belum ada berkas dipilih'}
                                         </p>
                                         <InputError
-                                            id={`${errorKey}-error`}
-                                            message={errors[errorKey]}
+                                            id={`${clientErrorKey}-error`}
+                                            message={fieldError(
+                                                clientErrorKey,
+                                                serverErrorKey,
+                                            )}
                                             className="mt-2"
                                         />
                                     </div>
@@ -627,10 +702,10 @@ export function VillageServiceApplicationForm({
                 {currentStep === 3 && (
                     <div className="mt-8">
                         <h3 className="text-2xl font-bold">
-                            Periksa simulasi pengajuan
+                            Periksa pengajuan
                         </h3>
                         <p className="mt-2 text-sm leading-6 text-village-muted">
-                            Pastikan data contoh dan nama berkas sudah sesuai.
+                            Periksa kembali data sebelum dikirim ke server.
                         </p>
 
                         <div className="mt-6 grid gap-5 lg:grid-cols-2">
@@ -646,16 +721,16 @@ export function VillageServiceApplicationForm({
                                 </h4>
                                 <dl className="mt-4 grid gap-4 text-sm">
                                     {[
-                                        ['Nama', applicantData.fullName],
+                                        ['Nama', form.data.applicant_name],
                                         [
-                                            'NIK simulasi',
+                                            'NIK',
                                             maskNationalId(
-                                                applicantData.nationalId,
+                                                form.data.national_id,
                                             ),
                                         ],
-                                        ['Telepon', applicantData.phone],
-                                        ['Alamat', applicantData.address],
-                                        ['Tujuan', applicantData.purpose],
+                                        ['Telepon', form.data.phone],
+                                        ['Alamat', form.data.address],
+                                        ['Tujuan', form.data.purpose],
                                     ].map(([label, value]) => (
                                         <div
                                             key={label}
@@ -698,8 +773,9 @@ export function VillageServiceApplicationForm({
                                                         {document.label}
                                                     </strong>
                                                     <span className="mt-1 block text-village-muted">
-                                                        {documents[document.key]
-                                                            ?.name ??
+                                                        {form.data.documents[
+                                                            document.key
+                                                        ]?.name ??
                                                             'Tidak dipilih (opsional)'}
                                                     </span>
                                                 </span>
@@ -713,31 +789,50 @@ export function VillageServiceApplicationForm({
                         <label className="mt-6 flex cursor-pointer items-start gap-3 border border-village-border bg-village-canvas p-4">
                             <input
                                 type="checkbox"
-                                checked={hasAcceptedSimulation}
+                                checked={form.data.privacy_consent}
                                 onChange={(event) => {
-                                    setHasAcceptedSimulation(
+                                    form.setData(
+                                        'privacy_consent',
                                         event.target.checked,
                                     );
-                                    setErrors((currentErrors) => ({
-                                        ...currentErrors,
-                                        simulationConsent: undefined,
-                                    }));
+                                    clearFieldError('privacy_consent');
                                 }}
-                                aria-invalid={Boolean(errors.simulationConsent)}
-                                aria-describedby="simulation-consent-error"
+                                aria-invalid={Boolean(
+                                    fieldError('privacy_consent'),
+                                )}
+                                aria-describedby="privacy-consent-error"
                                 className="mt-1 size-4 accent-village-primary"
                             />
                             <span className="text-sm leading-6 text-village-muted">
-                                Saya memahami bahwa ini hanya simulasi frontend.
-                                Data tidak disimpan dan tidak dikirim kepada
-                                Pemerintah Desa Ngampungan.
+                                Saya menyetujui penyimpanan dan pemrosesan data
+                                serta dokumen untuk keperluan layanan yang saya
+                                pilih.
                             </span>
                         </label>
                         <InputError
-                            id="simulation-consent-error"
-                            message={errors.simulationConsent}
+                            id="privacy-consent-error"
+                            message={fieldError('privacy_consent')}
                             className="mt-2"
                         />
+                    </div>
+                )}
+
+                {form.progress && (
+                    <div
+                        aria-live="polite"
+                        className="mt-6 border border-village-primary/20 bg-village-primary-light p-4"
+                    >
+                        <div className="flex items-center justify-between gap-4 text-sm font-bold text-village-primary-dark">
+                            <span>Mengunggah dokumen</span>
+                            <span>{form.progress.percentage}%</span>
+                        </div>
+                        <progress
+                            value={form.progress.percentage}
+                            max={100}
+                            className="mt-3 h-2 w-full accent-village-primary"
+                        >
+                            {form.progress.percentage}%
+                        </progress>
                     </div>
                 )}
 
@@ -746,7 +841,8 @@ export function VillageServiceApplicationForm({
                         <button
                             type="button"
                             onClick={returnToPreviousStep}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary"
+                            disabled={form.processing}
+                            className="inline-flex min-h-11 items-center justify-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             <ArrowLeft aria-hidden="true" className="size-4" />
                             Kembali
@@ -767,15 +863,34 @@ export function VillageServiceApplicationForm({
                     ) : (
                         <button
                             type="submit"
-                            className="inline-flex min-h-11 items-center justify-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark"
+                            disabled={form.processing}
+                            className="inline-flex min-h-11 items-center justify-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            <CheckCircle2
-                                aria-hidden="true"
-                                className="size-4"
-                            />
-                            Selesaikan simulasi
+                            {form.processing ? (
+                                <LoaderCircle
+                                    aria-hidden="true"
+                                    className="size-4 animate-spin"
+                                />
+                            ) : (
+                                <CheckCircle2
+                                    aria-hidden="true"
+                                    className="size-4"
+                                />
+                            )}
+                            {form.processing
+                                ? 'Mengirim pengajuan...'
+                                : 'Kirim pengajuan'}
                         </button>
                     )}
+                </div>
+
+                <div className="mt-5 flex items-start gap-3 text-xs leading-5 text-village-muted">
+                    <Info
+                        aria-hidden="true"
+                        className="mt-0.5 size-4 shrink-0"
+                    />
+                    Jika koneksi terputus atau validasi server gagal, data tetap
+                    berada di formulir agar dapat diperbaiki dan dikirim ulang.
                 </div>
             </div>
         </form>
