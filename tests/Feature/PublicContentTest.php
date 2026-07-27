@@ -285,6 +285,69 @@ test('the agenda and gallery modules expose filters, inline details, and an acce
         ->toContain("name.startsWith('gallery/')");
 });
 
+test('the public service directory accepts a supported category filter', function () {
+    $this->get(route('services.index', ['category' => 'population']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('services/index')
+            ->where('initialCategory', 'population')
+            ->where('canonicalUrl', route('services.index')));
+});
+
+test('the public service directory falls back to all for an unknown category', function () {
+    $this->get(route('services.index', ['category' => 'unknown']))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('services/index')
+            ->where('initialCategory', 'all')
+            ->where('canonicalUrl', route('services.index')));
+});
+
+test('the first service directory increment exposes search, categories, and summary cards', function () {
+    $servicePageSource = file_get_contents(resource_path('js/pages/services/index.tsx'));
+    $serviceDataSource = file_get_contents(resource_path('js/lib/dummy-village-services.ts'));
+    $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
+    $publicShellSource = file_get_contents(resource_path('js/components/public-page-shell.tsx'));
+    $appSource = file_get_contents(resource_path('js/app.tsx'));
+
+    expect($servicePageSource)
+        ->not->toBeFalse()
+        ->toContain('head-key="canonical"')
+        ->toContain('aria-label="Breadcrumb"')
+        ->toContain('id="service-search"')
+        ->toContain('villageServiceCategories.map')
+        ->toContain('visibleServices.map')
+        ->toContain('Ringkasan informasi layanan')
+        ->toContain('Data dummy frontend');
+
+    expect($serviceDataSource)
+        ->not->toBeFalse()
+        ->toContain('dummyVillageServices')
+        ->toContain('villageServiceCategories')
+        ->toContain("key: 'administration'")
+        ->toContain("key: 'population'")
+        ->toContain("key: 'agriculture'")
+        ->toContain("key: 'reports'")
+        ->toContain('getDummyVillageServices')
+        ->toContain('findVillageServiceCategory');
+
+    expect($homepageSource)
+        ->not->toBeFalse()
+        ->toContain('servicesIndex({')
+        ->toContain("category: 'administration'")
+        ->toContain('category: service.category')
+        ->not->toContain('href={portalHref}');
+
+    expect($publicShellSource)
+        ->not->toBeFalse()
+        ->toContain("activeSection === 'services'")
+        ->toContain('href={servicesIndex()}');
+
+    expect($appSource)
+        ->not->toBeFalse()
+        ->toContain("name.startsWith('services/')");
+});
+
 test('the public transparency index renders its Inertia page', function () {
     $this->get(route('transparency.index'))
         ->assertOk()

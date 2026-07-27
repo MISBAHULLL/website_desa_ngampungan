@@ -7,6 +7,7 @@ use App\Http\Controllers\Public\ContactMessageController;
 use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PotentialController;
+use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
@@ -30,6 +31,7 @@ Route::get('pengumuman', [AnnouncementController::class, 'index'])
     ->name('announcements.index');
 Route::get('agenda', AgendaController::class)->name('agendas.index');
 Route::get('galeri', GalleryController::class)->name('gallery.index');
+Route::get('layanan', ServiceController::class)->name('services.index');
 Route::get('transparansi', TransparencyController::class)
     ->name('transparency.index');
 Route::get('potensi', [PotentialController::class, 'index'])

@@ -50,6 +50,7 @@ import {
     villagePotentialCategories,
 } from '@/lib/dummy-village-potentials';
 import type { VillagePotentialKey } from '@/lib/dummy-village-potentials';
+import type { VillageServiceCategoryKey } from '@/lib/dummy-village-services';
 import { dashboard, login } from '@/routes';
 import { index as agendasIndex } from '@/routes/agendas';
 import { index as announcementsIndex } from '@/routes/announcements';
@@ -58,6 +59,7 @@ import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
+import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
 
 type NavigationChild = {
@@ -312,6 +314,7 @@ const dummyVillageStatistics = [
 type Service = {
     title: string;
     description: string;
+    category: VillageServiceCategoryKey;
     icon: LucideIcon;
     iconClassName: string;
 };
@@ -320,6 +323,7 @@ const services: Service[] = [
     {
         title: 'Kependudukan',
         description: 'Informasi KK, KTP, dan mutasi penduduk.',
+        category: 'population',
         icon: Users,
         iconClassName:
             'text-village-primary group-hover:bg-village-primary-light',
@@ -327,12 +331,14 @@ const services: Service[] = [
     {
         title: 'Lapor Panen',
         description: 'Pelaporan komoditas dan jadwal distribusi tani.',
+        category: 'agriculture',
         icon: Sprout,
         iconClassName: 'text-village-secondary group-hover:bg-orange-100',
     },
     {
         title: 'Lapor Darurat',
         description: 'Kanal pelaporan infrastruktur dan keamanan.',
+        category: 'reports',
         icon: CircleAlert,
         iconClassName: 'text-village-error group-hover:bg-red-50',
     },
@@ -649,7 +655,6 @@ export default function Welcome() {
     const [activePotentialCategory, setActivePotentialCategory] =
         useState<VillagePotentialKey>('umkm');
     const featuredImageRef = useRef<HTMLImageElement>(null);
-    const portalHref = auth.user ? dashboard() : login();
     const activePotentialMetadata = findVillagePotentialCategory(
         activePotentialCategory,
     );
@@ -1154,7 +1159,11 @@ export default function Welcome() {
 
                             <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
                                 <Link
-                                    href={portalHref}
+                                    href={servicesIndex({
+                                        query: {
+                                            category: 'administration',
+                                        },
+                                    })}
                                     className="group flex min-h-80 flex-col justify-between rounded-3xl bg-village-primary-light p-6 transition hover:-translate-y-1 hover:bg-[#c9ebd8] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-2 lg:row-span-2"
                                 >
                                     <div className="flex size-14 items-center justify-center rounded-2xl bg-village-primary text-white shadow-lg transition-transform group-hover:scale-105">
@@ -1180,7 +1189,11 @@ export default function Welcome() {
                                     return (
                                         <Link
                                             key={service.title}
-                                            href={portalHref}
+                                            href={servicesIndex({
+                                                query: {
+                                                    category: service.category,
+                                                },
+                                            })}
                                             className={`group flex min-h-52 flex-col justify-between rounded-3xl border border-village-border bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-village-primary hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none ${index === services.length - 1 ? 'md:col-span-2 lg:col-span-2' : ''}`}
                                         >
                                             <div
