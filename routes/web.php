@@ -31,7 +31,11 @@ Route::get('pengumuman', [AnnouncementController::class, 'index'])
     ->name('announcements.index');
 Route::get('agenda', AgendaController::class)->name('agendas.index');
 Route::get('galeri', GalleryController::class)->name('gallery.index');
-Route::get('layanan', ServiceController::class)->name('services.index');
+Route::get('layanan', [ServiceController::class, 'index'])
+    ->name('services.index');
+Route::get('layanan/{slug}', [ServiceController::class, 'show'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('services.show');
 Route::get('transparansi', TransparencyController::class)
     ->name('transparency.index');
 Route::get('potensi', [PotentialController::class, 'index'])

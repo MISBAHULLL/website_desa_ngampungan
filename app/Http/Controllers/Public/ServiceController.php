@@ -9,7 +9,7 @@ use Inertia\Response;
 
 class ServiceController extends Controller
 {
-    public function __invoke(Request $request): Response
+    public function index(Request $request): Response
     {
         $requestedCategory = $request->string('category')->toString();
         $availableCategories = [
@@ -28,6 +28,14 @@ class ServiceController extends Controller
                 ? $requestedCategory
                 : 'all',
             'canonicalUrl' => route('services.index'),
+        ]);
+    }
+
+    public function show(string $slug): Response
+    {
+        return Inertia::render('services/show', [
+            'slug' => $slug,
+            'canonicalUrl' => route('services.show', $slug),
         ]);
     }
 }

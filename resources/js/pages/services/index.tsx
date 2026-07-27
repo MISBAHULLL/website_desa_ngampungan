@@ -26,7 +26,7 @@ import type {
     VillageServiceFilter,
 } from '@/lib/dummy-village-services';
 import { home } from '@/routes';
-import { index as servicesIndex } from '@/routes/services';
+import { index as servicesIndex, show as serviceShow } from '@/routes/services';
 
 type ServiceIndexPageProps = {
     initialCategory: VillageServiceFilter;
@@ -450,13 +450,27 @@ export default function ServiceIndex({
                                                     </div>
                                                 </dl>
 
-                                                <p className="mt-5 flex items-center gap-2 border-t border-dashed border-village-border pt-4 text-xs font-semibold text-village-muted">
-                                                    <FileCheck2
-                                                        aria-hidden="true"
-                                                        className="size-4 text-village-primary"
-                                                    />
-                                                    Ringkasan informasi layanan
-                                                </p>
+                                                <div className="mt-5 flex items-center justify-between gap-4 border-t border-dashed border-village-border pt-4">
+                                                    <p className="flex items-center gap-2 text-xs font-semibold text-village-muted">
+                                                        <FileCheck2
+                                                            aria-hidden="true"
+                                                            className="size-4 text-village-primary"
+                                                        />
+                                                        Persyaratan tersedia
+                                                    </p>
+                                                    <Link
+                                                        href={serviceShow(
+                                                            service.slug,
+                                                        )}
+                                                        className="inline-flex items-center gap-1.5 text-sm font-bold text-village-primary transition group-hover:gap-2.5 hover:text-village-primary-dark"
+                                                    >
+                                                        Lihat detail
+                                                        <ChevronRight
+                                                            aria-hidden="true"
+                                                            className="size-4"
+                                                        />
+                                                    </Link>
+                                                </div>
                                             </article>
                                         );
                                     })}

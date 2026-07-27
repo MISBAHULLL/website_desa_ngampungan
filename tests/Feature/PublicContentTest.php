@@ -317,7 +317,7 @@ test('the first service directory increment exposes search, categories, and summ
         ->toContain('id="service-search"')
         ->toContain('villageServiceCategories.map')
         ->toContain('visibleServices.map')
-        ->toContain('Ringkasan informasi layanan')
+        ->toContain('Persyaratan tersedia')
         ->toContain('Data dummy frontend');
 
     expect($serviceDataSource)
@@ -346,6 +346,58 @@ test('the first service directory increment exposes search, categories, and summ
     expect($appSource)
         ->not->toBeFalse()
         ->toContain("name.startsWith('services/')");
+});
+
+test('the public service detail passes its slug and canonical url to Inertia', function () {
+    $slug = 'surat-keterangan-usaha';
+
+    $this->get(route('services.show', $slug))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('services/show')
+            ->where('slug', $slug)
+            ->where('canonicalUrl', route('services.show', $slug)));
+});
+
+test('the second service increment exposes requirements, process, and a client-only application simulation', function () {
+    $serviceIndexSource = file_get_contents(resource_path('js/pages/services/index.tsx'));
+    $serviceShowSource = file_get_contents(resource_path('js/pages/services/show.tsx'));
+    $serviceFormSource = file_get_contents(resource_path('js/components/village-service-application-form.tsx'));
+    $serviceDataSource = file_get_contents(resource_path('js/lib/dummy-village-services.ts'));
+
+    expect($serviceIndexSource)
+        ->not->toBeFalse()
+        ->toContain('href={serviceShow(')
+        ->toContain('service.slug')
+        ->toContain('Lihat detail');
+
+    expect($serviceShowSource)
+        ->not->toBeFalse()
+        ->toContain('Persyaratan pemohon')
+        ->toContain('Dokumen yang disiapkan')
+        ->toContain('villageServiceProcessSteps.map')
+        ->toContain('id="form-pengajuan"')
+        ->toContain('VillageServiceApplicationForm')
+        ->toContain('Persyaratan ini masih data simulasi');
+
+    expect($serviceFormSource)
+        ->not->toBeFalse()
+        ->toContain('Tahapan formulir pengajuan')
+        ->toContain('validateApplicantData')
+        ->toContain('validateDocuments')
+        ->toContain('type="file"')
+        ->toContain('maximumFileSize')
+        ->toContain('Selesaikan simulasi')
+        ->toContain('Data dan dokumen tidak disimpan')
+        ->not->toContain('router.post')
+        ->not->toContain('<Form');
+
+    expect($serviceDataSource)
+        ->not->toBeFalse()
+        ->toContain('dummyVillageServiceApplicationDetails')
+        ->toContain('villageServiceProcessSteps')
+        ->toContain('findDummyVillageService')
+        ->toContain('findDummyVillageServiceApplicationDetail');
 });
 
 test('the public transparency index renders its Inertia page', function () {
