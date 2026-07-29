@@ -35,6 +35,7 @@ type ApplicationDetail = {
     status: ServiceApplicationStatus;
     statusLabel: string;
     adminNotes: string | null;
+    publicNotes: string | null;
     submittedAt: string;
     reviewedAt: string | null;
     reviewerName: string | null;
@@ -306,6 +307,29 @@ export default function ServiceApplicationShow({
                                             </span>
                                             <InputError
                                                 message={errors.admin_notes}
+                                            />
+                                        </label>
+                                        <label className="grid gap-2 text-sm font-semibold">
+                                            Pesan untuk warga
+                                            <textarea
+                                                name="public_notes"
+                                                defaultValue={
+                                                    application.publicNotes ??
+                                                    ''
+                                                }
+                                                rows={5}
+                                                maxLength={1000}
+                                                placeholder="Contoh: Mohon unggah ulang foto Kartu Keluarga yang lebih jelas."
+                                                className="resize-y rounded-lg border border-input bg-transparent px-3 py-2 text-sm leading-6 transition outline-none focus:border-emerald-600 focus:ring-3 focus:ring-emerald-600/15"
+                                            />
+                                            <span className="text-xs leading-5 font-normal text-muted-foreground">
+                                                Pesan ini tampil pada halaman
+                                                pelacakan warga. Jangan tuliskan
+                                                data pribadi atau catatan
+                                                internal.
+                                            </span>
+                                            <InputError
+                                                message={errors.public_notes}
                                             />
                                         </label>
                                         <button

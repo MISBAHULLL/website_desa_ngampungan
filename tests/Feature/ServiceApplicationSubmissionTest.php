@@ -70,6 +70,9 @@ test('a public visitor can submit a service application with private documents',
         ->national_id->toBe('3517123456789012')
         ->status->toBe(ServiceApplicationStatus::Submitted)
         ->and($serviceApplication->documents)->toHaveCount(3)
+        ->and($serviceApplication->statusHistories)->toHaveCount(1)
+        ->and($serviceApplication->statusHistories->first()?->status)
+        ->toBe(ServiceApplicationStatus::Submitted)
         ->and($serviceApplication->getRawOriginal('national_id'))
         ->not->toBe('3517123456789012');
 

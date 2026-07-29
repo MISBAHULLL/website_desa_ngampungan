@@ -31,6 +31,7 @@ class UpdateServiceApplicationRequest extends FormRequest
         return [
             'status' => ['required', Rule::enum(ServiceApplicationStatus::class)],
             'admin_notes' => ['nullable', 'string', 'max:3000'],
+            'public_notes' => ['nullable', 'string', 'max:1000'],
         ];
     }
 }

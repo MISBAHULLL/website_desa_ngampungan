@@ -20,7 +20,7 @@ import type {
     VillageService,
     VillageServiceApplicationDetail,
 } from '@/lib/dummy-village-services';
-import { show as serviceShow } from '@/routes/services';
+import { track as trackServiceApplication } from '@/routes/service-applications';
 
 export type ServiceApplicationSuccess = {
     referenceNumber: string;
@@ -293,7 +293,7 @@ export function VillageServiceApplicationForm({
                         />
                         Data tersimpan terenkripsi dan dokumen berada di
                         penyimpanan privat. Simpan nomor referensi ini. Fitur
-                        pelacakan akan dibuat pada tahap berikutnya.
+                        pelacakan sudah tersedia melalui tombol di bawah.
                     </div>
 
                     <div className="mt-6 flex flex-wrap gap-3">
@@ -305,10 +305,14 @@ export function VillageServiceApplicationForm({
                             Ajukan layanan lagi
                         </button>
                         <Link
-                            href={serviceShow(service.slug)}
+                            href={trackServiceApplication({
+                                query: {
+                                    reference: visibleSuccess.referenceNumber,
+                                },
+                            })}
                             className="inline-flex min-h-11 items-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary"
                         >
-                            Muat ulang halaman
+                            Lacak pengajuan
                         </Link>
                     </div>
                 </div>

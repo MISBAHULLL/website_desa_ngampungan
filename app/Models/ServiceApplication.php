@@ -23,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $purpose
  * @property ServiceApplicationStatus $status
  * @property string|null $admin_notes
+ * @property string|null $public_notes
  * @property int|null $reviewed_by
  * @property Carbon|null $reviewed_at
  * @property string|null $ip_address
@@ -42,6 +43,7 @@ use Illuminate\Support\Carbon;
     'purpose',
     'status',
     'admin_notes',
+    'public_notes',
     'reviewed_by',
     'reviewed_at',
     'ip_address',
@@ -70,6 +72,7 @@ class ServiceApplication extends Model
         'address',
         'purpose',
         'admin_notes',
+        'public_notes',
         'ip_address',
         'user_agent',
     ];
@@ -80,6 +83,15 @@ class ServiceApplication extends Model
     public function documents(): HasMany
     {
         return $this->hasMany(ServiceApplicationDocument::class);
+    }
+
+    /**
+     * @return HasMany<ServiceApplicationStatusHistory, $this>
+     */
+    public function statusHistories(): HasMany
+    {
+        return $this->hasMany(ServiceApplicationStatusHistory::class)
+            ->oldest();
     }
 
     /**
@@ -102,6 +114,7 @@ class ServiceApplication extends Model
             'address' => 'encrypted',
             'purpose' => 'encrypted',
             'admin_notes' => 'encrypted',
+            'public_notes' => 'encrypted',
             'status' => ServiceApplicationStatus::class,
             'submitted_at' => 'immutable_datetime',
             'reviewed_at' => 'immutable_datetime',

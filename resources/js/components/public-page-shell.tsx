@@ -1,5 +1,11 @@
 import { Link } from '@inertiajs/react';
-import { ArrowLeft, ChevronDown, MapPin, PhoneCall } from 'lucide-react';
+import {
+    ArrowLeft,
+    ChevronDown,
+    MapPin,
+    PhoneCall,
+    Search,
+} from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useState } from 'react';
 import { home } from '@/routes';
@@ -10,6 +16,7 @@ import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
+import { track as trackServiceApplication } from '@/routes/service-applications';
 import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
 
@@ -159,13 +166,25 @@ export function PublicPageShell({
                         />
                         Jl. Raya Ngampungan No. 1, Bareng, Jombang
                     </span>
-                    <span className="flex items-center gap-2">
-                        <PhoneCall
-                            aria-hidden="true"
-                            className="size-3.5 text-village-accent"
-                        />
-                        0812-3456-7890
-                    </span>
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+                        <span className="flex items-center gap-2">
+                            <PhoneCall
+                                aria-hidden="true"
+                                className="size-3.5 text-village-accent"
+                            />
+                            0812-3456-7890
+                        </span>
+                        <Link
+                            href={trackServiceApplication()}
+                            className="flex items-center gap-2 font-bold text-white transition hover:text-village-accent"
+                        >
+                            <Search
+                                aria-hidden="true"
+                                className="size-3.5 text-village-accent"
+                            />
+                            Lacak Pengajuan
+                        </Link>
+                    </div>
                 </div>
             </div>
 
@@ -287,6 +306,12 @@ export function PublicPageShell({
                             className="hover:text-village-primary"
                         >
                             Layanan
+                        </Link>
+                        <Link
+                            href={trackServiceApplication()}
+                            className="hover:text-village-primary"
+                        >
+                            Lacak Pengajuan
                         </Link>
                         <Link
                             href={newsIndex()}

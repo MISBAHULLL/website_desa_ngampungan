@@ -93,6 +93,7 @@ test('an authenticated admin can update status and an encrypted internal note', 
         ->patch(route('admin.service-applications.update', $application), [
             'status' => ServiceApplicationStatus::NeedsRevision->value,
             'admin_notes' => 'Kartu keluarga perlu diunggah ulang.',
+            'public_notes' => 'Mohon unggah ulang Kartu Keluarga.',
         ])
         ->assertRedirect()
         ->assertSessionHasNoErrors();
@@ -102,10 +103,16 @@ test('an authenticated admin can update status and an encrypted internal note', 
     expect($application)
         ->status->toBe(ServiceApplicationStatus::NeedsRevision)
         ->admin_notes->toBe('Kartu keluarga perlu diunggah ulang.')
+        ->public_notes->toBe('Mohon unggah ulang Kartu Keluarga.')
         ->reviewed_by->toBe($admin->id)
         ->reviewed_at->not->toBeNull()
+        ->and($application->statusHistories)->toHaveCount(1)
+        ->and($application->statusHistories->first()?->status)
+        ->toBe(ServiceApplicationStatus::NeedsRevision)
         ->and($application->getRawOriginal('admin_notes'))
-        ->not->toBe('Kartu keluarga perlu diunggah ulang.');
+        ->not->toBe('Kartu keluarga perlu diunggah ulang.')
+        ->and($application->getRawOriginal('public_notes'))
+        ->not->toBe('Mohon unggah ulang Kartu Keluarga.');
 });
 
 test('service application administration rejects invalid status updates and filters', function () {

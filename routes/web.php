@@ -10,6 +10,7 @@ use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PotentialController;
 use App\Http\Controllers\Public\ServiceApplicationController;
+use App\Http\Controllers\Public\ServiceApplicationTrackingController;
 use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
@@ -46,6 +47,9 @@ Route::post(
     ->whereIn('slug', array_keys((array) config('village_services.services')))
     ->middleware('throttle:service-applications')
     ->name('service-applications.store');
+Route::get('lacak-pengajuan', ServiceApplicationTrackingController::class)
+    ->middleware('throttle:service-application-tracking')
+    ->name('service-applications.track');
 Route::get('transparansi', TransparencyController::class)
     ->name('transparency.index');
 Route::get('potensi', [PotentialController::class, 'index'])

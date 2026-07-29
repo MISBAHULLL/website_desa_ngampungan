@@ -95,6 +95,12 @@ class CreateServiceApplicationAction
                     ]);
                 }
 
+                $serviceApplication->statusHistories()->create([
+                    'status' => ServiceApplicationStatus::Submitted,
+                    'public_notes' => 'Pengajuan berhasil diterima sistem.',
+                    'changed_by' => null,
+                ]);
+
                 return $serviceApplication;
             });
         } catch (Throwable $exception) {

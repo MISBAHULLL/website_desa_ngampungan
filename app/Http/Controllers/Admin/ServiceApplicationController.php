@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\UpdateServiceApplicationReviewAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\FilterServiceApplicationRequest;
 use App\Http\Requests\Admin\UpdateServiceApplicationRequest;
 use App\Models\ServiceApplication;
 use App\Models\ServiceApplicationDocument;
+use App\Models\User;
 use App\ServiceApplicationStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -110,6 +113,7 @@ class ServiceApplicationController extends Controller
                 'status' => $serviceApplication->status->value,
                 'statusLabel' => $serviceApplication->status->label(),
                 'adminNotes' => $serviceApplication->admin_notes,
+                'publicNotes' => $serviceApplication->public_notes,
                 'submittedAt' => $serviceApplication->submitted_at->toIso8601String(),
                 'reviewedAt' => $serviceApplication->reviewed_at?->toIso8601String(),
                 'reviewerName' => $serviceApplication->reviewer?->name,
@@ -131,15 +135,27 @@ class ServiceApplicationController extends Controller
     public function update(
         UpdateServiceApplicationRequest $request,
         ServiceApplication $serviceApplication,
+        UpdateServiceApplicationReviewAction $updateServiceApplicationReview,
     ): RedirectResponse {
         $validated = $request->validated();
+        $reviewer = $request->user();
 
-        $serviceApplication->update([
-            'status' => ServiceApplicationStatus::from($validated['status']),
-            'admin_notes' => $validated['admin_notes'] ?? null,
-            'reviewed_by' => $request->user()->id,
-            'reviewed_at' => now(),
-        ]);
+        abort_unless($reviewer instanceof User, 403);
+
+        $adminNotes = Str::of((string) ($validated['admin_notes'] ?? ''))
+            ->trim()
+            ->toString();
+        $publicNotes = Str::of((string) ($validated['public_notes'] ?? ''))
+            ->trim()
+            ->toString();
+
+        $updateServiceApplicationReview->handle(
+            $serviceApplication,
+            ServiceApplicationStatus::from($validated['status']),
+            $adminNotes !== '' ? $adminNotes : null,
+            $publicNotes !== '' ? $publicNotes : null,
+            $reviewer,
+        );
 
         Inertia::flash('toast', [
             'type' => 'success',

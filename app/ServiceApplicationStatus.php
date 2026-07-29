@@ -22,4 +22,16 @@ enum ServiceApplicationStatus: string
             self::Completed => 'Selesai',
         };
     }
+
+    public function publicDescription(): string
+    {
+        return match ($this) {
+            self::Submitted => 'Pengajuan sudah diterima sistem dan menunggu pemeriksaan petugas.',
+            self::InReview => 'Petugas sedang memeriksa data dan dokumen persyaratan.',
+            self::NeedsRevision => 'Warga perlu memperbaiki data atau dokumen sesuai petunjuk petugas.',
+            self::Approved => 'Pengajuan telah disetujui dan dokumen layanan sedang disiapkan.',
+            self::Rejected => 'Pengajuan belum dapat diproses lebih lanjut.',
+            self::Completed => 'Proses layanan telah selesai. Ikuti petunjuk pengambilan dari petugas desa.',
+        };
+    }
 }

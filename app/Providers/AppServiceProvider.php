@@ -46,6 +46,11 @@ class AppServiceProvider extends ServiceProvider
             Limit::perHour(8)->by('hour:'.$request->ip()),
         ]);
 
+        RateLimiter::for('service-application-tracking', fn (Request $request): array => [
+            Limit::perMinute(10)->by('minute:'.$request->ip()),
+            Limit::perHour(40)->by('hour:'.$request->ip()),
+        ]);
+
         DB::prohibitDestructiveCommands(
             app()->isProduction(),
         );
