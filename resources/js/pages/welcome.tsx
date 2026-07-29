@@ -1,7 +1,6 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
-    ArrowUpRight,
     BellRing,
     CalendarDays,
     CheckSquare,
@@ -26,14 +25,11 @@ import {
     Newspaper,
     PhoneCall,
     PieChart,
-    Plus,
     Ruler,
-    Search,
     Send,
     ShieldCheck,
     Sparkles,
     Sprout,
-    Star,
     TrendingUp,
     Users,
     WalletCards,
@@ -54,14 +50,12 @@ import {
     latestDummyNewsArticles,
 } from '@/lib/dummy-public-content';
 import { dummyApbdesSummary } from '@/lib/dummy-transparency';
-import type { ApbdesMetricKey } from '@/lib/dummy-transparency';
 import {
     findVillagePotentialCategory,
     getDummyVillagePotentialEntries,
     villagePotentialCategories,
 } from '@/lib/dummy-village-potentials';
 import type { VillagePotentialKey } from '@/lib/dummy-village-potentials';
-import type { VillageServiceCategoryKey } from '@/lib/dummy-village-services';
 import { dashboard, login } from '@/routes';
 import { index as agendasIndex } from '@/routes/agendas';
 import { index as announcementsIndex } from '@/routes/announcements';
@@ -70,8 +64,6 @@ import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
-import { track as trackServiceApplication } from '@/routes/service-applications';
-import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
 
 type NavigationChild = {
@@ -322,79 +314,6 @@ const dummyVillageStatistics = [
         iconClassName: 'bg-village-primary-light text-village-primary-dark',
     },
 ] as const;
-
-type Service = {
-    title: string;
-    description: string;
-    category: VillageServiceCategoryKey;
-    icon: LucideIcon;
-    iconClassName: string;
-};
-
-const services: Service[] = [
-    {
-        title: 'Kependudukan',
-        description: 'Informasi KK, KTP, dan mutasi penduduk.',
-        category: 'population',
-        icon: Users,
-        iconClassName:
-            'text-village-primary group-hover:bg-village-primary-light',
-    },
-    {
-        title: 'Lapor Panen',
-        description: 'Pelaporan komoditas dan jadwal distribusi tani.',
-        category: 'agriculture',
-        icon: Sprout,
-        iconClassName: 'text-village-secondary group-hover:bg-orange-100',
-    },
-    {
-        title: 'Lapor Darurat',
-        description: 'Kanal pelaporan infrastruktur dan keamanan.',
-        category: 'reports',
-        icon: CircleAlert,
-        iconClassName: 'text-village-error group-hover:bg-red-50',
-    },
-];
-
-const apbdesMetricPresentation: Record<
-    ApbdesMetricKey,
-    {
-        icon: LucideIcon;
-        iconClassName: string;
-        badgeClassName: string;
-        accentGradient: string;
-        barWidth: string;
-    }
-> = {
-    income: {
-        icon: TrendingUp,
-        iconClassName: 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30',
-        badgeClassName: 'text-emerald-300 bg-emerald-500/10 border-emerald-400/20',
-        accentGradient: 'from-emerald-400 to-teal-300',
-        barWidth: '100%',
-    },
-    expense: {
-        icon: FileText,
-        iconClassName: 'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30',
-        badgeClassName: 'text-amber-300 bg-amber-500/10 border-amber-400/20',
-        accentGradient: 'from-amber-400 to-orange-300',
-        barWidth: '94%',
-    },
-    netFinancing: {
-        icon: WalletCards,
-        iconClassName: 'bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-400/30',
-        badgeClassName: 'text-cyan-300 bg-cyan-500/10 border-cyan-400/20',
-        accentGradient: 'from-cyan-400 to-blue-300',
-        barWidth: '25%',
-    },
-    estimatedSilpa: {
-        icon: Landmark,
-        iconClassName: 'bg-teal-500/20 text-teal-300 ring-1 ring-teal-400/30',
-        badgeClassName: 'text-teal-300 bg-teal-500/10 border-teal-400/20',
-        accentGradient: 'from-teal-300 to-emerald-400',
-        barWidth: '40%',
-    },
-};
 
 const primaryButtonClassName =
     'inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-village-primary px-5 py-3 font-semibold text-white shadow-sm transition duration-200 ease-out hover:-translate-y-0.5 hover:bg-village-primary-dark hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2';
@@ -976,6 +895,7 @@ function TransparansiBentoSection() {
                                     (allocation, index) => {
                                         const isSelected =
                                             selectedAllocationIndex === index;
+
                                         return (
                                             <div
                                                 key={allocation.label}
