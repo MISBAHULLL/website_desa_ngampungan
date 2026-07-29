@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
-import { Info, Search, SlidersHorizontal } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillagePotentialCard } from '@/components/village-potential-card';
 import {
@@ -13,7 +13,6 @@ import type {
     VillagePotentialFilter,
     VillagePotentialOffering,
 } from '@/lib/dummy-village-potentials';
-import { home } from '@/routes';
 import { index as potentialsIndex } from '@/routes/potentials';
 
 type PotentialIndexProps = {
@@ -21,11 +20,14 @@ type PotentialIndexProps = {
     entries?: readonly VillagePotentialEntry[];
 };
 
+const ITEMS_PER_PAGE = 9;
+
 export default function PotentialIndex({
     initialCategory,
     entries,
 }: PotentialIndexProps) {
     const [searchQuery, setSearchQuery] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const baseEntries = useMemo(() => {
         if (entries && entries.length > 0) {
@@ -62,6 +64,26 @@ export default function PotentialIndex({
             ),
         );
     }, [baseEntries, searchQuery]);
+
+    // Reset pagination to page 1 whenever category or search query changes
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [initialCategory, searchQuery]);
+
+    const totalPages = Math.max(1, Math.ceil(filteredEntries.length / ITEMS_PER_PAGE));
+
+    const paginatedEntries = useMemo(() => {
+        const start = (currentPage - 1) * ITEMS_PER_PAGE;
+        return filteredEntries.slice(start, start + ITEMS_PER_PAGE);
+    }, [filteredEntries, currentPage]);
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        const headingElement = document.getElementById('potential-directory-heading');
+        if (headingElement) {
+            headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    };
 
     return (
         <PublicPageShell activeSection="potentials">
@@ -185,7 +207,7 @@ export default function PotentialIndex({
                             className="text-xs font-medium text-gray-500"
                             aria-live="polite"
                         >
-                            Menampilkan <strong className="font-bold text-gray-900">{filteredEntries.length}</strong> dari {totalCount} potensi desa
+                            Menampilkan <strong className="font-bold text-gray-900">{paginatedEntries.length}</strong> dari {filteredEntries.length} potensi yang sesuai
                         </p>
                         {searchQuery !== '' && (
                             <button
@@ -198,15 +220,61 @@ export default function PotentialIndex({
                         )}
                     </div>
 
-                    {filteredEntries.length > 0 ? (
-                        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {filteredEntries.map((entry) => (
-                                <VillagePotentialCard
-                                    key={entry.slug}
-                                    entry={entry}
-                                />
-                            ))}
-                        </div>
+                    {paginatedEntries.length > 0 ? (
+                        <>
+                            <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                {paginatedEntries.map((entry) => (
+                                    <VillagePotentialCard
+                                        key={entry.slug}
+                                        entry={entry}
+                                    />
+                                ))}
+                            </div>
+
+                            {/* Clean Pagination Controls */}
+                            {totalPages > 1 && (
+                                <div className="mt-10 flex items-center justify-center gap-2 border-t border-gray-200/80 pt-6">
+                                    <button
+                                        type="button"
+                                        disabled={currentPage === 1}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        aria-label="Halaman sebelumnya"
+                                        className="flex size-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <ChevronLeft className="size-4" />
+                                    </button>
+
+                                    {Array.from({ length: totalPages }, (_, index) => {
+                                        const pageNumber = index + 1;
+                                        const isActive = pageNumber === currentPage;
+                                        return (
+                                            <button
+                                                key={pageNumber}
+                                                type="button"
+                                                onClick={() => handlePageChange(pageNumber)}
+                                                className={`flex size-9 items-center justify-center rounded-lg text-xs font-bold transition-all ${
+                                                    isActive
+                                                        ? 'bg-village-primary text-white shadow-xs'
+                                                        : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {pageNumber}
+                                            </button>
+                                        );
+                                    })}
+
+                                    <button
+                                        type="button"
+                                        disabled={currentPage === totalPages}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        aria-label="Halaman selanjutnya"
+                                        className="flex size-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <ChevronRight className="size-4" />
+                                    </button>
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <div className="mt-6 rounded-2xl border border-gray-200/80 bg-white px-6 py-12 text-center shadow-xs">
                             <Search
