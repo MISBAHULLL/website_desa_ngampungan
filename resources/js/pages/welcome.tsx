@@ -169,11 +169,6 @@ const navigationItems: NavigationItem[] = [
                 href: `${transparencyIndex.url()}#apbdes`,
             },
             {
-                label: 'Statistik Penduduk',
-                description: 'Data kependudukan Desa Ngampungan.',
-                href: `${transparencyIndex.url()}#statistik`,
-            },
-            {
                 label: 'Dokumen Publik',
                 description: 'Peraturan, SK, dan dokumen desa.',
                 href: `${transparencyIndex.url()}#dokumen-publik`,
@@ -618,24 +613,31 @@ function TransparansiSummarySection() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-4">
-                        {/* Dynamic Year Selector Dropdown */}
-                        <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 shadow-xs transition-colors hover:border-village-primary/50">
-                            <CalendarDays className="size-4 text-village-primary" />
-                            <label htmlFor="apbdes-year-select" className="text-xs font-medium text-gray-500">
-                                Tahun Anggaran:
-                            </label>
-                            <select
-                                id="apbdes-year-select"
-                                value={selectedYear}
-                                onChange={(e) => setSelectedYear(e.target.value)}
-                                className="cursor-pointer rounded-md border-0 bg-transparent py-0.5 pl-1 pr-6 text-xs font-bold text-gray-900 focus:ring-0 focus:outline-none"
-                            >
-                                {dummyApbdesSummaries.map((item) => (
-                                    <option key={item.year} value={item.year}>
-                                        TA {item.year}
-                                    </option>
-                                ))}
-                            </select>
+                        {/* Integrated Year Selector Dropdown Card */}
+                        <div className="flex items-center gap-3.5 rounded-2xl border border-gray-200 bg-white px-5 py-2.5 shadow-xs transition-colors hover:border-village-primary/50">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-village-primary/10 text-village-primary">
+                                <CalendarDays className="size-5" />
+                            </div>
+                            <div className="flex flex-col">
+                                <label
+                                    htmlFor="apbdes-year-select"
+                                    className="text-[10px] font-bold tracking-wider text-gray-500 uppercase"
+                                >
+                                    Pilih Tahun Anggaran
+                                </label>
+                                <select
+                                    id="apbdes-year-select"
+                                    value={selectedYear}
+                                    onChange={(e) => setSelectedYear(e.target.value)}
+                                    className="cursor-pointer rounded-md border-0 bg-transparent py-0.5 pl-0 pr-7 text-sm font-extrabold text-gray-900 focus:ring-0 focus:outline-none"
+                                >
+                                    {dummyApbdesSummaries.map((item) => (
+                                        <option key={item.year} value={item.year} className="font-bold">
+                                            Tahun Anggaran {item.year}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         </div>
 
                         <Link
@@ -721,7 +723,7 @@ function TransparansiSummarySection() {
                                 <div className="flex items-center gap-3">
                                     <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-100 p-2.5 border border-gray-200 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
                                         <img
-                                            src="/assets/pengeluaran.png"
+                                            src="/assets/belanja.png"
                                             alt="Belanja Desa"
                                             className="size-full object-contain"
                                         />

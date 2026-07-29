@@ -57,7 +57,6 @@ test('the public navigation contains the PRD menu hierarchy', function () {
         'Agenda',
         'Galeri',
         'APBDes',
-        'Statistik Penduduk',
         'Dokumen Publik',
         'UMKM',
         'Pertanian',
