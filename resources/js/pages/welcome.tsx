@@ -1,9 +1,11 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
 import {
     ArrowRight,
+    ArrowUpRight,
     BellRing,
     CalendarDays,
     ChevronDown,
+    ChevronRight,
     CircleAlert,
     Clock3,
     ExternalLink,
@@ -22,7 +24,10 @@ import {
     PhoneCall,
     Ruler,
     Send,
+    ShieldCheck,
+    Sparkles,
     Sprout,
+    Star,
     TrendingUp,
     Users,
     WalletCards,
@@ -603,7 +608,7 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
             aria-label="Informasi cepat Desa Ngampungan"
             className="bg-village-primary-dark text-village-primary-light"
         >
-            <div className="mx-auto grid max-w-[1280px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 px-5 py-2 text-[0.6875rem] leading-4 font-medium sm:text-xs lg:flex lg:min-h-9 lg:gap-5 lg:px-12 lg:py-1.5">
+            <div className="mx-auto grid max-w-[1440px] 2xl:max-w-[1536px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 px-4 sm:px-6 lg:px-10 py-2 text-[0.6875rem] leading-4 font-medium sm:text-xs lg:flex lg:min-h-9 lg:gap-5 lg:py-1.5">
                 <div className="col-start-1 row-start-1 flex min-w-0 items-start gap-1.5 lg:col-auto lg:row-auto lg:items-center">
                     <MapPin
                         aria-hidden="true"
@@ -742,10 +747,10 @@ export default function Welcome() {
                         className={`border-b py-3 transition-all duration-300 ${
                             hasSolidNavbar
                                 ? 'border-village-border bg-white/95 text-village-ink shadow-sm backdrop-blur-xl'
-                                : 'border-transparent bg-transparent text-white'
+                                : 'border-village-border/60 bg-white/90 text-village-ink shadow-sm backdrop-blur-md'
                         }`}
                     >
-                        <div className="mx-auto flex max-w-[1280px] items-center justify-between px-5 lg:px-12">
+                        <div className="mx-auto flex max-w-[1440px] 2xl:max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-10">
                             <a
                                 href="#beranda"
                                 aria-label="Kembali ke beranda Desa Ngampungan"
@@ -781,7 +786,7 @@ export default function Welcome() {
                                         ? closeMobileNavigation()
                                         : setIsMobileMenuOpen(true)
                                 }
-                                className="flex size-11 items-center justify-center rounded-xl transition hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none xl:hidden"
+                                className="flex size-11 items-center justify-center rounded-xl transition hover:bg-gray-100 text-village-ink focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none xl:hidden"
                             >
                                 {isMobileMenuOpen ? (
                                     <X aria-hidden="true" />
@@ -848,202 +853,142 @@ export default function Welcome() {
                 <main id="main-content">
                     <header
                         id="beranda"
-                        className="relative flex min-h-[90vh] scroll-mt-44 items-center overflow-hidden pt-44 pb-16 sm:scroll-mt-40 sm:pt-40"
+                        className="scroll-mt-44 pt-36 sm:pt-40 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-10 max-w-[1440px] 2xl:max-w-[1536px] mx-auto"
                     >
-                        <div className="absolute inset-0">
-                            <img
-                                src="https://images.unsplash.com/photo-1559884743-74a57598c6c7?q=80&w=2076&auto=format&fit=crop"
-                                alt="Pemandangan sawah yang mewakili lanskap Desa Ngampungan"
-                                className="size-full object-cover object-center"
-                            />
-                            <div className="absolute inset-0 bg-village-primary-dark/75 mix-blend-multiply" />
-                            <div className="absolute inset-x-0 bottom-0 h-48 bg-linear-to-t from-village-canvas to-transparent" />
-                        </div>
+                        <div className="relative w-full rounded-[28px] sm:rounded-[36px] bg-[#0c1f16] overflow-hidden border border-white/10 text-white shadow-2xl min-h-[680px] sm:min-h-[760px] lg:min-h-[820px] flex flex-col justify-between p-6 sm:p-10 lg:p-12">
+                            {/* Background Image: Sawah / Petani Desa Ngampungan (Proposional, tanpa ditarik) */}
+                            <div className="absolute inset-0 z-0 pointer-events-none">
+                                <img
+                                    src="https://images.unsplash.com/photo-1559884743-74a57598c6c7?q=80&w=2076&auto=format&fit=crop"
+                                    alt="Pemandangan sawah dan lanskap Desa Ngampungan"
+                                    className="size-full object-cover object-[center_35%] opacity-100"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-b from-[#0c1f16]/80 via-[#0c1f16]/65 to-[#0c1f16]/85" />
+                            </div>
 
-                        <div className="relative z-10 mx-auto grid w-full max-w-[1280px] grid-cols-1 items-center gap-12 px-5 lg:grid-cols-12 lg:px-12">
-                            <div className="flex flex-col gap-6 lg:col-span-7 xl:col-span-8">
-                                <div className="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-semibold tracking-wider text-white uppercase backdrop-blur-md">
-                                    <span className="size-2 animate-pulse rounded-full bg-village-accent" />
-                                    Sistem Informasi Desa Terpadu
-                                </div>
-                                <h1 className="village-heading-1 text-white">
-                                    Harmoni Warga,
-                                    <br />
-                                    <span className="text-village-primary-light">
-                                        Kemajuan Bersama.
-                                    </span>
-                                </h1>
-                                <p className="max-w-2xl text-lg leading-relaxed text-white/90 md:text-xl">
-                                    Website resmi Desa Ngampungan. Melayani
-                                    kebutuhan administrasi warga dan menyajikan
-                                    informasi terkini seputar potensi, budaya,
-                                    dan pembangunan desa.
-                                </p>
-                                <div className="flex flex-wrap gap-4 pt-4">
-                                    <a
-                                        href="#profil"
-                                        className={`${primaryButtonClassName} shadow-village-floating`}
-                                    >
-                                        Kenali Desa
-                                        <ArrowRight
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
-                                    </a>
-                                    <a
-                                        href="#layanan"
-                                        className="inline-flex min-h-11 items-center gap-2 rounded-xl border border-white/35 bg-white/10 px-5 py-3 font-semibold text-white backdrop-blur-md transition duration-200 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none"
-                                    >
-                                        Lihat Layanan
-                                        <ChevronDown
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
-                                    </a>
+                            {/* Atmospheric Lighting Rays & Glows */}
+                            <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#39d353]/20 rounded-full blur-[100px] pointer-events-none" />
+                            <div className="absolute top-0 right-1/4 w-[500px] h-[600px] bg-gradient-to-br from-white/20 via-[#39d353]/15 to-transparent blur-[30px] opacity-60 pointer-events-none -rotate-12" />
+                            <div className="absolute bottom-0 right-0 w-80 h-80 bg-emerald-950/40 rounded-full blur-[80px] pointer-events-none" />
+
+                            {/* Hero Main Grid */}
+                            <div className="relative z-10 pt-4 sm:pt-6">
+                                <div className="max-w-3xl space-y-6 text-left">
+                                    {/* Main Headline */}
+                                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08] text-balance">
+                                        Harmoni Warga,<br />
+                                        <span className="text-[#39d353]">Kemajuan Bersama.</span>
+                                    </h1>
+
+                                    {/* Subtitle */}
+                                    <p className="text-sm sm:text-base text-gray-300 font-normal max-w-xl leading-relaxed text-balance">
+                                        Website resmi Desa Ngampungan. Melayani kebutuhan administrasi warga dan menyajikan informasi terkini seputar potensi, budaya, dan pembangunan desa.
+                                    </p>
+
+                                    {/* Dual Action Buttons */}
+                                    <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                                        {/* Primary Button: White Pill + Green Arrow Circle Icon */}
+                                        <a
+                                            href="#profil"
+                                            className="bg-white hover:bg-gray-100 text-gray-900 font-semibold pl-6 pr-2 py-2 rounded-full transition-all duration-200 flex items-center justify-center gap-3 shadow-lg group focus:ring-2 focus:ring-[#39d353]"
+                                        >
+                                            <span className="text-sm">Kenali Desa</span>
+                                            <div className="w-8 h-8 rounded-full bg-village-primary group-hover:bg-village-primary-dark flex items-center justify-center text-white group-hover:scale-105 transition-transform">
+                                                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                                            </div>
+                                        </a>
+
+                                        {/* Secondary Glass Button */}
+                                        <a
+                                            href="#layanan"
+                                            className="bg-white/15 hover:bg-white/25 border border-white/20 hover:border-white/35 backdrop-blur-md text-white text-sm font-medium px-6 py-3 rounded-full transition-all duration-200 flex items-center justify-center gap-2"
+                                        >
+                                            <ChevronDown className="w-4 h-4 text-[#39d353]" />
+                                            <span>Lihat Layanan</span>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="lg:col-span-5 xl:col-span-4">
-                                <div className="rounded-3xl border border-white/50 bg-white/80 p-6 shadow-village-floating backdrop-blur-2xl transition duration-300 hover:-translate-y-1">
-                                    <div className="flex items-start justify-between gap-4">
-                                        <div>
-                                            <h2 className="text-xl font-bold text-village-ink">
-                                                Jam Pelayanan
-                                            </h2>
-                                            <p className="mt-1 text-sm text-village-muted">
-                                                Kantor Kepala Desa Ngampungan
-                                            </p>
-                                        </div>
-                                        <div className="flex size-10 items-center justify-center rounded-full bg-village-primary-light text-village-primary">
-                                            <Clock3
-                                                aria-hidden="true"
-                                                className="size-5"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-6 flex flex-col text-sm">
-                                        <div className="flex items-center justify-between gap-4 border-b border-village-border/60 py-3">
-                                            <span className="font-medium">
-                                                Senin–Kamis
-                                            </span>
-                                            <span className="text-right text-village-muted">
-                                                08.00–15.00 WIB
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between gap-4 border-b border-village-border/60 py-3">
-                                            <span className="font-medium">
-                                                Jumat
-                                            </span>
-                                            <span className="text-right text-village-muted">
-                                                08.00–11.30 WIB
-                                            </span>
-                                        </div>
-                                        <div className="flex items-center justify-between gap-4 py-3 text-village-muted">
-                                            <span className="font-medium">
-                                                Sabtu–Minggu
-                                            </span>
-                                            <span className="text-right">
-                                                Tutup (layanan online)
-                                            </span>
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-3 border-t border-village-border/60 pt-5">
-                                        <div className="flex items-center gap-3">
-                                            <span className="relative flex size-3">
-                                                <span className="absolute inline-flex size-full animate-ping rounded-full bg-village-success opacity-75" />
-                                                <span className="relative inline-flex size-3 rounded-full bg-village-success" />
-                                            </span>
-                                            <span className="text-sm font-semibold">
-                                                Layanan darurat 24/7 aktif
-                                            </span>
-                                        </div>
+                            {/* HERO BOTTOM: Quick Highlights Banner */}
+                            <div className="relative z-10 pt-10 sm:pt-14 border-t border-white/10 mt-10 sm:mt-14">
+                                <p className="text-[0.6875rem] uppercase tracking-widest text-emerald-400 text-center mb-6 font-mono font-semibold">
+                                    Layanan Digital & Informasi Terpadu Desa Ngampungan
+                                </p>
+                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center opacity-90 text-xs font-semibold tracking-wide">
+                                    <a href="#layanan" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                        <FileText className="w-4 h-4 text-[#39d353]" />
+                                        <span>Surat Online</span>
+                                    </a>
+                                    <a href="#layanan" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                        <Sprout className="w-4 h-4 text-[#39d353]" />
+                                        <span>Lapor Panen</span>
+                                    </a>
+                                    <a href="#transparansi" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                        <Landmark className="w-4 h-4 text-[#39d353]" />
+                                        <span>APBDes Transparan</span>
+                                    </a>
+                                    <a href="#potensi" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                        <TrendingUp className="w-4 h-4 text-[#39d353]" />
+                                        <span>Potensi UMKM</span>
+                                    </a>
+                                    <a href="#kontak" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                        <CircleAlert className="w-4 h-4 text-[#39d353]" />
+                                        <span>Pengaduan Warga</span>
+                                    </a>
+                                    <div className="flex items-center gap-2 text-[#39d353]">
+                                        <ShieldCheck className="w-4 h-4" />
+                                        <span>Layanan 24/7</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </header>
 
+                    {/* REDESIGNED STATISTIK DESA SECTION (Referencing Image 2) */}
                     <section
                         id="profil"
                         aria-labelledby="profil-heading"
-                        className="relative z-20 -mt-8 scroll-mt-24 bg-village-canvas py-12"
+                        className="py-12 sm:py-16 bg-[#f8f9fa] border-b border-gray-200/60 scroll-mt-24"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                            <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-                                <div>
-                                    <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
-                                        Desa dalam Angka
-                                    </p>
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+                                
+                                {/* Left Column: Heading */}
+                                <div className="lg:col-span-5 space-y-4">
                                     <h2
                                         id="profil-heading"
-                                        className="mt-3 text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
+                                        className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight leading-[1.12]"
                                     >
-                                        Statistik Desa Ngampungan
+                                        Statistik Desa<br />
+                                        Ngampungan
                                     </h2>
+                                    <p className="mt-4 text-gray-600 text-sm sm:text-base leading-relaxed">
+                                        Data kependudukan, wilayah, dan tata kelola Desa Ngampungan disajikan secara transparan, akurat, dan terus diperbarui untuk melayani seluruh warga.
+                                    </p>
                                 </div>
-                                <p className="w-fit rounded-full border border-village-border bg-white px-4 py-2 text-xs font-semibold text-village-muted shadow-sm">
-                                    Data sementara ·{' '}
-                                    <time dateTime="2026">2026</time>
-                                </p>
-                            </div>
 
-                            <div className="mt-8 grid grid-cols-2 gap-4 md:gap-5 lg:grid-cols-4">
-                                {dummyVillageStatistics.map((statistic) => {
-                                    const StatisticIcon = statistic.icon;
-
-                                    return (
-                                        <article
+                                {/* Right Column: KPI Metrics Grid with Vertical Dividers (Gambar Ke-2 Design) */}
+                                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x divide-gray-200 bg-white sm:bg-transparent p-6 sm:p-0 rounded-2xl border sm:border-0 border-gray-200">
+                                    {dummyVillageStatistics.map((statistic) => (
+                                        <div
                                             key={statistic.label}
-                                            className="group relative isolate flex min-h-60 flex-col justify-between overflow-hidden rounded-3xl border border-village-border bg-white p-5 shadow-village-soft ring-1 ring-village-ink/[0.02] transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-village-primary/35 hover:shadow-village-floating active:scale-[0.985] motion-reduce:transform-none motion-reduce:transition-none sm:p-6"
+                                            className="sm:px-5 first:pl-0 space-y-2 group cursor-pointer hover:opacity-90 transition-opacity"
                                         >
-                                            <span
-                                                aria-hidden="true"
-                                                className={`absolute inset-x-6 top-0 h-1 rounded-b-full ${statistic.accentClassName}`}
-                                            />
-                                            <span
-                                                aria-hidden="true"
-                                                className="absolute top-4 right-5 -z-10 text-4xl font-black tracking-tighter text-village-primary/[0.06]"
-                                            >
-                                                {statistic.index}
+                                            <span className="text-xs font-medium text-gray-500 block">
+                                                {statistic.label}
                                             </span>
-
-                                            <div>
-                                                <div
-                                                    className={`flex size-11 items-center justify-center rounded-2xl transition-transform duration-300 ease-out group-hover:-translate-y-1 group-active:scale-90 motion-reduce:transform-none motion-reduce:transition-none sm:size-12 ${statistic.iconClassName}`}
-                                                >
-                                                    <StatisticIcon
-                                                        aria-hidden="true"
-                                                        className="size-5"
-                                                    />
-                                                </div>
-                                                <p className="mt-6 text-[0.6875rem] font-bold tracking-[0.14em] text-village-muted uppercase sm:text-xs">
-                                                    {statistic.label}
-                                                </p>
+                                            <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight font-sans">
+                                                {statistic.value}
                                             </div>
+                                            <p className="text-xs text-gray-400 flex items-center gap-1 group-hover:text-emerald-700 transition-colors">
+                                                <span>{statistic.suffix} terdaftar</span>
+                                                <ChevronRight className="w-3 h-3" />
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
 
-                                            <div className="mt-8">
-                                                <p className="flex origin-bottom-left flex-wrap items-baseline gap-x-2 gap-y-1 transition-transform duration-300 ease-out group-hover:scale-[1.06] group-active:scale-[1.1] motion-reduce:transform-none motion-reduce:transition-none">
-                                                    <span className="text-3xl font-bold tracking-tight text-village-primary-dark sm:text-4xl">
-                                                        {statistic.value}
-                                                    </span>
-                                                    <span className="text-xs font-semibold text-village-primary sm:text-sm">
-                                                        {statistic.suffix}
-                                                    </span>
-                                                </p>
-                                                <p className="mt-3 text-xs leading-5 text-village-muted sm:text-sm sm:leading-6">
-                                                    {statistic.description}
-                                                </p>
-                                            </div>
-
-                                            <span
-                                                aria-hidden="true"
-                                                className="absolute right-4 bottom-4 size-5 rounded-br-lg border-r-2 border-b-2 border-village-primary/15 transition-all duration-300 group-hover:size-7 group-hover:border-village-primary/35 motion-reduce:transition-none"
-                                            />
-                                        </article>
-                                    );
-                                })}
                             </div>
                         </div>
                     </section>
@@ -1053,7 +998,7 @@ export default function Welcome() {
                         aria-labelledby="sambutan-kepala-desa-heading"
                         className="scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-5 lg:grid-cols-12 lg:gap-16 lg:px-12">
+                        <div className="mx-auto grid max-w-[1440px] 2xl:max-w-[1536px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-10">
                             <div className="lg:col-span-5">
                                 <div className="group relative isolate mx-auto max-w-sm lg:mx-0">
                                     <div
@@ -1142,7 +1087,7 @@ export default function Welcome() {
                         aria-labelledby="layanan-heading"
                         className="scroll-mt-20 bg-village-canvas py-16 md:py-24"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="max-w-2xl">
                                 <h2
                                     id="layanan-heading"
@@ -1224,7 +1169,7 @@ export default function Welcome() {
                         aria-labelledby="transparansi-heading"
                         className="scroll-mt-48 bg-village-primary-dark py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 md:flex-row md:items-end">
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-accent uppercase">
@@ -1390,7 +1335,7 @@ export default function Welcome() {
                         aria-labelledby="potensi-heading"
                         className="scroll-mt-48 overflow-hidden border-b border-village-border bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
@@ -1521,7 +1466,7 @@ export default function Welcome() {
                         aria-labelledby="berita-heading"
                         className="scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
                                 <div className="max-w-2xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
@@ -1675,7 +1620,7 @@ export default function Welcome() {
                         aria-labelledby="pengumuman-heading"
                         className="scroll-mt-20 border-t border-village-border bg-white py-16 md:py-24"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
                                 <div className="max-w-2xl">
                                     <div className="flex items-center gap-3">
@@ -1747,7 +1692,7 @@ export default function Welcome() {
                         aria-labelledby="kontak-heading"
                         className="scroll-mt-48 border-t border-village-border bg-village-canvas py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="grid gap-8 border-b border-village-border pb-9 lg:grid-cols-[1fr_auto] lg:items-end">
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
@@ -2082,7 +2027,7 @@ export default function Welcome() {
                 </main>
 
                 <footer className="bg-village-primary-dark pt-16 pb-8 text-white/80">
-                    <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                    <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
                             <div className="flex flex-col gap-4">
                                 <div className="text-white">
