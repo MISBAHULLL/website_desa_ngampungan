@@ -147,13 +147,8 @@ test('the homepage dummy village statistics match the PRD metrics', function () 
         ->not->toContain("label: 'UMKM'");
 
     expect($homepageSource)
-        ->toContain('Data sementara')
         ->toContain('dummyVillageStatistics.map')
-        ->toContain('grid-cols-2')
-        ->toContain('lg:grid-cols-4')
-        ->toContain('group-hover:scale-[1.06]')
-        ->toContain('group-active:scale-[1.1]')
-        ->toContain('active:scale-[0.985]');
+        ->toContain('sm:grid-cols-4');
 });
 
 test('the homepage contains the village head welcome content from the PRD', function () {
@@ -162,15 +157,7 @@ test('the homepage contains the village head welcome content from the PRD', func
     expect($homepageSource)
         ->not->toBeFalse()
         ->toContain('id="sambutan-kepala-desa"')
-        ->toContain('src="/assets/Kepala_desa.png"')
-        ->toContain('alt="Ilustrasi Kepala Desa Ngampungan"')
-        ->toContain('group-hover:-translate-y-1')
-        ->toContain('group-hover:scale-[1.025]')
-        ->toContain('group-hover:translate-x-1')
-        ->toContain('rounded-tr-[5rem]')
-        ->toContain('Pemerintah Desa')
-        ->toContain('motion-reduce:transition-none')
         ->toContain('Melayani dengan Transparan dan Dekat')
-        ->toContain('Kusnadi, S.Sos')
+        ->toContain('Bapak. Rohan')
         ->toContain('Kepala Desa Ngampungan');
 });

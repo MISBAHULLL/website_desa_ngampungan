@@ -28,7 +28,10 @@ yarn-error.log
 /.vscode
 /.zed
 /.database
-
+/.AGENTS
+/.codex
+/.github
+PRODUCT.md
 /planning
 
 AI_PRIVATE_CODING_TUTOR_SYSTEM_PROMPT.md

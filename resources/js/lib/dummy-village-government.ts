@@ -34,9 +34,9 @@ export type VillageInstitution = {
 
 export const dummyVillageOfficials: VillageOfficial[] = [
     {
-        slug: 'kusnadi-s-sos',
-        name: 'Kusnadi, S.Sos',
-        initials: 'KS',
+        slug: 'rohan',
+        name: 'Bapak. Rohan',
+        initials: 'BR',
         position: 'Kepala Desa',
         unit: 'Pimpinan Pemerintah Desa',
         group: 'leadership',

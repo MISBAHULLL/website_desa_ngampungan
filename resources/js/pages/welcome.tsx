@@ -9,6 +9,7 @@ import {
     ChevronRight,
     CircleAlert,
     Clock3,
+    Download,
     ExternalLink,
     Facebook,
     FileText,
@@ -16,6 +17,7 @@ import {
     Info,
     Instagram,
     Landmark,
+    Layers,
     LogIn,
     Mail,
     MailOpen,
@@ -23,8 +25,10 @@ import {
     Menu,
     Newspaper,
     PhoneCall,
+    PieChart,
     Plus,
     Ruler,
+    Search,
     Send,
     ShieldCheck,
     Sparkles,
@@ -66,6 +70,7 @@ import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
+import { track as trackServiceApplication } from '@/routes/service-applications';
 import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
 
@@ -356,23 +361,38 @@ const apbdesMetricPresentation: Record<
     {
         icon: LucideIcon;
         iconClassName: string;
+        badgeClassName: string;
+        accentGradient: string;
+        barWidth: string;
     }
 > = {
     income: {
         icon: TrendingUp,
-        iconClassName: 'bg-village-primary-light text-village-primary',
+        iconClassName: 'bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30',
+        badgeClassName: 'text-emerald-300 bg-emerald-500/10 border-emerald-400/20',
+        accentGradient: 'from-emerald-400 to-teal-300',
+        barWidth: '100%',
     },
     expense: {
         icon: FileText,
-        iconClassName: 'bg-[#fff2cf] text-[#94620d]',
+        iconClassName: 'bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30',
+        badgeClassName: 'text-amber-300 bg-amber-500/10 border-amber-400/20',
+        accentGradient: 'from-amber-400 to-orange-300',
+        barWidth: '94%',
     },
     netFinancing: {
         icon: WalletCards,
-        iconClassName: 'bg-[#e7f1fb] text-village-info',
+        iconClassName: 'bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-400/30',
+        badgeClassName: 'text-cyan-300 bg-cyan-500/10 border-cyan-400/20',
+        accentGradient: 'from-cyan-400 to-blue-300',
+        barWidth: '25%',
     },
     estimatedSilpa: {
         icon: Landmark,
-        iconClassName: 'bg-village-surface-muted text-village-primary-dark',
+        iconClassName: 'bg-teal-500/20 text-teal-300 ring-1 ring-teal-400/30',
+        badgeClassName: 'text-teal-300 bg-teal-500/10 border-teal-400/20',
+        accentGradient: 'from-teal-300 to-emerald-400',
+        barWidth: '40%',
     },
 };
 
@@ -647,6 +667,516 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
                 </Link>
             </div>
         </aside>
+    );
+}
+
+function TransparansiBentoSection() {
+    const [activeTab, setActiveTab] = useState<
+        'semua' | 'pendapatan' | 'belanja' | 'silpa'
+    >('semua');
+    const [selectedAllocationIndex, setSelectedAllocationIndex] =
+        useState<number>(0);
+
+    const activeAllocation =
+        dummyApbdesSummary.allocations[selectedAllocationIndex];
+
+    return (
+        <section
+            id="transparansi"
+            aria-labelledby="transparansi-heading"
+            className="scroll-mt-48 relative overflow-hidden bg-village-primary-dark py-20 md:py-28 xl:scroll-mt-32"
+        >
+            {/* Ambient Background Blur Orbs */}
+            <div className="pointer-events-none absolute -top-40 -left-40 size-[550px] rounded-full bg-emerald-500/15 blur-[140px]" />
+            <div className="pointer-events-none absolute -bottom-40 -right-40 size-[550px] rounded-full bg-teal-400/15 blur-[140px]" />
+            <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 size-[650px] rounded-full bg-emerald-700/10 blur-[160px]" />
+
+            <div className="relative z-10 mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                {/* Section Header */}
+                <div className="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 md:flex-row md:items-end">
+                    <div className="max-w-3xl">
+                        <div className="flex items-center gap-2">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-300 backdrop-blur-md">
+                                <Sparkles
+                                    aria-hidden="true"
+                                    className="size-3.5 text-emerald-400"
+                                />
+                                Keterbukaan Anggaran
+                            </span>
+                            <span className="text-xs font-semibold text-white/50">
+                                •
+                            </span>
+                            <span className="text-xs font-bold text-white/70">
+                                Real-time Visualizer
+                            </span>
+                        </div>
+                        <h2
+                            id="transparansi-heading"
+                            className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
+                        >
+                            Transparansi Anggaran APBDes{' '}
+                            {dummyApbdesSummary.year}
+                        </h2>
+                        <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/80 md:text-lg">
+                            Visualisasi interaktif pengelolaan keuangan publik
+                            Desa Ngampungan. Pantau proyeksi pendapatan,
+                            prioritas belanja, dan serapan anggaran secara
+                            transparan.
+                        </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-3 md:flex-col md:items-end">
+                        <div className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md">
+                            <span
+                                aria-hidden="true"
+                                className="size-2 rounded-full bg-emerald-400 animate-pulse"
+                            />
+                            Tahun Anggaran{' '}
+                            <time dateTime={dummyApbdesSummary.year}>
+                                {dummyApbdesSummary.year}
+                            </time>
+                        </div>
+                        <Link
+                            href={transparencyIndex()}
+                            prefetch
+                            className="group inline-flex min-h-11 items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-bold text-village-primary-dark shadow-lg shadow-black/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-emerald-50 hover:shadow-xl focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:ring-offset-2 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none"
+                        >
+                            <span>Portal Transparansi Lengkap</span>
+                            <ArrowRight
+                                aria-hidden="true"
+                                className="size-4 transition-transform duration-300 group-hover:translate-x-1"
+                            />
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Asymmetric Bento Grid (12-Columns Responsive) */}
+                <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-12">
+                    {/* Bento Tile 1: Hero Realisasi & Interactive Filter (Span 7, Row Span 2) */}
+                    <div className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-white/20 bg-gradient-to-br from-white/15 via-white/10 to-emerald-950/40 p-7 shadow-2xl backdrop-blur-2xl transition-all duration-300 hover:border-emerald-400/40 lg:col-span-7 sm:p-8">
+                        <div className="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full bg-emerald-400/20 blur-[80px] transition-all duration-500 group-hover:bg-emerald-400/30" />
+
+                        {/* Top Bar: Title & Filter Pills */}
+                        <div>
+                            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-5">
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex size-10 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30">
+                                        <PieChart
+                                            aria-hidden="true"
+                                            className="size-5"
+                                        />
+                                    </div>
+                                    <div>
+                                        <p className="text-xs font-bold tracking-wider text-emerald-300 uppercase">
+                                            Serapan Anggaran
+                                        </p>
+                                        <h3 className="text-lg font-bold text-white">
+                                            Realisasi Belanja Utama
+                                        </h3>
+                                    </div>
+                                </div>
+
+                                {/* Filter Tabs */}
+                                <div className="flex items-center gap-1 rounded-xl border border-white/15 bg-black/20 p-1 backdrop-blur-md">
+                                    {(
+                                        [
+                                            'semua',
+                                            'pendapatan',
+                                            'belanja',
+                                            'silpa',
+                                        ] as const
+                                    ).map((tab) => (
+                                        <button
+                                            key={tab}
+                                            type="button"
+                                            onClick={() => setActiveTab(tab)}
+                                            className={`rounded-lg px-3 py-1 text-xs font-bold capitalize transition-all duration-200 ${
+                                                activeTab === tab
+                                                    ? 'bg-emerald-400 text-village-primary-dark shadow-sm'
+                                                    : 'text-white/70 hover:bg-white/10 hover:text-white'
+                                            }`}
+                                        >
+                                            {tab}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Hero Stat & Realization Gauge */}
+                            <div className="mt-8 flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+                                <div>
+                                    <span className="text-xs font-semibold text-emerald-200/80">
+                                        Total Realisasi Semester I
+                                    </span>
+                                    <div className="mt-1 flex items-baseline gap-2">
+                                        <span className="text-6xl font-extrabold tracking-tight text-white sm:text-7xl">
+                                            {
+                                                dummyApbdesSummary.realizationPercentage
+                                            }
+                                        </span>
+                                        <span className="text-3xl font-extrabold text-emerald-400">
+                                            %
+                                        </span>
+                                    </div>
+                                    <p className="mt-2 text-sm leading-relaxed text-white/80">
+                                        <strong className="font-bold text-white">
+                                            {dummyApbdesSummary.realizedAmount}
+                                        </strong>{' '}
+                                        dari total pagu belanja{' '}
+                                        <span className="font-semibold text-emerald-300">
+                                            {dummyApbdesSummary.budgetAmount}
+                                        </span>
+                                        .
+                                    </p>
+                                </div>
+
+                                {/* Quick Highlights Pill Badges */}
+                                <div className="flex shrink-0 flex-wrap gap-2 sm:flex-col">
+                                    <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-400/30 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-emerald-300 backdrop-blur-md">
+                                        <span className="size-2 rounded-full bg-emerald-400 animate-ping" />
+                                        <span>
+                                            Surplus Operasional: +Rp110 Juta
+                                        </span>
+                                    </div>
+                                    <div className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-bold text-white/90 backdrop-blur-md">
+                                        <CheckSquare
+                                            aria-hidden="true"
+                                            className="size-3.5 text-emerald-400"
+                                        />
+                                        <span>Audited BPD & Pemkab</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Animated Glowing Progress Bar */}
+                            <div className="mt-8 space-y-2">
+                                <div className="flex justify-between text-xs font-semibold text-white/80">
+                                    <span>Kemajuan Serapan APBDes</span>
+                                    <span className="font-bold text-emerald-300">
+                                        {
+                                            dummyApbdesSummary.realizationPercentage
+                                        }
+                                        % Terealisi
+                                    </span>
+                                </div>
+                                <div className="h-4 overflow-hidden rounded-full border border-white/10 bg-black/30 p-1">
+                                    <div
+                                        className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-200 shadow-[0_0_16px_rgba(52,211,153,0.6)] transition-all duration-1000 ease-out"
+                                        style={{
+                                            width: `${dummyApbdesSummary.realizationPercentage}%`,
+                                        }}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Card Sub-Footer Info */}
+                        <div className="mt-8 flex items-center justify-between border-t border-white/10 pt-4 text-xs">
+                            <span className="text-white/60">
+                                Pembaruan Terakhir:{' '}
+                                <strong className="text-white">
+                                    {dummyApbdesSummary.updatedLabel}
+                                </strong>
+                            </span>
+                            <span className="font-bold text-emerald-400 group-hover:underline">
+                                Status: Aktif & Transparan
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Bento Tile 2: Dual Key Metrics Pendapatan & Belanja (Span 5) */}
+                    <div className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-white/15 bg-white/10 p-7 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/40 lg:col-span-5">
+                        <div className="space-y-6">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                                <p className="text-xs font-bold tracking-wider text-emerald-300 uppercase">
+                                    Arus Kas Utama
+                                </p>
+                                <span className="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[10px] font-bold text-white">
+                                    APBDes 2026
+                                </span>
+                            </div>
+
+                            {/* Metric 1: Pendapatan */}
+                            <div className="rounded-2xl border border-emerald-400/20 bg-emerald-500/10 p-4 transition-all duration-300 hover:bg-emerald-500/15">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-emerald-200">
+                                        Pendapatan Desa
+                                    </span>
+                                    <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30">
+                                        <TrendingUp
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </div>
+                                </div>
+                                <p className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                                    Rp2,14 miliar
+                                </p>
+                                <p className="mt-1 text-xs text-white/70">
+                                    Target pendapatan tahun berjalan.
+                                </p>
+                            </div>
+
+                            {/* Metric 2: Belanja */}
+                            <div className="rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 transition-all duration-300 hover:bg-amber-500/15">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-amber-200">
+                                        Belanja Desa
+                                    </span>
+                                    <div className="flex size-8 items-center justify-center rounded-xl bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/30">
+                                        <FileText
+                                            aria-hidden="true"
+                                            className="size-4"
+                                        />
+                                    </div>
+                                </div>
+                                <p className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+                                    Rp2,03 miliar
+                                </p>
+                                <p className="mt-1 text-xs text-white/70">
+                                    Pagu belanja seluruh bidang.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="mt-6 flex items-center justify-between rounded-xl border border-emerald-400/30 bg-emerald-400/10 p-3 text-xs font-bold text-emerald-300">
+                            <span>Estimasi Surplus Anggaran</span>
+                            <span className="font-extrabold text-white">
+                                +Rp110 Juta
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Bento Tile 3: Interactive Alokasi Bidang Sector Breakdown (Span 7) */}
+                    <div className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-white/15 bg-white/10 p-7 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/40 lg:col-span-7 sm:p-8">
+                        <div>
+                            <div className="flex flex-col justify-between gap-3 border-b border-white/10 pb-5 sm:flex-row sm:items-center">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <Layers
+                                            aria-hidden="true"
+                                            className="size-4 text-emerald-400"
+                                        />
+                                        <p className="text-xs font-bold tracking-wider text-emerald-300 uppercase">
+                                            Distribusi Anggaran
+                                        </p>
+                                    </div>
+                                    <h3 className="mt-1 text-xl font-bold text-white">
+                                        Proporsi Alokasi Belanja per Bidang
+                                    </h3>
+                                </div>
+                                <span className="text-xs font-semibold text-white/70">
+                                    Klik bidang untuk detail
+                                </span>
+                            </div>
+
+                            {/* Allocation List with Interactive Hover */}
+                            <div className="mt-6 space-y-3.5">
+                                {dummyApbdesSummary.allocations.map(
+                                    (allocation, index) => {
+                                        const isSelected =
+                                            selectedAllocationIndex === index;
+                                        return (
+                                            <div
+                                                key={allocation.label}
+                                                onClick={() =>
+                                                    setSelectedAllocationIndex(
+                                                        index,
+                                                    )
+                                                }
+                                                onMouseEnter={() =>
+                                                    setSelectedAllocationIndex(
+                                                        index,
+                                                    )
+                                                }
+                                                className={`group/item cursor-pointer rounded-2xl border p-3.5 transition-all duration-200 ${
+                                                    isSelected
+                                                        ? 'border-emerald-400/60 bg-white/15 shadow-lg shadow-emerald-950/20'
+                                                        : 'border-white/10 bg-white/5 hover:border-white/20 hover:bg-white/10'
+                                                }`}
+                                            >
+                                                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                                                    <span
+                                                        className={`font-bold transition-colors ${isSelected ? 'text-emerald-300' : 'text-white/90'}`}
+                                                    >
+                                                        {allocation.label}
+                                                    </span>
+                                                    <div className="flex items-center gap-2 font-bold">
+                                                        <span className="text-white">
+                                                            {allocation.value}
+                                                        </span>
+                                                        <span className="rounded-full bg-emerald-500/20 px-2 py-0.5 text-emerald-300 ring-1 ring-emerald-400/30">
+                                                            {
+                                                                allocation.percentage
+                                                            }
+                                                            %
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                {/* Progress Bar */}
+                                                <div className="mt-2.5 h-2 w-full overflow-hidden rounded-full bg-white/10">
+                                                    <div
+                                                        className={`h-full rounded-full transition-all duration-500 ${
+                                                            isSelected
+                                                                ? 'bg-gradient-to-r from-emerald-400 to-teal-300 shadow-[0_0_10px_rgba(52,211,153,0.5)]'
+                                                                : 'bg-emerald-400/60'
+                                                        }`}
+                                                        style={{
+                                                            width: `${allocation.percentage}%`,
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                        );
+                                    },
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Detail Highlight Footer Callout */}
+                        {activeAllocation && (
+                            <div className="mt-6 rounded-2xl border border-emerald-400/30 bg-emerald-950/50 p-4 backdrop-blur-md">
+                                <p className="text-xs text-white/80">
+                                    <strong className="font-bold text-emerald-300">
+                                        {activeAllocation.label}
+                                    </strong>{' '}
+                                    dialokasikan sebesar{' '}
+                                    <strong className="font-bold text-white">
+                                        {activeAllocation.value}
+                                    </strong>{' '}
+                                    ({activeAllocation.percentage}% dari total
+                                    APBDes Desa Ngampungan 2026).
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Bento Tile 4: Pembiayaan Neto & SILPA Mini Bento (Span 5) */}
+                    <div className="group relative flex flex-col justify-between overflow-hidden rounded-[28px] border border-white/15 bg-white/10 p-7 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-emerald-400/40 lg:col-span-5 sm:p-8">
+                        <div className="space-y-6">
+                            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                                <p className="text-xs font-bold tracking-wider text-emerald-300 uppercase">
+                                    Cadangan & Pembiayaan
+                                </p>
+                                <span className="rounded-full border border-emerald-400/30 bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300">
+                                    Cadangan Sehat
+                                </span>
+                            </div>
+
+                            {/* Pembiayaan Neto */}
+                            <div className="flex items-start gap-4 rounded-2xl border border-cyan-400/20 bg-cyan-500/10 p-4 transition-all duration-300 hover:bg-cyan-500/15">
+                                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-cyan-500/20 text-cyan-300 ring-1 ring-cyan-400/30">
+                                    <WalletCards
+                                        aria-hidden="true"
+                                        className="size-5"
+                                    />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-cyan-200">
+                                        Pembiayaan Neto
+                                    </p>
+                                    <p className="mt-1 text-2xl font-extrabold text-white">
+                                        Rp30 juta
+                                    </p>
+                                    <p className="mt-0.5 text-xs text-white/70">
+                                        Selisih penerimaan & pengeluaran
+                                        pembiayaan.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {/* Estimasi SiLPA */}
+                            <div className="flex items-start gap-4 rounded-2xl border border-teal-400/20 bg-teal-500/10 p-4 transition-all duration-300 hover:bg-teal-500/15">
+                                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-teal-500/20 text-teal-300 ring-1 ring-teal-400/30">
+                                    <Landmark
+                                        aria-hidden="true"
+                                        className="size-5"
+                                    />
+                                </div>
+                                <div>
+                                    <p className="text-xs font-bold text-teal-200">
+                                        Perkiraan SILPA
+                                    </p>
+                                    <p className="mt-1 text-2xl font-extrabold text-white">
+                                        Rp145 juta
+                                    </p>
+                                    <p className="mt-0.5 text-xs text-white/70">
+                                        Sisa lebih pembiayaan anggaran berjalan.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Interactive Direct Document Link */}
+                        <div className="mt-6">
+                            <Link
+                                href={transparencyIndex()}
+                                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-3 text-xs font-bold text-white transition-all duration-200 hover:bg-white hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                            >
+                                <Download
+                                    aria-hidden="true"
+                                    className="size-4 text-emerald-400"
+                                />
+                                <span>Unduh Rincian APBDes (PDF)</span>
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Bento Tile 5: Public Document Download & Verification Strip (Span 12) */}
+                    <div className="flex flex-col items-center justify-between gap-5 rounded-[28px] border border-white/15 bg-white/10 p-6 shadow-xl backdrop-blur-xl md:flex-row lg:col-span-12 sm:p-7">
+                        <div className="flex items-center gap-4 text-left">
+                            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-500/20 text-emerald-300 ring-1 ring-emerald-400/30">
+                                <ShieldCheck
+                                    aria-hidden="true"
+                                    className="size-6"
+                                />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h4 className="text-base font-bold text-white">
+                                        Keterbukaan Informasi Publik
+                                        Terverifikasi
+                                    </h4>
+                                    <span className="rounded-full border border-emerald-400/30 bg-emerald-400/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-300">
+                                        Resmi
+                                    </span>
+                                </div>
+                                <p className="mt-0.5 text-xs leading-relaxed text-white/80">
+                                    Seluruh laporan keuangan APBDes Desa
+                                    Ngampungan diawasi oleh Badan
+                                    Permusyawaratan Desa (BPD) dan terdaftar di
+                                    Pemerintah Kabupaten Jombang.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex shrink-0 flex-wrap items-center gap-3">
+                            <Link
+                                href={transparencyIndex()}
+                                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-white/20 focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                            >
+                                <FileText
+                                    aria-hidden="true"
+                                    className="size-4 text-emerald-400"
+                                />
+                                <span>Perdes APBDes.pdf</span>
+                            </Link>
+                            <Link
+                                href={transparencyIndex()}
+                                className="inline-flex items-center gap-2 rounded-xl bg-emerald-400 px-5 py-2.5 text-xs font-extrabold text-village-primary-dark transition-all hover:bg-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                            >
+                                <span>Lihat Semua Dokumen</span>
+                                <ArrowRight
+                                    aria-hidden="true"
+                                    className="size-3.5"
+                                />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     );
 }
 
@@ -1007,7 +1537,7 @@ export default function Welcome() {
                                     {/* Background Image */}
                                     <img
                                         src="/assets/simulasi_profl.png"
-                                        alt="Kusnadi, S.Sos - Kepala Desa Ngampungan"
+                                        alt="Bapak. Rohan - Kepala Desa Ngampungan"
                                         className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                         onError={(e) => {
                                             (e.currentTarget as HTMLImageElement).src =
@@ -1023,7 +1553,7 @@ export default function Welcome() {
                                         {/* Main Info */}
                                         <div className="space-y-1 text-left">
                                             <h3 className="text-2xl font-extrabold tracking-tight text-white leading-snug drop-shadow-sm sm:text-3xl">
-                                                Kusnadi, S.Sos
+                                                Bapak. Rohan
                                             </h3>
 
                                             <div className="flex items-center gap-2 text-xs font-medium text-slate-200 sm:text-sm">
@@ -1034,30 +1564,6 @@ export default function Welcome() {
                                             <p className="pl-6 text-xs font-medium text-slate-300">
                                                 Periode 2020 – 2026
                                             </p>
-                                        </div>
-
-                                        {/* Stats Bar & Glass Button */}
-                                        <div className="flex items-center justify-between gap-3 pt-2">
-                                            {/* Quick Stats / Indicators */}
-                                            <div className="flex items-center gap-4 text-slate-200">
-                                                <div className="flex items-center gap-1.5" title="Jumlah Penduduk">
-                                                    <Users className="size-4 text-slate-300" />
-                                                    <span className="text-xs font-bold sm:text-sm">3,420</span>
-                                                </div>
-                                                <div className="flex items-center gap-1.5" title="Layanan Selesai">
-                                                    <CheckSquare className="size-4 text-emerald-400" />
-                                                    <span className="text-xs font-bold sm:text-sm">401</span>
-                                                </div>
-                                            </div>
-
-                                            {/* Glass Button "Lihat Visi" */}
-                                            <a
-                                                href="#profil"
-                                                className="flex items-center gap-1.5 rounded-2xl bg-white/90 px-5 py-2.5 text-xs font-bold text-slate-900 backdrop-blur-md shadow-xl transition-all hover:bg-white hover:-translate-y-0.5 active:scale-95 sm:text-sm"
-                                            >
-                                                <span>Lihat Visi</span>
-                                                <Plus className="size-4 text-slate-900" />
-                                            </a>
                                         </div>
                                     </div>
                                 </div>
@@ -1098,7 +1604,7 @@ export default function Welcome() {
 
                                 <div className="mt-8 border-t border-village-border pt-6">
                                     <p className="text-base font-bold text-village-ink">
-                                        Kusnadi, S.Sos
+                                        Bapak. Rohan
                                     </p>
                                     <p className="mt-1 text-sm font-medium text-village-primary">
                                         Kepala Desa Ngampungan
@@ -1108,253 +1614,8 @@ export default function Welcome() {
                         </div>
                     </section>
 
-                    <section
-                        id="layanan"
-                        aria-labelledby="layanan-heading"
-                        className="scroll-mt-20 bg-village-canvas py-16 md:py-24"
-                    >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="max-w-2xl">
-                                <h2
-                                    id="layanan-heading"
-                                    className="village-heading-2"
-                                >
-                                    Akses Layanan Cepat
-                                </h2>
-                                <p className="mt-4 text-lg leading-relaxed text-village-muted">
-                                    Pusat layanan mandiri warga Desa Ngampungan.
-                                    Ajukan surat, laporkan masalah, dan cek
-                                    status kependudukan dari rumah.
-                                </p>
-                            </div>
+                    <TransparansiBentoSection />
 
-                            <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-3 lg:grid-cols-4">
-                                <Link
-                                    href={servicesIndex({
-                                        query: {
-                                            category: 'administration',
-                                        },
-                                    })}
-                                    className="group flex min-h-80 flex-col justify-between rounded-3xl bg-village-primary-light p-6 transition hover:-translate-y-1 hover:bg-[#c9ebd8] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none md:col-span-2 md:p-8 lg:col-span-2 lg:row-span-2"
-                                >
-                                    <div className="flex size-14 items-center justify-center rounded-2xl bg-village-primary text-white shadow-lg transition-transform group-hover:scale-105">
-                                        <FileText
-                                            aria-hidden="true"
-                                            className="size-6"
-                                        />
-                                    </div>
-                                    <div>
-                                        <h3 className="text-2xl font-bold text-village-primary-dark">
-                                            Administrasi & Surat
-                                        </h3>
-                                        <p className="mt-2 text-village-primary-dark/80">
-                                            Pengajuan Surat Keterangan Usaha,
-                                            Surat Domisili, dan Pengantar RT/RW.
-                                        </p>
-                                    </div>
-                                </Link>
-
-                                {services.map((service, index) => {
-                                    const Icon = service.icon;
-
-                                    return (
-                                        <Link
-                                            key={service.title}
-                                            href={servicesIndex({
-                                                query: {
-                                                    category: service.category,
-                                                },
-                                            })}
-                                            className={`group flex min-h-52 flex-col justify-between rounded-3xl border border-village-border bg-white p-6 transition duration-200 hover:-translate-y-1 hover:border-village-primary hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none ${index === services.length - 1 ? 'md:col-span-2 lg:col-span-2' : ''}`}
-                                        >
-                                            <div
-                                                className={`flex size-12 items-center justify-center rounded-xl bg-village-surface-muted transition-colors ${service.iconClassName}`}
-                                            >
-                                                <Icon
-                                                    aria-hidden="true"
-                                                    className="size-5"
-                                                />
-                                            </div>
-                                            <div>
-                                                <h3 className="text-lg font-bold">
-                                                    {service.title}
-                                                </h3>
-                                                <p className="mt-2 text-sm leading-relaxed text-village-muted">
-                                                    {service.description}
-                                                </p>
-                                            </div>
-                                        </Link>
-                                    );
-                                })}
-                            </div>
-                        </div>
-                    </section>
-
-                    <section
-                        id="transparansi"
-                        aria-labelledby="transparansi-heading"
-                        className="scroll-mt-48 bg-village-primary-dark py-16 md:py-24 xl:scroll-mt-32"
-                    >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="flex flex-col justify-between gap-6 border-b border-white/15 pb-8 md:flex-row md:items-end">
-                                <div className="max-w-3xl">
-                                    <p className="text-xs font-bold tracking-[0.2em] text-village-accent uppercase">
-                                        Transparansi Anggaran
-                                    </p>
-                                    <h2
-                                        id="transparansi-heading"
-                                        className="mt-3 text-3xl font-bold tracking-tight text-white sm:text-4xl lg:text-5xl"
-                                    >
-                                        Ringkasan APBDes{' '}
-                                        {dummyApbdesSummary.year}
-                                    </h2>
-                                    <p className="mt-4 max-w-2xl text-base leading-7 text-white/70 md:text-lg">
-                                        Gambaran singkat rencana pendapatan,
-                                        belanja, dan pembiayaan Desa Ngampungan
-                                        pada tahun anggaran berjalan.
-                                    </p>
-                                </div>
-
-                                <div className="flex flex-col gap-3 md:items-end">
-                                    <div className="flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-semibold text-white">
-                                        <span
-                                            aria-hidden="true"
-                                            className="size-2 rounded-full bg-village-accent"
-                                        />
-                                        Tahun Anggaran{' '}
-                                        <time
-                                            dateTime={dummyApbdesSummary.year}
-                                        >
-                                            {dummyApbdesSummary.year}
-                                        </time>
-                                    </div>
-                                    <Link
-                                        href={transparencyIndex()}
-                                        prefetch
-                                        className="inline-flex min-h-11 w-fit items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-bold text-village-primary-dark transition hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:ring-offset-2 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none"
-                                    >
-                                        Lihat Transparansi Lengkap
-                                        <ArrowRight
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
-                                    </Link>
-                                </div>
-                            </div>
-
-                            <div className="mt-10 grid gap-5 lg:grid-cols-12">
-                                <dl className="grid gap-4 sm:grid-cols-2 lg:col-span-8">
-                                    {dummyApbdesSummary.metrics.map(
-                                        (metric) => {
-                                            const presentation =
-                                                apbdesMetricPresentation[
-                                                    metric.key
-                                                ];
-                                            const MetricIcon =
-                                                presentation.icon;
-
-                                            return (
-                                                <div
-                                                    key={metric.label}
-                                                    className="border-t-4 border-village-accent bg-white p-6 shadow-sm sm:p-7"
-                                                >
-                                                    <div className="flex items-start justify-between gap-5">
-                                                        <dt className="text-sm font-bold tracking-wide text-village-muted uppercase">
-                                                            {metric.label}
-                                                        </dt>
-                                                        <span
-                                                            className={`flex size-11 shrink-0 items-center justify-center rounded-full ${presentation.iconClassName}`}
-                                                        >
-                                                            <MetricIcon
-                                                                aria-hidden="true"
-                                                                className="size-5"
-                                                            />
-                                                        </span>
-                                                    </div>
-                                                    <dd className="mt-6 text-3xl font-bold tracking-tight text-village-ink sm:text-4xl">
-                                                        {metric.value}
-                                                    </dd>
-                                                    <p className="mt-3 text-sm leading-6 text-village-muted">
-                                                        {metric.description}
-                                                    </p>
-                                                </div>
-                                            );
-                                        },
-                                    )}
-                                </dl>
-
-                                <aside className="flex flex-col justify-between bg-village-primary-light p-6 sm:p-8 lg:col-span-4">
-                                    <div>
-                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                                            Realisasi Belanja
-                                        </p>
-                                        <p className="mt-4 text-5xl font-bold tracking-tight text-village-primary-dark">
-                                            {
-                                                dummyApbdesSummary.realizationPercentage
-                                            }
-                                            <span className="text-2xl">%</span>
-                                        </p>
-                                        <p className="mt-4 leading-7 text-village-primary-dark/75">
-                                            {dummyApbdesSummary.realizedAmount}{' '}
-                                            telah terealisasi dari pagu{' '}
-                                            {dummyApbdesSummary.budgetAmount}.
-                                        </p>
-
-                                        <div
-                                            role="progressbar"
-                                            aria-label={`Realisasi belanja ${dummyApbdesSummary.realizationPercentage} persen`}
-                                            aria-valuemin={0}
-                                            aria-valuemax={100}
-                                            aria-valuenow={
-                                                dummyApbdesSummary.realizationPercentage
-                                            }
-                                            className="mt-7 h-3 overflow-hidden rounded-full bg-white/80"
-                                        >
-                                            <span
-                                                aria-hidden="true"
-                                                className="block h-full rounded-full bg-village-primary"
-                                                style={{
-                                                    width: `${dummyApbdesSummary.realizationPercentage}%`,
-                                                }}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="mt-10 border-t border-village-primary/20 pt-5">
-                                        <p className="text-xs font-semibold tracking-wide text-village-primary-dark/60 uppercase">
-                                            Pembaruan terakhir
-                                        </p>
-                                        <p className="mt-1 font-bold text-village-primary-dark">
-                                            <time
-                                                dateTime={
-                                                    dummyApbdesSummary.updatedAt
-                                                }
-                                            >
-                                                {
-                                                    dummyApbdesSummary.updatedLabel
-                                                }
-                                            </time>
-                                        </p>
-                                    </div>
-                                </aside>
-                            </div>
-
-                            <div className="mt-5 flex items-start gap-3 border border-white/15 bg-white/10 p-4 text-sm leading-6 text-white/75">
-                                <Info
-                                    aria-hidden="true"
-                                    className="mt-0.5 size-5 shrink-0 text-village-accent"
-                                />
-                                <p>
-                                    <strong className="text-white">
-                                        Data simulasi tampilan.
-                                    </strong>{' '}
-                                    Angka akan diganti setelah data APBDes
-                                    diverifikasi oleh Pemerintah Desa
-                                    Ngampungan.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
 
                     <section
                         id="potensi"
