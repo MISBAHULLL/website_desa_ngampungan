@@ -172,22 +172,17 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'APBDes',
                 description: 'Ringkasan anggaran pendapatan dan belanja.',
-                href: transparencyIndex.url(),
+                href: `${transparencyIndex.url()}#apbdes`,
             },
             {
                 label: 'Statistik Penduduk',
                 description: 'Data kependudukan Desa Ngampungan.',
-                href: '#profil',
-            },
-            {
-                label: 'Produk Hukum',
-                description: 'Peraturan dan keputusan desa.',
-                href: '#layanan',
+                href: `${transparencyIndex.url()}#statistik`,
             },
             {
                 label: 'Dokumen Publik',
-                description: 'Dokumen desa yang dapat diakses warga.',
-                href: '#layanan',
+                description: 'Peraturan, SK, dan dokumen desa.',
+                href: `${transparencyIndex.url()}#dokumen-publik`,
             },
         ],
     },
@@ -278,6 +273,7 @@ const dummyVillageStatistics = [
         label: 'Total Penduduk',
         value: '3.420',
         suffix: 'jiwa',
+        href: '#transparansi',
         description: 'Penduduk yang tercatat dalam administrasi desa.',
         icon: Users,
         index: '01',
@@ -288,6 +284,7 @@ const dummyVillageStatistics = [
         label: 'Jumlah KK',
         value: '1.120',
         suffix: 'KK',
+        href: '#transparansi',
         description: 'Kepala keluarga yang terdata.',
         icon: House,
         index: '02',
@@ -298,6 +295,7 @@ const dummyVillageStatistics = [
         label: 'Jumlah Dusun',
         value: '4',
         suffix: 'dusun',
+        href: '#sambutan-kepala-desa',
         description: 'Wilayah administratif tingkat dusun.',
         icon: MapPin,
         index: '03',
@@ -308,6 +306,7 @@ const dummyVillageStatistics = [
         label: 'Luas Wilayah',
         value: '450',
         suffix: 'ha',
+        href: '#potensi',
         description: 'Total luas wilayah administratif desa.',
         icon: Ruler,
         index: '04',
@@ -1505,21 +1504,22 @@ export default function Welcome() {
                                 {/* Right Column: KPI Metrics Grid with Vertical Dividers (Gambar Ke-2 Design) */}
                                 <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x divide-gray-200 bg-white sm:bg-transparent p-6 sm:p-0 rounded-2xl border sm:border-0 border-gray-200">
                                     {dummyVillageStatistics.map((statistic) => (
-                                        <div
+                                        <a
                                             key={statistic.label}
-                                            className="sm:px-5 first:pl-0 space-y-2 group cursor-pointer hover:opacity-90 transition-opacity"
+                                            href={statistic.href}
+                                            className="sm:px-5 first:pl-0 space-y-2 group cursor-pointer transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-2 sm:p-0"
                                         >
-                                            <span className="text-xs font-medium text-gray-500 block">
+                                            <span className="text-xs font-medium text-gray-500 block transition-colors group-hover:text-emerald-600">
                                                 {statistic.label}
                                             </span>
-                                            <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight font-sans">
+                                            <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight font-sans transition-colors group-hover:text-emerald-600">
                                                 {statistic.value}
                                             </div>
                                             <p className="text-xs text-gray-400 flex items-center gap-1 group-hover:text-emerald-700 transition-colors">
                                                 <span>{statistic.suffix} terdaftar</span>
-                                                <ChevronRight className="w-3 h-3" />
+                                                <ChevronRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" />
                                             </p>
-                                        </div>
+                                        </a>
                                     ))}
                                 </div>
 

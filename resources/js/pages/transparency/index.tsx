@@ -76,8 +76,9 @@ export default function TransparencyIndex() {
             </section>
 
             <section
+                id="apbdes"
                 aria-labelledby="apbdes-overview-heading"
-                className="bg-village-canvas py-12 md:py-16"
+                className="scroll-mt-24 bg-village-canvas py-12 md:py-16"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -192,8 +193,9 @@ export default function TransparencyIndex() {
             </section>
 
             <section
+                id="statistik"
                 aria-labelledby="allocation-heading"
-                className="border-t border-village-border bg-white py-12 md:py-16"
+                className="scroll-mt-24 border-t border-village-border bg-white py-12 md:py-16"
             >
                 <div className="mx-auto grid max-w-[1280px] gap-10 px-5 lg:grid-cols-12 lg:px-12">
                     <div className="lg:col-span-4">
@@ -251,8 +253,9 @@ export default function TransparencyIndex() {
             </section>
 
             <section
+                id="dokumen-publik"
                 aria-labelledby="public-documents-heading"
-                className="border-t border-village-border bg-village-surface-muted py-12 md:py-16"
+                className="scroll-mt-24 border-t border-village-border bg-village-surface-muted py-12 md:py-16"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
