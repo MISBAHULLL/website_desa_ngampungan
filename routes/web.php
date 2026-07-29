@@ -50,8 +50,10 @@ Route::post(
 Route::get('lacak-pengajuan', ServiceApplicationTrackingController::class)
     ->middleware('throttle:service-application-tracking')
     ->name('service-applications.track');
-Route::get('transparansi', TransparencyController::class)
+Route::get('transparansi', [TransparencyController::class, 'index'])
     ->name('transparency.index');
+Route::get('transparansi/dokumen/{document}/download', [TransparencyController::class, 'downloadDocument'])
+    ->name('transparency.documents.download');
 Route::get('potensi', [PotentialController::class, 'index'])
     ->name('potentials.index');
 Route::get('potensi/{slug}', [PotentialController::class, 'show'])

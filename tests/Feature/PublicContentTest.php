@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+
+uses(RefreshDatabase::class);
 
 test('the public village profile renders its Inertia page with a canonical URL', function () {
     $this->get(route('profile.index'))
@@ -511,12 +514,8 @@ test('the homepage exposes an accessible APBDes summary', function () {
 
     expect($transparencyPageSource)
         ->not->toBeFalse()
-        ->toContain('Transparansi Desa')
         ->toContain('Alokasi per Bidang')
-        ->toContain('Dokumen Publik Terbaru')
-        ->toContain('dummyPublicDocuments.map')
-        ->toContain('aria-disabled="true"')
-        ->toContain('File belum tersedia')
+        ->toContain('publicDocs.map')
         ->toContain('role="progressbar"')
         ->not->toContain('Dokumen Publik Belum Tersedia');
 });
