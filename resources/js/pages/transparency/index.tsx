@@ -5,7 +5,6 @@ import {
     ChevronDown,
     Clock,
     FileDown,
-    FileText,
     MapPin,
     Search,
 } from 'lucide-react';
@@ -257,7 +256,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             <section
                 id="apbdes"
                 aria-labelledby="apbdes-overview-heading"
-                className="scroll-mt-24 bg-[#f8faf8] py-12 md:py-16 border-b border-village-border"
+                className="scroll-mt-24 bg-[#f8faf8] py-12 md:py-16 border-b border-gray-200/80"
             >
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     {/* Header Strip */}
@@ -325,7 +324,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                     <div className="group relative mt-6 rounded-[22px] border border-emerald-200/90 bg-gradient-to-r from-emerald-50/90 via-emerald-50/50 to-teal-50/60 p-6 shadow-xs transition-all duration-300 hover:border-emerald-300 hover:shadow-md">
                         {/* Floating Status Detail Tooltip on Hover */}
                         <div className="absolute -top-11 right-6 z-20 hidden items-center gap-2.5 rounded-xl bg-white px-3.5 py-1.5 text-xs text-gray-900 shadow-xl border border-emerald-200/90 animate-in fade-in zoom-in-95 duration-150 group-hover:flex">
-                            <span className="flex size-2 rounded-full bg-emerald-500 animate-ping" />
+                            <span className="size-2 rounded-full bg-emerald-600" />
                             <div className="flex flex-col text-left">
                                 <span className="text-[9px] font-medium text-gray-500 uppercase tracking-wider">
                                     Status Serapan TA {currentSummary.year}
@@ -339,10 +338,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <span className="relative flex size-2.5">
-                                        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                                        <span className="relative inline-flex size-2.5 rounded-full bg-emerald-600" />
-                                    </span>
+                                    <span className="size-2.5 rounded-full bg-emerald-600" />
                                     <h3 className="text-xs font-extrabold text-emerald-950 uppercase tracking-wider">
                                         Tingkat Serapan Realisasi Belanja (TA {currentSummary.year})
                                     </h3>
@@ -358,7 +354,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             </div>
                         </div>
 
-                        {/* Enhanced Progress Bar Track with Shimmer & Milestone Ticks */}
+                        {/* Enhanced Progress Bar Track */}
                         <div className="relative mt-4">
                             <div
                                 role="progressbar"
@@ -368,16 +364,13 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 aria-valuenow={currentSummary.realizationPercentage}
                                 className="relative h-3.5 w-full overflow-hidden rounded-full bg-emerald-200/60 p-0.5 shadow-inner"
                             >
-                                {/* Animated Solid Fill Bar with Shimmer Effect */}
+                                {/* Solid Fill Bar */}
                                 <div
-                                    className="relative h-full rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 transition-all duration-700 ease-out shadow-xs"
+                                    className="h-full rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 transition-all duration-700 ease-out shadow-xs"
                                     style={{
                                         width: `${currentSummary.realizationPercentage}%`,
                                     }}
-                                >
-                                    {/* Moving Light Beam Shimmer Effect */}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent animate-pulse rounded-full" />
-                                </div>
+                                />
                             </div>
 
                             {/* Milestone Tick Indicators */}
@@ -646,7 +639,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             {/* Interactive Activity Breakdown Table Section */}
             <section
                 id="rincian-kegiatan"
-                className="bg-[#f8faf8] py-12 md:py-16 border-b border-village-border"
+                className="bg-[#f4f7f5] py-12 md:py-16 border-b border-slate-200/80"
             >
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     {/* Section Header */}
@@ -778,7 +771,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             <section
                 id="dokumen-publik"
                 aria-labelledby="public-documents-heading"
-                className="scroll-mt-24 bg-white py-12 md:py-16"
+                className="scroll-mt-24 bg-gradient-to-b from-white via-[#fafcfb] to-[#f4f7f5] py-12 md:py-16"
             >
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
@@ -809,8 +802,8 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             >
                                 <div>
                                     <div className="flex items-start justify-between gap-4">
-                                        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                                            <FileText aria-hidden="true" className="size-5" />
+                                        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 p-2.5">
+                                            <img src="/assets/dokumen.png" alt="Dokumen" className="size-full object-contain" />
                                         </span>
                                         <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-800 border border-emerald-200">
                                             Resmi

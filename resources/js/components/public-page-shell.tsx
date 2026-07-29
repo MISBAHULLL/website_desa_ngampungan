@@ -282,74 +282,48 @@ export function PublicPageShell({
 
             <main id="main-content">{children}</main>
 
-            <footer className="border-t border-village-border bg-white">
-                <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-4 px-5 py-8 text-sm text-village-muted sm:flex-row sm:items-center lg:px-12">
-                    <p>
-                        © 2026 Pemerintah Desa Ngampungan. Data konten masih
-                        berupa dummy frontend.
-                    </p>
-                    <div className="flex flex-wrap items-center gap-5">
-                        <Link
-                            href={villageProfileIndex()}
-                            className="hover:text-village-primary"
-                        >
+            <footer className="bg-village-primary-dark text-white/80">
+                <div className="mx-auto flex max-w-[1440px] 2xl:max-w-[1536px] flex-col justify-between gap-6 px-5 py-8 text-xs sm:flex-row sm:items-center lg:px-12">
+                    <div className="flex items-center gap-3">
+                        <img
+                            src="/assets/logo_kabupaten_jombang.png"
+                            alt="Logo Kabupaten Jombang"
+                            className="h-9 w-7.5 object-contain shrink-0"
+                        />
+                        <div>
+                            <p className="font-extrabold text-sm text-white">
+                                Pemerintah Desa Ngampungan
+                            </p>
+                            <p className="text-[11px] text-white/70">
+                                Kecamatan Bareng, Kabupaten Jombang
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-semibold text-white/90">
+                        <Link href={villageProfileIndex()} className="hover:text-village-accent transition-colors">
                             Profil
                         </Link>
-                        <Link
-                            href={governmentIndex()}
-                            className="hover:text-village-primary"
-                        >
+                        <Link href={governmentIndex()} className="hover:text-village-accent transition-colors">
                             Pemerintahan
                         </Link>
-                        <Link
-                            href={servicesIndex()}
-                            className="hover:text-village-primary"
-                        >
+                        <Link href={servicesIndex()} className="hover:text-village-accent transition-colors">
                             Layanan
                         </Link>
-                        <Link
-                            href={trackServiceApplication()}
-                            className="hover:text-village-primary"
-                        >
-                            Lacak Pengajuan
-                        </Link>
-                        <Link
-                            href={newsIndex()}
-                            className="hover:text-village-primary"
-                        >
-                            Berita
-                        </Link>
-                        <Link
-                            href={announcementsIndex()}
-                            className="hover:text-village-primary"
-                        >
-                            Pengumuman
-                        </Link>
-                        <Link
-                            href={agendasIndex()}
-                            className="hover:text-village-primary"
-                        >
-                            Agenda
-                        </Link>
-                        <Link
-                            href={galleryIndex()}
-                            className="hover:text-village-primary"
-                        >
-                            Galeri
-                        </Link>
-                        <Link
-                            href={transparencyIndex()}
-                            className="hover:text-village-primary"
-                        >
+                        <Link href={transparencyIndex()} className="hover:text-village-accent transition-colors">
                             Transparansi
                         </Link>
-                        <Link
-                            href={potentialsIndex()}
-                            className="hover:text-village-primary"
-                        >
+                        <Link href={newsIndex()} className="hover:text-village-accent transition-colors">
+                            Berita
+                        </Link>
+                        <Link href={potentialsIndex()} className="hover:text-village-accent transition-colors">
                             Potensi Desa
                         </Link>
                     </div>
+                </div>
+
+                <div className="border-t border-white/10 py-3.5 text-center text-[11px] text-white/60">
+                    © 2026 Pemerintah Desa Ngampungan. Seluruh Hak Cipta Dilindungi.
                 </div>
             </footer>
         </div>
