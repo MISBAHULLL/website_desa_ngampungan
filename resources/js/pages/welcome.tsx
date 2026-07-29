@@ -819,10 +819,16 @@ function TransparansiSummarySection() {
 
                             {/* Bottom Action Bar */}
                             <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                                <span>Serapan: <strong className="text-gray-900 font-semibold group-hover:text-village-primary">{currentSummary.realizationPercentage}% ({currentSummary.realizedAmount})</strong></span>
+                                <span
+                                    role="progressbar"
+                                    aria-valuenow={currentSummary.realizationPercentage}
+                                    aria-valuemin={0}
+                                    aria-valuemax={100}
+                                    aria-label="Persentase serapan APBDes"
+                                >Serapan: <strong className="text-gray-900 font-semibold group-hover:text-village-primary">{currentSummary.realizationPercentage}% ({currentSummary.realizedAmount})</strong></span>
 
                                 <Link
-                                    href={`${transparencyIndex.url()}#apbdes`}
+                                    href={`${transparencyIndex()}#apbdes`}
                                     prefetch
                                     className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3.5 py-1.5 text-xs font-semibold text-gray-800 transition-all duration-300 group-hover:bg-village-primary group-hover:text-white group-hover:shadow-xs"
                                 >
@@ -847,15 +853,15 @@ function TransparansiSummarySection() {
                             <strong className="font-semibold text-gray-900">
                                 Terverifikasi & Diawasi:
                             </strong>{' '}
-                            Laporan keuangan APBDes diawasi oleh BPD dan terdaftar resmi di Pemerintah Kabupaten Jombang.
+                            Laporan keuangan APBDes (Data simulasi tampilan) diawasi oleh BPD dan terdaftar resmi di Pemerintah Kabupaten Jombang.
                         </p>
                     </div>
                     <Link
-                        href={`${transparencyIndex.url()}#apbdes`}
+                        href={`${transparencyIndex()}#apbdes`}
                         prefetch
                         className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gray-100 px-4 py-2 text-xs font-semibold text-gray-800 transition hover:bg-gray-200"
                     >
-                        <span>Rincian Bidang & Download PDF</span>
+                        <span>Lihat Transparansi Lengkap</span>
                         <ArrowRight aria-hidden="true" className="size-3.5" />
                     </Link>
                 </div>
@@ -1399,30 +1405,33 @@ export default function Welcome() {
                         className="scroll-mt-48 overflow-hidden border-b border-village-border bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
                         <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                            {/* Unified Header & Description */}
+                            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                                         Direktori Potensi Desa
                                     </p>
                                     <h2
                                         id="potensi-heading"
-                                        className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl"
+                                        className="mt-3 text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl lg:text-5xl"
                                     >
-                                        Temukan usaha dan potensi warga
+                                        Temukan Usaha & Potensi Warga
                                     </h2>
-                                    <p className="mt-4 max-w-2xl text-base leading-7 text-village-muted md:text-lg">
-                                        Pilih kategori untuk melihat profil,
-                                        produk, pengelola, dan lokasi potensi
-                                        yang tersedia.
+                                    <p className="mt-4 max-w-2xl text-base leading-relaxed text-village-muted md:text-lg">
+                                        Jelajahi produk UMKM unggulan, sektor pertanian, destinasi wisata, dan ekonomi kreatif warga Ngampungan.
                                     </p>
                                 </div>
 
                                 <Link
-                                    href={potentialsIndex()}
+                                    href={potentialsIndex({
+                                        query: {
+                                            category: activePotentialCategory,
+                                        },
+                                    })}
                                     prefetch
-                                    className="inline-flex min-h-11 w-fit items-center gap-2 border border-village-border bg-village-canvas px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                    className="inline-flex items-center gap-2 rounded-full border border-village-border bg-village-canvas px-5 py-2.5 text-xs font-bold text-village-primary transition-all hover:border-village-primary hover:bg-village-primary-light hover:shadow-xs focus-visible:outline-none"
                                 >
-                                    Buka Direktori
+                                    <span>Buka Direktori {activePotentialMetadata.label}</span>
                                     <ArrowRight
                                         aria-hidden="true"
                                         className="size-4"
@@ -1430,96 +1439,58 @@ export default function Welcome() {
                                 </Link>
                             </div>
 
-                            <div
-                                role="tablist"
-                                aria-label="Filter kategori potensi desa"
-                                className="mt-7 flex gap-2 overflow-x-auto pb-2"
-                            >
-                                {villagePotentialCategories.map((category) => (
-                                    <button
-                                        key={category.key}
-                                        type="button"
-                                        role="tab"
-                                        id={`potential-tab-${category.key}`}
-                                        aria-controls="homepage-potential-panel"
-                                        aria-selected={
-                                            activePotentialCategory ===
-                                            category.key
-                                        }
-                                        onClick={() =>
-                                            setActivePotentialCategory(
-                                                category.key,
-                                            )
-                                        }
-                                        className={
-                                            activePotentialCategory ===
-                                            category.key
-                                                ? 'min-h-11 shrink-0 bg-village-primary px-4 py-2.5 text-sm font-bold text-white'
-                                                : 'min-h-11 shrink-0 border border-village-border bg-village-canvas px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none'
-                                        }
-                                    >
-                                        {category.label}
-                                    </button>
-                                ))}
+                            {/* Clean Category Pill Filter Strip */}
+                            <div className="mt-8 flex flex-col justify-between gap-4 border-b border-gray-100 pb-4 sm:flex-row sm:items-center">
+                                <div
+                                    role="tablist"
+                                    aria-label="Filter kategori potensi desa"
+                                    className="flex items-center gap-2 overflow-x-auto py-1"
+                                >
+                                    {villagePotentialCategories.map((category) => {
+                                        const isSelected = activePotentialCategory === category.key;
+
+                                        return (
+                                            <button
+                                                key={category.key}
+                                                type="button"
+                                                role="tab"
+                                                id={`potential-tab-${category.key}`}
+                                                aria-controls="homepage-potential-panel"
+                                                aria-selected={isSelected}
+                                                onClick={() =>
+                                                    setActivePotentialCategory(
+                                                        category.key,
+                                                    )
+                                                }
+                                                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                                                    isSelected
+                                                        ? 'bg-village-primary text-white shadow-sm font-extrabold'
+                                                        : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {category.label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <span className="hidden text-xs font-medium text-gray-500 lg:inline-block">
+                                    {activePotentialMetadata.description}
+                                </span>
                             </div>
 
+                            {/* Main Cards Carousel Container */}
                             <div
                                 id="homepage-potential-panel"
                                 role="tabpanel"
                                 aria-labelledby={`potential-tab-${activePotentialCategory}`}
-                                className="mt-7"
+                                className="mt-6"
                             >
-                                <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-                                    <div>
-                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                                            {activePotentialMetadata.eyebrow}
-                                        </p>
-                                        <h3 className="mt-2 text-2xl font-bold tracking-tight">
-                                            {activePotentialMetadata.label}
-                                        </h3>
-                                        <p className="mt-2 max-w-2xl text-sm leading-6 text-village-muted">
-                                            {
-                                                activePotentialMetadata.description
-                                            }
-                                        </p>
-                                    </div>
-                                    <Link
-                                        href={potentialsIndex({
-                                            query: {
-                                                category:
-                                                    activePotentialCategory,
-                                            },
-                                        })}
-                                        prefetch
-                                        className="inline-flex min-h-11 w-fit items-center gap-2 text-sm font-bold text-village-primary transition hover:text-village-primary-dark focus-visible:underline focus-visible:outline-none"
-                                    >
-                                        Lihat semua{' '}
-                                        {activePotentialMetadata.label}
-                                        <ArrowRight
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
-                                    </Link>
-                                </div>
-
                                 <VillagePotentialCarousel
                                     key={activePotentialCategory}
                                     entries={activePotentialEntries}
                                     label={`Potensi kategori ${activePotentialMetadata.label}`}
                                 />
-                            </div>
-
-                            <div className="mt-7 flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
-                                <Info
-                                    aria-hidden="true"
-                                    className="mt-0.5 size-5 shrink-0"
-                                />
-                                <p>
-                                    <strong>Data simulasi frontend.</strong>{' '}
-                                    Profil, produk, pengelola, kontak, dan
-                                    lokasi akan diganti setelah data resmi
-                                    diverifikasi.
-                                </p>
                             </div>
                         </div>
                     </section>

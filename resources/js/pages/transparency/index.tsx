@@ -16,7 +16,12 @@ import {
 } from '@/lib/dummy-transparency';
 import type {
     ApbdesActivityItem,
+    ApbdesAllocation,
+    ApbdesIncomeSource,
+    ApbdesMetric,
     ApbdesMetricKey,
+    ApbdesSummaryRecord,
+    DummyPublicDocument,
 } from '@/lib/dummy-transparency';
 
 const metricPresentation: Record<
@@ -132,7 +137,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             return [];
         }
 
-        return currentSummary.activities.filter((act) => {
+        return currentSummary.activities.filter((act: ApbdesActivityItem) => {
             const matchesCategory =
                 activeCategory === 'all' || act.category === activeCategory;
             const matchesQuery =
@@ -282,7 +287,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
                     {/* 4 Executive Metric Cards Grid */}
                     <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                        {currentSummary.metrics.map((metric) => {
+                        {currentSummary.metrics.map((metric: ApbdesMetric) => {
                             const presentation = metricPresentation[metric.key];
 
                             return (
@@ -417,7 +422,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                     let accumulatedPercentage = 0;
 
                                     const activeSource = currentSummary.incomeSources?.find(
-                                        (s) => s.code === hoveredIncomeCode,
+                                        (s: ApbdesIncomeSource) => s.code === hoveredIncomeCode,
                                     );
 
                                     return (
@@ -456,7 +461,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                                         stroke="#f3f4f6"
                                                         strokeWidth="12"
                                                     />
-                                                    {currentSummary.incomeSources?.map((source, index) => {
+                                                    {currentSummary.incomeSources?.map((source: ApbdesIncomeSource, index: number) => {
                                                         const strokeDasharray = `${(source.percentage / 100) * circumference} ${circumference}`;
                                                         const strokeDashoffset = -((accumulatedPercentage / 100) * circumference);
                                                         accumulatedPercentage += source.percentage;
@@ -500,7 +505,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
                                             {/* Synchronized Legend */}
                                             <div className="w-full space-y-2">
-                                                {currentSummary.incomeSources?.map((source, index) => {
+                                                {currentSummary.incomeSources?.map((source: ApbdesIncomeSource, index: number) => {
                                                     const segmentColor = colors[index % colors.length];
                                                     const isHovered = hoveredIncomeCode === source.code;
 
@@ -560,7 +565,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             </div>
 
                             <div className="my-auto pt-6 space-y-3">
-                                {currentSummary.allocations.map((alloc) => {
+                                {currentSummary.allocations.map((alloc: ApbdesAllocation) => {
                                     const isHovered = hoveredAllocLabel === alloc.label;
                                     const realPercent = Math.round(alloc.percentage * 0.88);
 

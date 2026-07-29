@@ -332,8 +332,8 @@ export function VillagePotentialCarousel({
                             }
                             className={
                                 activeIndex === index
-                                    ? 'h-2.5 w-10 bg-village-primary transition-[width,background-color] duration-300 motion-reduce:transition-none'
-                                    : 'size-2.5 bg-village-border transition-[width,background-color] duration-300 hover:bg-village-primary/55 motion-reduce:transition-none'
+                                    ? 'size-3 rounded-full bg-village-primary ring-4 ring-village-primary/20 transition-all duration-300 motion-reduce:transition-none'
+                                    : 'size-2.5 rounded-full bg-gray-200 hover:bg-village-primary/60 transition-all duration-300 motion-reduce:transition-none'
                             }
                         />
                     ))}
