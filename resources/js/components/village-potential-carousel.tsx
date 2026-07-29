@@ -98,23 +98,23 @@ function CoverflowPotentialCard({
 
             <span
                 aria-hidden="true"
-                className="absolute inset-0 bg-gradient-to-t from-[#071f17] via-[#0a2f22]/20 to-black/20"
+                className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent"
             />
             <span
                 aria-hidden="true"
-                className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#e4b448] to-transparent"
+                className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent opacity-80"
             />
 
             <div className="absolute inset-0 flex flex-col justify-between p-5 text-white sm:p-7">
                 <div className="flex items-start justify-between gap-4">
-                    <span className="flex items-center gap-2 border border-white/25 bg-[#092d21]/65 px-3 py-2 text-[0.625rem] font-bold tracking-[0.14em] uppercase backdrop-blur-md">
+                    <span className="flex items-center gap-2 rounded-full border border-white/20 bg-black/45 px-3.5 py-1.5 text-[0.625rem] font-bold tracking-widest uppercase">
                         <PotentialCategoryIcon
                             category={entry.category}
-                            className="size-4 text-[#f4c75c]"
+                            className="size-3.5 text-amber-400"
                         />
                         {category.label}
                     </span>
-                    <span className="border border-white/25 bg-black/25 px-2.5 py-1.5 text-[0.625rem] font-semibold tracking-[0.12em] backdrop-blur-md">
+                    <span className="rounded-full border border-white/20 bg-black/45 px-3 py-1.5 text-[0.625rem] font-bold tracking-widest">
                         {positionLabel}
                     </span>
                 </div>
@@ -126,7 +126,7 @@ function CoverflowPotentialCard({
                             : 'max-w-[34rem] translate-y-3 opacity-90 transition duration-500 motion-reduce:transition-none'
                     }
                 >
-                    <p className="text-[0.6875rem] font-bold tracking-[0.18em] text-[#f4c75c] uppercase">
+                    <p className="text-[0.6875rem] font-extrabold tracking-widest text-amber-400 uppercase">
                         {category.eyebrow}
                     </p>
                     <h3 className="mt-2 text-2xl leading-tight font-bold tracking-tight text-balance sm:text-3xl">
@@ -135,26 +135,26 @@ function CoverflowPotentialCard({
                     <p
                         className={
                             isActive
-                                ? 'mt-3 line-clamp-2 max-w-xl text-sm leading-6 text-white/78 sm:block'
+                                ? 'mt-3 line-clamp-2 max-w-xl text-sm leading-relaxed text-white/80 sm:block'
                                 : 'hidden'
                         }
                     >
                         {entry.shortDescription}
                     </p>
 
-                    <div className="mt-4 flex items-end justify-between gap-4 border-t border-white/20 pt-4">
-                        <p className="flex min-w-0 items-center gap-2 text-xs font-medium text-white/75 sm:text-sm">
+                    <div className="mt-4 flex items-end justify-between gap-4 border-t border-white/15 pt-4">
+                        <p className="flex min-w-0 items-center gap-2 text-xs font-medium text-white/80 sm:text-sm">
                             <MapPin
                                 aria-hidden="true"
-                                className="size-4 shrink-0 text-[#f4c75c]"
+                                className="size-4 shrink-0 text-amber-400"
                             />
                             <span className="truncate">{entry.address}</span>
                         </p>
                         {isActive && (
-                            <span className="flex size-10 shrink-0 items-center justify-center border border-white/30 bg-white text-village-primary-dark shadow-lg transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 motion-reduce:transform-none">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-white text-village-primary-dark shadow-md transition-transform group-hover:scale-105 motion-reduce:transform-none">
                                 <ArrowUpRight
                                     aria-hidden="true"
-                                    className="size-4"
+                                    className="size-4 stroke-[2.5]"
                                 />
                             </span>
                         )}
@@ -168,7 +168,7 @@ function CoverflowPotentialCard({
         <article
             data-carousel-item
             data-carousel-position={position}
-            className="group relative size-full overflow-hidden border border-white/30 bg-village-primary-dark text-left shadow-[0_30px_70px_-28px_rgba(7,31,23,0.75)] ring-1 ring-black/10"
+            className="group relative size-full overflow-hidden rounded-3xl border border-gray-100/20 bg-village-primary-dark text-left shadow-2xl transition-all duration-300"
         >
             {isActive ? (
                 <Link
@@ -278,11 +278,6 @@ export function VillagePotentialCarousel({
                 }}
                 className="relative mx-auto h-[390px] max-w-[1120px] touch-pan-y overflow-hidden perspective-[1400px] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-4 focus-visible:outline-none sm:h-[500px] lg:h-[540px]"
             >
-                <span
-                    aria-hidden="true"
-                    className="absolute bottom-8 left-1/2 h-16 w-[70%] -translate-x-1/2 rounded-[50%] bg-[#092d21]/20 blur-2xl sm:bottom-6"
-                />
-
                 {entries.map((entry, index) => {
                     const position = getPosition(index);
                     const isActive = position === 'active';
