@@ -4,6 +4,7 @@ import {
     ArrowUpRight,
     BellRing,
     CalendarDays,
+    CheckSquare,
     ChevronDown,
     ChevronRight,
     CircleAlert,
@@ -22,6 +23,7 @@ import {
     Menu,
     Newspaper,
     PhoneCall,
+    Plus,
     Ruler,
     Send,
     ShieldCheck,
@@ -999,41 +1001,65 @@ export default function Welcome() {
                         className="scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
                         <div className="mx-auto grid max-w-[1440px] 2xl:max-w-[1536px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-10">
-                            <div className="lg:col-span-5">
-                                <div className="group relative isolate mx-auto max-w-sm lg:mx-0">
-                                    <div
-                                        aria-hidden="true"
-                                        className="absolute inset-y-5 -right-3 -z-10 w-full rounded-[2rem] rounded-tr-[5rem] border border-village-primary/20 bg-village-primary-light/70 transition-transform duration-300 ease-out group-hover:translate-x-1 group-hover:translate-y-1 motion-reduce:transform-none motion-reduce:transition-none"
+                            <div className="lg:col-span-5 flex justify-center lg:justify-start">
+                                {/* Profile Card Container (Exact replication of requested design) */}
+                                <div className="group relative h-[550px] sm:h-[560px] w-full max-w-[390px] sm:max-w-[420px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl">
+                                    {/* Background Image */}
+                                    <img
+                                        src="/assets/simulasi_profl.png"
+                                        alt="Kusnadi, S.Sos - Kepala Desa Ngampungan"
+                                        className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                                        onError={(e) => {
+                                            (e.currentTarget as HTMLImageElement).src =
+                                                'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';
+                                        }}
                                     />
-                                    <figure className="relative aspect-[4/5] overflow-hidden rounded-[2rem] rounded-tr-[5rem] border border-village-border bg-village-canvas shadow-village-soft transition-[transform,box-shadow,border-color] duration-300 ease-out group-hover:-translate-y-1 group-hover:border-village-primary/45 group-hover:shadow-village-floating motion-reduce:transform-none motion-reduce:transition-none">
-                                        <img
-                                            src="/assets/Kepala_desa.png"
-                                            alt="Ilustrasi Kepala Desa Ngampungan"
-                                            className="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-[1.025] motion-reduce:transform-none motion-reduce:transition-none"
-                                        />
-                                        <div
-                                            aria-hidden="true"
-                                            className="pointer-events-none absolute inset-3 rounded-[1.4rem] rounded-tr-[4.25rem] border border-white/75 shadow-[inset_0_0_0_1px_rgb(21_73_51/0.08)]"
-                                        />
-                                        <div className="absolute top-5 left-5 flex items-center gap-2 rounded-full border border-village-border/80 bg-white/90 px-3 py-2 text-[0.625rem] font-bold tracking-[0.16em] text-village-primary-dark uppercase shadow-sm backdrop-blur-sm">
-                                            <span
-                                                aria-hidden="true"
-                                                className="size-1.5 rounded-full bg-village-accent"
-                                            />
-                                            Pemerintah Desa
+
+                                    {/* Smoky Fog Overlay Layer */}
+                                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/20 via-35% to-slate-950/95" />
+
+                                    {/* Content Area (Bottom Overlay) */}
+                                    <div className="absolute bottom-0 inset-x-0 z-10 flex flex-col justify-end space-y-4 p-6 sm:p-7 text-white">
+                                        {/* Main Info */}
+                                        <div className="space-y-1 text-left">
+                                            <h3 className="text-2xl font-extrabold tracking-tight text-white leading-snug drop-shadow-sm sm:text-3xl">
+                                                Kusnadi, S.Sos
+                                            </h3>
+
+                                            <div className="flex items-center gap-2 text-xs font-medium text-slate-200 sm:text-sm">
+                                                <MapPin className="size-4 shrink-0 text-emerald-400" />
+                                                <span>Kepala Desa Ngampungan</span>
+                                            </div>
+
+                                            <p className="pl-6 text-xs font-medium text-slate-300">
+                                                Periode 2020 – 2026
+                                            </p>
                                         </div>
-                                        <div
-                                            aria-hidden="true"
-                                            className="absolute bottom-6 left-0 h-16 w-1.5 rounded-r-full bg-village-accent shadow-sm"
-                                        />
-                                        <div className="absolute right-5 bottom-5 flex size-12 items-center justify-center rounded-2xl border border-village-border/80 bg-white/90 p-2.5 shadow-md backdrop-blur-sm">
-                                            <img
-                                                src="/assets/logo_kabupaten_jombang.png"
-                                                alt=""
-                                                className="h-full w-full object-contain"
-                                            />
+
+                                        {/* Stats Bar & Glass Button */}
+                                        <div className="flex items-center justify-between gap-3 pt-2">
+                                            {/* Quick Stats / Indicators */}
+                                            <div className="flex items-center gap-4 text-slate-200">
+                                                <div className="flex items-center gap-1.5" title="Jumlah Penduduk">
+                                                    <Users className="size-4 text-slate-300" />
+                                                    <span className="text-xs font-bold sm:text-sm">3,420</span>
+                                                </div>
+                                                <div className="flex items-center gap-1.5" title="Layanan Selesai">
+                                                    <CheckSquare className="size-4 text-emerald-400" />
+                                                    <span className="text-xs font-bold sm:text-sm">401</span>
+                                                </div>
+                                            </div>
+
+                                            {/* Glass Button "Lihat Visi" */}
+                                            <a
+                                                href="#profil"
+                                                className="flex items-center gap-1.5 rounded-2xl bg-white/90 px-5 py-2.5 text-xs font-bold text-slate-900 backdrop-blur-md shadow-xl transition-all hover:bg-white hover:-translate-y-0.5 active:scale-95 sm:text-sm"
+                                            >
+                                                <span>Lihat Visi</span>
+                                                <Plus className="size-4 text-slate-900" />
+                                            </a>
                                         </div>
-                                    </figure>
+                                    </div>
                                 </div>
                             </div>
 
