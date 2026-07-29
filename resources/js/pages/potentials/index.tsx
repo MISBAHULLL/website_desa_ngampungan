@@ -1,6 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillagePotentialCard } from '@/components/village-potential-card';
 import {
@@ -186,7 +187,7 @@ export default function PotentialIndex({
                                     query: { category: category.key },
                                 })}
                                 preserveScroll
-                                className={`flex items-center rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                                     initialCategory === category.key
                                         ? 'bg-village-primary text-white shadow-xs font-extrabold'
                                         : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
@@ -197,6 +198,10 @@ export default function PotentialIndex({
                                         : undefined
                                 }
                             >
+                                <PotentialCategoryIcon
+                                    category={category.key}
+                                    className="size-4 shrink-0 object-contain"
+                                />
                                 {category.label}
                             </Link>
                         ))}

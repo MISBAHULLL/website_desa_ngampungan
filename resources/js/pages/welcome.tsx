@@ -35,6 +35,7 @@ import type { LucideIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
 import InputError from '@/components/input-error';
+import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicAnnouncementCard } from '@/components/public-announcement-card';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { Spinner } from '@/components/ui/spinner';
@@ -1468,6 +1469,10 @@ export default function Welcome() {
                                                         : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
                                                 }`}
                                             >
+                                                <PotentialCategoryIcon
+                                                    category={category.key}
+                                                    className="size-4 shrink-0 object-contain"
+                                                />
                                                 {category.label}
                                             </button>
                                         );
