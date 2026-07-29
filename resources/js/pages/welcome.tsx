@@ -5,6 +5,7 @@ import {
     CalendarDays,
     CheckSquare,
     ChevronDown,
+    ChevronLeft,
     ChevronRight,
     CircleAlert,
     Clock3,
@@ -438,21 +439,15 @@ function DesktopNavigation() {
                                                         onClick={() =>
                                                             setOpenMenu(null)
                                                         }
-                                                        className="group/link flex items-start gap-3 rounded-xl p-3 transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:bg-village-primary-light focus-visible:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                                        className="group/link block rounded-xl p-3 transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:bg-village-primary-light focus-visible:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                                                     >
-                                                        <span
-                                                            aria-hidden="true"
-                                                            className="mt-1.5 size-1.5 shrink-0 rounded-full bg-village-accent transition-transform group-hover/link:scale-125"
-                                                        />
-                                                        <span>
-                                                            <span className="block font-semibold">
-                                                                {child.label}
-                                                            </span>
-                                                            <span className="mt-0.5 block text-xs leading-relaxed text-village-muted">
-                                                                {
-                                                                    child.description
-                                                                }
-                                                            </span>
+                                                        <span className="block font-semibold">
+                                                            {child.label}
+                                                        </span>
+                                                        <span className="mt-0.5 block text-xs leading-relaxed text-village-muted">
+                                                            {
+                                                                child.description
+                                                            }
                                                         </span>
                                                     </a>
                                                 </li>
@@ -526,12 +521,8 @@ function MobileNavigationItem({
                             key={child.label}
                             href={child.href}
                             onClick={onNavigate}
-                            className="flex min-h-11 items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium text-village-muted transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm font-medium text-village-muted transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                         >
-                            <span
-                                aria-hidden="true"
-                                className="size-1.5 shrink-0 rounded-full bg-village-accent"
-                            />
                             {child.label}
                         </a>
                     ))}
@@ -1100,6 +1091,46 @@ function TransparansiBentoSection() {
     );
 }
 
+const heroCarouselImages = [
+    {
+        src: 'https://images.unsplash.com/photo-1559884743-74a57598c6c7?q=80&w=2076&auto=format&fit=crop',
+        alt: 'Pemandangan sawah dan lanskap Desa Ngampungan 1',
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?q=80&w=2070&auto=format&fit=crop',
+        alt: 'Lanskap perkebunan dan hijau alam Desa Ngampungan 2',
+    },
+    {
+        src: 'https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?q=80&w=2074&auto=format&fit=crop',
+        alt: 'Keindahan lingkungan pedesaan Desa Ngampungan 3',
+    },
+];
+
+function HeroBackgroundCarousel({
+    currentIndex,
+}: {
+    currentIndex: number;
+}) {
+    return (
+        <div className="absolute inset-0 z-0 overflow-hidden">
+            {heroCarouselImages.map((image, index) => (
+                <img
+                    key={image.src}
+                    src={image.src}
+                    alt={image.alt}
+                    className={`absolute inset-0 size-full object-cover object-[center_35%] transition-opacity duration-700 ${
+                        index === currentIndex
+                            ? 'opacity-100'
+                            : 'pointer-events-none opacity-0'
+                    }`}
+                />
+            ))}
+
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0c1f16]/80 via-[#0c1f16]/65 to-[#0c1f16]/85" />
+        </div>
+    );
+}
+
 export default function Welcome() {
     const { auth } = usePage().props;
     const [isScrolled, setIsScrolled] = useState(false);
@@ -1112,12 +1143,31 @@ export default function Welcome() {
     const [activePotentialCategory, setActivePotentialCategory] =
         useState<VillagePotentialKey>('umkm');
     const featuredImageRef = useRef<HTMLImageElement>(null);
+    const [heroSlideIndex, setHeroSlideIndex] = useState(0);
     const activePotentialMetadata = findVillagePotentialCategory(
         activePotentialCategory,
     );
     const activePotentialEntries = getDummyVillagePotentialEntries(
         activePotentialCategory,
     ).slice(0, 3);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setHeroSlideIndex((prev) => (prev + 1) % heroCarouselImages.length);
+        }, 3000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const goToPrevHeroSlide = () => {
+        setHeroSlideIndex((prev) =>
+            prev === 0 ? heroCarouselImages.length - 1 : prev - 1,
+        );
+    };
+
+    const goToNextHeroSlide = () => {
+        setHeroSlideIndex((prev) => (prev + 1) % heroCarouselImages.length);
+    };
 
     const closeMobileNavigation = () => {
         setIsMobileMenuOpen(false);
@@ -1308,15 +1358,8 @@ export default function Welcome() {
                         className="scroll-mt-44 pt-36 sm:pt-40 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-10 max-w-[1440px] 2xl:max-w-[1536px] mx-auto"
                     >
                         <div className="relative w-full rounded-[28px] sm:rounded-[36px] bg-[#0c1f16] overflow-hidden border border-white/10 text-white shadow-2xl min-h-[680px] sm:min-h-[760px] lg:min-h-[820px] flex flex-col justify-between p-6 sm:p-10 lg:p-12">
-                            {/* Background Image: Sawah / Petani Desa Ngampungan (Proposional, tanpa ditarik) */}
-                            <div className="absolute inset-0 z-0 pointer-events-none">
-                                <img
-                                    src="https://images.unsplash.com/photo-1559884743-74a57598c6c7?q=80&w=2076&auto=format&fit=crop"
-                                    alt="Pemandangan sawah dan lanskap Desa Ngampungan"
-                                    className="size-full object-cover object-[center_35%] opacity-100"
-                                />
-                                <div className="absolute inset-0 bg-gradient-to-b from-[#0c1f16]/80 via-[#0c1f16]/65 to-[#0c1f16]/85" />
-                            </div>
+                            {/* Carousel Background Images (3 gambar, auto delay 3s & kontrol manual) */}
+                            <HeroBackgroundCarousel currentIndex={heroSlideIndex} />
 
                             {/* Atmospheric Lighting Rays & Glows */}
                             <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#39d353]/20 rounded-full blur-[100px] pointer-events-none" />
@@ -1324,8 +1367,8 @@ export default function Welcome() {
                             <div className="absolute bottom-0 right-0 w-80 h-80 bg-emerald-950/40 rounded-full blur-[80px] pointer-events-none" />
 
                             {/* Hero Main Grid */}
-                            <div className="relative z-10 pt-4 sm:pt-6">
-                                <div className="max-w-3xl space-y-6 text-left">
+                            <div className="relative z-10 pt-6 sm:pt-10 lg:pt-12 max-w-3xl">
+                                <div className="space-y-6 sm:space-y-8 text-left">
                                     {/* Main Headline */}
                                     <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08] text-balance">
                                         Harmoni Warga,<br />
@@ -1333,12 +1376,12 @@ export default function Welcome() {
                                     </h1>
 
                                     {/* Subtitle */}
-                                    <p className="text-sm sm:text-base text-gray-300 font-normal max-w-xl leading-relaxed text-balance">
+                                    <p className="text-base sm:text-lg text-gray-200/90 font-normal max-w-xl leading-relaxed text-balance">
                                         Website resmi Desa Ngampungan. Melayani kebutuhan administrasi warga dan menyajikan informasi terkini seputar potensi, budaya, dan pembangunan desa.
                                     </p>
 
-                                    {/* Dual Action Buttons */}
-                                    <div className="pt-4 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                                    {/* Dual Action Buttons (Diposisikan agak lebih ke bawah agar proporsi hero seimbang) */}
+                                    <div className="pt-6 sm:pt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                                         {/* Primary Button: White Pill + Green Arrow Circle Icon */}
                                         <a
                                             href="#profil"
@@ -1363,7 +1406,46 @@ export default function Welcome() {
                             </div>
 
                             {/* HERO BOTTOM: Quick Highlights Banner */}
-                            <div className="relative z-10 pt-10 sm:pt-14 border-t border-white/10 mt-10 sm:mt-14">
+                            <div className="relative z-10 pt-8 sm:pt-10 border-t border-white/10 mt-10 sm:mt-14">
+                                {/* Centered Hero Carousel Controls */}
+                                <div className="mb-4 flex justify-center">
+                                    <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md">
+                                        <button
+                                            type="button"
+                                            onClick={goToPrevHeroSlide}
+                                            aria-label="Gambar sebelumnya"
+                                            className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                                        >
+                                            <ChevronLeft className="size-4" />
+                                        </button>
+
+                                        <div className="flex items-center gap-1.5">
+                                            {heroCarouselImages.map((_, idx) => (
+                                                <button
+                                                    key={idx}
+                                                    type="button"
+                                                    onClick={() => setHeroSlideIndex(idx)}
+                                                    aria-label={`Slide ${idx + 1}`}
+                                                    className={`h-2 rounded-full transition-all duration-300 ${
+                                                        idx === heroSlideIndex
+                                                            ? 'w-6 bg-[#39d353]'
+                                                            : 'w-2 bg-white/40 hover:bg-white/70'
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <button
+                                            type="button"
+                                            onClick={goToNextHeroSlide}
+                                            aria-label="Gambar selanjutnya"
+                                            className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                                        >
+                                            <ChevronRight className="size-4" />
+                                        </button>
+                                    </div>
+                                </div>
+
                                 <p className="text-[0.6875rem] uppercase tracking-widest text-emerald-400 text-center mb-6 font-mono font-semibold">
                                     Layanan Digital & Informasi Terpadu Desa Ngampungan
                                 </p>
