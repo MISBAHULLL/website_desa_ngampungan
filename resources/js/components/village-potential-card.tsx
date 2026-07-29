@@ -1,4 +1,3 @@
-import { Link } from '@inertiajs/react';
 import { ArrowRight, Heart, MapPin, UserRound } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -7,7 +6,6 @@ import {
 } from '@/components/potential-category-icon';
 import { findVillagePotentialCategory } from '@/lib/dummy-village-potentials';
 import type { VillagePotentialEntry } from '@/lib/dummy-village-potentials';
-import { show as potentialShow } from '@/routes/potentials';
 
 export function VillagePotentialCard({
     entry,
@@ -27,7 +25,7 @@ export function VillagePotentialCard({
         setIsFavorite((prev) => !prev);
     };
 
-    const handleCardClick = (e: React.MouseEvent) => {
+    const handleCardClick = (e: React.MouseEvent | React.KeyboardEvent) => {
         if (onOpenDetail) {
             e.preventDefault();
             onOpenDetail(entry);
@@ -36,84 +34,88 @@ export function VillagePotentialCard({
 
     return (
         <article className="group relative flex h-full flex-col justify-between rounded-[28px] border border-gray-100 bg-white p-3.5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/20 hover:shadow-xl motion-reduce:transform-none motion-reduce:transition-none">
-            <Link
-                href={potentialShow(entry.slug)}
+            <div
+                role="button"
+                tabIndex={0}
                 onClick={handleCardClick}
-                prefetch
-                viewTransition
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        handleCardClick(e);
+                    }
+                }}
                 aria-label={`Lihat detail ${entry.name}`}
-                className="flex h-full flex-col justify-between focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset"
+                className="flex h-full flex-col justify-between cursor-pointer focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset rounded-[24px]"
             >
                 {/* Image Banner Section */}
                 <div
                     className={`relative aspect-[16/10] w-full overflow-hidden rounded-[22px] ${presentation.panelClassName}`}
                 >
                     {!isImageUnavailable ? (
-                        <>
-                            <img
-                                src={entry.image}
-                                alt={entry.imageAlt}
-                                loading="lazy"
-                                onError={() => setIsImageUnavailable(true)}
-                                className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transition-none"
-                            />
-                            <span
-                                aria-hidden="true"
-                                className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10"
-                            />
-                        </>
+                        <img
+                            src={entry.image}
+                            alt={entry.imageAlt}
+                            loading="lazy"
+                            onError={() => setIsImageUnavailable(true)}
+                            className="size-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
                     ) : (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-100 text-3xl font-extrabold text-gray-400">
-                            {entry.name.charAt(0)}
+                        <div className="flex size-full flex-col items-center justify-center p-4 text-center">
+                            <PotentialCategoryIcon
+                                category={entry.category}
+                                className="size-10 text-gray-400"
+                            />
+                            <span className="mt-2 text-xs font-semibold text-gray-500">
+                                Gambar tidak tersedia
+                            </span>
                         </div>
                     )}
 
-                    {/* Top Category Badge Pill */}
-                    <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full border border-white/40 bg-white/90 px-3 py-1.5 text-xs font-bold text-gray-900 shadow-xs backdrop-blur-md">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10" />
+
+                    {/* Category Badge Pill (Top-Left) */}
+                    <div className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full border border-white/40 bg-white/90 px-3 py-1 text-[11px] font-bold text-gray-800 shadow-sm backdrop-blur-xs">
                         <PotentialCategoryIcon
                             category={entry.category}
-                            className="size-4 shrink-0 object-contain"
+                            className="size-3.5 shrink-0"
                         />
-                        <span className="tracking-wide">{category.label}</span>
+                        <span>{category.label}</span>
                     </div>
+
+                    {/* Favorite / Bookmark Button (Top-Right) */}
+                    <button
+                        type="button"
+                        onClick={toggleFavorite}
+                        aria-label={
+                            isFavorite
+                                ? `Hapus ${entry.name} dari favorit`
+                                : `Simpan ${entry.name} ke favorit`
+                        }
+                        className={`absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full border border-white/40 bg-white/90 shadow-sm backdrop-blur-xs transition hover:scale-110 active:scale-95 cursor-pointer ${
+                            isFavorite ? 'text-rose-500' : 'text-gray-600'
+                        }`}
+                    >
+                        <Heart
+                            className={`size-4 ${isFavorite ? 'fill-current' : ''}`}
+                        />
+                    </button>
                 </div>
 
-                {/* Card Body Content */}
-                <div className="flex flex-1 flex-col justify-between px-2 pt-4 pb-1">
-                    <div>
-                        {/* Title & Location Row with Heart Favorite Button */}
-                        <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0 flex-1">
-                                <h3 className="text-lg font-bold text-gray-900 leading-tight tracking-tight transition-colors group-hover:text-village-primary line-clamp-1">
-                                    {entry.name}
-                                </h3>
-                                <p className="mt-1 flex items-center gap-1 text-xs font-medium text-gray-500">
-                                    <MapPin aria-hidden="true" className="size-3.5 shrink-0 text-village-primary" />
-                                    <span className="truncate">{entry.address}</span>
-                                </p>
-                            </div>
+                {/* Card Content Details */}
+                <div className="mt-4 flex flex-1 flex-col justify-between px-1">
+                    <div className="space-y-2">
+                        {/* Title */}
+                        <h3 className="text-base font-extrabold text-gray-900 leading-snug transition-colors group-hover:text-village-primary">
+                            {entry.name}
+                        </h3>
 
-                            {/* Circular Bookmark / Heart Button */}
-                            <button
-                                type="button"
-                                onClick={toggleFavorite}
-                                aria-label={isFavorite ? 'Hapus dari favorit' : 'Simpan ke favorit'}
-                                className={`flex size-9 shrink-0 items-center justify-center rounded-full border transition-all duration-200 shadow-2xs ${
-                                    isFavorite
-                                        ? 'border-red-200 bg-red-50 text-red-500'
-                                        : 'border-gray-200/80 bg-white text-gray-500 hover:border-red-200 hover:bg-red-50/50 hover:text-red-500'
-                                }`}
-                            >
-                                <Heart
-                                    className={`size-4 transition-transform duration-200 ${
-                                        isFavorite ? 'fill-red-500 text-red-500 scale-110' : ''
-                                    }`}
-                                />
-                            </button>
+                        {/* Location Subtitle */}
+                        <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                            <MapPin className="size-3.5 text-village-primary shrink-0" />
+                            <span className="truncate">{entry.address}</span>
                         </div>
 
                         {/* Short Description */}
-                        <p className="mt-3 line-clamp-2 text-xs leading-relaxed text-gray-600 font-normal">
+                        <p className="text-xs leading-relaxed text-gray-500 line-clamp-2">
                             {entry.shortDescription}
                         </p>
                     </div>
@@ -146,7 +148,7 @@ export function VillagePotentialCard({
                         </span>
                     </div>
                 </div>
-            </Link>
+            </div>
         </article>
     );
 }

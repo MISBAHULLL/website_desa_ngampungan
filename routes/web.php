@@ -56,9 +56,6 @@ Route::get('transparansi/dokumen/{document}/download', [TransparencyController::
     ->name('transparency.documents.download');
 Route::get('potensi', [PotentialController::class, 'index'])
     ->name('potentials.index');
-Route::get('potensi/{slug}', [PotentialController::class, 'show'])
-    ->where('slug', '[a-z0-9-]+')
-    ->name('potentials.show');
 Route::post('kontak/pesan', [ContactMessageController::class, 'store'])
     ->middleware('throttle:contact-messages')
     ->name('contact-messages.store');

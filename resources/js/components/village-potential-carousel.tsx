@@ -1,4 +1,3 @@
-import { Link } from '@inertiajs/react';
 import { ArrowUpRight, ChevronLeft, ChevronRight, MapPin } from 'lucide-react';
 import { useId, useRef, useState } from 'react';
 import type { CSSProperties, PointerEvent } from 'react';
@@ -8,11 +7,11 @@ import {
 } from '@/components/potential-category-icon';
 import { findVillagePotentialCategory } from '@/lib/dummy-village-potentials';
 import type { VillagePotentialEntry } from '@/lib/dummy-village-potentials';
-import { show as potentialShow } from '@/routes/potentials';
 
 type VillagePotentialCarouselProps = {
     entries: VillagePotentialEntry[];
     label: string;
+    onOpenDetail?: (entry: VillagePotentialEntry) => void;
 };
 
 type CarouselPosition = 'active' | 'previous' | 'next' | 'hidden';
@@ -52,12 +51,14 @@ function CoverflowPotentialCard({
     entry,
     isActive,
     onActivate,
+    onOpenDetail,
     position,
     positionLabel,
 }: {
     entry: VillagePotentialEntry;
     isActive: boolean;
     onActivate: () => void;
+    onOpenDetail?: (entry: VillagePotentialEntry) => void;
     position: CarouselPosition;
     positionLabel: string;
 }) {
@@ -170,27 +171,20 @@ function CoverflowPotentialCard({
             data-carousel-position={position}
             className="group relative size-full overflow-hidden rounded-3xl border border-gray-100/20 bg-village-primary-dark text-left shadow-2xl transition-all duration-300"
         >
-            {isActive ? (
-                <Link
-                    href={potentialShow(entry.slug)}
-                    prefetch
-                    viewTransition
-                    aria-label={`Lihat detail ${entry.name}`}
-                    className="block size-full focus-visible:ring-2 focus-visible:ring-[#f4c75c] focus-visible:outline-none focus-visible:ring-inset"
-                >
-                    {cardContent}
-                </Link>
-            ) : (
-                <button
-                    type="button"
-                    tabIndex={-1}
-                    onClick={onActivate}
-                    aria-label={`Tampilkan ${entry.name}`}
-                    className="block size-full cursor-pointer text-left"
-                >
-                    {cardContent}
-                </button>
-            )}
+            <button
+                type="button"
+                onClick={() => {
+                    if (isActive) {
+                        onOpenDetail?.(entry);
+                    } else {
+                        onActivate();
+                    }
+                }}
+                aria-label={isActive ? `Lihat detail ${entry.name}` : `Tampilkan ${entry.name}`}
+                className="block size-full cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#f4c75c] focus-visible:outline-none focus-visible:ring-inset"
+            >
+                {cardContent}
+            </button>
         </article>
     );
 }
@@ -198,6 +192,7 @@ function CoverflowPotentialCard({
 export function VillagePotentialCarousel({
     entries,
     label,
+    onOpenDetail,
 }: VillagePotentialCarouselProps) {
     const carouselId = `potential-carousel-${useId().replaceAll(':', '')}`;
     const [activeIndex, setActiveIndex] = useState(0);
@@ -292,6 +287,7 @@ export function VillagePotentialCarousel({
                                 entry={entry}
                                 isActive={isActive}
                                 onActivate={() => setActiveIndex(index)}
+                                onOpenDetail={onOpenDetail}
                                 position={position}
                                 positionLabel={`${String(index + 1).padStart(2, '0')} / ${String(entries.length).padStart(2, '0')}`}
                             />

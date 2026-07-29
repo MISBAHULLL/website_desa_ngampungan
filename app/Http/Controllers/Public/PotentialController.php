@@ -30,14 +30,4 @@ class PotentialController extends Controller
                 : 'all',
         ]);
     }
-
-    /**
-     * Display a dummy village potential profile by slug.
-     */
-    public function show(string $slug): Response
-    {
-        return Inertia::render('potentials/show', [
-            'slug' => $slug,
-        ]);
-    }
 }

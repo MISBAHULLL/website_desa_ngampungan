@@ -13,6 +13,7 @@ export type VillagePotentialCategory = {
 export type VillagePotentialOffering = {
     name: string;
     description: string;
+    image?: string;
 };
 
 export type VillagePotentialEntry = {
