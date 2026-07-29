@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillagePotentialCard } from '@/components/village-potential-card';
+import { VillagePotentialDetailModal } from '@/components/village-potential-detail-modal';
 import {
     dummyVillagePotentialEntries,
     getDummyVillagePotentialEntries,
@@ -29,6 +30,8 @@ export default function PotentialIndex({
 }: PotentialIndexProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedDetailEntry, setSelectedDetailEntry] =
+        useState<VillagePotentialEntry | null>(null);
 
     const baseEntries = useMemo(() => {
         if (entries && entries.length > 0) {
@@ -232,6 +235,9 @@ export default function PotentialIndex({
                                     <VillagePotentialCard
                                         key={entry.slug}
                                         entry={entry}
+                                        onOpenDetail={(selected) =>
+                                            setSelectedDetailEntry(selected)
+                                        }
                                     />
                                 ))}
                             </div>
@@ -297,6 +303,11 @@ export default function PotentialIndex({
                     )}
                 </div>
             </section>
+
+            <VillagePotentialDetailModal
+                entry={selectedDetailEntry}
+                onClose={() => setSelectedDetailEntry(null)}
+            />
         </PublicPageShell>
     );
 }

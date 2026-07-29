@@ -11,8 +11,10 @@ import { show as potentialShow } from '@/routes/potentials';
 
 export function VillagePotentialCard({
     entry,
+    onOpenDetail,
 }: {
     entry: VillagePotentialEntry;
+    onOpenDetail?: (entry: VillagePotentialEntry) => void;
 }) {
     const category = findVillagePotentialCategory(entry.category);
     const presentation = potentialCategoryPresentation[entry.category];
@@ -25,10 +27,18 @@ export function VillagePotentialCard({
         setIsFavorite((prev) => !prev);
     };
 
+    const handleCardClick = (e: React.MouseEvent) => {
+        if (onOpenDetail) {
+            e.preventDefault();
+            onOpenDetail(entry);
+        }
+    };
+
     return (
         <article className="group relative flex h-full flex-col justify-between rounded-[28px] border border-gray-100 bg-white p-3.5 shadow-card transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/20 hover:shadow-xl motion-reduce:transform-none motion-reduce:transition-none">
             <Link
                 href={potentialShow(entry.slug)}
+                onClick={handleCardClick}
                 prefetch
                 viewTransition
                 aria-label={`Lihat detail ${entry.name}`}
