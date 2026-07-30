@@ -1897,14 +1897,16 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             </div>
 
                             <div className="mt-6 grid gap-6 lg:grid-cols-3">
-                                {[...activeDummyAnnouncements]
-                                    .sort(
-                                        (a, b) =>
-                                            new Date(b.startsAt).getTime() -
-                                            new Date(a.startsAt).getTime(),
-                                    )
+                                {((usePage().props as any).dbAnnouncements?.length > 0
+                                    ? (usePage().props as any).dbAnnouncements
+                                    : [...activeDummyAnnouncements].sort(
+                                          (a, b) =>
+                                              new Date(b.startsAt).getTime() -
+                                              new Date(a.startsAt).getTime(),
+                                      )
+                                )
                                     .slice(0, 3)
-                                    .map((announcement) => (
+                                    .map((announcement: any) => (
                                         <PublicAnnouncementCard
                                             key={announcement.id}
                                             announcement={announcement}

@@ -4,9 +4,11 @@ import {
     ClipboardList,
     FolderGit2,
     LayoutGrid,
+    Megaphone,
     MessagesSquare,
     Newspaper,
 } from 'lucide-react';
+import { index as announcementsIndex } from '@/actions/App/Http/Controllers/Admin/AnnouncementController';
 import { index as contactMessagesIndex } from '@/actions/App/Http/Controllers/Admin/ContactMessageController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
@@ -36,6 +38,11 @@ const mainNavItems: NavItem[] = [
         title: 'Kelola Berita',
         href: newsIndex(),
         icon: Newspaper,
+    },
+    {
+        title: 'Kelola Pengumuman',
+        href: announcementsIndex(),
+        icon: Megaphone,
     },
     {
         title: 'Pesan Masuk',

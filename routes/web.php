@@ -15,6 +15,7 @@ use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
+use App\Models\Announcement;
 use App\Models\News;
 use Illuminate\Support\Facades\Route;
 
@@ -36,8 +37,29 @@ Route::get('/', function () {
         ];
     });
 
+    $dbAnnouncements = Announcement::active()->latestFirst()->get()->map(function ($announcement) {
+        $startsAtLabel = $announcement->starts_at->translatedFormat('j F Y');
+        $endsAtLabel = $announcement->ends_at ? $announcement->ends_at->translatedFormat('j F Y') : null;
+        $periodLabel = $endsAtLabel ? "{$startsAtLabel}–{$endsAtLabel}" : "Mulai {$startsAtLabel}";
+
+        return [
+            'id' => $announcement->id,
+            'title' => $announcement->title,
+            'slug' => $announcement->slug,
+            'summary' => $announcement->summary,
+            'content' => $announcement->content,
+            'priority' => $announcement->priority,
+            'status' => $announcement->status,
+            'pinned' => (bool) $announcement->is_pinned,
+            'startsAt' => $announcement->starts_at->format('Y-m-d'),
+            'endsAt' => $announcement->ends_at?->format('Y-m-d'),
+            'periodLabel' => $periodLabel,
+        ];
+    });
+
     return Inertia\Inertia::render('welcome', [
         'dbArticles' => $dbArticles,
+        'dbAnnouncements' => $dbAnnouncements,
     ]);
 })->name('home');
 
@@ -114,6 +136,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->names('admin.news');
     Route::patch('dashboard/berita/{news}/toggle-featured', [App\Http\Controllers\Admin\NewsController::class, 'toggleFeatured'])
         ->name('admin.news.toggle-featured');
+
+    Route::resource('dashboard/pengumuman', App\Http\Controllers\Admin\AnnouncementController::class)
+        ->parameters(['pengumuman' => 'announcement'])
+        ->names('admin.announcements');
+    Route::patch('dashboard/pengumuman/{announcement}/toggle-pinned', [App\Http\Controllers\Admin\AnnouncementController::class, 'togglePinned'])
+        ->name('admin.announcements.toggle-pinned');
 });
 
 require __DIR__.'/settings.php';

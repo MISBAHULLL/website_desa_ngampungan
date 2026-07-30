@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Archive, BellRing } from 'lucide-react';
 import { useState } from 'react';
 import { PublicAnnouncementCard } from '@/components/public-announcement-card';
@@ -10,12 +10,36 @@ import {
 
 type AnnouncementTab = 'active' | 'archived';
 
-export default function AnnouncementIndex() {
+type AnnouncementIndexProps = {
+    dbAnnouncements?: Array<{
+        id: number;
+        title: string;
+        slug: string;
+        summary: string;
+        content?: string[] | null;
+        priority: 'normal' | 'important' | 'emergency';
+        status: 'active' | 'archived';
+        pinned: boolean;
+        startsAt: string;
+        endsAt?: string | null;
+        periodLabel: string;
+    }>;
+};
+
+export default function AnnouncementIndex({
+    dbAnnouncements,
+}: AnnouncementIndexProps) {
     const [activeTab, setActiveTab] = useState<AnnouncementTab>('active');
-    const visibleAnnouncements =
-        activeTab === 'active'
-            ? activeDummyAnnouncements
-            : archivedDummyAnnouncements;
+
+    const activeList = dbAnnouncements && dbAnnouncements.length > 0
+        ? dbAnnouncements.filter((a) => a.status === 'active')
+        : activeDummyAnnouncements;
+
+    const archivedList = dbAnnouncements && dbAnnouncements.length > 0
+        ? dbAnnouncements.filter((a) => a.status === 'archived')
+        : archivedDummyAnnouncements;
+
+    const visibleAnnouncements = activeTab === 'active' ? activeList : archivedList;
 
     return (
         <PublicPageShell activeSection="announcements">
@@ -60,7 +84,7 @@ export default function AnnouncementIndex() {
                             }
                         >
                             <BellRing aria-hidden="true" className="size-4" />
-                            Aktif ({activeDummyAnnouncements.length})
+                            Aktif ({activeList.length})
                         </button>
                         <button
                             type="button"
@@ -74,14 +98,14 @@ export default function AnnouncementIndex() {
                             }
                         >
                             <Archive aria-hidden="true" className="size-4" />
-                            Arsip ({archivedDummyAnnouncements.length})
+                            Arsip ({archivedList.length})
                         </button>
                     </div>
 
                     <div className="mt-9 flex items-end justify-between gap-5">
                         <div>
                             <p className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
-                                Data dummy frontend
+                                Informasi Desa Ngampungan
                             </p>
                             <h2
                                 id="announcement-list-heading"
