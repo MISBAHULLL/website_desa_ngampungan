@@ -3,14 +3,12 @@ import {
     ArrowRight,
     ChartBar,
     Check,
-    Compass,
     Grid3X3,
     Home,
     Info,
     LandPlot,
     LocateFixed,
     MapPin,
-    Milestone,
     Ruler,
     Users,
 } from 'lucide-react';
@@ -109,22 +107,34 @@ const villageMissions = [
 
 const historyStages = [
     {
-        stage: 'Masa Awal',
-        title: 'Pembentukan komunitas desa',
+        title: 'Asal-Usul & Perintisan Pemukiman',
         description:
-            'Narasi asal-usul, tokoh perintis, dan pembentukan wilayah akan ditulis berdasarkan arsip serta keterangan warga yang telah diverifikasi.',
+            'Awal mula pembentukan wilayah desa oleh tokoh perintis lokal, meletakkan fondasi kebudayaan, nilai sosial, dan semangat gotong royong warga.',
+        era: 'Masa Babat Desa',
     },
     {
-        stage: 'Perkembangan',
-        title: 'Pertumbuhan pemerintahan dan pelayanan',
+        title: 'Perkembangan Agraris & Dusun',
         description:
-            'Bagian ini disiapkan untuk mencatat perkembangan pemerintahan, fasilitas umum, kegiatan ekonomi, dan kehidupan sosial masyarakat.',
+            'Pengembangan wilayah pertanian subur dan pembentukan dusun-dusun sebagai basis kehidupan kemasyarakatan yang asri.',
+        era: 'Pertanian & Pemukiman',
     },
     {
-        stage: 'Masa Kini',
-        title: 'Transformasi layanan desa',
+        title: 'Formasi Pemerintahan Formal',
         description:
-            'Desa Ngampungan mengembangkan akses informasi dan layanan digital agar warga lebih mudah memperoleh pelayanan publik.',
+            'Pencatatan dan penetapan struktur kepemimpinan desa resmi di bawah Kecamatan Bareng, Kabupaten Jombang.',
+        era: 'Pemerintahan Resmi',
+    },
+    {
+        title: 'Modernisasi Infrastruktur Publik',
+        description:
+            'Pembangunan jalan, sarana irigasi pertanian, fasilitas kesehatan, dan balai desa untuk mendukung kemajuan warga.',
+        era: 'Pembangunan Prasarana',
+    },
+    {
+        title: 'Transformasi Pelayanan Digital',
+        description:
+            'Inovasi tata kelola berbasis teknologi informasi dan transparansi publik untuk mewujudkan Desa Ngampungan yang mandiri dan berdaya saing.',
+        era: 'Era Digital & Masa Depan',
     },
 ];
 
@@ -469,60 +479,95 @@ export default function VillageProfileIndex({
                 </div>
             </section>
 
-            {/* Section 3: Sejarah Desa */}
+            {/* Section 3: Redesigned Sejarah Desa with Animative Vertical Sinuous Timeline (5 Stages) */}
             <section
                 id="sejarah-desa"
                 aria-labelledby="sejarah-desa-heading"
-                className="scroll-mt-24 border-t border-village-border bg-village-surface-muted py-12 md:py-16"
+                className="group/section relative scroll-mt-24 overflow-hidden border-t border-village-border bg-gradient-to-b from-white via-village-surface-muted/60 to-village-canvas py-16 md:py-24"
             >
-                <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <div className="max-w-2xl">
+                {/* Background Ambient Glow Orbs */}
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-[28rem] size-80 rounded-full bg-village-primary-light/40 blur-3xl transition-all duration-700 group-hover/section:scale-110"
+                />
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute bottom-1/4 right-1/2 translate-x-[28rem] size-96 rounded-full bg-village-accent/15 blur-3xl transition-all duration-700 group-hover/section:scale-110"
+                />
+
+                <div className="relative mx-auto max-w-[1280px] px-5 lg:px-12">
+                    <div className="mx-auto max-w-2xl text-center">
                         <h2
                             id="sejarah-desa-heading"
-                            className="text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
+                            className="text-3xl font-bold tracking-tight text-village-ink sm:text-4xl md:text-5xl"
                         >
-                            Sejarah Desa
+                            Sejarah Perjalanan Desa
                         </h2>
-                        <p className="mt-4 leading-7 text-village-muted">
-                            Struktur cerita sejarah telah disiapkan tanpa
-                            mengarang tahun atau peristiwa yang belum
-                            diverifikasi.
+                        <p className="mt-4 text-base leading-relaxed text-village-muted">
+                            Alur perkembangan Desa Ngampungan dari masa awal perintisan pemukiman hingga era transformasi pelayanan publik modern.
                         </p>
                     </div>
 
-                    <div className="relative mt-10 grid gap-6 md:grid-cols-3">
+                    {/* Vertical Timeline Container */}
+                    <div className="relative mt-16 mx-auto max-w-4xl">
+                        {/* Desktop: Clean Centered Vertical Line */}
                         <div
                             aria-hidden="true"
-                            className="absolute top-6 right-[16.5%] left-[16.5%] hidden h-0.5 bg-village-border md:block"
+                            className="absolute top-0 bottom-0 left-1/2 hidden w-px -translate-x-1/2 bg-gradient-to-b from-village-primary/60 via-village-primary/30 to-village-accent/40 md:block"
                         />
-                        {historyStages.map((item, index) => (
-                            <article
-                                key={item.stage}
-                                className="relative rounded-2xl border border-village-border bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:shadow-village-soft"
-                            >
-                                <span className="relative z-10 flex size-12 items-center justify-center rounded-full border-4 border-village-surface-muted bg-village-primary text-white shadow-sm">
-                                    {index === historyStages.length - 1 ? (
-                                        <Milestone
-                                            aria-hidden="true"
-                                            className="size-5"
-                                        />
-                                    ) : (
-                                        <span className="text-sm font-bold">
-                                            {index + 1}
-                                        </span>
-                                    )}
-                                </span>
-                                <p className="mt-6 text-xs font-bold tracking-[0.15em] text-village-primary uppercase">
-                                    {item.stage}
-                                </p>
-                                <h3 className="mt-2 text-xl font-bold text-village-ink">
-                                    {item.title}
-                                </h3>
-                                <p className="mt-3 leading-7 text-village-muted">
-                                    {item.description}
-                                </p>
-                            </article>
-                        ))}
+
+                        {/* Mobile: Clean Left-Side Vertical Line */}
+                        <div
+                            aria-hidden="true"
+                            className="absolute top-0 bottom-0 left-[1.375rem] w-px bg-gradient-to-b from-village-primary/50 via-village-primary/25 to-village-accent/30 md:hidden"
+                        />
+
+                        {/* 5 Timeline Stages */}
+                        <div className="space-y-10 md:space-y-16">
+                            {historyStages.map((item, index) => {
+                                const isEven = index % 2 === 0;
+
+                                return (
+                                    <div
+                                        key={item.title}
+                                        className={`group relative flex items-start md:items-center ${
+                                            isEven ? 'md:flex-row' : 'md:flex-row-reverse'
+                                        }`}
+                                    >
+                                        {/* Numbered Node Dot */}
+                                        <div className="absolute left-[1.375rem] md:left-1/2 z-20 -translate-x-1/2 flex size-11 items-center justify-center rounded-full border-[3px] border-white bg-village-primary text-sm font-extrabold text-white shadow-md ring-[3px] ring-village-primary/15 transition-all duration-400 group-hover:scale-110 group-hover:bg-village-primary-dark group-hover:ring-village-primary/30 group-hover:shadow-lg">
+                                            {String(index + 1).padStart(2, '0')}
+                                        </div>
+
+                                        {/* Content Card */}
+                                        <div className="w-full pl-14 md:pl-0 md:w-[calc(50%-2.5rem)]">
+                                            <article
+                                                className={`group/card rounded-2xl border border-village-border/80 bg-white p-6 shadow-sm transition-all duration-400 hover:-translate-y-1.5 hover:border-village-primary/40 hover:shadow-xl sm:p-7 ${
+                                                    isEven ? 'md:mr-auto' : 'md:ml-auto'
+                                                }`}
+                                            >
+                                                <div className="flex items-center justify-between gap-3">
+                                                    <span className="rounded-md border border-village-border/60 bg-village-surface-muted px-2.5 py-1 text-[11px] font-bold text-village-muted transition-colors group-hover/card:border-village-primary/30 group-hover/card:text-village-ink">
+                                                        {item.era}
+                                                    </span>
+                                                </div>
+
+                                                <h3 className="mt-3 text-lg font-extrabold text-village-ink transition-colors group-hover/card:text-village-primary-dark">
+                                                    {item.title}
+                                                </h3>
+
+                                                <p className="mt-2.5 text-sm leading-7 text-village-muted">
+                                                    {item.description}
+                                                </p>
+                                            </article>
+                                        </div>
+
+                                        {/* Spacer for desktop grid symmetry */}
+                                        <div className="hidden md:block md:w-[calc(50%-2.5rem)]" />
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </div>
             </section>
