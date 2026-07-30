@@ -45,6 +45,7 @@ import {
     featuredDummyNewsArticle,
     latestDummyNewsArticles,
 } from '@/lib/dummy-public-content';
+import type { NewsArticle } from '@/lib/dummy-public-content';
 import { dummyApbdesSummaries } from '@/lib/dummy-transparency';
 import {
     findVillagePotentialCategory,
@@ -911,7 +912,7 @@ function HeroBackgroundCarousel({
     );
 }
 
-export default function Welcome() {
+export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) {
     const { auth } = usePage().props;
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -931,17 +932,32 @@ export default function Welcome() {
         activePotentialCategory,
     ).slice(0, 3);
 
+    const { featuredNewsArticle, latestNewsArticles } = useMemo(() => {
+        if (dbArticles && dbArticles.length > 0) {
+            const featured = dbArticles.find((a) => a.featured) || dbArticles[0];
+            const latest = dbArticles.filter((a) => a.slug !== featured.slug);
+            return {
+                featuredNewsArticle: featured,
+                latestNewsArticles: latest.length > 0 ? latest : [featured],
+            };
+        }
+        return {
+            featuredNewsArticle: featuredDummyNewsArticle,
+            latestNewsArticles: latestDummyNewsArticles,
+        };
+    }, [dbArticles]);
+
     const [newsCurrentPage, setNewsCurrentPage] = useState(1);
     const [isNewsPageTransitioning, setIsNewsPageTransitioning] =
         useState(false);
     const NEWS_PER_PAGE = 6;
     const totalNewsPages = Math.ceil(
-        latestDummyNewsArticles.length / NEWS_PER_PAGE,
+        latestNewsArticles.length / NEWS_PER_PAGE,
     );
     const paginatedNewsArticles = useMemo(() => {
         const start = (newsCurrentPage - 1) * NEWS_PER_PAGE;
-        return latestDummyNewsArticles.slice(start, start + NEWS_PER_PAGE);
-    }, [newsCurrentPage]);
+        return latestNewsArticles.slice(start, start + NEWS_PER_PAGE);
+    }, [latestNewsArticles, newsCurrentPage]);
 
     const handleNewsPageChange = (page: number) => {
         if (page === newsCurrentPage || isNewsPageTransitioning) return;
@@ -1539,9 +1555,6 @@ export default function Welcome() {
                         <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
                                 <div className="max-w-2xl">
-                                    <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
-                                        Kabar Desa
-                                    </p>
                                     <h2
                                         id="berita-heading"
                                         className="village-heading-2 mt-3"
@@ -1570,41 +1583,28 @@ export default function Welcome() {
                                 <article className="group grid overflow-hidden rounded-3xl border border-village-border bg-white shadow-village-soft lg:grid-cols-12">
                                     <Link
                                         href={newsShow(
-                                            featuredDummyNewsArticle.slug,
+                                            featuredNewsArticle.slug,
                                         )}
                                         prefetch
                                         className="relative block min-h-72 overflow-hidden bg-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset lg:col-span-7"
                                     >
-                                        {isFeaturedImageUnavailable ? (
-                                            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.14),transparent_38%),linear-gradient(145deg,var(--color-village-primary-dark),var(--color-village-primary))] px-8 text-center text-white">
-                                                <span className="flex size-16 items-center justify-center rounded-full border border-white/25 bg-white/10">
-                                                    <Newspaper
-                                                        aria-hidden="true"
-                                                        className="size-7"
-                                                    />
-                                                </span>
-                                                <span className="max-w-xs text-sm leading-6 font-semibold text-white/85">
-                                                    Dokumentasi berita belum
-                                                    tersedia
-                                                </span>
-                                            </div>
-                                        ) : (
-                                            <img
-                                                ref={featuredImageRef}
-                                                src={
-                                                    featuredDummyNewsArticle.image
-                                                }
-                                                alt={
-                                                    featuredDummyNewsArticle.alt
-                                                }
-                                                onError={() =>
-                                                    setIsFeaturedImageUnavailable(
-                                                        true,
-                                                    )
-                                                }
-                                                className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
-                                            />
-                                        )}
+                                        <img
+                                            ref={featuredImageRef}
+                                            src={
+                                                !isFeaturedImageUnavailable && featuredNewsArticle.image
+                                                    ? featuredNewsArticle.image
+                                                    : '/images/news/featured.png'
+                                            }
+                                            alt={
+                                                featuredNewsArticle.alt || featuredNewsArticle.title
+                                            }
+                                            onError={() =>
+                                                setIsFeaturedImageUnavailable(
+                                                    true,
+                                                )
+                                            }
+                                            className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                                        />
                                         <span className="absolute top-5 left-5 rounded-full bg-village-accent px-3 py-1.5 text-xs font-bold text-village-ink shadow-sm">
                                             Berita Utama
                                         </span>
@@ -1612,17 +1612,17 @@ export default function Welcome() {
 
                                     <div className="flex flex-col justify-center p-6 md:p-8 lg:col-span-5 lg:p-10">
                                         <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                                            {featuredDummyNewsArticle.category}
+                                            {featuredNewsArticle.category}
                                         </p>
                                         <h3 className="mt-4 text-2xl leading-tight font-bold md:text-3xl">
                                             <Link
                                                 href={newsShow(
-                                                    featuredDummyNewsArticle.slug,
+                                                    featuredNewsArticle.slug,
                                                 )}
                                                 prefetch
                                                 className="transition-colors hover:text-village-primary focus-visible:underline focus-visible:outline-none"
                                             >
-                                                {featuredDummyNewsArticle.title}
+                                                {featuredNewsArticle.title}
                                             </Link>
                                         </h3>
                                         <div className="mt-5 flex items-center gap-2 text-xs text-village-muted">
@@ -1632,20 +1632,20 @@ export default function Welcome() {
                                             />
                                             <time
                                                 dateTime={
-                                                    featuredDummyNewsArticle.publishedAt
+                                                    featuredNewsArticle.publishedAt
                                                 }
                                             >
                                                 {
-                                                    featuredDummyNewsArticle.publishedLabel
+                                                    featuredNewsArticle.publishedLabel
                                                 }
                                             </time>
                                         </div>
                                         <p className="mt-5 leading-7 text-village-muted">
-                                            {featuredDummyNewsArticle.excerpt}
+                                            {featuredNewsArticle.excerpt}
                                         </p>
                                         <Link
                                             href={newsShow(
-                                                featuredDummyNewsArticle.slug,
+                                                featuredNewsArticle.slug,
                                             )}
                                             prefetch
                                             className="mt-7 inline-flex w-fit items-center gap-2 text-sm font-bold text-village-primary hover:text-village-primary-dark"
@@ -1676,7 +1676,7 @@ export default function Welcome() {
                                         <strong className="font-bold text-gray-900">
                                             {paginatedNewsArticles.length}
                                         </strong>{' '}
-                                        dari {latestDummyNewsArticles.length} berita
+                                        dari {latestNewsArticles.length} berita
                                     </span>
                                 </div>
 

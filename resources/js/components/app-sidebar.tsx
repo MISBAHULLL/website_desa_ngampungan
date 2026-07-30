@@ -5,8 +5,10 @@ import {
     FolderGit2,
     LayoutGrid,
     MessagesSquare,
+    Newspaper,
 } from 'lucide-react';
 import { index as contactMessagesIndex } from '@/actions/App/Http/Controllers/Admin/ContactMessageController';
+import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -29,6 +31,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Kelola Berita',
+        href: newsIndex(),
+        icon: Newspaper,
     },
     {
         title: 'Pesan Masuk',

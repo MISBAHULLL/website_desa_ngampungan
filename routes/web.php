@@ -15,9 +15,31 @@ use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
+use App\Models\News;
 use Illuminate\Support\Facades\Route;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', function () {
+    $dbArticles = News::latestPublished()->get()->map(function ($article) {
+        return [
+            'id' => $article->id,
+            'slug' => $article->slug,
+            'title' => $article->title,
+            'excerpt' => $article->excerpt,
+            'content' => $article->content,
+            'category' => $article->category,
+            'author' => $article->author,
+            'publishedAt' => $article->published_at->format('Y-m-d'),
+            'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
+            'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
+            'alt' => $article->image_alt ?: $article->title,
+            'featured' => (bool) $article->is_featured,
+        ];
+    });
+
+    return Inertia\Inertia::render('welcome', [
+        'dbArticles' => $dbArticles,
+    ]);
+})->name('home');
 
 Route::get('profil-desa', VillageProfileController::class)
     ->name('profile.index');
@@ -86,6 +108,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     )
         ->scopeBindings()
         ->name('admin.service-applications.documents.download');
+
+    Route::resource('dashboard/berita', App\Http\Controllers\Admin\NewsController::class)
+        ->parameters(['berita' => 'news'])
+        ->names('admin.news');
+    Route::patch('dashboard/berita/{news}/toggle-featured', [App\Http\Controllers\Admin\NewsController::class, 'toggleFeatured'])
+        ->name('admin.news.toggle-featured');
 });
 
 require __DIR__.'/settings.php';

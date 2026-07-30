@@ -2,14 +2,29 @@ import { Head, Link } from '@inertiajs/react';
 import { ArrowLeft, CalendarDays, Newspaper, UserRound } from 'lucide-react';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { PublicPageShell } from '@/components/public-page-shell';
+import type { NewsArticle } from '@/lib/dummy-public-content';
 import {
     findDummyNewsArticle,
     getRelatedDummyNewsArticles,
 } from '@/lib/dummy-public-content';
 import { index as newsIndex } from '@/routes/news';
 
-export default function NewsShow({ slug }: { slug: string }) {
-    const article = findDummyNewsArticle(slug);
+export default function NewsShow({
+    slug,
+    dbArticle,
+    relatedArticles: dbRelatedArticles,
+}: {
+    slug: string;
+    dbArticle?: NewsArticle | null;
+    relatedArticles?: NewsArticle[];
+}) {
+    const article = dbArticle || findDummyNewsArticle(slug);
+    const relatedArticles =
+        dbRelatedArticles && dbRelatedArticles.length > 0
+            ? dbRelatedArticles
+            : article
+            ? getRelatedDummyNewsArticles(article)
+            : [];
 
     if (!article) {
         return (
@@ -40,8 +55,6 @@ export default function NewsShow({ slug }: { slug: string }) {
             </PublicPageShell>
         );
     }
-
-    const relatedArticles = getRelatedDummyNewsArticles(article);
 
     return (
         <PublicPageShell activeSection="news">

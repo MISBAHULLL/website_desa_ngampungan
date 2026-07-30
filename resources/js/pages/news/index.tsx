@@ -3,15 +3,21 @@ import { ArrowRight, FileText, Newspaper, Search, SlidersHorizontal } from 'luci
 import { useMemo, useState } from 'react';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { PublicPageShell } from '@/components/public-page-shell';
+import type { NewsArticle } from '@/lib/dummy-public-content';
 import { dummyNewsArticles } from '@/lib/dummy-public-content';
 
 const articlesPerPage = 6;
-const newsCategories = [
-    'Semua',
-    ...new Set(dummyNewsArticles.map((article) => article.category)),
-];
 
-export default function NewsIndex() {
+export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }) {
+    const articles = useMemo(() => {
+        return dbArticles && dbArticles.length > 0 ? dbArticles : dummyNewsArticles;
+    }, [dbArticles]);
+
+    const newsCategories = useMemo(() => [
+        'Semua',
+        ...new Set(articles.map((article) => article.category)),
+    ], [articles]);
+
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [currentPage, setCurrentPage] = useState(1);
@@ -37,7 +43,7 @@ export default function NewsIndex() {
     const filteredArticles = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase('id-ID');
 
-        return dummyNewsArticles.filter((article) => {
+        return articles.filter((article) => {
             const matchesCategory =
                 selectedCategory === 'Semua' ||
                 article.category === selectedCategory;
@@ -49,7 +55,7 @@ export default function NewsIndex() {
 
             return matchesCategory && matchesSearch;
         });
-    }, [searchQuery, selectedCategory]);
+    }, [articles, searchQuery, selectedCategory]);
 
     const totalPages = Math.max(
         1,
