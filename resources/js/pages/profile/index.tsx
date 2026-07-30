@@ -3,6 +3,7 @@ import {
     ArrowRight,
     ChartBar,
     Check,
+    Compass,
     Grid3X3,
     Home,
     Info,
@@ -84,11 +85,26 @@ const villageStatistics = [
 ];
 
 const villageMissions = [
-    'Meningkatkan kualitas pelayanan publik yang mudah, ramah, dan transparan.',
-    'Mendorong penguatan ekonomi warga melalui pertanian dan UMKM desa.',
-    'Mengembangkan sumber daya manusia yang sehat, terampil, dan berdaya saing.',
-    'Menjaga lingkungan, budaya lokal, serta semangat gotong royong masyarakat.',
-    'Mewujudkan tata kelola pembangunan yang partisipatif dan dapat dipertanggungjawabkan.',
+    {
+        category: 'Pelayanan',
+        text: 'Meningkatkan kualitas pelayanan publik yang mudah, ramah, dan transparan.',
+    },
+    {
+        category: 'Ekonomi',
+        text: 'Mendorong penguatan ekonomi warga melalui pertanian dan UMKM desa.',
+    },
+    {
+        category: 'SDM',
+        text: 'Mengembangkan sumber daya manusia yang sehat, terampil, dan berdaya saing.',
+    },
+    {
+        category: 'Lingkungan',
+        text: 'Menjaga lingkungan, budaya lokal, serta semangat gotong royong masyarakat.',
+    },
+    {
+        category: 'Tata Kelola',
+        text: 'Mewujudkan tata kelola pembangunan yang partisipatif dan dapat dipertanggungjawabkan.',
+    },
 ];
 
 const historyStages = [
@@ -222,7 +238,7 @@ export default function VillageProfileIndex({
                 </div>
             </section>
 
-            {/* Section 1: Redesigned Selayang Pandang (Clean, No Photo) */}
+            {/* Section 1: Redesigned Selayang Pandang */}
             <section
                 id="selayang-pandang"
                 aria-labelledby="selayang-pandang-heading"
@@ -332,61 +348,122 @@ export default function VillageProfileIndex({
                 </div>
             </section>
 
-            {/* Section 2: Visi dan Misi */}
+            {/* Section 2: Redesigned Visi dan Misi using Card Showcase Reference Pattern */}
             <section
                 id="visi-misi"
                 aria-labelledby="visi-misi-heading"
-                className="scroll-mt-24 border-t border-village-border bg-white py-12 md:py-16"
+                className="scroll-mt-24 border-t border-village-border bg-white py-14 md:py-20"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <div className="grid gap-6 lg:grid-cols-12">
-                        <article className="relative overflow-hidden rounded-2xl bg-village-primary-dark p-7 text-white shadow-lg sm:p-10 lg:col-span-5">
-                            <div
-                                aria-hidden="true"
-                                className="absolute top-0 right-0 size-44 translate-x-12 -translate-y-12 rounded-full border-[32px] border-white/[0.06]"
-                            />
-                            <h2
-                                id="visi-misi-heading"
-                                className="text-3xl font-bold tracking-tight md:text-4xl"
-                            >
-                                Visi dan Misi
-                            </h2>
-                            <div className="mt-10 border-l-2 border-village-accent pl-5">
-                                <p className="text-xs font-bold tracking-[0.16em] text-white/55 uppercase">
-                                    Visi Utama
-                                </p>
-                                <p className="mt-3 text-xl leading-8 font-semibold text-white">
-                                    “Terwujudnya Desa Ngampungan yang maju,
-                                    mandiri, sejahtera, dan berkarakter melalui
-                                    pelayanan yang transparan.”
-                                </p>
+                    <div className="max-w-2xl mb-10">
+                        <h2
+                            id="visi-misi-heading"
+                            className="text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
+                        >
+                            Visi & Misi Pembangunan
+                        </h2>
+                        <p className="mt-3 text-base leading-7 text-village-muted">
+                            Arah kebijakan strategis dan komitmen Pemerintah Desa Ngampungan dalam mewujudkan kesejahteraan warga.
+                        </p>
+                    </div>
+
+                    <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch">
+                        {/* Variant B: Dark Glassmorphic Card (Visi Utama) */}
+                        <article className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/15 bg-village-primary-dark p-7 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_32px_rgba(26,77,46,0.45)] sm:p-9 lg:col-span-5">
+                            <div className="relative">
+                                {/* Header Badge */}
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-extrabold uppercase tracking-widest text-village-accent">
+                                        Visi Utama Desa
+                                    </span>
+                                </div>
+
+                                <h3 className="mt-6 text-2xl font-extrabold tracking-tight sm:text-3xl">
+                                    Rencana Strategis
+                                </h3>
+
+                                <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur-md">
+                                    <p className="text-base leading-8 font-semibold italic text-white/95 sm:text-lg">
+                                        “Terwujudnya Desa Ngampungan yang maju,
+                                        mandiri, sejahtera, dan berkarakter melalui
+                                        pelayanan publik yang transparan.”
+                                    </p>
+                                </div>
                             </div>
-                            <p className="mt-8 text-sm leading-6 text-white/60">
-                                Rumusan visi dan misi masih berupa simulasi
-                                tampilan dan menunggu dokumen resmi pemerintah
-                                desa.
-                            </p>
+
+                            {/* Reference-Inspired Stats Bar (Tabular Figures & Dividers) */}
+                            <div className="relative mt-8">
+                                <div className="grid grid-cols-3 divide-x divide-white/20 rounded-2xl border border-white/15 bg-white/5 py-4 text-center backdrop-blur-xs">
+                                    <div className="px-2">
+                                        <div className="text-sm font-extrabold text-white tabular-nums">
+                                            4 Pilar
+                                        </div>
+                                        <div className="mt-0.5 text-[11px] font-medium text-white/70">
+                                            Pembangunan
+                                        </div>
+                                    </div>
+                                    <div className="px-2">
+                                        <div className="text-sm font-extrabold text-[#ffd700] tabular-nums">
+                                            2026–2031
+                                        </div>
+                                        <div className="mt-0.5 text-[11px] font-medium text-white/70">
+                                            Periode RPJMDes
+                                        </div>
+                                    </div>
+                                    <div className="px-2">
+                                        <div className="text-sm font-extrabold text-white tabular-nums">
+                                            100%
+                                        </div>
+                                        <div className="mt-0.5 text-[11px] font-medium text-white/70">
+                                            Komitmen Publik
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </article>
 
-                        <article className="rounded-2xl border border-village-border bg-village-canvas p-7 sm:p-10 lg:col-span-7">
-                            <h3 className="text-xl font-bold text-village-ink">
-                                Misi Pembangunan
-                            </h3>
-                            <ol className="mt-6 grid gap-5">
-                                {villageMissions.map((mission, index) => (
-                                    <li
-                                        key={mission}
-                                        className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-4 border-b border-village-border/60 pb-5 last:border-0 last:pb-0"
-                                    >
-                                        <span className="flex size-9 items-center justify-center rounded-xl bg-village-primary-light text-sm font-bold text-village-primary">
-                                            {String(index + 1).padStart(2, '0')}
-                                        </span>
-                                        <span className="leading-7 font-medium text-village-ink">
-                                            {mission}
-                                        </span>
-                                    </li>
-                                ))}
-                            </ol>
+                        {/* Variant A: Light Surface Card (5 Misi Pembangunan) */}
+                        <article className="group flex flex-col justify-between rounded-3xl border border-village-border bg-white p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-xl sm:p-9 lg:col-span-7">
+                            <div>
+                                <div className="border-b border-village-border pb-4">
+                                    <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                        5 Misi Pembangunan
+                                    </span>
+                                    <h3 className="mt-1 text-2xl font-extrabold text-village-ink">
+                                        Langkah Konkret Pelaksanaan
+                                    </h3>
+                                </div>
+
+                                <ol className="mt-4 space-y-1">
+                                    {villageMissions.map((item, index) => (
+                                        <li
+                                            key={item.category}
+                                            className="group/item flex items-start gap-4 rounded-2xl p-3.5 transition-all duration-200 hover:bg-village-primary-light/60 hover:shadow-2xs"
+                                        >
+                                            <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-village-primary-light text-xs font-extrabold text-village-primary transition-all duration-200 group-hover/item:bg-village-primary group-hover/item:text-white group-hover/item:shadow-xs">
+                                                {String(index + 1).padStart(2, '0')}
+                                            </span>
+                                            <div>
+                                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-village-primary/80 transition-colors group-hover/item:text-village-primary">
+                                                    Pilar {item.category}
+                                                </span>
+                                                <p className="mt-0.5 text-sm leading-6 font-semibold text-village-ink transition-colors group-hover/item:text-village-primary-dark">
+                                                    {item.text}
+                                                </p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ol>
+                            </div>
+
+                            {/* Reference-Inspired Light Stats Bar */}
+                            <div className="mt-6 border-t border-village-border pt-5">
+                                <div className="flex items-center justify-between gap-3 text-xs text-village-muted">
+                                    <span className="font-semibold">
+                                        Status Implementasi: <strong className="text-village-ink font-bold">Rencana Strategis Desa</strong>
+                                    </span>
+                                </div>
+                            </div>
                         </article>
                     </div>
                 </div>
