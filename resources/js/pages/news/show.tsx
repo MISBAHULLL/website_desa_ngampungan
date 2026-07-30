@@ -1,5 +1,18 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowLeft, CalendarDays, Newspaper, UserRound } from 'lucide-react';
+import {
+    ArrowLeft,
+    CalendarDays,
+    Check,
+    ChevronRight,
+    Clock,
+    Copy,
+    Home,
+    Newspaper,
+    Share2,
+    Tag,
+    UserRound,
+} from 'lucide-react';
+import { useState } from 'react';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { PublicPageShell } from '@/components/public-page-shell';
 import type { NewsArticle } from '@/lib/dummy-public-content';
@@ -26,6 +39,34 @@ export default function NewsShow({
             ? getRelatedDummyNewsArticles(article)
             : [];
 
+    // State for copy link action feedback
+    const [isCopied, setIsCopied] = useState(false);
+    const [showToast, setShowToast] = useState(false);
+
+    const handleCopyLink = () => {
+        if (typeof window !== 'undefined') {
+            const currentUrl = window.location.href;
+            navigator.clipboard.writeText(currentUrl).then(() => {
+                setIsCopied(true);
+                setShowToast(true);
+                setTimeout(() => setIsCopied(false), 3000);
+                setTimeout(() => setShowToast(false), 3500);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = currentUrl;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                setIsCopied(true);
+                setShowToast(true);
+                setTimeout(() => setIsCopied(false), 3000);
+                setTimeout(() => setShowToast(false), 3500);
+            });
+        }
+    };
+
     if (!article) {
         return (
             <PublicPageShell activeSection="news">
@@ -40,12 +81,11 @@ export default function NewsShow({
                             Berita tidak ditemukan
                         </h1>
                         <p className="mt-3 leading-7 text-village-muted">
-                            Slug dummy ini tidak tersedia. Pada fase backend,
-                            kondisi ini akan ditangani sebagai HTTP 404.
+                            Artikel berita yang Anda cari tidak ditemukan atau telah dipindahkan.
                         </p>
                         <Link
                             href={newsIndex()}
-                            className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-xl bg-village-primary px-5 py-3 font-bold text-white transition hover:bg-village-primary-dark"
+                            className="mt-7 inline-flex min-h-11 items-center gap-2 rounded-xl bg-village-primary px-6 py-3 font-bold text-white transition hover:bg-village-primary-dark"
                         >
                             <ArrowLeft aria-hidden="true" className="size-4" />
                             Kembali ke daftar berita
@@ -56,6 +96,10 @@ export default function NewsShow({
         );
     }
 
+    // Estimate total reading time based on total word count
+    const totalWords = article.content.join(' ').split(/\s+/).length;
+    const estimatedReadMinutes = Math.max(1, Math.ceil(totalWords / 180));
+
     return (
         <PublicPageShell activeSection="news">
             <Head title={article.title}>
@@ -65,78 +109,238 @@ export default function NewsShow({
                 <meta property="og:image" content={article.image} />
             </Head>
 
-            <article>
-                <header className="border-b border-village-border bg-white">
-                    <div className="mx-auto max-w-4xl px-5 py-12 md:py-16">
-                        <Link
-                            href={newsIndex()}
-                            className="inline-flex items-center gap-2 text-sm font-bold text-village-primary hover:text-village-primary-dark"
-                        >
-                            <ArrowLeft aria-hidden="true" className="size-4" />
-                            Semua Berita
-                        </Link>
-                        <p className="mt-8 text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
+            {/* Floating Toast Feedback for Link Copied */}
+            {showToast && (
+                <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
+                    <div className="flex size-6 items-center justify-center rounded-full bg-emerald-500 text-slate-950 font-bold">
+                        <Check className="size-3.5 stroke-[3]" />
+                    </div>
+                    <span>Tautan berita berhasil disalin ke clipboard!</span>
+                </div>
+            )}
+
+            {/* Top Breadcrumb Navigation Bar */}
+            <nav
+                aria-label="Breadcrumb"
+                className="border-b border-village-border/80 bg-village-surface-muted/60 py-3.5 backdrop-blur-sm"
+            >
+                <div className="mx-auto flex max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-10">
+                    <ol className="flex items-center gap-1.5 text-xs font-medium text-village-muted sm:text-sm">
+                        <li>
+                            <Link
+                                href="/"
+                                className="inline-flex items-center gap-1.5 text-slate-600 transition-colors hover:text-village-primary"
+                            >
+                                <Home className="size-3.5" />
+                                <span>Beranda</span>
+                            </Link>
+                        </li>
+                        <ChevronRight className="size-3.5 text-slate-400 shrink-0" />
+                        <li>
+                            <Link
+                                href={newsIndex()}
+                                className="text-slate-600 transition-colors hover:text-village-primary"
+                            >
+                                Kabar Desa
+                            </Link>
+                        </li>
+                        <ChevronRight className="size-3.5 text-slate-400 shrink-0" />
+                        <li className="max-w-[180px] truncate sm:max-w-xs font-semibold text-village-primary-dark">
                             {article.category}
-                        </p>
-                        <h1 className="mt-4 text-4xl leading-tight font-bold tracking-tight text-village-ink md:text-6xl">
+                        </li>
+                    </ol>
+
+                    <Link
+                        href={newsIndex()}
+                        className="inline-flex items-center gap-2 rounded-lg border border-village-border/90 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-village-primary hover:text-village-primary"
+                    >
+                        <ArrowLeft className="size-3.5" />
+                        <span className="hidden sm:inline">Kembali ke</span> Semua Berita
+                    </Link>
+                </div>
+            </nav>
+
+            <article className="bg-white">
+                {/* Article Hero Header */}
+                <header className="border-b border-village-border/60 bg-gradient-to-b from-emerald-50/40 via-white to-white py-10 md:py-14">
+                    <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                        {/* Category & Badge */}
+                        <div className="flex flex-wrap items-center gap-3">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-village-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-village-primary-dark border border-village-primary/20">
+                                <Tag className="size-3" />
+                                {article.category}
+                            </span>
+                            {article.featured && (
+                                <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 border border-amber-200">
+                                    Berita Utama
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Article Title */}
+                        <h1 className="mt-5 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl md:leading-[1.18]">
                             {article.title}
                         </h1>
-                        <p className="mt-6 text-lg leading-8 text-village-muted md:text-xl">
+
+                        {/* Excerpt Lead Text */}
+                        <p className="mt-5 text-lg leading-relaxed text-slate-600 md:text-xl font-normal border-l-4 border-village-primary/60 pl-4 py-0.5">
                             {article.excerpt}
                         </p>
-                        <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3 border-t border-village-border pt-6 text-sm text-village-muted">
-                            <span className="flex items-center gap-2">
-                                <UserRound
-                                    aria-hidden="true"
-                                    className="size-4"
-                                />
-                                {article.author}
-                            </span>
-                            <span className="flex items-center gap-2">
-                                <CalendarDays
-                                    aria-hidden="true"
-                                    className="size-4"
-                                />
-                                <time dateTime={article.publishedAt}>
-                                    {article.publishedLabel}
-                                </time>
-                            </span>
+
+                        {/* Dynamic Metadata Bar */}
+                        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-village-border/80 bg-white p-4 shadow-sm">
+                            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-slate-600 sm:text-sm">
+                                {/* Dynamic Author Field */}
+                                <span className="flex items-center gap-2">
+                                    <div className="flex size-7 items-center justify-center rounded-full bg-village-primary-light text-village-primary-dark font-bold">
+                                        <UserRound className="size-4" />
+                                    </div>
+                                    <span className="font-semibold text-slate-800" title="Penulis / Kontributor Berita">
+                                        {article.author}
+                                    </span>
+                                </span>
+
+                                {/* Dynamic Creation/Publication Date */}
+                                <span className="flex items-center gap-1.5" title="Tanggal Diterbitkan oleh Admin">
+                                    <CalendarDays className="size-4 text-village-primary" />
+                                    <time dateTime={article.publishedAt}>
+                                        {article.publishedLabel}
+                                    </time>
+                                </span>
+
+                                {/* Estimated Reading Time */}
+                                <span className="flex items-center gap-1.5" title="Estimasi Waktu Baca">
+                                    <Clock className="size-4 text-village-primary" />
+                                    <span>{estimatedReadMinutes} menit baca</span>
+                                </span>
+                            </div>
+
+                            {/* Share / Copy Link Action Button */}
+                            <button
+                                type="button"
+                                onClick={handleCopyLink}
+                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition shadow-sm ${
+                                    isCopied
+                                        ? 'bg-emerald-600 text-white'
+                                        : 'bg-slate-100 text-slate-700 hover:bg-village-primary hover:text-white'
+                                }`}
+                            >
+                                {isCopied ? (
+                                    <>
+                                        <Check className="size-3.5" />
+                                        <span>Tautan Disalin!</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Share2 className="size-3.5" />
+                                        <span>Bagikan</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </header>
 
-                <div className="mx-auto max-w-5xl px-5 py-10 md:py-14">
-                    <figure className="overflow-hidden rounded-3xl border border-village-border bg-white shadow-village-soft">
-                        <img
-                            src={article.image}
-                            alt={article.alt}
-                            className="aspect-video w-full object-cover"
-                        />
-                    </figure>
+                {/* Main Content & Cover Image Container */}
+                <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
+                    {/* Featured Image */}
+                    {article.image && (
+                        <figure className="overflow-hidden rounded-3xl border border-village-border bg-slate-100 shadow-village-floating">
+                            <img
+                                src={article.image}
+                                alt={article.alt || article.title}
+                                className="aspect-[16/9] w-full object-cover transition-transform duration-700 hover:scale-[1.01]"
+                            />
+                            {article.alt && (
+                                <figcaption className="bg-slate-50 px-5 py-3 text-center text-xs font-medium text-slate-500 border-t border-slate-200/80">
+                                    {article.alt}
+                                </figcaption>
+                            )}
+                        </figure>
+                    )}
 
-                    <div className="mx-auto mt-10 max-w-3xl space-y-6 text-base leading-8 text-village-ink/85 md:text-lg md:leading-9">
-                        {article.content.map((paragraph) => (
-                            <p key={paragraph}>{paragraph}</p>
-                        ))}
+                    {/* Article Body Content */}
+                    <div className="mx-auto mt-10 space-y-7 text-base leading-relaxed text-slate-800 md:text-lg md:leading-loose">
+                        {article.content.map((paragraph, index) => {
+                            if (index === 0) {
+                                return (
+                                    <p
+                                        key={index}
+                                        className="text-lg md:text-xl leading-relaxed text-slate-900 font-medium"
+                                    >
+                                        {paragraph}
+                                    </p>
+                                );
+                            }
+
+                            return (
+                                <p key={index} className="text-slate-700">
+                                    {paragraph}
+                                </p>
+                            );
+                        })}
+                    </div>
+
+                    {/* Bottom Salin Tautan Action Bar */}
+                    <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-b border-village-border py-6">
+                        <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
+                            <Copy className="size-4 text-village-primary" />
+                            <span>Bagikan berita ini kepada warga lainnya:</span>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleCopyLink}
+                            className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold transition shadow-sm ${
+                                isCopied
+                                    ? 'bg-emerald-600 text-white'
+                                    : 'border border-village-border bg-white text-slate-700 hover:bg-slate-50 hover:border-village-primary hover:text-village-primary'
+                            }`}
+                        >
+                            {isCopied ? (
+                                <>
+                                    <Check className="size-4" />
+                                    <span>Tautan Berita Disalin!</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Copy className="size-4" />
+                                    <span>Salin Tautan Berita</span>
+                                </>
+                            )}
+                        </button>
                     </div>
                 </div>
             </article>
 
+            {/* Related Articles Section */}
             {relatedArticles.length > 0 && (
                 <section
                     aria-labelledby="related-news-heading"
                     className="border-t border-village-border bg-village-surface-muted py-14 md:py-20"
                 >
-                    <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                        <p className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
-                            Kategori {article.category}
-                        </p>
-                        <h2
-                            id="related-news-heading"
-                            className="mt-3 text-3xl font-bold tracking-tight"
-                        >
-                            Artikel Terkait
-                        </h2>
+                    <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10">
+                        <div className="flex flex-col justify-between gap-4 border-b border-village-border pb-6 md:flex-row md:items-end">
+                            <div>
+                                <p className="text-xs font-bold uppercase tracking-wider text-village-primary">
+                                    Rekomendasi Bacaan
+                                </p>
+                                <h2
+                                    id="related-news-heading"
+                                    className="mt-2 text-2xl font-extrabold tracking-tight text-slate-900 md:text-3xl"
+                                >
+                                    Artikel Terkait
+                                </h2>
+                            </div>
+                            <Link
+                                href={newsIndex()}
+                                className="inline-flex items-center gap-2 text-sm font-bold text-village-primary hover:text-village-primary-dark"
+                            >
+                                Lihat Semua Berita
+                                <ChevronRight className="size-4" />
+                            </Link>
+                        </div>
+
                         <div className="mt-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                             {relatedArticles.map((relatedArticle) => (
                                 <PublicNewsCard

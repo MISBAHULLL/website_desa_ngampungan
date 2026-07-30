@@ -104,17 +104,23 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
                             <div className="space-y-6 lg:col-span-8">
                                 {/* Title Input */}
                                 <div className="rounded-xl border border-sidebar-border/70 bg-background p-5">
-                                    <label
-                                        htmlFor="title"
-                                        className="block text-sm font-bold text-foreground"
-                                    >
-                                        Judul Berita <span className="text-red-500">*</span>
-                                    </label>
+                                    <div className="flex items-center justify-between">
+                                        <label
+                                            htmlFor="title"
+                                            className="block text-sm font-bold text-foreground"
+                                        >
+                                            Judul Berita <span className="text-red-500">*</span>
+                                        </label>
+                                        <span className={`text-xs font-semibold ${title.length >= 240 ? 'text-amber-600' : 'text-muted-foreground'}`}>
+                                            {title.length} / 255 karakter
+                                        </span>
+                                    </div>
                                     <input
                                         id="title"
                                         name="title"
                                         type="text"
                                         required
+                                        maxLength={255}
                                         value={title}
                                         onChange={(e) => setTitle(e.target.value)}
                                         className="mt-2 min-h-11 w-full rounded-lg border border-sidebar-border/70 bg-background px-4 py-2.5 text-base font-semibold transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
@@ -124,17 +130,23 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
 
                                 {/* Excerpt Input */}
                                 <div className="rounded-xl border border-sidebar-border/70 bg-background p-5">
-                                    <label
-                                        htmlFor="excerpt"
-                                        className="block text-sm font-bold text-foreground"
-                                    >
-                                        Ringkasan Singkat (Excerpt) <span className="text-red-500">*</span>
-                                    </label>
+                                    <div className="flex items-center justify-between">
+                                        <label
+                                            htmlFor="excerpt"
+                                            className="block text-sm font-bold text-foreground"
+                                        >
+                                            Ringkasan Singkat (Excerpt) <span className="text-red-500">*</span>
+                                        </label>
+                                        <span className={`text-xs font-semibold ${excerpt.length >= 280 ? 'text-amber-600' : 'text-muted-foreground'}`}>
+                                            {excerpt.length} / 300 karakter
+                                        </span>
+                                    </div>
                                     <textarea
                                         id="excerpt"
                                         name="excerpt"
                                         rows={3}
                                         required
+                                        maxLength={300}
                                         value={excerpt}
                                         onChange={(e) => setExcerpt(e.target.value)}
                                         className="mt-2 w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
@@ -146,9 +158,24 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
                                 <div className="rounded-xl border border-sidebar-border/70 bg-background p-5">
                                     <div className="flex items-center justify-between border-b border-sidebar-border/70 pb-4">
                                         <div>
-                                            <h2 className="text-base font-bold text-foreground">
-                                                Isi Konten Berita (Paragraf) <span className="text-red-500">*</span>
-                                            </h2>
+                                            <div className="flex items-center gap-2">
+                                                <h2 className="text-base font-bold text-foreground">
+                                                    Isi Konten Berita (Paragraf) <span className="text-red-500">*</span>
+                                                </h2>
+                                                <span
+                                                    className={`rounded-md px-2 py-0.5 text-xs font-bold ${
+                                                        contentParagraphs.join(' ').trim().split(/\s+/).filter(Boolean).length > 1000
+                                                            ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/50 dark:text-amber-300'
+                                                            : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                                    }`}
+                                                    title="Rekomendasi maksimal 1000 kata untuk keterbacaan publik"
+                                                >
+                                                    {contentParagraphs.join(' ').trim().split(/\s+/).filter(Boolean).length} / 1000 kata
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-muted-foreground">
+                                                Tulis isi berita dalam paragraf terstruktur (disarankan sekitar 300 - 1000 kata).
+                                            </p>
                                         </div>
                                         <button
                                             type="button"

@@ -53,7 +53,7 @@ class NewsController extends Controller
             'author' => $article->author,
             'publishedAt' => $article->published_at->format('Y-m-d'),
             'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
-            'image' => $article->image_path ?: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1400&auto=format&fit=crop',
+            'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
             'alt' => $article->image_alt ?: $article->title,
             'featured' => (bool) $article->is_featured,
         ] : null;
@@ -73,7 +73,7 @@ class NewsController extends Controller
                 'author' => $item->author,
                 'publishedAt' => $item->published_at->format('Y-m-d'),
                 'publishedLabel' => $item->published_at->translatedFormat('d F Y'),
-                'image' => $item->image_path ?: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1400&auto=format&fit=crop',
+                'image' => $item->image_path ?: ($item->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
                 'alt' => $item->image_alt ?: $item->title,
                 'featured' => (bool) $item->is_featured,
             ]);

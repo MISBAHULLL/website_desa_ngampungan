@@ -55,7 +55,7 @@ class NewsController extends Controller
             'category' => ['required', 'string', 'max:100'],
             'excerpt' => ['required', 'string', 'max:500'],
             'content' => ['required', 'array', 'min:1'],
-            'content.*' => ['required', 'string'],
+            'content.*' => ['required', 'string', 'max:10000'],
             'author' => ['nullable', 'string', 'max:100'],
             'image' => ['nullable', 'image', 'max:3072'], // Max 3MB
             'image_url' => ['nullable', 'url', 'max:500'],
@@ -110,7 +110,7 @@ class NewsController extends Controller
             'category' => ['required', 'string', 'max:100'],
             'excerpt' => ['required', 'string', 'max:500'],
             'content' => ['required', 'array', 'min:1'],
-            'content.*' => ['required', 'string'],
+            'content.*' => ['required', 'string', 'max:10000'],
             'author' => ['nullable', 'string', 'max:100'],
             'image' => ['nullable', 'image', 'max:3072'],
             'image_url' => ['nullable', 'url', 'max:500'],
