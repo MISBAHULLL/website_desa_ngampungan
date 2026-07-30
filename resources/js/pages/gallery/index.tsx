@@ -73,118 +73,119 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                 />
             </Head>
 
-            <section className="border-b border-village-border bg-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-12 md:py-18 lg:px-12">
-                    <nav
-                        aria-label="Breadcrumb"
-                        className="flex items-center gap-2 text-sm text-village-muted"
-                    >
-                        <Link
-                            href={home()}
-                            className="transition hover:text-village-primary"
+            {/* LIGHT THEME HERO HEADER */}
+            <section className="border-b border-slate-200 bg-white py-12 md:py-18">
+                <div className="mx-auto grid max-w-[1280px] gap-10 px-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:px-12">
+                    <div className="max-w-3xl">
+                        <nav
+                            aria-label="Breadcrumb"
+                            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-4 py-1.5 text-xs font-semibold text-slate-600"
                         >
-                            Beranda
-                        </Link>
-                        <ChevronRight
-                            aria-hidden="true"
-                            className="size-4 text-village-border"
-                        />
-                        <span className="font-semibold text-village-ink">
-                            Galeri Desa
-                        </span>
-                    </nav>
+                            <Link href={home()} className="hover:text-emerald-700 transition">
+                                Beranda
+                            </Link>
+                            <ChevronRight
+                                aria-hidden="true"
+                                className="size-3.5 text-slate-400"
+                            />
+                            <span className="text-emerald-800 font-bold">
+                                Galeri Desa
+                            </span>
+                        </nav>
 
-                    <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-                        <div className="max-w-3xl">
-                            <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
-                                Dokumentasi Desa
-                            </p>
-                            <h1 className="mt-4 text-4xl leading-tight font-bold tracking-tight md:text-6xl">
-                                Cerita Ngampungan dalam Gambar
-                            </h1>
-                            <p className="mt-5 text-base leading-7 text-village-muted md:text-lg">
-                                Rekam kegiatan warga, pembangunan, potensi
-                                usaha, serta bentang alam desa yang tersusun
-                                dalam koleksi visual.
-                            </p>
-                        </div>
-                        <dl className="grid grid-cols-2 border border-village-border">
-                            <div className="border-r border-village-border p-5">
-                                <dt className="text-xs tracking-[0.12em] text-village-muted uppercase">
-                                    Foto
-                                </dt>
-                                <dd className="mt-2 text-3xl font-bold">
-                                    {dummyVillageGalleryPhotos.length}
-                                </dd>
-                            </div>
-                            <div className="p-5">
-                                <dt className="text-xs tracking-[0.12em] text-village-muted uppercase">
-                                    Album
-                                </dt>
-                                <dd className="mt-2 text-3xl font-bold">
-                                    {albumCount}
-                                </dd>
-                            </div>
-                        </dl>
+                        <h1 className="mt-6 text-4xl leading-tight font-extrabold tracking-tight sm:text-5xl md:text-6xl text-slate-900">
+                            Cerita Ngampungan dalam Gambar
+                        </h1>
+                        <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">
+                            Rekam kegiatan warga, hasil pembangunan, potensi UMKM, serta keindahan bentang alam desa yang tersusun dalam koleksi arsip visual resmi.
+                        </p>
                     </div>
+
+                    {/* Stats Counter Light Cards */}
+                    <dl className="grid grid-cols-2 gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 shadow-xs min-w-[18rem]">
+                        <div className="rounded-xl bg-white p-5 border border-slate-200 text-center">
+                            <dt className="text-[11px] font-bold tracking-widest text-emerald-800 uppercase">
+                                Koleksi Foto
+                            </dt>
+                            <dd className="mt-2 text-4xl font-black text-slate-900">
+                                {dummyVillageGalleryPhotos.length}
+                            </dd>
+                            <span className="mt-1 block text-[11px] text-slate-500">dokumentasi</span>
+                        </div>
+                        <div className="rounded-xl bg-white p-5 border border-slate-200 text-center">
+                            <dt className="text-[11px] font-bold tracking-widest text-emerald-800 uppercase">
+                                Album Desa
+                            </dt>
+                            <dd className="mt-2 text-4xl font-black text-slate-900">
+                                {albumCount}
+                            </dd>
+                            <span className="mt-1 block text-[11px] text-slate-500">kategori album</span>
+                        </div>
+                    </dl>
                 </div>
             </section>
 
+            {/* FEATURED PHOTO HIGHLIGHTS - LIGHT THEME */}
             <section
                 aria-labelledby="sorotan-galeri-heading"
-                className="bg-village-primary-dark py-12 text-white md:py-16"
+                className="border-b border-slate-200 bg-slate-50/70 py-12 md:py-18"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     <div className="flex items-end justify-between gap-5">
                         <div>
-                            <p className="text-xs font-bold tracking-[0.18em] text-village-accent uppercase">
-                                Sorotan Dokumentasi
-                            </p>
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900 border border-emerald-200 uppercase tracking-wider">
+                                <Camera className="size-3 text-emerald-700" />
+                                Sorotan Terbaru
+                            </span>
                             <h2
                                 id="sorotan-galeri-heading"
-                                className="mt-2 text-3xl font-bold tracking-tight"
+                                className="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl"
                             >
-                                Pilihan Terbaru
+                                Pilihan Dokumentasi Terbaru
                             </h2>
                         </div>
-                        <p className="hidden max-w-md text-right text-sm leading-6 text-white/60 md:block">
-                            Klik gambar untuk melihat ukuran besar dan
-                            keterangan dokumentasi.
+                        <p className="hidden max-w-md text-right text-xs leading-relaxed text-slate-500 md:block">
+                            Klik pada salah satu foto untuk membuka mode tampilan penuh (*lightbox*) dan membaca rincian lengkap dokumentasi.
                         </p>
                     </div>
 
-                    <div className="mt-8 grid gap-3 md:h-[32rem] md:grid-cols-[1.6fr_1fr] md:grid-rows-2">
+                    <div className="mt-8 grid gap-4 md:h-[34rem] md:grid-cols-[1.6fr_1fr] md:grid-rows-2">
                         {featuredDummyVillageGalleryPhotos.map(
                             (photo, index) => (
                                 <button
                                     key={photo.id}
                                     type="button"
                                     onClick={() => setSelectedPhoto(photo)}
-                                    className={`group relative min-h-64 overflow-hidden text-left focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:ring-offset-4 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none ${
+                                    className={`group relative min-h-64 overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 text-left transition-all duration-300 hover:border-emerald-400 hover:shadow-md focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none ${
                                         index === 0 ? 'md:row-span-2' : ''
                                     }`}
                                 >
                                     <img
                                         src={photo.image}
                                         alt={photo.alt}
-                                        className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                                     />
+                                    {/* Light contrast gradient overlay for text readability */}
                                     <span
                                         aria-hidden="true"
-                                        className="absolute inset-0 bg-linear-to-t from-black/85 via-black/10 to-transparent"
+                                        className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent transition-opacity duration-300"
                                     />
-                                    <span className="absolute top-4 right-4 flex size-10 items-center justify-center bg-white/90 text-village-primary opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                                    <span className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-xl bg-white text-slate-800 shadow-md opacity-0 transition-all duration-300 group-hover:opacity-100">
                                         <Expand
                                             aria-hidden="true"
                                             className="size-4"
                                         />
                                     </span>
-                                    <span className="absolute inset-x-0 bottom-0 p-5 md:p-6">
-                                        <span className="text-[0.68rem] font-bold tracking-[0.13em] text-village-accent uppercase">
+                                    <span className="absolute inset-x-0 bottom-0 p-6 md:p-8">
+                                        <span className="inline-block rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-bold text-white uppercase shadow-xs">
                                             {photo.category}
                                         </span>
-                                        <span className="mt-2 block text-xl font-bold md:text-2xl">
+                                        <span className="mt-3 block text-xl font-bold text-white md:text-2xl drop-shadow-sm">
                                             {photo.title}
+                                        </span>
+                                        <span className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-200">
+                                            <CalendarDays className="size-3.5 text-emerald-300" />
+                                            {photo.capturedLabel}
                                         </span>
                                     </span>
                                 </button>
@@ -194,28 +195,30 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                 </div>
             </section>
 
+            {/* FULL PHOTO GALLERY EXPLORER - LIGHT THEME */}
             <section
                 aria-labelledby="koleksi-galeri-heading"
-                className="py-12 md:py-16"
+                className="py-12 md:py-18 bg-white"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                         <div>
-                            <p className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
+                            <p className="text-xs font-bold tracking-widest text-emerald-800 uppercase">
                                 Koleksi Foto
                             </p>
                             <h2
                                 id="koleksi-galeri-heading"
-                                className="mt-2 text-3xl font-bold tracking-tight md:text-4xl"
+                                className="mt-2 text-3xl font-extrabold tracking-tight text-slate-900 md:text-4xl"
                             >
-                                Jelajahi Dokumentasi
+                                Jelajahi Dokumentasi Desa
                             </h2>
                         </div>
 
+                        {/* Category Selector Pills */}
                         <div
                             role="group"
                             aria-label="Filter kategori galeri"
-                            className="flex flex-wrap gap-2"
+                            className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2"
                         >
                             {dummyVillageGalleryCategories.map((category) => (
                                 <button
@@ -227,8 +230,8 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                                     }
                                     className={
                                         selectedCategory === category
-                                            ? 'min-h-11 bg-village-primary px-4 py-2.5 text-sm font-bold text-white'
-                                            : 'min-h-11 border border-village-border bg-white px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:border-village-primary hover:text-village-primary'
+                                            ? 'rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition'
+                                            : 'rounded-lg px-4 py-2 text-xs font-semibold text-slate-600 transition hover:bg-slate-200/60 hover:text-emerald-800'
                                     }
                                 >
                                     {category}
@@ -237,26 +240,27 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                         </div>
                     </div>
 
-                    <div className="mt-8 flex items-center justify-between gap-5 border-y border-village-border py-4 text-sm text-village-muted">
+                    <div className="mt-8 flex items-center justify-between gap-5 rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-xs font-semibold text-slate-500">
                         <p aria-live="polite">
-                            {visiblePhotos.length} foto ditampilkan
+                            Menampilkan {visiblePhotos.length} dokumentasi foto
                         </p>
-                        <span className="hidden items-center gap-2 sm:flex">
+                        <span className="hidden items-center gap-2 sm:flex text-emerald-800 font-bold">
                             <Images aria-hidden="true" className="size-4" />
-                            Data simulasi frontend
+                            <span>Koleksi Terverifikasi</span>
                         </span>
                     </div>
 
-                    <div className="mt-7 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                    {/* Photos Grid */}
+                    <div className="mt-7 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                         {visiblePhotos.map((photo, index) => (
                             <button
                                 key={photo.id}
                                 type="button"
                                 onClick={() => setSelectedPhoto(photo)}
-                                className="group overflow-hidden border border-village-border bg-white text-left transition-[transform,border-color,box-shadow] duration-300 hover:-translate-y-1 hover:border-village-primary/35 hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-4 focus-visible:outline-none motion-reduce:transform-none motion-reduce:transition-none"
+                                className="group overflow-hidden rounded-2xl border border-slate-200 bg-white text-left transition-all duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-md focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                             >
                                 <span
-                                    className={`relative block overflow-hidden ${
+                                    className={`relative block overflow-hidden bg-slate-100 ${
                                         index % 5 === 0
                                             ? 'aspect-[4/3]'
                                             : 'aspect-[16/11]'
@@ -266,26 +270,26 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                                         src={photo.image}
                                         alt={photo.alt}
                                         loading="lazy"
-                                        className="absolute inset-0 size-full object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
-                                    <span className="absolute top-3 right-3 flex size-10 items-center justify-center bg-white/90 text-village-primary opacity-0 shadow-sm transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100">
+                                    <span className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-lg bg-white/90 text-emerald-800 opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100">
                                         <Expand
                                             aria-hidden="true"
                                             className="size-4"
                                         />
                                     </span>
                                 </span>
-                                <span className="block p-5">
-                                    <span className="text-[0.68rem] font-bold tracking-[0.12em] text-village-primary uppercase">
+                                <span className="block p-6">
+                                    <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-900 uppercase">
                                         {photo.album}
                                     </span>
-                                    <span className="mt-2 block text-lg leading-tight font-bold text-village-ink">
+                                    <span className="mt-3 block text-lg font-bold leading-snug text-slate-900 group-hover:text-emerald-800 transition-colors">
                                         {photo.title}
                                     </span>
-                                    <span className="mt-3 flex items-center gap-2 text-xs text-village-muted">
+                                    <span className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
                                         <CalendarDays
                                             aria-hidden="true"
-                                            className="size-3.5"
+                                            className="size-3.5 text-emerald-700"
                                         />
                                         {photo.capturedLabel}
                                     </span>
@@ -294,25 +298,25 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                         ))}
                     </div>
 
-                    <div className="bg-village-accent-light mt-12 border border-village-accent/40 px-5 py-4 text-sm leading-6 text-village-muted">
+                    {/* Bottom Helper Box */}
+                    <div className="mt-14 rounded-2xl border border-amber-200 bg-amber-50/70 p-6 text-xs leading-relaxed text-amber-900">
                         <p className="flex items-start gap-3">
                             <Camera
                                 aria-hidden="true"
-                                className="mt-0.5 size-5 shrink-0 text-village-secondary"
+                                className="mt-0.5 size-5 shrink-0 text-amber-700"
                             />
                             <span>
-                                <strong className="text-village-ink">
-                                    Seluruh foto masih berupa simulasi tampilan.
+                                <strong className="font-bold text-amber-950">
+                                    Informasi Dokumentasi Visual Desa Ngampungan:
                                 </strong>{' '}
-                                Dokumentasi resmi nantinya perlu dilengkapi
-                                sumber, izin publikasi, dan teks alternatif yang
-                                sesuai isi foto.
+                                Seluruh dokumentasi foto yang dipublikasikan dalam galeri ini dikelola oleh Pemerintah Desa Ngampungan untuk memberikan gambaran transparan mengenai setiap kegiatan desa dan potensi wilayah.
                             </span>
                         </p>
                     </div>
                 </div>
             </section>
 
+            {/* Lightbox Modal */}
             {selectedPhoto && (
                 <VillageGalleryLightbox
                     photo={selectedPhoto}

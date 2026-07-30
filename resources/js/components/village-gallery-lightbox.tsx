@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, CalendarDays, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, Camera, X } from 'lucide-react';
 import { useEffect } from 'react';
 import type { VillageGalleryPhoto } from '@/lib/dummy-village-gallery';
 
@@ -58,24 +58,26 @@ export function VillageGalleryLightbox({
                     onClose();
                 }
             }}
-            className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-village-primary-dark/95 p-4 backdrop-blur-sm md:p-8"
+            className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-slate-900/75 p-4 md:p-8 animate-in fade-in duration-200"
         >
-            <div className="relative w-full max-w-6xl bg-white shadow-2xl">
+            <div className="relative w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
+                {/* Close Button Floating */}
                 <button
                     type="button"
                     aria-label="Tutup galeri"
                     onClick={onClose}
-                    className="absolute top-3 right-3 z-10 flex size-11 items-center justify-center bg-village-primary-dark/85 text-white transition hover:bg-village-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-village-primary-dark focus-visible:outline-none"
+                    className="absolute top-4 right-4 z-20 flex size-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition hover:bg-emerald-700 hover:text-white hover:border-emerald-700 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                 >
                     <X aria-hidden="true" className="size-5" />
                 </button>
 
-                <div className="grid lg:grid-cols-[minmax(0,1fr)_21rem]">
-                    <div className="relative flex min-h-[18rem] items-center justify-center bg-black lg:min-h-[38rem]">
+                <div className="grid lg:grid-cols-[minmax(0,1fr)_22rem]">
+                    {/* Main Image Stage - Pure Light Stage */}
+                    <div className="relative flex min-h-[22rem] items-center justify-center bg-slate-950 p-4 lg:min-h-[38rem]">
                         <img
                             src={photo.image}
                             alt={photo.alt}
-                            className="max-h-[72vh] w-full object-contain"
+                            className="max-h-[75vh] w-full rounded-lg object-contain shadow-md transition-all duration-300"
                         />
 
                         {photos.length > 1 && (
@@ -84,7 +86,7 @@ export function VillageGalleryLightbox({
                                     type="button"
                                     aria-label="Foto sebelumnya"
                                     onClick={() => onNavigate(previousPhoto)}
-                                    className="absolute top-1/2 left-3 flex size-11 -translate-y-1/2 items-center justify-center bg-black/65 text-white transition hover:bg-village-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                                    className="absolute top-1/2 left-4 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-lg transition hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                                 >
                                     <ArrowLeft
                                         aria-hidden="true"
@@ -95,7 +97,7 @@ export function VillageGalleryLightbox({
                                     type="button"
                                     aria-label="Foto berikutnya"
                                     onClick={() => onNavigate(nextPhoto)}
-                                    className="absolute top-1/2 right-3 flex size-11 -translate-y-1/2 items-center justify-center bg-black/65 text-white transition hover:bg-village-primary focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
+                                    className="absolute top-1/2 right-4 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-lg transition hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                                 >
                                     <ArrowRight
                                         aria-hidden="true"
@@ -106,39 +108,41 @@ export function VillageGalleryLightbox({
                         )}
                     </div>
 
-                    <div className="flex flex-col justify-between gap-8 p-6 md:p-8">
+                    {/* Meta Detail Sidebar - Pure Light Theme */}
+                    <div className="flex flex-col justify-between gap-8 bg-white p-7 text-slate-900 md:p-8 border-t lg:border-t-0 lg:border-l border-slate-200">
                         <div>
-                            <span className="text-xs font-bold tracking-[0.15em] text-village-primary uppercase">
+                            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900 border border-emerald-200">
+                                <Camera className="size-3 text-emerald-700" />
                                 {photo.category}
                             </span>
-                            <h2 className="mt-3 text-2xl leading-tight font-bold tracking-tight text-village-ink">
+                            <h2 className="mt-4 text-2xl leading-snug font-extrabold tracking-tight text-slate-900">
                                 {photo.title}
                             </h2>
-                            <p className="mt-4 text-sm leading-6 text-village-muted">
+                            <p className="mt-4 text-xs leading-relaxed text-slate-600">
                                 {photo.caption}
                             </p>
                         </div>
 
-                        <dl className="grid gap-4 border-t border-village-border pt-5 text-sm">
+                        <dl className="grid gap-4 border-t border-slate-200 pt-6 text-xs">
                             <div>
-                                <dt className="text-xs font-bold tracking-[0.1em] text-village-muted uppercase">
-                                    Album
+                                <dt className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">
+                                    Album Dokumentasi
                                 </dt>
-                                <dd className="mt-1 font-semibold text-village-ink">
+                                <dd className="mt-1 font-bold text-emerald-800">
                                     {photo.album}
                                 </dd>
                             </div>
                             <div>
                                 <dt className="sr-only">Tanggal dokumentasi</dt>
-                                <dd className="flex items-center gap-2 text-village-muted">
+                                <dd className="flex items-center gap-2 text-slate-600 font-medium">
                                     <CalendarDays
                                         aria-hidden="true"
-                                        className="size-4 text-village-primary"
+                                        className="size-4 text-emerald-700"
                                     />
-                                    {photo.capturedLabel}
+                                    <span>Dipublikasikan: {photo.capturedLabel}</span>
                                 </dd>
                             </div>
-                            <div className="text-xs text-village-muted">
+                            <div className="mt-2 rounded-xl bg-slate-100 p-3 text-center text-xs font-semibold text-slate-600 border border-slate-200">
                                 Foto {currentIndex + 1} dari {photos.length}
                             </div>
                         </dl>
