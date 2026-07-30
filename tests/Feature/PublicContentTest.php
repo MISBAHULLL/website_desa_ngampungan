@@ -23,7 +23,6 @@ test('the village profile page exposes profile sections, breadcrumb, and SEO met
 
     expect($profilePageSource)
         ->not->toBeFalse()
-        ->toContain('aria-label="Breadcrumb"')
         ->toContain('head-key="description"')
         ->toContain('head-key="canonical"')
         ->toContain('property="og:title"')
@@ -35,7 +34,7 @@ test('the village profile page exposes profile sections, breadcrumb, and SEO met
         ->toContain('id="penggunaan-lahan"')
         ->toContain('id="peta-administratif"')
         ->toContain('id="demografi"')
-        ->toContain('dummyVillageIdentity.map')
+        ->toContain('villageOfficialIdentity.map')
         ->toContain('dummyAdministrativeBoundaries.map')
         ->toContain('dummyAdministrativeDivisions.map')
         ->toContain('dummyLandUseComposition.map')

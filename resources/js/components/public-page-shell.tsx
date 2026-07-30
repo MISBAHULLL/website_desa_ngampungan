@@ -31,6 +31,97 @@ type PublicSection =
     | 'transparency'
     | 'potentials';
 
+const profileLinks = [
+    {
+        label: 'Selayang Pandang',
+        description: 'Identitas dan gambaran umum desa.',
+        href: `${villageProfileIndex()}#selayang-pandang`,
+    },
+    {
+        label: 'Visi dan Misi',
+        description: 'Arah pembangunan Desa Ngampungan.',
+        href: `${villageProfileIndex()}#visi-misi`,
+    },
+    {
+        label: 'Sejarah Desa',
+        description: 'Perjalanan dan rekam sejarah desa.',
+        href: `${villageProfileIndex()}#sejarah-desa`,
+    },
+    {
+        label: 'Data Wilayah',
+        description: 'Demografi, dusun, lahan, dan peta desa.',
+        href: `${villageProfileIndex()}#data-wilayah`,
+    },
+] as const;
+
+function PublicProfileNavigation({
+    activeSection,
+}: {
+    activeSection: PublicSection;
+}) {
+    const [isOpen, setIsOpen] = useState(false);
+    const isActive = activeSection === 'profile';
+
+    return (
+        <div
+            className="relative"
+            onMouseEnter={() => setIsOpen(true)}
+            onMouseLeave={() => setIsOpen(false)}
+            onBlur={(event) => {
+                if (!event.currentTarget.contains(event.relatedTarget)) {
+                    setIsOpen(false);
+                }
+            }}
+        >
+            <Link
+                href={villageProfileIndex()}
+                aria-expanded={isOpen}
+                aria-controls="public-profile-menu"
+                onFocus={() => setIsOpen(true)}
+                className={
+                    isActive
+                        ? 'flex min-h-10 items-center gap-1.5 rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
+                        : 'flex min-h-10 items-center gap-1.5 rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
+                }
+            >
+                Profil
+                <ChevronDown
+                    aria-hidden="true"
+                    className={`size-3.5 transition-transform ${
+                        isOpen ? 'rotate-180' : ''
+                    }`}
+                />
+            </Link>
+
+            {isOpen && (
+                <div
+                    id="public-profile-menu"
+                    className="absolute top-full left-1/2 z-50 w-72 -translate-x-1/2 pt-2"
+                    onMouseEnter={() => setIsOpen(true)}
+                >
+                    <div className="rounded-2xl border border-village-border bg-white p-2 shadow-village-floating">
+                        {profileLinks.map((link) => (
+                            <Link
+                                key={link.label}
+                                href={link.href}
+                                onClick={() => setIsOpen(false)}
+                                className="group block rounded-xl p-3 transition hover:bg-village-primary-light focus-visible:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                            >
+                                <span className="block text-sm font-bold text-village-ink group-hover:text-village-primary-dark">
+                                    {link.label}
+                                </span>
+                                <span className="mt-0.5 block text-xs leading-5 text-village-muted">
+                                    {link.description}
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
 const informationLinks = [
     {
         label: 'Berita',
@@ -112,25 +203,19 @@ function PublicInformationNavigation({
                     className="absolute top-full left-1/2 z-50 w-72 -translate-x-1/2 pt-2"
                     onMouseEnter={() => setIsOpen(true)}
                 >
-                    <div className="border border-village-border bg-white p-2 shadow-village-floating">
+                    <div className="rounded-2xl border border-village-border bg-white p-2 shadow-village-floating">
                         {informationLinks.map((link) => (
                             <Link
                                 key={link.label}
                                 href={link.href}
                                 onClick={() => setIsOpen(false)}
-                                className="group flex items-start gap-3 p-3 transition hover:bg-village-primary-light focus-visible:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                className="group block rounded-xl p-3 transition hover:bg-village-primary-light focus-visible:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                             >
-                                <span
-                                    aria-hidden="true"
-                                    className="mt-2 size-1.5 shrink-0 rounded-full bg-village-accent transition-transform group-hover:scale-125"
-                                />
-                                <span>
-                                    <span className="block text-sm font-bold text-village-ink">
-                                        {link.label}
-                                    </span>
-                                    <span className="mt-0.5 block text-xs leading-5 text-village-muted">
-                                        {link.description}
-                                    </span>
+                                <span className="block text-sm font-bold text-village-ink group-hover:text-village-primary-dark">
+                                    {link.label}
+                                </span>
+                                <span className="mt-0.5 block text-xs leading-5 text-village-muted">
+                                    {link.description}
                                 </span>
                             </Link>
                         ))}
@@ -208,16 +293,7 @@ export function PublicPageShell({
                         aria-label="Navigasi halaman publik"
                         className="hidden items-center gap-2 lg:flex"
                     >
-                        <Link
-                            href={villageProfileIndex()}
-                            className={
-                                activeSection === 'profile'
-                                    ? 'rounded-xl bg-village-primary-light px-4 py-2.5 text-sm font-bold text-village-primary-dark'
-                                    : 'rounded-xl px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:bg-village-surface-muted hover:text-village-ink'
-                            }
-                        >
-                            Profil
-                        </Link>
+                        <PublicProfileNavigation activeSection={activeSection} />
                         <Link
                             href={governmentIndex()}
                             className={
