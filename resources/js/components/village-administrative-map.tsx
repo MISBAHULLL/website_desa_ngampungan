@@ -5,34 +5,27 @@ const zonePresentation = [
     {
         fillClassName: 'fill-[#cfeadd]',
         markerClassName: 'bg-[#cfeadd]',
-        textX: 235,
-        textY: 145,
+        textX: 240,
+        textY: 190,
     },
     {
         fillClassName: 'fill-[#f4d99c]',
         markerClassName: 'bg-[#f4d99c]',
-        textX: 470,
+        textX: 520,
         textY: 150,
     },
     {
         fillClassName: 'fill-[#cfe2f3]',
         markerClassName: 'bg-[#cfe2f3]',
-        textX: 220,
-        textY: 300,
-    },
-    {
-        fillClassName: 'fill-[#d9dfda]',
-        markerClassName: 'bg-[#d9dfda]',
-        textX: 465,
-        textY: 305,
+        textX: 430,
+        textY: 310,
     },
 ] as const;
 
 const zonePolygons = [
-    '150,80 350,55 360,210 120,225',
-    '350,55 575,105 600,230 360,210',
-    '120,225 360,210 340,385 165,360 95,285',
-    '360,210 600,230 550,375 340,385',
+    '120,80 360,60 330,380 95,285',
+    '360,60 600,105 570,250 360,200',
+    '360,200 570,250 550,375 330,380',
 ] as const;
 
 export function VillageAdministrativeMap() {
@@ -45,7 +38,7 @@ export function VillageAdministrativeMap() {
                             Skema wilayah administratif
                         </p>
                         <p className="mt-1 text-sm text-village-muted">
-                            Ilustrasi pembagian empat wilayah dusun.
+                            Ilustrasi pembagian tiga wilayah dusun Desa Ngampungan.
                         </p>
                     </figcaption>
                     <span className="w-fit bg-[#fff2cf] px-3 py-1.5 text-[0.6875rem] font-bold tracking-[0.12em] text-[#755018] uppercase">
@@ -64,7 +57,7 @@ export function VillageAdministrativeMap() {
                             Peta administratif simulasi Desa Ngampungan
                         </title>
                         <desc id="administrative-map-description">
-                            Diagram skematik empat wilayah dusun yang belum
+                            Diagram skematik tiga wilayah dusun yang belum
                             menunjukkan batas geografis sebenarnya.
                         </desc>
 
@@ -92,8 +85,9 @@ export function VillageAdministrativeMap() {
 
                         {zonePolygons.map((points, index) => {
                             const zone = zonePresentation[index];
-                            const division =
-                                dummyAdministrativeDivisions[index];
+                            const division = (dummyAdministrativeDivisions as readonly { code: string; name: string; rw: number; rt: number }[])[index];
+
+                            if (!division || !zone) return null;
 
                             return (
                                 <g key={division.code}>
@@ -124,7 +118,7 @@ export function VillageAdministrativeMap() {
                         })}
 
                         <path
-                            d="M150 80 L350 55 L575 105 L600 230 L550 375 L340 385 L165 360 L95 285 L120 225 Z"
+                            d="M120 80 L600 105 L550 375 L95 285 Z"
                             fill="none"
                             stroke="#1f7350"
                             strokeWidth="4"
@@ -161,23 +155,28 @@ export function VillageAdministrativeMap() {
                     </span>
                     <h3 className="mt-6 text-xl font-bold">Legenda wilayah</h3>
                     <div className="mt-6 grid gap-4">
-                        {dummyAdministrativeDivisions.map((division, index) => (
-                            <div
-                                key={division.code}
-                                className="flex items-start gap-3 border-t border-white/15 pt-4"
-                            >
-                                <span
-                                    aria-hidden="true"
-                                    className={`mt-1 size-3 shrink-0 ${zonePresentation[index].markerClassName}`}
-                                />
-                                <div>
-                                    <p className="font-bold">{division.name}</p>
-                                    <p className="mt-1 text-sm text-white/55">
-                                        {division.note}
-                                    </p>
+                        {(dummyAdministrativeDivisions as readonly { code: string; name: string; note: string; rw: number; rt: number }[]).map((division, index) => {
+                            const zone = zonePresentation[index];
+                            if (!division || !zone) return null;
+
+                            return (
+                                <div
+                                    key={division.code}
+                                    className="flex items-start gap-3 border-t border-white/15 pt-4"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        className={`mt-1 size-3 shrink-0 ${zone.markerClassName}`}
+                                    />
+                                    <div>
+                                        <p className="font-bold">{division.name}</p>
+                                        <p className="mt-1 text-sm text-white/55">
+                                            {division.note}
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
 

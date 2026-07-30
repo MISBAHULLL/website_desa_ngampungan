@@ -197,19 +197,35 @@ export default function VillageProfileIndex({
         { direction: 'Barat', value: profile?.boundary_west },
     ];
 
-    const hamlets = profile?.hamlets ?? [];
-    const landUse = profile?.land_use ?? [];
+    const rawHamlets = profile?.hamlets;
+    const hamlets: HamletData[] =
+        typeof rawHamlets === 'string'
+            ? (JSON.parse(rawHamlets) as HamletData[])
+            : Array.isArray(rawHamlets)
+              ? rawHamlets
+              : [];
+
+    const rawLandUse = profile?.land_use;
+    const landUse: LandUseData[] =
+        typeof rawLandUse === 'string'
+            ? (JSON.parse(rawLandUse) as LandUseData[])
+            : Array.isArray(rawLandUse)
+              ? rawLandUse
+              : [];
 
     const hamletTotals = hamlets.reduce(
         (totals, h) => ({
-            rw: totals.rw + h.rw,
-            rt: totals.rt + h.rt,
-            households: totals.households + h.households,
+            rw: totals.rw + (h?.rw ?? 0),
+            rt: totals.rt + (h?.rt ?? 0),
+            households: totals.households + (h?.households ?? 0),
         }),
         { rw: 0, rt: 0, households: 0 },
     );
 
-    const totalLandHectares = landUse.reduce((sum, l) => sum + l.hectares, 0);
+    const totalLandHectares = landUse.reduce(
+        (sum, l) => sum + (l?.hectares ?? 0),
+        0,
+    );
 
     return (
         <PublicPageShell activeSection="profile">
@@ -795,27 +811,51 @@ export default function VillageProfileIndex({
                             </dl>
                         </div>
 
-                        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                            {hamlets.map((division, index) => (
+                        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                            {hamlets.map((division) => (
                                 <article
-                                    key={division.code}
+                                    key={division.name}
                                     className="group relative overflow-hidden rounded-2xl border border-village-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-village-primary/40 hover:shadow-xl"
                                 >
-                                    <span
+                                    {/* Soft Green Dense Diagonal Wave Ribbon */}
+                                    <svg
                                         aria-hidden="true"
-                                        className="absolute -top-2 -right-1 text-7xl font-extrabold leading-none text-village-primary/[0.06] transition-transform duration-300 group-hover:scale-110"
+                                        className="pointer-events-none absolute inset-0 size-full text-village-primary/[0.08] transition-all duration-500 group-hover:scale-105 group-hover:text-village-primary/[0.16]"
+                                        viewBox="0 0 200 200"
+                                        preserveAspectRatio="none"
+                                        fill="none"
+                                        xmlns="http://www.w3.org/2000/svg"
                                     >
-                                        {String(index + 1).padStart(2, '0')}
-                                    </span>
-                                    <p className="relative text-xs font-extrabold tracking-widest text-village-primary uppercase">
-                                        {division.code}
-                                    </p>
-                                    <h4 className="relative mt-2 text-xl font-extrabold text-village-ink transition-colors group-hover:text-village-primary-dark">
+                                        {[
+                                            'M -20,10 C 40,70 90,-10 140,80 C 180,150 140,140 220,190',
+                                            'M -20,20 C 40,80 90,0 140,90 C 180,160 140,150 220,200',
+                                            'M -20,30 C 40,90 90,10 140,100 C 180,170 140,160 220,210',
+                                            'M -20,40 C 40,100 90,20 140,110 C 180,180 140,170 220,220',
+                                            'M -20,50 C 40,110 90,30 140,120 C 180,190 140,180 220,230',
+                                            'M -20,60 C 40,120 90,40 140,130 C 180,200 140,190 220,240',
+                                            'M -20,70 C 40,130 90,50 140,140 C 180,210 140,200 220,250',
+                                            'M -20,80 C 40,140 90,60 140,150 C 180,220 140,210 220,260',
+                                            'M -20,90 C 40,150 90,70 140,160 C 180,230 140,220 220,270',
+                                            'M -20,100 C 40,160 90,80 140,170 C 180,240 140,230 220,280',
+                                        ].map((pathData, idx) => (
+                                            <path
+                                                key={idx}
+                                                d={pathData}
+                                                stroke="currentColor"
+                                                strokeWidth="1.2"
+                                                strokeLinecap="round"
+                                            />
+                                        ))}
+                                    </svg>
+
+                                    <h4 className="relative text-xl font-extrabold text-village-ink transition-colors group-hover:text-village-primary-dark">
                                         {division.name}
                                     </h4>
-                                    <p className="relative mt-2 text-xs leading-5 text-village-muted">
-                                        {division.note}
-                                    </p>
+                                    {division.note && (
+                                        <p className="relative mt-2 text-xs leading-5 text-village-muted">
+                                            {division.note}
+                                        </p>
+                                    )}
 
                                     <dl className="relative mt-6 grid grid-cols-3 border-t border-village-border/60 pt-4">
                                         <div>
