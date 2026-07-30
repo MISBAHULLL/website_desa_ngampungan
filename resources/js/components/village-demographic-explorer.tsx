@@ -1,132 +1,162 @@
-import { ChartBar, Users } from 'lucide-react';
 import { useState } from 'react';
 import { dummyDemographicDatasets } from '@/lib/dummy-village-profile';
-import type { DemographicKey } from '@/lib/dummy-village-profile';
+import type { DemographicDataset } from '@/lib/dummy-village-profile';
 
 function formatNumber(value: number) {
     return new Intl.NumberFormat('id-ID').format(value);
 }
 
-export function VillageDemographicExplorer() {
-    const [activeDemographic, setActiveDemographic] =
-        useState<DemographicKey>('gender');
+interface VillageDemographicExplorerProps {
+    demographics?: DemographicDataset[] | null;
+}
+
+export function VillageDemographicExplorer({ demographics }: VillageDemographicExplorerProps) {
+    const datasets = (demographics && demographics.length > 0)
+        ? demographics
+        : dummyDemographicDatasets;
+
+    const [activeDemographicKey, setActiveDemographicKey] = useState<string>(
+        datasets[0]?.key || 'gender'
+    );
+
     const activeDataset =
-        dummyDemographicDatasets.find(
-            (dataset) => dataset.key === activeDemographic,
-        ) ?? dummyDemographicDatasets[0];
+        datasets.find((dataset) => dataset.key === activeDemographicKey) ?? datasets[0];
+
+    if (!activeDataset) return null;
 
     return (
-        <div className="border border-village-border bg-white shadow-village-soft">
-            <div
-                role="tablist"
-                aria-label="Kategori data demografi"
-                className="flex [scrollbar-width:none] gap-2 overflow-x-auto border-b border-village-border p-3 [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
-            >
-                {dummyDemographicDatasets.map((dataset) => (
-                    <button
-                        key={dataset.key}
-                        id={`demographic-tab-${dataset.key}`}
-                        type="button"
-                        role="tab"
-                        aria-selected={activeDemographic === dataset.key}
-                        aria-controls={`demographic-panel-${dataset.key}`}
-                        onClick={() => setActiveDemographic(dataset.key)}
-                        className={
-                            activeDemographic === dataset.key
-                                ? 'min-h-11 shrink-0 bg-village-primary px-4 py-2.5 text-sm font-bold text-white'
-                                : 'min-h-11 shrink-0 border border-village-border px-4 py-2.5 text-sm font-semibold text-village-muted transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none'
-                        }
-                    >
-                        {dataset.shortLabel}
-                    </button>
-                ))}
+        <div className="rounded-3xl border border-village-border/80 bg-white p-5 shadow-sm sm:p-7 transition-all duration-500 hover:border-emerald-300/80 hover:shadow-md">
+            {/* Styled Filter Chips Bar */}
+            <div className="border-b border-village-border/60 pb-5">
+                <div
+                    role="tablist"
+                    aria-label="Kategori data demografi"
+                    className="flex flex-wrap items-center gap-2"
+                >
+                    <span className="mr-1.5 text-xs font-extrabold text-village-muted tracking-wider uppercase">
+                        Filter Data:
+                    </span>
+                    {datasets.map((dataset) => {
+                        const isSelected = activeDemographicKey === dataset.key;
+                        return (
+                            <button
+                                key={dataset.key}
+                                id={`demographic-tab-${dataset.key}`}
+                                type="button"
+                                role="tab"
+                                aria-selected={isSelected}
+                                aria-controls={`demographic-panel-${dataset.key}`}
+                                onClick={() => setActiveDemographicKey(dataset.key)}
+                                className={`rounded-xl px-4 py-2 text-xs font-extrabold transition-all duration-300 active:scale-95 ${
+                                    isSelected
+                                        ? 'bg-village-primary-dark text-white shadow-xs scale-[1.02] ring-2 ring-emerald-600/20'
+                                        : 'bg-village-surface-muted/80 text-village-ink hover:bg-emerald-100/80 hover:text-emerald-950 hover:scale-[1.02]'
+                                }`}
+                            >
+                                {dataset.shortLabel || dataset.label}
+                            </button>
+                        );
+                    })}
+                </div>
             </div>
 
+            {/* Tab Panel Content Grid */}
             <div
                 id={`demographic-panel-${activeDataset.key}`}
                 role="tabpanel"
                 aria-labelledby={`demographic-tab-${activeDataset.key}`}
-                className="grid lg:grid-cols-12"
+                className="mt-6 grid gap-6 lg:grid-cols-12"
             >
-                <aside className="flex flex-col justify-between bg-village-primary-dark p-6 text-white sm:p-8 lg:col-span-4">
+                {/* Left Card: Soft Green Background Theme with Asset Icon & Hover Animation */}
+                <aside className="group flex flex-col justify-between rounded-2xl border border-emerald-200/80 bg-gradient-to-b from-[#ecf6f0] to-[#e4f2e9] p-6 text-village-ink shadow-xs sm:p-7 lg:col-span-4 transition-all duration-500 hover:border-emerald-300 hover:shadow-md">
                     <div>
-                        <span className="flex size-12 items-center justify-center rounded-full bg-white/10 text-village-accent">
-                            <Users aria-hidden="true" className="size-5" />
+                        <span className="flex size-12 items-center justify-center rounded-2xl bg-white/90 p-2 shadow-xs transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3">
+                            <img
+                                src="/assets/penduduk.png"
+                                alt="Ikon Demografi Penduduk"
+                                className="size-7 object-contain"
+                            />
                         </span>
-                        <p className="mt-8 text-xs font-bold tracking-[0.16em] text-village-accent uppercase">
+                        <p className="mt-6 text-xs font-extrabold tracking-wider text-emerald-800 uppercase">
                             Kategori Aktif
                         </p>
-                        <h3 className="mt-3 text-2xl font-bold">
+                        <h4 className="mt-1.5 text-xl font-extrabold text-emerald-950 transition-colors group-hover:text-emerald-800">
                             {activeDataset.label}
-                        </h3>
-                        <p className="mt-3 leading-7 text-white/65">
+                        </h4>
+                        <p className="mt-2 text-xs leading-relaxed text-emerald-800/80 font-medium">
                             {activeDataset.description}
                         </p>
                     </div>
 
-                    <dl className="mt-10 border-t border-white/15 pt-6">
-                        <dt className="text-xs tracking-[0.14em] text-white/50 uppercase">
-                            Total basis data
+                    <dl className="mt-8 border-t border-emerald-200/60 pt-5">
+                        <dt className="text-xs font-extrabold tracking-wider text-emerald-800 uppercase">
+                            Total Basis Data
                         </dt>
-                        <dd className="mt-2 text-4xl font-bold tracking-tight">
+                        <dd className="mt-1.5 text-3xl font-extrabold tracking-tight text-emerald-950">
                             {formatNumber(activeDataset.total)}
-                            <span className="ml-2 text-sm font-semibold text-white/55">
+                            <span className="ml-2 text-xs font-bold text-emerald-700">
                                 {activeDataset.unit}
                             </span>
                         </dd>
                     </dl>
                 </aside>
 
-                <div className="p-6 sm:p-8 lg:col-span-8">
-                    <div className="flex items-center justify-between gap-4">
+                {/* Right Panel: Data Distribution List & Progress Bars with Asset Icon */}
+                <div className="rounded-2xl border border-village-border/60 bg-village-surface-muted/30 p-6 sm:p-7 lg:col-span-8 transition-all duration-500 hover:border-emerald-200/80 hover:shadow-xs">
+                    <div className="flex items-center justify-between gap-4 border-b border-village-border/60 pb-4">
                         <div>
-                            <p className="text-xs font-bold tracking-[0.15em] text-village-primary uppercase">
+                            <p className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                 Distribusi Data
                             </p>
-                            <h4 className="mt-2 text-xl font-bold">
+                            <h4 className="mt-0.5 text-lg font-extrabold text-village-ink">
                                 {activeDataset.label}
                             </h4>
                         </div>
-                        <ChartBar
-                            aria-hidden="true"
-                            className="size-6 text-village-primary"
-                        />
+                        <span className="flex size-10 items-center justify-center rounded-xl bg-village-primary-light/80 p-2 shadow-xs transition-transform duration-300 hover:scale-105">
+                            <img
+                                src="/assets/layanan.png"
+                                alt="Ikon Statistik Data"
+                                className="size-5 object-contain"
+                            />
+                        </span>
                     </div>
 
-                    <div className="mt-8 grid gap-6">
+                    <div className="mt-5 space-y-3">
                         {activeDataset.items.map((item) => {
-                            const percentage =
-                                (item.value / activeDataset.total) * 100;
+                            const total = activeDataset.total || 1;
+                            const percentage = (item.value / total) * 100;
 
                             return (
-                                <div key={item.label}>
-                                    <div className="flex items-end justify-between gap-5">
+                                <div
+                                    key={item.label}
+                                    className="group/item rounded-2xl p-3 transition-all duration-300 hover:bg-white hover:shadow-xs hover:border hover:border-emerald-100 hover:-translate-y-0.5"
+                                >
+                                    <div className="flex items-end justify-between gap-4">
                                         <div>
-                                            <p className="font-bold text-village-ink">
+                                            <p className="text-sm font-extrabold text-village-ink group-hover/item:text-village-primary-dark transition-colors">
                                                 {item.label}
                                             </p>
-                                            <p className="mt-1 text-sm text-village-muted">
-                                                {formatNumber(item.value)}{' '}
-                                                {activeDataset.unit}
+                                            <p className="mt-0.5 text-xs font-medium text-village-muted">
+                                                {formatNumber(item.value)} {activeDataset.unit}
                                             </p>
                                         </div>
-                                        <span className="text-sm font-bold text-village-primary">
+                                        <span className="rounded-xl bg-village-primary-light/80 px-2.5 py-0.5 text-xs font-extrabold text-village-primary-dark group-hover/item:bg-village-primary group-hover/item:text-white transition-colors">
                                             {percentage.toFixed(1)}%
                                         </span>
                                     </div>
+
+                                    {/* Styled Progress Bar Track */}
                                     <div
                                         role="progressbar"
                                         aria-label={`${item.label} ${percentage.toFixed(1)} persen`}
                                         aria-valuemin={0}
                                         aria-valuemax={100}
-                                        aria-valuenow={Number(
-                                            percentage.toFixed(1),
-                                        )}
-                                        className="mt-3 h-2.5 overflow-hidden rounded-full bg-village-surface-muted"
+                                        aria-valuenow={Number(percentage.toFixed(1))}
+                                        className="mt-2.5 h-3 overflow-hidden rounded-full bg-emerald-100/60 p-0.5 group-hover/item:bg-emerald-100 transition-colors"
                                     >
                                         <span
                                             aria-hidden="true"
-                                            className="block h-full rounded-full bg-village-primary transition-[width] duration-500"
+                                            className="block h-full rounded-full bg-gradient-to-r from-village-primary via-emerald-600 to-teal-500 transition-all duration-700 ease-out group-hover/item:brightness-110"
                                             style={{
                                                 width: `${Math.max(percentage, 1.5)}%`,
                                             }}
@@ -141,3 +171,5 @@ export function VillageDemographicExplorer() {
         </div>
     );
 }
+
+

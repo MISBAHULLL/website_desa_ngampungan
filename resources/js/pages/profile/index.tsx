@@ -10,6 +10,7 @@ import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageAdministrativeMap } from '@/components/village-administrative-map';
 import { VillageDemographicExplorer } from '@/components/village-demographic-explorer';
 import { VillageGeospatialMap } from '@/components/village-geospatial-map';
+import { DemographicDataset } from '@/lib/dummy-village-profile';
 
 type HamletData = {
     code: string;
@@ -39,6 +40,7 @@ type VillageProfileData = {
     boundary_west: string | null;
     hamlets: HamletData[] | null;
     land_use: LandUseData[] | null;
+    demographics?: DemographicDataset[] | null;
     map_latitude?: number | null;
     map_longitude?: number | null;
     map_zoom?: number | null;
@@ -1192,16 +1194,10 @@ export default function VillageProfileIndex({
                         </div>
 
                         <div className="mt-8">
-                            <VillageDemographicExplorer />
+                            <VillageDemographicExplorer
+                                demographics={profile?.demographics}
+                            />
                         </div>
-                    </div>
-
-                    {/* Dynamic Data Notification */}
-                    <div className="mt-12 flex items-start gap-3.5 rounded-2xl border border-village-primary/30 bg-village-primary-light/40 p-5 text-sm leading-relaxed text-village-primary-dark shadow-xs">
-                        <Info className="mt-0.5 size-5 shrink-0 text-village-primary" />
-                        <p>
-                            <strong>Data Wilayah Terintegrasi Backend.</strong> Seluruh statistik kependudukan, batas administratif, pembagian dusun, dan penggunaan lahan pada section ini dikelola secara dinamis melalui database backend.
-                        </p>
                     </div>
                 </div>
             </section>

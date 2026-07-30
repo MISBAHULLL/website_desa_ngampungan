@@ -20,6 +20,7 @@ class VillageProfile extends Model
         'boundary_west',
         'hamlets',
         'land_use',
+        'demographics',
         'map_latitude',
         'map_longitude',
         'map_zoom',
@@ -39,6 +40,7 @@ class VillageProfile extends Model
             'map_zoom' => 'integer',
             'hamlets' => 'array',
             'land_use' => 'array',
+            'demographics' => 'array',
         ];
     }
 }

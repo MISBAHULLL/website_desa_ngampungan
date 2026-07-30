@@ -26,6 +26,7 @@ return new class extends Migration
             // Structured JSON data
             $table->json('hamlets')->nullable();
             $table->json('land_use')->nullable();
+            $table->json('demographics')->nullable();
 
             // Map geospatial metadata
             $table->decimal('map_latitude', 10, 7)->nullable();
