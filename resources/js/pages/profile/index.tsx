@@ -131,24 +131,112 @@ const historyStages = [
     },
 ];
 
-const landUsePresentation: Record<string, { barClassName: string; surfaceClassName: string }> = {
+type LandUseStyle = {
+    barClassName: string;
+    surfaceClassName: string;
+    textClassName: string;
+    badgeClassName: string;
+    trackClassName: string;
+};
+
+const landUsePresentation: Record<string, LandUseStyle> = {
     agriculture: {
-        barClassName: 'bg-village-primary',
-        surfaceClassName: 'bg-village-primary-light',
+        barClassName: 'bg-emerald-600',
+        surfaceClassName:
+            'bg-emerald-50/70 border-emerald-200/80 hover:border-emerald-300',
+        textClassName: 'text-emerald-950',
+        badgeClassName:
+            'bg-emerald-100 text-emerald-800 border border-emerald-200/60',
+        trackClassName: 'bg-emerald-200/60',
     },
     settlement: {
-        barClassName: 'bg-[#d89b2b]',
-        surfaceClassName: 'bg-[#fff2cf]',
+        barClassName: 'bg-amber-500',
+        surfaceClassName:
+            'bg-amber-50/70 border-amber-200/80 hover:border-amber-300',
+        textClassName: 'text-amber-950',
+        badgeClassName:
+            'bg-amber-100 text-amber-800 border border-amber-200/60',
+        trackClassName: 'bg-amber-200/60',
     },
     openSpace: {
-        barClassName: 'bg-village-info',
-        surfaceClassName: 'bg-[#e7f1fb]',
+        barClassName: 'bg-blue-600',
+        surfaceClassName:
+            'bg-blue-50/70 border-blue-200/80 hover:border-blue-300',
+        textClassName: 'text-blue-950',
+        badgeClassName: 'bg-blue-100 text-blue-800 border border-blue-200/60',
+        trackClassName: 'bg-blue-200/60',
     },
     publicFacilities: {
-        barClassName: 'bg-village-primary-dark',
-        surfaceClassName: 'bg-village-surface-muted',
+        barClassName: 'bg-teal-700',
+        surfaceClassName:
+            'bg-teal-50/70 border-teal-200/80 hover:border-teal-300',
+        textClassName: 'text-teal-950',
+        badgeClassName: 'bg-teal-100 text-teal-900 border border-teal-200/60',
+        trackClassName: 'bg-teal-200/60',
     },
 };
+
+const fallbackLandUseStyles: LandUseStyle[] = [
+    {
+        barClassName: 'bg-emerald-600',
+        surfaceClassName:
+            'bg-emerald-50/70 border-emerald-200/80 hover:border-emerald-300',
+        textClassName: 'text-emerald-950',
+        badgeClassName:
+            'bg-emerald-100 text-emerald-800 border border-emerald-200/60',
+        trackClassName: 'bg-emerald-200/60',
+    },
+    {
+        barClassName: 'bg-amber-500',
+        surfaceClassName:
+            'bg-amber-50/70 border-amber-200/80 hover:border-amber-300',
+        textClassName: 'text-amber-950',
+        badgeClassName:
+            'bg-amber-100 text-amber-800 border border-amber-200/60',
+        trackClassName: 'bg-amber-200/60',
+    },
+    {
+        barClassName: 'bg-blue-600',
+        surfaceClassName:
+            'bg-blue-50/70 border-blue-200/80 hover:border-blue-300',
+        textClassName: 'text-blue-950',
+        badgeClassName: 'bg-blue-100 text-blue-800 border border-blue-200/60',
+        trackClassName: 'bg-blue-200/60',
+    },
+    {
+        barClassName: 'bg-teal-700',
+        surfaceClassName:
+            'bg-teal-50/70 border-teal-200/80 hover:border-teal-300',
+        textClassName: 'text-teal-950',
+        badgeClassName: 'bg-teal-100 text-teal-900 border border-teal-200/60',
+        trackClassName: 'bg-teal-200/60',
+    },
+    {
+        barClassName: 'bg-purple-600',
+        surfaceClassName:
+            'bg-purple-50/70 border-purple-200/80 hover:border-purple-300',
+        textClassName: 'text-purple-950',
+        badgeClassName:
+            'bg-purple-100 text-purple-800 border border-purple-200/60',
+        trackClassName: 'bg-purple-200/60',
+    },
+    {
+        barClassName: 'bg-indigo-600',
+        surfaceClassName:
+            'bg-indigo-50/70 border-indigo-200/80 hover:border-indigo-300',
+        textClassName: 'text-indigo-950',
+        badgeClassName:
+            'bg-indigo-100 text-indigo-800 border border-indigo-200/60',
+        trackClassName: 'bg-indigo-200/60',
+    },
+];
+
+function getLandUseStyle(key: string, index: number): LandUseStyle {
+    if (landUsePresentation[key]) {
+        return landUsePresentation[key];
+    }
+    return fallbackLandUseStyles[index % fallbackLandUseStyles.length];
+}
 
 function formatNumber(value: number) {
     return new Intl.NumberFormat('id-ID').format(value);
@@ -922,57 +1010,117 @@ export default function VillageProfileIndex({
                             </div>
 
                             <div className="rounded-3xl border border-village-border/80 bg-white p-6 shadow-sm sm:p-8 lg:col-span-8">
+                                {/* Interactive Segmented Statistic Bar with Tooltips */}
                                 <div
-                                    role="img"
+                                    role="region"
                                     aria-label="Komposisi penggunaan lahan desa"
-                                    className="flex h-6 overflow-hidden rounded-full border border-village-border/40 p-0.5"
+                                    className="relative flex h-7 w-full rounded-full border border-village-border/60 bg-village-surface-muted/80 p-1 shadow-inner"
                                 >
-                                    {landUse.map((item) => (
-                                        <span
-                                            key={item.key}
-                                            aria-hidden="true"
-                                            className={`h-full transition-all duration-500 ${
-                                                landUsePresentation[item.key]?.barClassName || 'bg-village-primary'
-                                            }`}
-                                            style={{
-                                                width: `${item.percentage}%`,
-                                            }}
-                                        />
-                                    ))}
+                                    {landUse.map((item, index) => {
+                                        const style = getLandUseStyle(
+                                            item.key,
+                                            index,
+                                        );
+                                        const percentage =
+                                            item.percentage ??
+                                            (totalLandHectares > 0
+                                                ? Math.round(
+                                                      (item.hectares /
+                                                          totalLandHectares) *
+                                                          100,
+                                                  )
+                                                : 0);
+
+                                        return (
+                                            <div
+                                                key={item.key || index}
+                                                title={`${item.label}: ${percentage}% (${formatNumber(item.hectares)} ha)`}
+                                                className="group relative h-full cursor-pointer transition-all duration-300 first:rounded-l-full last:rounded-r-full hover:z-50 hover:brightness-110"
+                                                style={{
+                                                    width: `${percentage}%`,
+                                                }}
+                                            >
+                                                <div
+                                                    className={`h-full w-full ${style.barClassName} transition-all duration-500 first:rounded-l-full last:rounded-r-full`}
+                                                />
+
+                                                {/* Floating Custom Tooltip */}
+                                                <div className="pointer-events-none absolute bottom-full left-1/2 mb-3 -translate-x-1/2 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-1 z-50 min-w-max">
+                                                    <div className="flex items-center gap-2 rounded-xl bg-village-ink/95 px-3.5 py-2 text-xs font-bold text-white shadow-2xl backdrop-blur-md ring-1 ring-white/10">
+                                                        <span
+                                                            className={`size-2.5 rounded-full ${style.barClassName} ring-2 ring-white/30`}
+                                                        />
+                                                        <span>
+                                                            {item.label}:{' '}
+                                                            <strong className="text-village-accent">
+                                                                {percentage}%
+                                                            </strong>{' '}
+                                                            (
+                                                            {formatNumber(
+                                                                item.hectares,
+                                                            )}{' '}
+                                                            ha)
+                                                        </span>
+                                                    </div>
+                                                    <div className="mx-auto -mt-1 size-2.5 rotate-45 bg-village-ink/95" />
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
 
+                                {/* Styled Card Grid */}
                                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                                    {landUse.map((item) => {
-                                        const presentation =
-                                            landUsePresentation[item.key] || {
-                                                barClassName: 'bg-village-primary',
-                                                surfaceClassName: 'bg-village-surface-muted',
-                                            };
+                                    {landUse.map((item, index) => {
+                                        const style = getLandUseStyle(
+                                            item.key,
+                                            index,
+                                        );
+                                        const percentage =
+                                            item.percentage ??
+                                            (totalLandHectares > 0
+                                                ? Math.round(
+                                                      (item.hectares /
+                                                          totalLandHectares) *
+                                                          100,
+                                                  )
+                                                : 0);
 
                                         return (
                                             <article
-                                                key={item.key}
-                                                className={`rounded-2xl border border-village-border/40 ${presentation.surfaceClassName} p-5 transition-all duration-300 hover:shadow-md`}
+                                                key={item.key || index}
+                                                className={`group relative overflow-hidden rounded-2xl border ${style.surfaceClassName} p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg`}
                                             >
                                                 <div className="flex items-start justify-between gap-4">
                                                     <div>
-                                                        <h4 className="font-extrabold text-village-ink">
+                                                        <h4
+                                                            className={`text-base font-extrabold ${style.textClassName}`}
+                                                        >
                                                             {item.label}
                                                         </h4>
                                                         <p className="mt-1 text-sm font-semibold text-village-muted">
-                                                            {formatNumber(item.hectares)} hektare
+                                                            {formatNumber(
+                                                                item.hectares,
+                                                            )}{' '}
+                                                            hektare
                                                         </p>
                                                     </div>
-                                                    <span className="text-2xl font-extrabold text-village-primary-dark">
-                                                        {item.percentage}%
+                                                    <span
+                                                        className={`rounded-xl ${style.badgeClassName} px-3 py-1 text-xl font-extrabold tracking-tight shadow-2xs transition-transform duration-300 group-hover:scale-105`}
+                                                    >
+                                                        {percentage}%
                                                     </span>
                                                 </div>
-                                                <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/80">
+
+                                                {/* Animated Inner Progress Bar */}
+                                                <div
+                                                    className={`mt-5 h-2.5 overflow-hidden rounded-full ${style.trackClassName}`}
+                                                >
                                                     <span
                                                         aria-hidden="true"
-                                                        className={`block h-full rounded-full ${presentation.barClassName}`}
+                                                        className={`block h-full rounded-full ${style.barClassName} transition-all duration-700 ease-out`}
                                                         style={{
-                                                            width: `${item.percentage}%`,
+                                                            width: `${percentage}%`,
                                                         }}
                                                     />
                                                 </div>
