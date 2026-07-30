@@ -27,6 +27,13 @@ return new class extends Migration
             $table->json('hamlets')->nullable();
             $table->json('land_use')->nullable();
 
+            // Map geospatial metadata
+            $table->decimal('map_latitude', 10, 7)->nullable();
+            $table->decimal('map_longitude', 10, 7)->nullable();
+            $table->unsignedSmallInteger('map_zoom')->nullable();
+            $table->string('map_google_url')->nullable();
+            $table->string('map_hd_file_url')->nullable();
+
             $table->timestamps();
         });
     }

@@ -76,6 +76,11 @@ class VillageProfileFactory extends Factory
                     'percentage' => 8,
                 ],
             ],
+            'map_latitude' => -7.6749,
+            'map_longitude' => 112.3385,
+            'map_zoom' => 14,
+            'map_google_url' => 'https://maps.google.com/?q=-7.6749,112.3385',
+            'map_hd_file_url' => null,
         ];
     }
 }

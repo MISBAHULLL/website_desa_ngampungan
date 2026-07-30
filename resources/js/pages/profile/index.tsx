@@ -9,6 +9,7 @@ import {
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageAdministrativeMap } from '@/components/village-administrative-map';
 import { VillageDemographicExplorer } from '@/components/village-demographic-explorer';
+import { VillageGeospatialMap } from '@/components/village-geospatial-map';
 
 type HamletData = {
     code: string;
@@ -38,6 +39,11 @@ type VillageProfileData = {
     boundary_west: string | null;
     hamlets: HamletData[] | null;
     land_use: LandUseData[] | null;
+    map_latitude?: number | null;
+    map_longitude?: number | null;
+    map_zoom?: number | null;
+    map_google_url?: string | null;
+    map_hd_file_url?: string | null;
 };
 
 type VillageProfilePageProps = {
@@ -1153,7 +1159,13 @@ export default function VillageProfileIndex({
                         </div>
 
                         <div className="mt-8">
-                            <VillageAdministrativeMap />
+                            <VillageGeospatialMap
+                                latitude={profile?.map_latitude}
+                                longitude={profile?.map_longitude}
+                                zoom={profile?.map_zoom}
+                                googleUrl={profile?.map_google_url}
+                                hdFileUrl={profile?.map_hd_file_url}
+                            />
                         </div>
                     </div>
 

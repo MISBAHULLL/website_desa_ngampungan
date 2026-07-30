@@ -20,6 +20,11 @@ class VillageProfile extends Model
         'boundary_west',
         'hamlets',
         'land_use',
+        'map_latitude',
+        'map_longitude',
+        'map_zoom',
+        'map_google_url',
+        'map_hd_file_url',
     ];
 
     protected function casts(): array
@@ -29,6 +34,9 @@ class VillageProfile extends Model
             'total_families' => 'integer',
             'total_hamlets' => 'integer',
             'total_area_hectares' => 'integer',
+            'map_latitude' => 'float',
+            'map_longitude' => 'float',
+            'map_zoom' => 'integer',
             'hamlets' => 'array',
             'land_use' => 'array',
         ];

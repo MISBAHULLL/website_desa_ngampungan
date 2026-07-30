@@ -16,7 +16,7 @@ test('the public village profile renders its Inertia page with a canonical URL',
 test('the village profile page exposes profile sections, breadcrumb, and SEO metadata', function () {
     $profilePageSource = file_get_contents(resource_path('js/pages/profile/index.tsx'));
     $profileDataSource = file_get_contents(resource_path('js/lib/dummy-village-profile.ts'));
-    $administrativeMapSource = file_get_contents(resource_path('js/components/village-administrative-map.tsx'));
+    $geospatialMapSource = file_get_contents(resource_path('js/components/village-geospatial-map.tsx'));
     $demographicExplorerSource = file_get_contents(resource_path('js/components/village-demographic-explorer.tsx'));
     $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
     $appSource = file_get_contents(resource_path('js/app.tsx'));
@@ -38,7 +38,7 @@ test('the village profile page exposes profile sections, breadcrumb, and SEO met
         ->toContain('boundaries.map')
         ->toContain('hamlets.map')
         ->toContain('landUse.map')
-        ->toContain('VillageAdministrativeMap')
+        ->toContain('VillageGeospatialMap')
         ->toContain('VillageDemographicExplorer')
         ->toContain('Data Wilayah Terintegrasi Backend');
 
@@ -55,12 +55,11 @@ test('the village profile page exposes profile sections, breadcrumb, and SEO met
         ->toContain("key: 'religion'")
         ->toContain("key: 'residency'");
 
-    expect($administrativeMapSource)
+    expect($geospatialMapSource)
         ->not->toBeFalse()
-        ->toContain('role="img"')
-        ->toContain('Peta administratif simulasi Desa Ngampungan')
-        ->toContain('Bukan peta ukur')
-        ->toContain('data geospasial resmi');
+        ->toContain('Peta Interaktif Desa Ngampungan')
+        ->toContain('OpenStreetMap')
+        ->toContain('Sistem Informasi Geospasial Live');
 
     expect($demographicExplorerSource)
         ->not->toBeFalse()
