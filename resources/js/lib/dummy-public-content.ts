@@ -165,6 +165,40 @@ export const dummyNewsArticles = [
         alt: 'Warga mengikuti pertemuan dan musyawarah',
         featured: false,
     },
+    {
+        slug: 'pemberdayaan-kelompok-wanita-tani',
+        title: 'Kelompok Wanita Tani Desa Kembangkan Kebun Gizi Mandiri',
+        excerpt:
+            'Pemanfaatan pekarangan rumah untuk budidaya sayuran organik dan tanaman obat keluarga.',
+        content: [
+            'Kelompok Wanita Tani (KWT) Desa Ngampungan menginisiasi kebun gizi mandiri yang memanfaatkan lahan pekarangan kosong.',
+            'Hasil panen sayuran segar digunakan untuk memenuhi kebutuhan pangan keluarga serta dijual di pasar lokal desa.',
+        ],
+        category: 'Pertanian',
+        author: 'Tim Pemberdayaan Desa',
+        publishedAt: '2026-06-08',
+        publishedLabel: '8 Juni 2026',
+        image: 'https://images.unsplash.com/photo-1592417817098-8f3d6eb19655?q=80&w=1400&auto=format&fit=crop',
+        alt: 'Aktivitas bercocok tanam sayur di pekarangan',
+        featured: false,
+    },
+    {
+        slug: 'pentas-seni-dan-bazar-budaya-desa',
+        title: 'Pentas Seni Tradisional dan Bazar UMKM Sambut Hari Desa',
+        excerpt:
+            'Ajang apresiasi budaya lokal sekaligus penguatan ekonomi warga melalui stan produk kreatif.',
+        content: [
+            'Pemerintah desa menyelenggarakan pentas seni tradisional jawa dan bazar UMKM yang melibatkan perwakilan dari seluruh dusun.',
+            'Acara ini berhasil menarik antusiasme ratusan warga dan pengunjung dari daerah sekitar.',
+        ],
+        category: 'UMKM & Budaya',
+        author: 'Panitia Hari Desa',
+        publishedAt: '2026-06-01',
+        publishedLabel: '1 Juni 2026',
+        image: 'https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=1400&auto=format&fit=crop',
+        alt: 'Kegiatan bazar dan festival budaya pedesaan',
+        featured: false,
+    },
 ] satisfies readonly NewsArticle[];
 
 export const dummyAnnouncements = [
@@ -243,7 +277,7 @@ export const dummyAnnouncements = [
 ] satisfies readonly Announcement[];
 
 export const featuredDummyNewsArticle = dummyNewsArticles[0];
-export const latestDummyNewsArticles = dummyNewsArticles.slice(1, 4);
+export const latestDummyNewsArticles = dummyNewsArticles.slice(1);
 export const activeDummyAnnouncements = dummyAnnouncements.filter(
     (announcement) => announcement.status === 'active',
 );

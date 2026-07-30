@@ -1,5 +1,5 @@
 import { Head, Link } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, Search, Store } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicPageShell } from '@/components/public-page-shell';
@@ -81,11 +81,24 @@ export default function PotentialIndex({
         return filteredEntries.slice(start, start + ITEMS_PER_PAGE);
     }, [filteredEntries, currentPage]);
 
+    const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+
     const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-        const headingElement = document.getElementById('potential-directory-heading');
+        if (page === currentPage || isPageTransitioning) return;
+        setIsPageTransitioning(true);
+        setTimeout(() => {
+            setCurrentPage(page);
+            setIsPageTransitioning(false);
+        }, 140);
+
+        const headingElement = document.getElementById(
+            'potential-directory-heading',
+        );
         if (headingElement) {
-            headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            headingElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
         }
     };
 
@@ -230,16 +243,61 @@ export default function PotentialIndex({
 
                     {paginatedEntries.length > 0 ? (
                         <>
-                            <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                {paginatedEntries.map((entry) => (
-                                    <VillagePotentialCard
+                            <div
+                                key={currentPage}
+                                className={`mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
+                                    isPageTransitioning
+                                        ? 'opacity-0 scale-[0.985]'
+                                        : 'opacity-100 scale-100'
+                                }`}
+                            >
+                                {paginatedEntries.map((entry, idx) => (
+                                    <div
                                         key={entry.slug}
-                                        entry={entry}
-                                        onOpenDetail={(selected) =>
-                                            setSelectedDetailEntry(selected)
-                                        }
-                                    />
+                                        className="animate-page-fade-in flex h-full flex-col"
+                                        style={{ animationDelay: `${idx * 40}ms` }}
+                                    >
+                                        <VillagePotentialCard
+                                            entry={entry}
+                                            onOpenDetail={(selected) =>
+                                                setSelectedDetailEntry(selected)
+                                            }
+                                        />
+                                    </div>
                                 ))}
+
+                                {paginatedEntries.length < ITEMS_PER_PAGE && (
+                                    <div
+                                        className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-gray-200 bg-gradient-to-br from-gray-50/80 via-white to-emerald-50/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
+                                        style={{
+                                            animationDelay: `${paginatedEntries.length * 40}ms`,
+                                        }}
+                                    >
+                                        <div className="space-y-3">
+                                            <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
+                                                <Store className="size-5" />
+                                            </span>
+                                            <h4 className="text-base font-extrabold text-gray-900">
+                                                Daftarkan Usaha / Potensi
+                                            </h4>
+                                            <p className="text-xs leading-relaxed text-gray-500">
+                                                Punya produk UMKM, hasil tani, atau jasa di Desa Ngampungan? Hubungi pengelola desa untuk publikasi di direktori resmi.
+                                            </p>
+                                        </div>
+                                        <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
+                                            <span className="text-[11px] font-semibold text-village-primary">
+                                                Layanan Gratis Warga
+                                            </span>
+                                            <a
+                                                href="#kontak"
+                                                className="inline-flex items-center gap-1.5 rounded-full bg-village-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-village-primary-dark"
+                                            >
+                                                <span>Hubungi Desa</span>
+                                                <ArrowRight className="size-3.5" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Clean Pagination Controls */}

@@ -1,5 +1,5 @@
-import { Head } from '@inertiajs/react';
-import { Newspaper, Search, SlidersHorizontal } from 'lucide-react';
+import { Head, Link } from '@inertiajs/react';
+import { ArrowRight, FileText, Newspaper, Search, SlidersHorizontal } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { PublicPageShell } from '@/components/public-page-shell';
@@ -15,6 +15,24 @@ export default function NewsIndex() {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [currentPage, setCurrentPage] = useState(1);
+    const [isPageTransitioning, setIsPageTransitioning] = useState(false);
+
+    const handlePageChange = (page: number) => {
+        if (page === currentPage || isPageTransitioning) return;
+        setIsPageTransitioning(true);
+        setTimeout(() => {
+            setCurrentPage(page);
+            setIsPageTransitioning(false);
+        }, 140);
+
+        const headingElement = document.getElementById('daftar-berita-heading');
+        if (headingElement) {
+            headingElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    };
 
     const filteredArticles = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase('id-ID');
@@ -165,13 +183,56 @@ export default function NewsIndex() {
                     </div>
 
                     {visibleArticles.length > 0 ? (
-                        <div className="mt-7 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                            {visibleArticles.map((article) => (
-                                <PublicNewsCard
+                        <div
+                            key={currentPage}
+                            className={`mt-7 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
+                                isPageTransitioning
+                                    ? 'opacity-0 scale-[0.985]'
+                                    : 'opacity-100 scale-100'
+                            }`}
+                        >
+                            {visibleArticles.map((article, idx) => (
+                                <div
                                     key={article.slug}
-                                    article={article}
-                                />
+                                    className="animate-page-fade-in flex h-full flex-col"
+                                    style={{ animationDelay: `${idx * 40}ms` }}
+                                >
+                                    <PublicNewsCard article={article} />
+                                </div>
                             ))}
+
+                            {visibleArticles.length < articlesPerPage && (
+                                <div
+                                    className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
+                                    style={{
+                                        animationDelay: `${visibleArticles.length * 40}ms`,
+                                    }}
+                                >
+                                    <div className="space-y-3">
+                                        <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
+                                            <FileText className="size-5" />
+                                        </span>
+                                        <h4 className="text-base font-extrabold text-village-ink">
+                                            Informasi Publik Desa
+                                        </h4>
+                                        <p className="text-xs leading-relaxed text-village-muted">
+                                            Menampilkan sisa {visibleArticles.length} artikel pada halaman ini. Seluruh artikel resmi telah terverifikasi oleh Pemerintah Desa Ngampungan.
+                                        </p>
+                                    </div>
+                                    <div className="mt-6 flex items-center justify-between border-t border-village-border/60 pt-4">
+                                        <span className="text-[11px] font-semibold text-village-primary">
+                                            Terverifikasi Pemdes
+                                        </span>
+                                        <a
+                                            href="#search-news"
+                                            className="inline-flex items-center gap-1.5 rounded-full bg-village-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-village-primary-dark"
+                                        >
+                                            <span>Cari Lainnya</span>
+                                            <ArrowRight className="size-3.5" />
+                                        </a>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <div className="mt-7 rounded-3xl border border-dashed border-village-border bg-white px-6 py-16 text-center">
@@ -188,7 +249,7 @@ export default function NewsIndex() {
                         </div>
                     )}
 
-                    {filteredArticles.length > 0 && (
+                    {filteredArticles.length > 0 && totalPages > 1 && (
                         <nav
                             aria-label="Pagination berita"
                             className="mt-10 flex flex-wrap items-center justify-center gap-2"
@@ -196,11 +257,7 @@ export default function NewsIndex() {
                             <button
                                 type="button"
                                 disabled={currentPage === 1}
-                                onClick={() =>
-                                    setCurrentPage((page) =>
-                                        Math.max(1, page - 1),
-                                    )
-                                }
+                                onClick={() => handlePageChange(currentPage - 1)}
                                 className="min-h-11 rounded-xl border border-village-border bg-white px-4 py-2 text-sm font-semibold transition hover:border-village-primary hover:text-village-primary disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Sebelumnya
@@ -217,7 +274,7 @@ export default function NewsIndex() {
                                             ? 'page'
                                             : undefined
                                     }
-                                    onClick={() => setCurrentPage(page)}
+                                    onClick={() => handlePageChange(page)}
                                     className={
                                         currentPage === page
                                             ? 'flex size-11 items-center justify-center rounded-xl bg-village-primary font-bold text-white'
@@ -230,11 +287,7 @@ export default function NewsIndex() {
                             <button
                                 type="button"
                                 disabled={currentPage === totalPages}
-                                onClick={() =>
-                                    setCurrentPage((page) =>
-                                        Math.min(totalPages, page + 1),
-                                    )
-                                }
+                                onClick={() => handlePageChange(currentPage + 1)}
                                 className="min-h-11 rounded-xl border border-village-border bg-white px-4 py-2 text-sm font-semibold transition hover:border-village-primary hover:text-village-primary disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Berikutnya

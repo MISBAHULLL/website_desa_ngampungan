@@ -32,7 +32,7 @@ import {
     Youtube,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
 import InputError from '@/components/input-error';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
@@ -931,6 +931,37 @@ export default function Welcome() {
         activePotentialCategory,
     ).slice(0, 3);
 
+    const [newsCurrentPage, setNewsCurrentPage] = useState(1);
+    const [isNewsPageTransitioning, setIsNewsPageTransitioning] =
+        useState(false);
+    const NEWS_PER_PAGE = 6;
+    const totalNewsPages = Math.ceil(
+        latestDummyNewsArticles.length / NEWS_PER_PAGE,
+    );
+    const paginatedNewsArticles = useMemo(() => {
+        const start = (newsCurrentPage - 1) * NEWS_PER_PAGE;
+        return latestDummyNewsArticles.slice(start, start + NEWS_PER_PAGE);
+    }, [newsCurrentPage]);
+
+    const handleNewsPageChange = (page: number) => {
+        if (page === newsCurrentPage || isNewsPageTransitioning) return;
+        setIsNewsPageTransitioning(true);
+        setTimeout(() => {
+            setNewsCurrentPage(page);
+            setIsNewsPageTransitioning(false);
+        }, 140);
+
+        const headingElement = document.getElementById(
+            'berita-lainnya-heading',
+        );
+        if (headingElement) {
+            headingElement.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
+    };
+
     useEffect(() => {
         const interval = setInterval(() => {
             setHeroSlideIndex((prev) => (prev + 1) % heroCarouselImages.length);
@@ -1633,23 +1664,147 @@ export default function Welcome() {
                                         <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
                                             Kabar lainnya
                                         </p>
-                                        <h3 className="mt-2 text-2xl font-bold">
+                                        <h3
+                                            id="berita-lainnya-heading"
+                                            className="mt-2 text-2xl font-bold"
+                                        >
                                             Berita Lainnya
                                         </h3>
                                     </div>
-                                    <span className="text-sm text-village-muted">
-                                        {latestDummyNewsArticles.length} berita
+                                    <span className="text-xs font-medium text-village-muted sm:text-sm">
+                                        Menampilkan{' '}
+                                        <strong className="font-bold text-gray-900">
+                                            {paginatedNewsArticles.length}
+                                        </strong>{' '}
+                                        dari {latestDummyNewsArticles.length} berita
                                     </span>
                                 </div>
 
-                                <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                    {latestDummyNewsArticles.map((article) => (
-                                        <PublicNewsCard
+                                <div
+                                    key={newsCurrentPage}
+                                    className={`mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
+                                        isNewsPageTransitioning
+                                            ? 'opacity-0 scale-[0.985]'
+                                            : 'opacity-100 scale-100'
+                                    }`}
+                                >
+                                    {paginatedNewsArticles.map((article, idx) => (
+                                        <div
                                             key={article.slug}
-                                            article={article}
-                                        />
+                                            className="animate-page-fade-in flex h-full flex-col"
+                                            style={{ animationDelay: `${idx * 40}ms` }}
+                                        >
+                                            <PublicNewsCard
+                                                article={article}
+                                            />
+                                        </div>
                                     ))}
+
+                                    {paginatedNewsArticles.length < NEWS_PER_PAGE && (
+                                        <div
+                                            className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
+                                            style={{
+                                                animationDelay: `${paginatedNewsArticles.length * 40}ms`,
+                                            }}
+                                        >
+                                            <div className="space-y-3">
+                                                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
+                                                    <Newspaper className="size-5" />
+                                                </span>
+                                                <h4 className="text-base font-extrabold text-village-ink">
+                                                    Pusat Arsip & Informasi
+                                                </h4>
+                                                <p className="text-xs leading-relaxed text-village-muted">
+                                                    Menampilkan sisa {paginatedNewsArticles.length} berita terbaru pada halaman ini. Ingin membaca rilis pembangunan & pengumuman lainnya?
+                                                </p>
+                                            </div>
+                                            <div className="mt-6 flex items-center justify-between border-t border-village-border/60 pt-4">
+                                                <span className="text-[11px] font-semibold text-village-primary">
+                                                    Terverifikasi Pemdes
+                                                </span>
+                                                <Link
+                                                    href={newsIndex()}
+                                                    className="inline-flex items-center gap-1.5 rounded-full bg-village-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-village-primary-dark"
+                                                >
+                                                    <span>Arsip Berita</span>
+                                                    <ArrowRight className="size-3.5" />
+                                                </Link>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {totalNewsPages > 1 && (
+                                    <nav
+                                        aria-label="Navigasi halaman berita"
+                                        className="mt-10 flex items-center justify-center gap-2 border-t border-village-border/80 pt-6"
+                                    >
+                                        <button
+                                            type="button"
+                                            disabled={newsCurrentPage === 1}
+                                            onClick={() =>
+                                                handleNewsPageChange(
+                                                    newsCurrentPage - 1,
+                                                )
+                                            }
+                                            aria-label="Halaman berita sebelumnya"
+                                            className="flex size-9 items-center justify-center rounded-xl border border-village-border bg-white text-village-ink shadow-2xs transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                        >
+                                            <ChevronLeft className="size-4" />
+                                        </button>
+
+                                        {Array.from(
+                                            { length: totalNewsPages },
+                                            (_, index) => {
+                                                const pageNumber = index + 1;
+                                                const isActive =
+                                                    pageNumber ===
+                                                    newsCurrentPage;
+                                                return (
+                                                    <button
+                                                        key={pageNumber}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            handleNewsPageChange(
+                                                                pageNumber,
+                                                            )
+                                                        }
+                                                        aria-current={
+                                                            isActive
+                                                                ? 'page'
+                                                                : undefined
+                                                        }
+                                                        aria-label={`Halaman berita ${pageNumber}`}
+                                                        className={`flex size-9 items-center justify-center rounded-xl text-xs font-bold transition-all ${
+                                                            isActive
+                                                                ? 'bg-village-primary text-white shadow-xs'
+                                                                : 'border border-village-border bg-white text-village-ink hover:border-village-primary/40 hover:bg-gray-50'
+                                                        }`}
+                                                    >
+                                                        {pageNumber}
+                                                    </button>
+                                                );
+                                            },
+                                        )}
+
+                                        <button
+                                            type="button"
+                                            disabled={
+                                                newsCurrentPage ===
+                                                totalNewsPages
+                                            }
+                                            onClick={() =>
+                                                handleNewsPageChange(
+                                                    newsCurrentPage + 1,
+                                                )
+                                            }
+                                            aria-label="Halaman berita selanjutnya"
+                                            className="flex size-9 items-center justify-center rounded-xl border border-village-border bg-white text-village-ink shadow-2xs transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                        >
+                                            <ChevronRight className="size-4" />
+                                        </button>
+                                    </nav>
+                                )}
                             </div>
                         </div>
                     </section>

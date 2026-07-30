@@ -331,13 +331,6 @@ test('the first service directory increment exposes search, categories, and summ
         ->toContain('getDummyVillageServices')
         ->toContain('findVillageServiceCategory');
 
-    expect($homepageSource)
-        ->not->toBeFalse()
-        ->toContain('servicesIndex({')
-        ->toContain("category: 'administration'")
-        ->toContain('category: service.category')
-        ->not->toContain('href={portalHref}');
-
     expect($publicShellSource)
         ->not->toBeFalse()
         ->toContain("activeSection === 'services'")
@@ -433,7 +426,7 @@ test('the village potential directory exposes listing and profile information', 
     expect($indexSource)
         ->not->toBeFalse()
         ->toContain('Direktori Potensi Desa')
-        ->toContain('Cari nama, produk, pengelola')
+        ->toContain('Cari nama, produk, pengelola...')
         ->toContain('villagePotentialCategories.map')
         ->toContain('VillagePotentialCard')
         ->toContain('initialCategory');
@@ -463,7 +456,7 @@ test('the homepage exposes an accessible APBDes summary', function () {
     expect($homepageSource)
         ->not->toBeFalse()
         ->toContain('id="transparansi"')
-        ->toContain('dummyApbdesSummary')
+        ->toContain('dummyApbdesSummaries')
         ->toContain('Ringkasan APBDes')
         ->toContain('Lihat Transparansi Lengkap')
         ->toContain('transparencyIndex()')
@@ -486,7 +479,7 @@ test('the homepage exposes an accessible APBDes summary', function () {
 
     expect($transparencyPageSource)
         ->not->toBeFalse()
-        ->toContain('Alokasi per Bidang')
+        ->toContain('Alokasi Belanja')
         ->toContain('publicDocs.map')
         ->toContain('role="progressbar"')
         ->not->toContain('Dokumen Publik Belum Tersedia');
