@@ -1,28 +1,48 @@
 import { Head } from '@inertiajs/react';
 import {
     ArrowRight,
-    ChartBar,
-    Check,
-    Grid3X3,
-    Home,
     Info,
     LandPlot,
     LocateFixed,
     MapPin,
-    Ruler,
-    Users,
 } from 'lucide-react';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageAdministrativeMap } from '@/components/village-administrative-map';
 import { VillageDemographicExplorer } from '@/components/village-demographic-explorer';
-import {
-    dummyAdministrativeBoundaries,
-    dummyAdministrativeDivisions,
-    dummyLandUseComposition,
-} from '@/lib/dummy-village-profile';
+
+type HamletData = {
+    code: string;
+    name: string;
+    rw: number;
+    rt: number;
+    households: number;
+    note: string;
+};
+
+type LandUseData = {
+    key: string;
+    label: string;
+    hectares: number;
+    percentage: number;
+};
+
+type VillageProfileData = {
+    id: number;
+    total_population: number | null;
+    total_families: number | null;
+    total_hamlets: number | null;
+    total_area_hectares: number | null;
+    boundary_north: string | null;
+    boundary_east: string | null;
+    boundary_south: string | null;
+    boundary_west: string | null;
+    hamlets: HamletData[] | null;
+    land_use: LandUseData[] | null;
+};
 
 type VillageProfilePageProps = {
     canonicalUrl: string;
+    villageProfile: VillageProfileData | null;
 };
 
 const villageOfficialIdentity = [
@@ -52,33 +72,6 @@ const villageCharacteristics = [
         description: 'Kemudahan akses informasi dan administrasi berbasis teknologi.',
         iconSrc: '/assets/layanan.png',
         alt: 'Ikon Layanan Publik',
-    },
-];
-
-const villageStatistics = [
-    {
-        label: 'Total Penduduk',
-        value: '3.420',
-        suffix: 'jiwa',
-        icon: Users,
-    },
-    {
-        label: 'Jumlah Keluarga',
-        value: '1.120',
-        suffix: 'KK',
-        icon: Home,
-    },
-    {
-        label: 'Wilayah Administratif',
-        value: '4',
-        suffix: 'dusun',
-        icon: MapPin,
-    },
-    {
-        label: 'Luas Wilayah',
-        value: '450',
-        suffix: 'hektare',
-        icon: Ruler,
     },
 ];
 
@@ -138,7 +131,7 @@ const historyStages = [
     },
 ];
 
-const landUsePresentation = {
+const landUsePresentation: Record<string, { barClassName: string; surfaceClassName: string }> = {
     agriculture: {
         barClassName: 'bg-village-primary',
         surfaceClassName: 'bg-village-primary-light',
@@ -155,26 +148,68 @@ const landUsePresentation = {
         barClassName: 'bg-village-primary-dark',
         surfaceClassName: 'bg-village-surface-muted',
     },
-} as const;
+};
 
 function formatNumber(value: number) {
     return new Intl.NumberFormat('id-ID').format(value);
 }
 
-const administrativeDivisionTotals = dummyAdministrativeDivisions.reduce(
-    (totals, division) => ({
-        rw: totals.rw + division.rw,
-        rt: totals.rt + division.rt,
-        households: totals.households + division.households,
-    }),
-    { rw: 0, rt: 0, households: 0 },
-);
-
 export default function VillageProfileIndex({
     canonicalUrl,
+    villageProfile,
 }: VillageProfilePageProps) {
     const pageDescription =
         'Profil Desa Ngampungan, Kecamatan Bareng, Kabupaten Jombang yang memuat selayang pandang, visi dan misi, sejarah, serta data wilayah terpadu.';
+
+    const profile = villageProfile;
+
+    const statistics = [
+        {
+            label: 'Total Penduduk',
+            value: profile?.total_population,
+            suffix: 'jiwa',
+            iconSrc: '/assets/penduduk.png',
+        },
+        {
+            label: 'Jumlah Keluarga',
+            value: profile?.total_families,
+            suffix: 'KK',
+            iconSrc: '/assets/keluarga.png',
+        },
+        {
+            label: 'Wilayah Administratif',
+            value: profile?.total_hamlets,
+            suffix: 'dusun',
+            iconSrc: '/assets/wilayah administratif.png',
+        },
+        {
+            label: 'Luas Wilayah',
+            value: profile?.total_area_hectares,
+            suffix: 'hektare',
+            iconSrc: '/assets/luas wilayah.png',
+        },
+    ];
+
+    const boundaries = [
+        { direction: 'Utara', value: profile?.boundary_north },
+        { direction: 'Timur', value: profile?.boundary_east },
+        { direction: 'Selatan', value: profile?.boundary_south },
+        { direction: 'Barat', value: profile?.boundary_west },
+    ];
+
+    const hamlets = profile?.hamlets ?? [];
+    const landUse = profile?.land_use ?? [];
+
+    const hamletTotals = hamlets.reduce(
+        (totals, h) => ({
+            rw: totals.rw + h.rw,
+            rt: totals.rt + h.rt,
+            households: totals.households + h.households,
+        }),
+        { rw: 0, rt: 0, households: 0 },
+    );
+
+    const totalLandHectares = landUse.reduce((sum, l) => sum + l.hectares, 0);
 
     return (
         <PublicPageShell activeSection="profile">
@@ -572,84 +607,84 @@ export default function VillageProfileIndex({
                 </div>
             </section>
 
-            {/* Section 4: Unified Data Wilayah Super-Section */}
+            {/* Section 4: Dynamic Data Wilayah Super-Section */}
             <section
                 id="data-wilayah"
                 aria-labelledby="data-wilayah-heading"
-                className="scroll-mt-24 border-t border-village-border bg-village-canvas py-12 md:py-16"
+                className="scroll-mt-24 border-t border-village-border/80 bg-gradient-to-b from-village-canvas via-white to-village-surface-muted/40 py-16 md:py-24"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     {/* Header Section Data Wilayah */}
-                    <div className="flex flex-col justify-between gap-5 border-b border-village-border pb-8 md:flex-row md:items-end">
+                    <div className="flex flex-col justify-between gap-6 border-b border-village-border/60 pb-8 md:flex-row md:items-end">
                         <div className="max-w-3xl">
                             <h2
                                 id="data-wilayah-heading"
-                                className="text-3xl font-bold tracking-tight text-village-ink md:text-5xl"
+                                className="text-3xl font-extrabold tracking-tight text-village-ink sm:text-4xl md:text-5xl"
                             >
-                                Fitur Data Wilayah
+                                Data Wilayah
                             </h2>
-                            <p className="mt-4 text-base leading-relaxed text-village-muted md:text-lg">
-                                Informasi terpadu mengenai data demografi, pembagian wilayah dusun, penggunaan lahan, dan peta administratif Desa Ngampungan.
+                            <p className="mt-4 text-base leading-relaxed text-village-muted sm:text-lg">
+                                Informasi terpadu demografi, batas administratif, pembagian dusun, penggunaan lahan, dan peta geospasial Desa Ngampungan.
                             </p>
                         </div>
                     </div>
 
-                    {/* Sub-navigation Quick-Jump Links inside Data Wilayah */}
-                    <div className="mt-6 flex flex-wrap gap-2.5">
+                    {/* Navigation Filter Tabs */}
+                    <div className="mt-8 flex flex-wrap gap-2 sm:gap-3">
                         <a
                             href="#data-wilayah"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-village-border bg-white px-3.5 py-2 text-xs font-bold text-village-ink transition hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary"
+                            className="inline-flex items-center rounded-xl border border-village-border bg-white px-4 py-2.5 text-xs font-extrabold text-village-ink shadow-xs transition-all duration-300 hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary hover:shadow-md"
                         >
-                            <ChartBar className="size-3.5 text-village-primary" />
                             Ringkasan & Batas
                         </a>
                         <a
                             href="#pembagian-wilayah"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-village-border bg-white px-3.5 py-2 text-xs font-bold text-village-ink transition hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary"
+                            className="inline-flex items-center rounded-xl border border-village-border bg-white px-4 py-2.5 text-xs font-extrabold text-village-ink shadow-xs transition-all duration-300 hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary hover:shadow-md"
                         >
-                            <Grid3X3 className="size-3.5 text-village-primary" />
                             Pembagian Dusun
                         </a>
                         <a
                             href="#penggunaan-lahan"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-village-border bg-white px-3.5 py-2 text-xs font-bold text-village-ink transition hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary"
+                            className="inline-flex items-center rounded-xl border border-village-border bg-white px-4 py-2.5 text-xs font-extrabold text-village-ink shadow-xs transition-all duration-300 hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary hover:shadow-md"
                         >
-                            <LandPlot className="size-3.5 text-village-primary" />
                             Penggunaan Lahan
                         </a>
                         <a
                             href="#peta-administratif"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-village-border bg-white px-3.5 py-2 text-xs font-bold text-village-ink transition hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary"
+                            className="inline-flex items-center rounded-xl border border-village-border bg-white px-4 py-2.5 text-xs font-extrabold text-village-ink shadow-xs transition-all duration-300 hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary hover:shadow-md"
                         >
-                            <LocateFixed className="size-3.5 text-village-primary" />
                             Peta Administratif
                         </a>
                         <a
                             href="#demografi"
-                            className="inline-flex items-center gap-1.5 rounded-lg border border-village-border bg-white px-3.5 py-2 text-xs font-bold text-village-ink transition hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary"
+                            className="inline-flex items-center rounded-xl border border-village-border bg-white px-4 py-2.5 text-xs font-extrabold text-village-ink shadow-xs transition-all duration-300 hover:border-village-primary hover:bg-village-primary-light hover:text-village-primary hover:shadow-md"
                         >
-                            <Users className="size-3.5 text-village-primary" />
                             Demografi Penduduk
                         </a>
                     </div>
 
-                    {/* Sub-block 1: Ringkasan Statistics & Batas Administratif */}
+                    {/* Sub-block 1: Dynamic Statistics Cards */}
                     <div className="mt-10">
-                        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                            {villageStatistics.map((statistic) => (
+                        <dl className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                            {statistics.map((statistic) => (
                                 <div
                                     key={statistic.label}
-                                    className="rounded-2xl border border-village-border bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/40 hover:shadow-village-soft"
+                                    className="group relative overflow-hidden rounded-2xl border border-village-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-village-primary/50 hover:shadow-xl"
                                 >
-                                    <statistic.icon
-                                        aria-hidden="true"
-                                        className="size-6 text-village-primary"
-                                    />
-                                    <dt className="mt-6 text-sm font-bold text-village-muted">
+                                    <div className="flex size-12 items-center justify-center rounded-xl bg-village-primary-light p-2.5 transition-all duration-300 group-hover:bg-village-primary/15">
+                                        <img
+                                            src={statistic.iconSrc}
+                                            alt={statistic.label}
+                                            className="size-full object-contain"
+                                        />
+                                    </div>
+                                    <dt className="mt-5 text-sm font-bold text-village-muted">
                                         {statistic.label}
                                     </dt>
-                                    <dd className="mt-2 text-3xl font-bold tracking-tight text-village-ink">
-                                        {statistic.value}{' '}
+                                    <dd className="mt-1 text-3xl font-extrabold tracking-tight text-village-ink">
+                                        {statistic.value != null
+                                            ? formatNumber(statistic.value)
+                                            : '—'}{' '}
                                         <span className="text-sm font-semibold text-village-muted">
                                             {statistic.suffix}
                                         </span>
@@ -658,63 +693,54 @@ export default function VillageProfileIndex({
                             ))}
                         </dl>
 
-                        <div className="mt-6 grid gap-6 lg:grid-cols-12">
-                            <article className="rounded-2xl border border-village-border bg-white p-6 shadow-sm lg:col-span-7 lg:p-8">
+                        {/* Batas Administratif Card & Status Aside */}
+                        <div className="mt-8 grid gap-6 lg:grid-cols-12">
+                            <article className="group rounded-3xl border border-village-border/80 bg-white p-7 shadow-sm transition-all duration-300 hover:border-village-primary/40 hover:shadow-xl lg:col-span-7 lg:p-8">
                                 <div className="flex items-center gap-3">
-                                    <MapPin
-                                        aria-hidden="true"
-                                        className="size-5 text-village-primary"
-                                    />
-                                    <h3 className="text-xl font-bold text-village-ink">
-                                        Batas Administratif
-                                    </h3>
+                                    <div className="flex size-10 items-center justify-center rounded-xl bg-village-primary-light text-village-primary">
+                                        <MapPin className="size-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-extrabold text-village-ink">
+                                            Batas Administratif Desa
+                                        </h3>
+                                        <p className="text-xs text-village-muted">
+                                            Batas geografis wilayah Desa Ngampungan
+                                        </p>
+                                    </div>
                                 </div>
-                                <dl className="mt-6 grid sm:grid-cols-2">
-                                    {dummyAdministrativeBoundaries.map(
-                                        (boundary) => (
-                                            <div
-                                                key={boundary.direction}
-                                                className="border-t border-village-border py-4 sm:odd:pr-5 sm:even:pl-5"
-                                            >
-                                                <dt className="text-xs font-bold tracking-[0.14em] text-village-primary uppercase">
-                                                    {boundary.direction}
-                                                </dt>
-                                                <dd className="mt-2 text-sm leading-6 text-village-muted">
-                                                    {boundary.value}
-                                                </dd>
-                                            </div>
-                                        ),
-                                    )}
+                                <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+                                    {boundaries.map((boundary) => (
+                                        <div
+                                            key={boundary.direction}
+                                            className="rounded-xl border border-village-border/60 bg-village-surface-muted/40 p-4 transition-colors group-hover:bg-white"
+                                        >
+                                            <dt className="text-xs font-extrabold tracking-widest text-village-primary uppercase">
+                                                Batas {boundary.direction}
+                                            </dt>
+                                            <dd className="mt-1.5 text-sm font-semibold leading-relaxed text-village-ink">
+                                                {boundary.value || 'Data belum diisi'}
+                                            </dd>
+                                        </div>
+                                    ))}
                                 </dl>
                             </article>
 
-                            <aside className="flex flex-col justify-between rounded-2xl bg-village-primary-light p-6 lg:col-span-5 lg:p-8">
+                            <aside className="group flex flex-col justify-between rounded-3xl border border-village-primary/20 bg-gradient-to-br from-village-primary-dark via-village-primary to-village-primary-dark p-7 text-white shadow-xl lg:col-span-5 lg:p-8">
                                 <div>
-                                    <span className="flex size-11 items-center justify-center rounded-full bg-white text-village-primary shadow-xs">
-                                        <Check
-                                            aria-hidden="true"
-                                            className="size-5"
-                                        />
-                                    </span>
-                                    <h3 className="mt-6 text-xl font-bold text-village-primary-dark">
+                                    <h3 className="text-2xl font-extrabold tracking-tight text-white">
                                         Status Data Wilayah
                                     </h3>
-                                    <p className="mt-3 leading-7 text-village-primary-dark/70">
-                                        Angka dan batas wilayah pada halaman ini
-                                        belum menjadi data publik resmi. Struktur
-                                        tampilannya siap menerima data terverifikasi
-                                        dari backend pada tahap CMS.
+                                    <p className="mt-3 text-sm leading-relaxed text-white/80">
+                                        Seluruh indikator kependudukan, batas geografis, dan penggunaan lahan tersambung secara linier dengan database backend dan dapat diperbarui secara dinamis dari dashboard admin.
                                     </p>
                                 </div>
                                 <a
                                     href="#selayang-pandang"
-                                    className="mt-8 inline-flex min-h-11 w-fit items-center gap-2 font-bold text-village-primary-dark transition hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                    className="mt-8 inline-flex min-h-11 w-fit items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:bg-white hover:text-village-primary-dark"
                                 >
                                     Kembali ke awal profil
-                                    <ArrowRight
-                                        aria-hidden="true"
-                                        className="size-4 -rotate-90"
-                                    />
+                                    <ArrowRight className="size-4 -rotate-90" />
                                 </a>
                             </aside>
                         </div>
@@ -727,91 +753,92 @@ export default function VillageProfileIndex({
                     >
                         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
                             <div className="max-w-2xl lg:col-span-7">
+                                <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                    Struktur Administrasi
+                                </span>
                                 <h3
                                     id="pembagian-wilayah-heading"
-                                    className="text-2xl font-bold tracking-tight text-village-ink md:text-3xl"
+                                    className="mt-1 text-2xl font-extrabold tracking-tight text-village-ink sm:text-3xl"
                                 >
                                     Pembagian Dusun, RW, dan RT
                                 </h3>
-                                <p className="mt-3 leading-7 text-village-muted">
-                                    Susunan data wilayah terkecil agar warga
-                                    dapat memahami pembagian administrasi desa
-                                    secara ringkas.
+                                <p className="mt-3 text-sm leading-relaxed text-village-muted sm:text-base">
+                                    Rincian pembagian wilayah administratif tingkat dusun, rukun warga (RW), dan rukun tetangga (RT) Desa Ngampungan.
                                 </p>
                             </div>
 
-                            <dl className="grid grid-cols-3 divide-x divide-village-border rounded-xl border border-village-border bg-white lg:col-span-5">
-                                <div className="py-4 text-center">
-                                    <dt className="text-xs font-bold tracking-[0.12em] text-village-muted uppercase">
+                            <dl className="grid grid-cols-3 divide-x divide-village-border/60 rounded-2xl border border-village-border/80 bg-white p-2 shadow-sm lg:col-span-5">
+                                <div className="py-3 text-center">
+                                    <dt className="text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
                                         Dusun
                                     </dt>
-                                    <dd className="mt-2 text-2xl font-bold text-village-primary">
-                                        {dummyAdministrativeDivisions.length}
+                                    <dd className="mt-1 text-2xl font-extrabold text-village-primary">
+                                        {hamlets.length}
                                     </dd>
                                 </div>
-                                <div className="py-4 text-center">
-                                    <dt className="text-xs font-bold tracking-[0.12em] text-village-muted uppercase">
-                                        RW
+                                <div className="py-3 text-center">
+                                    <dt className="text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                        Total RW
                                     </dt>
-                                    <dd className="mt-2 text-2xl font-bold text-village-primary">
-                                        {administrativeDivisionTotals.rw}
+                                    <dd className="mt-1 text-2xl font-extrabold text-village-primary">
+                                        {hamletTotals.rw}
                                     </dd>
                                 </div>
-                                <div className="py-4 text-center">
-                                    <dt className="text-xs font-bold tracking-[0.12em] text-village-muted uppercase">
-                                        RT
+                                <div className="py-3 text-center">
+                                    <dt className="text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                        Total RT
                                     </dt>
-                                    <dd className="mt-2 text-2xl font-bold text-village-primary">
-                                        {administrativeDivisionTotals.rt}
+                                    <dd className="mt-1 text-2xl font-extrabold text-village-primary">
+                                        {hamletTotals.rt}
                                     </dd>
                                 </div>
                             </dl>
                         </div>
 
                         <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                            {dummyAdministrativeDivisions.map((division, index) => (
+                            {hamlets.map((division, index) => (
                                 <article
                                     key={division.code}
-                                    className="group relative overflow-hidden rounded-2xl border border-village-border bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/40 hover:shadow-village-soft"
+                                    className="group relative overflow-hidden rounded-2xl border border-village-border/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-village-primary/40 hover:shadow-xl"
                                 >
                                     <span
                                         aria-hidden="true"
-                                        className="absolute top-0 right-0 text-7xl font-bold leading-none text-village-primary/[0.055]"
+                                        className="absolute -top-2 -right-1 text-7xl font-extrabold leading-none text-village-primary/[0.06] transition-transform duration-300 group-hover:scale-110"
                                     >
                                         {String(index + 1).padStart(2, '0')}
                                     </span>
-                                    <p className="relative text-xs font-bold tracking-[0.15em] text-village-primary uppercase">
+                                    <p className="relative text-xs font-extrabold tracking-widest text-village-primary uppercase">
                                         {division.code}
                                     </p>
-                                    <h4 className="relative mt-3 text-xl font-bold text-village-ink">
+                                    <h4 className="relative mt-2 text-xl font-extrabold text-village-ink transition-colors group-hover:text-village-primary-dark">
                                         {division.name}
                                     </h4>
-                                    <p className="relative mt-2 text-sm leading-6 text-village-muted">
+                                    <p className="relative mt-2 text-xs leading-5 text-village-muted">
                                         {division.note}
                                     </p>
 
-                                    <dl className="relative mt-8 grid grid-cols-3 border-t border-village-border pt-5">
+                                    <dl className="relative mt-6 grid grid-cols-3 border-t border-village-border/60 pt-4">
                                         <div>
-                                            <dt className="text-xs text-village-muted">
+                                            <dt className="text-[11px] font-bold text-village-muted">
                                                 RW
                                             </dt>
-                                            <dd className="mt-1 font-bold text-village-ink">
+                                            <dd className="mt-0.5 text-base font-extrabold text-village-ink">
                                                 {division.rw}
                                             </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-xs text-village-muted">
+                                            <dt className="text-[11px] font-bold text-village-muted">
                                                 RT
                                             </dt>
-                                            <dd className="mt-1 font-bold text-village-ink">
+                                            <dd className="mt-0.5 text-base font-extrabold text-village-ink">
                                                 {division.rt}
                                             </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-xs text-village-muted">
+                                            <dt className="text-[11px] font-bold text-village-muted">
                                                 KK
                                             </dt>
-                                            <dd className="mt-1 font-bold text-village-ink">
+                                            <dd className="mt-0.5 text-base font-extrabold text-village-ink">
                                                 {formatNumber(division.households)}
                                             </dd>
                                         </div>
@@ -828,84 +855,84 @@ export default function VillageProfileIndex({
                     >
                         <div className="grid gap-8 lg:grid-cols-12">
                             <div className="lg:col-span-4">
+                                <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                    Tata Ruang
+                                </span>
                                 <h3
                                     id="penggunaan-lahan-heading"
-                                    className="text-2xl font-bold tracking-tight text-village-ink md:text-3xl"
+                                    className="mt-1 text-2xl font-extrabold tracking-tight text-village-ink sm:text-3xl"
                                 >
                                     Penggunaan Lahan
                                 </h3>
-                                <p className="mt-3 leading-7 text-village-muted">
-                                    Visualisasi pemanfaatan luas wilayah untuk
-                                    pertanian, permukiman, ruang terbuka, dan
-                                    fasilitas umum.
+                                <p className="mt-3 text-sm leading-relaxed text-village-muted">
+                                    Visualisasi pemanfaatan tata ruang wilayah untuk pertanian, permukiman, kawasan terbuka hijau, dan sarana publik.
                                 </p>
 
-                                <dl className="mt-8 border-l-2 border-village-primary pl-5">
-                                    <dt className="text-xs font-bold tracking-[0.14em] text-village-muted uppercase">
-                                        Luas Basis Simulasi
+                                <dl className="mt-8 rounded-2xl border border-village-primary/20 bg-village-primary-light/30 p-5">
+                                    <dt className="text-xs font-extrabold tracking-widest text-village-primary uppercase">
+                                        Total Luas Wilayah
                                     </dt>
-                                    <dd className="mt-2 text-4xl font-bold tracking-tight text-village-ink">
-                                        450
-                                        <span className="ml-2 text-sm font-semibold text-village-muted">
+                                    <dd className="mt-2 text-4xl font-extrabold tracking-tight text-village-ink">
+                                        {formatNumber(totalLandHectares)}
+                                        <span className="ml-2 text-sm font-bold text-village-muted">
                                             hektare
                                         </span>
                                     </dd>
                                 </dl>
                             </div>
 
-                            <div className="rounded-2xl border border-village-border bg-white p-6 shadow-village-soft sm:p-8 lg:col-span-8">
+                            <div className="rounded-3xl border border-village-border/80 bg-white p-6 shadow-sm sm:p-8 lg:col-span-8">
                                 <div
                                     role="img"
-                                    aria-label="Komposisi penggunaan lahan simulasi: pertanian 52 persen, permukiman 28 persen, ruang terbuka 12 persen, dan fasilitas umum 8 persen"
-                                    className="flex h-6 overflow-hidden rounded-full"
+                                    aria-label="Komposisi penggunaan lahan desa"
+                                    className="flex h-6 overflow-hidden rounded-full border border-village-border/40 p-0.5"
                                 >
-                                    {dummyLandUseComposition.map((landUse) => (
+                                    {landUse.map((item) => (
                                         <span
-                                            key={landUse.key}
+                                            key={item.key}
                                             aria-hidden="true"
-                                            className={
-                                                landUsePresentation[landUse.key]
-                                                    .barClassName
-                                            }
+                                            className={`h-full transition-all duration-500 ${
+                                                landUsePresentation[item.key]?.barClassName || 'bg-village-primary'
+                                            }`}
                                             style={{
-                                                width: `${landUse.percentage}%`,
+                                                width: `${item.percentage}%`,
                                             }}
                                         />
                                     ))}
                                 </div>
 
                                 <div className="mt-8 grid gap-4 sm:grid-cols-2">
-                                    {dummyLandUseComposition.map((landUse) => {
+                                    {landUse.map((item) => {
                                         const presentation =
-                                            landUsePresentation[landUse.key];
+                                            landUsePresentation[item.key] || {
+                                                barClassName: 'bg-village-primary',
+                                                surfaceClassName: 'bg-village-surface-muted',
+                                            };
 
                                         return (
                                             <article
-                                                key={landUse.key}
-                                                className={`${presentation.surfaceClassName} rounded-xl p-5`}
+                                                key={item.key}
+                                                className={`rounded-2xl border border-village-border/40 ${presentation.surfaceClassName} p-5 transition-all duration-300 hover:shadow-md`}
                                             >
-                                                <div className="flex items-start justify-between gap-5">
+                                                <div className="flex items-start justify-between gap-4">
                                                     <div>
-                                                        <h4 className="font-bold text-village-ink">
-                                                            {landUse.label}
+                                                        <h4 className="font-extrabold text-village-ink">
+                                                            {item.label}
                                                         </h4>
-                                                        <p className="mt-2 text-sm text-village-muted">
-                                                            {formatNumber(
-                                                                landUse.hectares,
-                                                            )}{' '}
-                                                            hektare
+                                                        <p className="mt-1 text-sm font-semibold text-village-muted">
+                                                            {formatNumber(item.hectares)} hektare
                                                         </p>
                                                     </div>
-                                                    <span className="text-2xl font-bold text-village-primary-dark">
-                                                        {landUse.percentage}%
+                                                    <span className="text-2xl font-extrabold text-village-primary-dark">
+                                                        {item.percentage}%
                                                     </span>
                                                 </div>
-                                                <div className="mt-5 h-1.5 overflow-hidden rounded-full bg-white/80">
+                                                <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/80">
                                                     <span
                                                         aria-hidden="true"
-                                                        className={`block h-full ${presentation.barClassName}`}
+                                                        className={`block h-full rounded-full ${presentation.barClassName}`}
                                                         style={{
-                                                            width: `${landUse.percentage}%`,
+                                                            width: `${item.percentage}%`,
                                                         }}
                                                     />
                                                 </div>
@@ -923,16 +950,17 @@ export default function VillageProfileIndex({
                         className="scroll-mt-24 mt-16 border-t border-village-border/60 pt-14"
                     >
                         <div className="max-w-3xl">
+                            <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                Peta Geospasial
+                            </span>
                             <h3
                                 id="peta-administratif-heading"
-                                className="text-2xl font-bold tracking-tight text-village-ink md:text-3xl"
+                                className="mt-1 text-2xl font-extrabold tracking-tight text-village-ink sm:text-3xl"
                             >
                                 Peta Administratif Desa
                             </h3>
-                            <p className="mt-3 leading-7 text-village-muted">
-                                Peta skematik untuk menunjukkan pola penyajian batas
-                                desa dan pembagian dusun sebelum data geospasial
-                                resmi tersedia.
+                            <p className="mt-3 text-sm leading-relaxed text-village-muted sm:text-base">
+                                Peta visualisasi batas administratif dan pembagian wilayah dusun Desa Ngampungan.
                             </p>
                         </div>
 
@@ -946,18 +974,19 @@ export default function VillageProfileIndex({
                         id="demografi"
                         className="scroll-mt-24 mt-16 border-t border-village-border/60 pt-14"
                     >
-                        <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+                        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                             <div className="max-w-3xl">
+                                <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                    Statistik Kependudukan
+                                </span>
                                 <h3
                                     id="demografi-heading"
-                                    className="text-2xl font-bold tracking-tight text-village-ink md:text-3xl"
+                                    className="mt-1 text-2xl font-extrabold tracking-tight text-village-ink sm:text-3xl"
                                 >
                                     Demografi Penduduk Terperinci
                                 </h3>
-                                <p className="mt-3 leading-7 text-village-muted">
-                                    Pilih kategori untuk melihat komposisi penduduk
-                                    berdasarkan jenis kelamin, usia, pendidikan,
-                                    pekerjaan, agama, atau status kependudukan.
+                                <p className="mt-3 text-sm leading-relaxed text-village-muted sm:text-base">
+                                    Komposisi dan distribusi statistik penduduk berdasarkan kategori gender, kelompok usia, tingkat pendidikan, mata pencaharian, agama, dan status kependudukan.
                                 </p>
                             </div>
                         </div>
@@ -967,17 +996,11 @@ export default function VillageProfileIndex({
                         </div>
                     </div>
 
-                    {/* Global Simulation Disclaimer */}
-                    <div className="mt-10 flex items-start gap-3 rounded-xl border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
-                        <Info
-                            aria-hidden="true"
-                            className="mt-0.5 size-5 shrink-0"
-                        />
+                    {/* Dynamic Data Notification */}
+                    <div className="mt-12 flex items-start gap-3.5 rounded-2xl border border-village-primary/30 bg-village-primary-light/40 p-5 text-sm leading-relaxed text-village-primary-dark shadow-xs">
+                        <Info className="mt-0.5 size-5 shrink-0 text-village-primary" />
                         <p>
-                            <strong>Konten simulasi frontend.</strong> Seluruh
-                            identitas, pembagian wilayah, penggunaan lahan,
-                            peta, dan demografi akan diperbarui secara otomatis setelah data resmi
-                            Pemerintah Desa Ngampungan diverifikasi.
+                            <strong>Data Wilayah Terintegrasi Backend.</strong> Seluruh statistik kependudukan, batas administratif, pembagian dusun, dan penggunaan lahan pada section ini dikelola secara dinamis melalui database backend.
                         </p>
                     </div>
                 </div>

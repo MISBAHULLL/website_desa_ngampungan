@@ -35,12 +35,12 @@ test('the village profile page exposes profile sections, breadcrumb, and SEO met
         ->toContain('id="peta-administratif"')
         ->toContain('id="demografi"')
         ->toContain('villageOfficialIdentity.map')
-        ->toContain('dummyAdministrativeBoundaries.map')
-        ->toContain('dummyAdministrativeDivisions.map')
-        ->toContain('dummyLandUseComposition.map')
+        ->toContain('boundaries.map')
+        ->toContain('hamlets.map')
+        ->toContain('landUse.map')
         ->toContain('VillageAdministrativeMap')
         ->toContain('VillageDemographicExplorer')
-        ->toContain('Konten simulasi frontend');
+        ->toContain('Data Wilayah Terintegrasi Backend');
 
     expect($profileDataSource)
         ->not->toBeFalse()
