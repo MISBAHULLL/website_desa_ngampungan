@@ -13,34 +13,42 @@ import { useMemo, useState } from 'react';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageAgendaCard } from '@/components/village-agenda-card';
 import {
-    completedDummyVillageAgendas,
     dummyVillageAgendas,
-    featuredDummyVillageAgenda,
-    upcomingDummyVillageAgendas,
 } from '@/lib/dummy-village-agendas';
-import type { VillageAgendaStatus } from '@/lib/dummy-village-agendas';
+import type { VillageAgenda, VillageAgendaStatus } from '@/lib/dummy-village-agendas';
 import { home } from '@/routes';
 import { index as galleryIndex } from '@/routes/gallery';
 
 type AgendaIndexPageProps = {
     canonicalUrl: string;
+    dbAgendas?: VillageAgenda[];
 };
 
-const agendaCategories = [
-    'Semua',
-    ...new Set(dummyVillageAgendas.map((agenda) => agenda.category)),
-];
-
-export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
-    const [activeStatus, setActiveStatus] =
-        useState<VillageAgendaStatus>('upcoming');
+export default function AgendaIndex({ canonicalUrl, dbAgendas }: AgendaIndexPageProps) {
+    const [activeStatus, setActiveStatus] = useState<VillageAgendaStatus>('upcoming');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [searchQuery, setSearchQuery] = useState('');
+
+    const agendasList = useMemo(() => {
+        if (dbAgendas && dbAgendas.length > 0) {
+            return dbAgendas;
+        }
+        return dummyVillageAgendas;
+    }, [dbAgendas]);
+
+    const upcomingAgendas = useMemo(() => agendasList.filter((a) => a.status === 'upcoming'), [agendasList]);
+    const completedAgendas = useMemo(() => agendasList.filter((a) => a.status === 'completed'), [agendasList]);
+    const featuredAgenda = useMemo(() => agendasList.find((a) => a.featured && a.status === 'upcoming') || upcomingAgendas[0], [agendasList, upcomingAgendas]);
+
+    const categoriesList = useMemo(() => {
+        const cats = Array.from(new Set(agendasList.map((a) => a.category)));
+        return ['Semua', ...cats];
+    }, [agendasList]);
 
     const visibleAgendas = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase('id-ID');
 
-        return dummyVillageAgendas.filter((agenda) => {
+        return agendasList.filter((agenda) => {
             const matchesStatus = agenda.status === activeStatus;
             const matchesCategory =
                 selectedCategory === 'Semua' ||
@@ -56,7 +64,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
 
             return matchesStatus && matchesCategory && matchesQuery;
         });
-    }, [activeStatus, searchQuery, selectedCategory]);
+    }, [activeStatus, searchQuery, selectedCategory, agendasList]);
 
     function changeStatus(status: VillageAgendaStatus) {
         setActiveStatus(status);
@@ -64,38 +72,17 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
         setSearchQuery('');
     }
 
-    const pageDescription =
-        'Jadwal kegiatan, pelayanan, musyawarah, dan agenda masyarakat Desa Ngampungan.';
+    const pageDescription = 'Jadwal kegiatan, pelayanan, musyawarah, dan agenda masyarakat Desa Ngampungan.';
 
     return (
         <PublicPageShell activeSection="agenda">
             <Head>
                 <title>Agenda Desa</title>
-                <meta
-                    head-key="description"
-                    name="description"
-                    content={pageDescription}
-                />
-                <meta
-                    head-key="og:title"
-                    property="og:title"
-                    content="Agenda Desa Ngampungan"
-                />
-                <meta
-                    head-key="og:description"
-                    property="og:description"
-                    content={pageDescription}
-                />
-                <meta
-                    head-key="og:url"
-                    property="og:url"
-                    content={canonicalUrl}
-                />
-                <link
-                    head-key="canonical"
-                    rel="canonical"
-                    href={canonicalUrl}
-                />
+                <meta head-key="description" name="description" content={pageDescription} />
+                <meta head-key="og:title" property="og:title" content="Agenda Desa Ngampungan" />
+                <meta head-key="og:description" property="og:description" content={pageDescription} />
+                <meta head-key="og:url" property="og:url" content={canonicalUrl} />
+                <link head-key="canonical" rel="canonical" href={canonicalUrl} />
             </Head>
 
             {/* LIGHT THEME HERO HEADER */}
@@ -109,21 +96,15 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                             <Link href={home()} className="hover:text-emerald-700 transition">
                                 Beranda
                             </Link>
-                            <ChevronRight
-                                aria-hidden="true"
-                                className="size-3.5 text-slate-400"
-                            />
-                            <span className="text-emerald-800 font-bold">
-                                Agenda Desa
-                            </span>
+                            <ChevronRight aria-hidden="true" className="size-3.5 text-slate-400" />
+                            <span className="text-emerald-800 font-bold">Agenda Desa</span>
                         </nav>
 
                         <h1 className="mt-6 max-w-3xl text-4xl leading-tight font-extrabold tracking-tight sm:text-5xl md:text-6xl text-slate-900">
                             Agenda Desa Ngampungan
                         </h1>
                         <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
-                            Temukan jadwal pelayanan publik, kegiatan kemasyarakatan,
-                            musyawarah desa, dan program kerja pemberdayaan dalam satu platform resmi.
+                            Temukan jadwal pelayanan publik, kegiatan kemasyarakatan, musyawarah desa, dan program kerja pemberdayaan dalam satu platform resmi.
                         </p>
                     </div>
 
@@ -134,7 +115,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                                 Mendatang
                             </span>
                             <strong className="mt-2 block text-4xl font-black text-slate-900">
-                                {upcomingDummyVillageAgendas.length}
+                                {upcomingAgendas.length}
                             </strong>
                             <span className="mt-1 block text-xs text-slate-500">kegiatan terdaftar</span>
                         </div>
@@ -143,7 +124,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                                 Selesai
                             </span>
                             <strong className="mt-2 block text-4xl font-black text-slate-900">
-                                {completedDummyVillageAgendas.length}
+                                {completedAgendas.length}
                             </strong>
                             <span className="mt-1 block text-xs text-slate-500">agenda terlaksana</span>
                         </div>
@@ -152,7 +133,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
             </section>
 
             {/* FEATURED UPCOMING AGENDA BANNER */}
-            {featuredDummyVillageAgenda && (
+            {featuredAgenda && (
                 <section
                     aria-labelledby="agenda-terdekat-heading"
                     className="border-b border-slate-200 bg-slate-50/70 py-12 md:py-16"
@@ -162,27 +143,17 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                             {/* Date Badge Side Banner */}
                             <div className="flex min-h-64 flex-col justify-between bg-emerald-800 p-8 text-white transition-colors duration-300 group-hover:bg-emerald-850">
                                 <div className="flex size-12 items-center justify-center rounded-xl bg-white/10 border border-white/20 transition-transform duration-300 group-hover:scale-110">
-                                    <CalendarCheck
-                                        aria-hidden="true"
-                                        className="size-6 text-emerald-200"
-                                    />
+                                    <CalendarCheck aria-hidden="true" className="size-6 text-emerald-200" />
                                 </div>
                                 <div>
                                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold tracking-widest text-emerald-100 uppercase">
                                         Agenda Terdekat
                                     </span>
                                     <p className="mt-4 text-5xl leading-none font-black tracking-tight text-white transition-transform duration-300 group-hover:scale-105 origin-left">
-                                        {
-                                            featuredDummyVillageAgenda.dateLabel.split(
-                                                ' ',
-                                            )[0]
-                                        }
+                                        {featuredAgenda.dateLabel.split(' ')[0]}
                                     </p>
                                     <p className="mt-2 text-sm font-bold text-emerald-200 uppercase tracking-wider">
-                                        {featuredDummyVillageAgenda.dateLabel
-                                            .split(' ')
-                                            .slice(1)
-                                            .join(' ')}
+                                        {featuredAgenda.dateLabel.split(' ').slice(1).join(' ')}
                                     </p>
                                 </div>
                             </div>
@@ -191,33 +162,27 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                             <div className="p-8 md:p-10 flex flex-col justify-between">
                                 <div>
                                     <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900">
-                                        {featuredDummyVillageAgenda.category}
+                                        {featuredAgenda.category}
                                     </span>
                                     <h2
                                         id="agenda-terdekat-heading"
                                         className="mt-4 max-w-3xl text-2xl leading-snug font-bold tracking-tight text-slate-900 md:text-3xl group-hover:text-emerald-800 transition-colors duration-200"
                                     >
-                                        {featuredDummyVillageAgenda.title}
+                                        {featuredAgenda.title}
                                     </h2>
                                     <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-                                        {featuredDummyVillageAgenda.summary}
+                                        {featuredAgenda.summary}
                                     </p>
                                 </div>
 
                                 <div className="mt-8 grid gap-4 rounded-xl bg-slate-50 p-4 border border-slate-200 sm:grid-cols-2 text-xs font-bold text-slate-700 transition-colors group-hover:border-slate-300">
                                     <span className="flex items-center gap-2.5">
-                                        <Clock3
-                                            aria-hidden="true"
-                                            className="size-4 text-emerald-700"
-                                        />
-                                        <span>Waktu: {featuredDummyVillageAgenda.timeLabel}</span>
+                                        <Clock3 aria-hidden="true" className="size-4 text-emerald-700" />
+                                        <span>Waktu: {featuredAgenda.timeLabel}</span>
                                     </span>
                                     <span className="flex items-center gap-2.5">
-                                        <MapPin
-                                            aria-hidden="true"
-                                            className="size-4 text-emerald-700"
-                                        />
-                                        <span>Lokasi: {featuredDummyVillageAgenda.location}</span>
+                                        <MapPin aria-hidden="true" className="size-4 text-emerald-700" />
+                                        <span>Lokasi: {featuredAgenda.location}</span>
                                     </span>
                                 </div>
                             </div>
@@ -263,7 +228,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                                         : 'min-h-10 rounded-lg px-4 py-2 text-xs font-semibold text-slate-600 transition hover:text-emerald-700'
                                 }
                             >
-                                Akan Datang ({upcomingDummyVillageAgendas.length})
+                                Akan Datang ({upcomingAgendas.length})
                             </button>
                             <button
                                 type="button"
@@ -276,7 +241,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                                         : 'min-h-10 rounded-lg px-4 py-2 text-xs font-semibold text-slate-600 transition hover:text-emerald-700'
                                 }
                             >
-                                Selesai ({completedDummyVillageAgendas.length})
+                                Selesai ({completedAgendas.length})
                             </button>
                         </div>
                     </div>
@@ -314,7 +279,7 @@ export default function AgendaIndex({ canonicalUrl }: AgendaIndexPageProps) {
                             <span className="text-xs font-bold text-slate-500 mr-2">
                                 Kategori:
                             </span>
-                            {agendaCategories.map((category) => (
+                            {categoriesList.map((category) => (
                                 <button
                                     key={category}
                                     type="button"

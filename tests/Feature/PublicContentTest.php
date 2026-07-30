@@ -226,9 +226,8 @@ test('the agenda and gallery modules expose filters, inline details, and an acce
         ->toContain('head-key="canonical"')
         ->toContain('aria-label="Breadcrumb"')
         ->toContain('role="tablist"')
-        ->toContain('agendaCategories.map')
-        ->toContain('VillageAgendaCard')
-        ->toContain('data simulasi');
+        ->toContain('categoriesList.map')
+        ->toContain('VillageAgendaCard');
 
     expect($agendaDataSource)
         ->not->toBeFalse()
@@ -247,9 +246,8 @@ test('the agenda and gallery modules expose filters, inline details, and an acce
         ->not->toBeFalse()
         ->toContain('head-key="canonical"')
         ->toContain('aria-label="Breadcrumb"')
-        ->toContain('dummyVillageGalleryCategories.map')
-        ->toContain('VillageGalleryLightbox')
-        ->toContain('Data simulasi frontend');
+        ->toContain('categoriesList.map')
+        ->toContain('VillageGalleryLightbox');
 
     expect($galleryDataSource)
         ->not->toBeFalse()

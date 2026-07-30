@@ -142,6 +142,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->names('admin.announcements');
     Route::patch('dashboard/pengumuman/{announcement}/toggle-pinned', [App\Http\Controllers\Admin\AnnouncementController::class, 'togglePinned'])
         ->name('admin.announcements.toggle-pinned');
+
+    Route::resource('dashboard/galeri', App\Http\Controllers\Admin\GalleryController::class)
+        ->parameters(['galeri' => 'gallery'])
+        ->names('admin.gallery');
+    Route::patch('dashboard/galeri/{gallery}/toggle-featured', [App\Http\Controllers\Admin\GalleryController::class, 'toggleFeatured'])
+        ->name('admin.gallery.toggle-featured');
+
+    Route::resource('dashboard/agenda', App\Http\Controllers\Admin\AgendaController::class)
+        ->parameters(['agenda' => 'agenda'])
+        ->names('admin.agendas');
+    Route::patch('dashboard/agenda/{agenda}/toggle-featured', [App\Http\Controllers\Admin\AgendaController::class, 'toggleFeatured'])
+        ->name('admin.agendas.toggle-featured');
 });
 
 require __DIR__.'/settings.php';

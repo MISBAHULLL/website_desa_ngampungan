@@ -1,6 +1,8 @@
 import { Link } from '@inertiajs/react';
 import {
     BookOpen,
+    CalendarDays,
+    Camera,
     ClipboardList,
     FolderGit2,
     LayoutGrid,
@@ -8,8 +10,10 @@ import {
     MessagesSquare,
     Newspaper,
 } from 'lucide-react';
+import { index as agendasIndex } from '@/actions/App/Http/Controllers/Admin/AgendaController';
 import { index as announcementsIndex } from '@/actions/App/Http/Controllers/Admin/AnnouncementController';
 import { index as contactMessagesIndex } from '@/actions/App/Http/Controllers/Admin/ContactMessageController';
+import { index as galleryIndex } from '@/actions/App/Http/Controllers/Admin/GalleryController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
 import AppLogo from '@/components/app-logo';
@@ -43,6 +47,16 @@ const mainNavItems: NavItem[] = [
         title: 'Kelola Pengumuman',
         href: announcementsIndex(),
         icon: Megaphone,
+    },
+    {
+        title: 'Kelola Galeri',
+        href: galleryIndex(),
+        icon: Camera,
+    },
+    {
+        title: 'Kelola Agenda',
+        href: agendasIndex(),
+        icon: CalendarDays,
     },
     {
         title: 'Pesan Masuk',

@@ -12,65 +12,58 @@ import { VillageGalleryLightbox } from '@/components/village-gallery-lightbox';
 import {
     dummyVillageGalleryCategories,
     dummyVillageGalleryPhotos,
-    featuredDummyVillageGalleryPhotos,
 } from '@/lib/dummy-village-gallery';
 import type { VillageGalleryPhoto } from '@/lib/dummy-village-gallery';
 import { home } from '@/routes';
 
 type GalleryIndexPageProps = {
     canonicalUrl: string;
+    dbPhotos?: VillageGalleryPhoto[];
 };
 
-export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
+export default function GalleryIndex({ canonicalUrl, dbPhotos }: GalleryIndexPageProps) {
     const [selectedCategory, setSelectedCategory] = useState('Semua');
-    const [selectedPhoto, setSelectedPhoto] =
-        useState<VillageGalleryPhoto | null>(null);
+    const [selectedPhoto, setSelectedPhoto] = useState<VillageGalleryPhoto | null>(null);
+
+    const photosList = useMemo(() => {
+        if (dbPhotos && dbPhotos.length > 0) {
+            return dbPhotos;
+        }
+        return dummyVillageGalleryPhotos;
+    }, [dbPhotos]);
+
+    const categoriesList = useMemo(() => {
+        const cats = Array.from(new Set(photosList.map((p) => p.category)));
+        return ['Semua', ...cats];
+    }, [photosList]);
+
+    const featuredPhotos = useMemo(() => {
+        const featured = photosList.filter((p) => p.featured);
+        return featured.length > 0 ? featured.slice(0, 3) : photosList.slice(0, 3);
+    }, [photosList]);
 
     const visiblePhotos = useMemo(
         () =>
             selectedCategory === 'Semua'
-                ? dummyVillageGalleryPhotos
-                : dummyVillageGalleryPhotos.filter(
+                ? photosList
+                : photosList.filter(
                       (photo) => photo.category === selectedCategory,
                   ),
-        [selectedCategory],
+        [selectedCategory, photosList],
     );
 
-    const albumCount = new Set(
-        dummyVillageGalleryPhotos.map((photo) => photo.album),
-    ).size;
-    const pageDescription =
-        'Dokumentasi kegiatan, pembangunan, UMKM, alam, dan pertanian Desa Ngampungan.';
+    const albumCount = useMemo(() => new Set(photosList.map((photo) => photo.album)).size, [photosList]);
+    const pageDescription = 'Dokumentasi kegiatan, pembangunan, UMKM, alam, dan pertanian Desa Ngampungan.';
 
     return (
         <PublicPageShell activeSection="gallery">
             <Head>
                 <title>Galeri Desa</title>
-                <meta
-                    head-key="description"
-                    name="description"
-                    content={pageDescription}
-                />
-                <meta
-                    head-key="og:title"
-                    property="og:title"
-                    content="Galeri Desa Ngampungan"
-                />
-                <meta
-                    head-key="og:description"
-                    property="og:description"
-                    content={pageDescription}
-                />
-                <meta
-                    head-key="og:url"
-                    property="og:url"
-                    content={canonicalUrl}
-                />
-                <link
-                    head-key="canonical"
-                    rel="canonical"
-                    href={canonicalUrl}
-                />
+                <meta head-key="description" name="description" content={pageDescription} />
+                <meta head-key="og:title" property="og:title" content="Galeri Desa Ngampungan" />
+                <meta head-key="og:description" property="og:description" content={pageDescription} />
+                <meta head-key="og:url" property="og:url" content={canonicalUrl} />
+                <link head-key="canonical" rel="canonical" href={canonicalUrl} />
             </Head>
 
             {/* LIGHT THEME HERO HEADER */}
@@ -84,13 +77,8 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                             <Link href={home()} className="hover:text-emerald-700 transition">
                                 Beranda
                             </Link>
-                            <ChevronRight
-                                aria-hidden="true"
-                                className="size-3.5 text-slate-400"
-                            />
-                            <span className="text-emerald-800 font-bold">
-                                Galeri Desa
-                            </span>
+                            <ChevronRight aria-hidden="true" className="size-3.5 text-slate-400" />
+                            <span className="text-emerald-800 font-bold">Galeri Desa</span>
                         </nav>
 
                         <h1 className="mt-6 text-4xl leading-tight font-extrabold tracking-tight sm:text-5xl md:text-6xl text-slate-900">
@@ -108,7 +96,7 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                                 Koleksi Foto
                             </dt>
                             <dd className="mt-2 text-4xl font-black text-slate-900">
-                                {dummyVillageGalleryPhotos.length}
+                                {photosList.length}
                             </dd>
                             <span className="mt-1 block text-[11px] text-slate-500">dokumentasi</span>
                         </div>
@@ -150,7 +138,7 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                     </div>
 
                     <div className="mt-8 grid gap-4 md:h-[34rem] md:grid-cols-[1.6fr_1fr] md:grid-rows-2">
-                        {featuredDummyVillageGalleryPhotos.map(
+                        {featuredPhotos.map(
                             (photo, index) => (
                                 <button
                                     key={photo.id}
@@ -165,16 +153,12 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                                         alt={photo.alt}
                                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                                     />
-                                    {/* Light contrast gradient overlay for text readability */}
                                     <span
                                         aria-hidden="true"
                                         className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent transition-opacity duration-300"
                                     />
                                     <span className="absolute top-4 right-4 flex size-10 items-center justify-center rounded-xl bg-white text-slate-800 shadow-md opacity-0 transition-all duration-300 group-hover:opacity-100">
-                                        <Expand
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
+                                        <Expand aria-hidden="true" className="size-4" />
                                     </span>
                                     <span className="absolute inset-x-0 bottom-0 p-6 md:p-8">
                                         <span className="inline-block rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-bold text-white uppercase shadow-xs">
@@ -220,14 +204,12 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                             aria-label="Filter kategori galeri"
                             className="flex flex-wrap gap-2 rounded-xl border border-slate-200 bg-slate-50 p-2"
                         >
-                            {dummyVillageGalleryCategories.map((category) => (
+                            {categoriesList.map((category) => (
                                 <button
                                     key={category}
                                     type="button"
                                     aria-pressed={selectedCategory === category}
-                                    onClick={() =>
-                                        setSelectedCategory(category)
-                                    }
+                                    onClick={() => setSelectedCategory(category)}
                                     className={
                                         selectedCategory === category
                                             ? 'rounded-lg bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition'
@@ -273,10 +255,7 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                                         className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     <span className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-lg bg-white/90 text-emerald-800 opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100">
-                                        <Expand
-                                            aria-hidden="true"
-                                            className="size-4"
-                                        />
+                                        <Expand aria-hidden="true" className="size-4" />
                                     </span>
                                 </span>
                                 <span className="block p-6">
@@ -287,10 +266,7 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                                         {photo.title}
                                     </span>
                                     <span className="mt-3 flex items-center gap-2 text-xs font-semibold text-slate-500">
-                                        <CalendarDays
-                                            aria-hidden="true"
-                                            className="size-3.5 text-emerald-700"
-                                        />
+                                        <CalendarDays aria-hidden="true" className="size-3.5 text-emerald-700" />
                                         {photo.capturedLabel}
                                     </span>
                                 </span>
@@ -301,10 +277,7 @@ export default function GalleryIndex({ canonicalUrl }: GalleryIndexPageProps) {
                     {/* Bottom Helper Box */}
                     <div className="mt-14 rounded-2xl border border-amber-200 bg-amber-50/70 p-6 text-xs leading-relaxed text-amber-900">
                         <p className="flex items-start gap-3">
-                            <Camera
-                                aria-hidden="true"
-                                className="mt-0.5 size-5 shrink-0 text-amber-700"
-                            />
+                            <Camera aria-hidden="true" className="mt-0.5 size-5 shrink-0 text-amber-700" />
                             <span>
                                 <strong className="font-bold text-amber-950">
                                     Informasi Dokumentasi Visual Desa Ngampungan:

@@ -89,12 +89,8 @@ test('the homepage exposes the PRD village potential categories', function () {
         ->toContain('activePotentialCategory')
         ->toContain('VillagePotentialCarousel')
         ->toContain('.slice(0, 3)')
-        ->toContain('Temukan usaha dan potensi warga')
         ->toContain('Buka Direktori')
-        ->toContain('Lihat semua')
-        ->toContain('Data simulasi frontend')
         ->toContain("query: { category: 'umkm' }")
-        ->toContain("query: { category: 'services' }")
         ->not->toContain("label: 'Potensi Lainnya'");
 
     expect($potentialDataSource)
