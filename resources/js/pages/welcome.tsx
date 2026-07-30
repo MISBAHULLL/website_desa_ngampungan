@@ -1812,29 +1812,58 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                     <section
                         id="pengumuman"
                         aria-labelledby="pengumuman-heading"
-                        className="scroll-mt-20 border-t border-village-border bg-white py-16 md:py-24"
+                        className="relative overflow-hidden scroll-mt-20 border-t border-village-border/80 bg-gradient-to-b from-emerald-50/50 via-white to-emerald-50/30 py-16 md:py-24"
                     >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                        {/* Ambient Animated Aurora Mesh Blobs */}
+                        <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -top-36 -left-20 size-[30rem] rounded-full bg-emerald-200/45 blur-3xl animate-aurora-slow"
+                        />
+                        <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute -bottom-36 -right-20 size-[32rem] rounded-full bg-teal-200/40 blur-3xl animate-aurora-reverse"
+                        />
+                        <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute top-1/2 left-1/3 size-[24rem] -translate-y-1/2 rounded-full bg-amber-100/35 blur-3xl animate-aurora-slow"
+                        />
+
+                        {/* Flowing Animated Wave SVG Background Lines */}
+                        <svg
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-x-0 top-0 w-full text-emerald-600/[0.06] opacity-70"
+                            viewBox="0 0 1440 160"
+                            fill="none"
+                            preserveAspectRatio="none"
+                        >
+                            <path
+                                d="M0,32L48,42.7C96,53,192,75,288,80C384,85,480,75,576,64C672,53,768,43,864,48C960,53,1056,75,1152,80C1248,85,1344,75,1392,70L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+                        <svg
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-x-0 bottom-0 w-full text-teal-600/[0.05] opacity-80"
+                            viewBox="0 0 1440 120"
+                            fill="none"
+                            preserveAspectRatio="none"
+                        >
+                            <path
+                                d="M0,64L60,58.7C120,53,240,43,360,48C480,53,600,75,720,80C840,85,960,75,1080,64C1200,53,1320,43,1380,37.3L1440,32L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"
+                                fill="currentColor"
+                            />
+                        </svg>
+
+                        <div className="relative mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                            <div className="flex flex-col justify-between gap-6 border-b border-village-border/80 pb-8 md:flex-row md:items-end">
                                 <div className="max-w-2xl">
-                                    <div className="flex items-center gap-3">
-                                        <span className="flex size-10 items-center justify-center rounded-full bg-village-primary-light text-village-primary">
-                                            <BellRing
-                                                aria-hidden="true"
-                                                className="size-5"
-                                            />
-                                        </span>
-                                        <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
-                                            Pemberitahuan Resmi
-                                        </p>
-                                    </div>
                                     <h2
                                         id="pengumuman-heading"
-                                        className="village-heading-2 mt-4"
+                                        className="village-heading-2"
                                     >
                                         Pengumuman Desa
                                     </h2>
-                                    <p className="mt-4 text-lg text-village-muted">
+                                    <p className="mt-3 text-lg leading-relaxed text-village-muted">
                                         Periksa jadwal layanan dan informasi
                                         resmi yang sedang berlaku untuk warga.
                                     </p>
@@ -1843,7 +1872,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 <Link
                                     href={announcementsIndex()}
                                     prefetch
-                                    className="inline-flex min-h-11 w-fit items-center gap-2 rounded-xl border border-village-border bg-white px-5 py-3 text-sm font-bold transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                                    className="inline-flex min-h-11 w-fit items-center gap-2 rounded-xl border border-village-border/90 bg-white/90 px-5 py-3 text-sm font-bold shadow-2xs backdrop-blur-xs transition hover:border-village-primary hover:bg-white hover:text-village-primary hover:shadow-xs focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                                 >
                                     Lihat Semua Pengumuman
                                     <ArrowRight
@@ -1855,20 +1884,25 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
 
                             <div className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                                 <div>
-                                    <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                    <p className="text-xs font-extrabold tracking-[0.16em] text-village-primary uppercase">
                                         Masih berlaku
                                     </p>
-                                    <h3 className="mt-2 text-2xl font-bold">
+                                    <h3 className="mt-1.5 text-2xl font-extrabold text-slate-900">
                                         Pengumuman Aktif
                                     </h3>
                                 </div>
-                                <p className="text-sm text-village-muted">
+                                <p className="text-sm font-medium text-village-muted">
                                     Informasi kedaluwarsa dipindahkan ke arsip.
                                 </p>
                             </div>
 
-                            <div className="mt-6 grid gap-5 lg:grid-cols-3">
-                                {activeDummyAnnouncements
+                            <div className="mt-6 grid gap-6 lg:grid-cols-3">
+                                {[...activeDummyAnnouncements]
+                                    .sort(
+                                        (a, b) =>
+                                            new Date(b.startsAt).getTime() -
+                                            new Date(a.startsAt).getTime(),
+                                    )
                                     .slice(0, 3)
                                     .map((announcement) => (
                                         <PublicAnnouncementCard

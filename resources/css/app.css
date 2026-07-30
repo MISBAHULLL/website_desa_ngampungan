@@ -198,8 +198,32 @@
     animation: pageFadeIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+@keyframes auroraFloat {
+    0%, 100% {
+        transform: translate(0px, 0px) scale(1) rotate(0deg);
+    }
+    33% {
+        transform: translate(35px, -30px) scale(1.1) rotate(4deg);
+    }
+    66% {
+        transform: translate(-25px, 25px) scale(0.92) rotate(-3deg);
+    }
+}
+
+.animate-aurora-slow {
+    animation: auroraFloat 18s ease-in-out infinite alternate;
+}
+
+.animate-aurora-reverse {
+    animation: auroraFloat 24s ease-in-out infinite reverse;
+}
+
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
+    }
+    .animate-aurora-slow,
+    .animate-aurora-reverse {
+        animation: none;
     }
 }
