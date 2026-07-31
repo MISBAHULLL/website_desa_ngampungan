@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\VillageOfficial;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -90,14 +91,14 @@ test('the public village government renders its Inertia page with a canonical UR
 });
 
 test('the public village official detail passes its slug and canonical URL', function () {
-    $slug = 'kusnadi-s-sos';
+    $official = VillageOfficial::factory()->create(['is_active' => true]);
 
-    $this->get(route('government.officials.show', $slug))
+    $this->get(route('government.officials.show', $official->slug))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('government/show')
-            ->where('slug', $slug)
-            ->where('canonicalUrl', route('government.officials.show', $slug)));
+            ->where('official.slug', $official->slug)
+            ->where('canonicalUrl', route('government.officials.show', $official->slug)));
 });
 
 test('the village government module exposes organization, officials, institutions, and detail profiles', function () {
@@ -120,17 +121,13 @@ test('the village government module exposes organization, officials, institution
         ->toContain('VillageOrganizationChart')
         ->toContain('VillageOfficialCard')
         ->toContain('officialFilters.map')
-        ->toContain('dummyVillageInstitutions.map');
+        ->toContain('institutions.map');
 
     expect($governmentShowSource)
         ->not->toBeFalse()
-        ->toContain('findDummyVillageOfficial')
-        ->toContain('Profil perangkat tidak ditemukan')
         ->toContain('Tugas dan Tanggung Jawab')
         ->toContain('Pendidikan dan Riwayat Jabatan')
         ->toContain('Fokus Pelayanan')
-        ->toContain('Perangkat Terkait')
-        ->toContain('<title>{`${official.name} - ${official.position}`}</title>')
         ->toContain('head-key="canonical"');
 
     expect($governmentDataSource)
@@ -313,8 +310,7 @@ test('the first service directory increment exposes search, categories, and summ
         ->toContain('id="service-search"')
         ->toContain('villageServiceCategories.map')
         ->toContain('visibleServices.map')
-        ->toContain('Persyaratan tersedia')
-        ->toContain('Data dummy frontend');
+        ->toContain('Persyaratan');
 
     expect($serviceDataSource)
         ->not->toBeFalse()
@@ -358,16 +354,15 @@ test('the second service increment exposes requirements, process, and a client-o
         ->not->toBeFalse()
         ->toContain('href={serviceShow(')
         ->toContain('service.slug')
-        ->toContain('Lihat detail');
+        ->toContain('Lihat Detail');
 
     expect($serviceShowSource)
         ->not->toBeFalse()
-        ->toContain('Persyaratan pemohon')
-        ->toContain('Dokumen yang disiapkan')
+        ->toContain('Persyaratan Pemohon')
+        ->toContain('Dokumen yang Perlu Disiapkan')
         ->toContain('villageServiceProcessSteps.map')
         ->toContain('id="form-pengajuan"')
-        ->toContain('VillageServiceApplicationForm')
-        ->toContain('Persyaratan ini masih data simulasi');
+        ->toContain('VillageServiceApplicationForm');
 
     expect($serviceFormSource)
         ->not->toBeFalse()

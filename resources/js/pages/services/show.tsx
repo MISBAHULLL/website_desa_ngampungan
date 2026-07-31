@@ -163,116 +163,135 @@ export default function ServiceShow({
                         </a>
                     </div>
 
-                    {/* Service Info Cards Grid (Solid High Contrast Style) */}
-                    <div className="grid grid-cols-3 gap-3 lg:col-span-4">
-                        <div className="rounded-2xl bg-white p-4 shadow-lg border border-emerald-100">
-                            <span className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold uppercase tracking-wider">
-                                <UsersRound className="size-3.5 text-emerald-600" />
+                    {/* Service Info Cards Grid (No Truncation Style) */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 lg:col-span-4">
+                        <div className="rounded-2xl bg-white p-4 shadow-lg border border-emerald-100 flex flex-col justify-center">
+                            <span className="flex items-center gap-1.5 text-[11px] text-emerald-800 font-bold uppercase tracking-wider">
+                                <UsersRound className="size-3.5 text-emerald-600 shrink-0" />
                                 Sasaran
                             </span>
-                            <p className="mt-1 text-xs font-black text-emerald-950 truncate" title={service.audience}>{service.audience}</p>
+                            <p className="mt-1 text-xs font-bold text-slate-900 leading-snug break-words">
+                                {service.audience}
+                            </p>
                         </div>
-                        <div className="rounded-2xl bg-white p-4 shadow-lg border border-emerald-100">
-                            <span className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold uppercase tracking-wider">
-                                <Headphones className="size-3.5 text-emerald-600" />
+                        <div className="rounded-2xl bg-white p-4 shadow-lg border border-emerald-100 flex flex-col justify-center">
+                            <span className="flex items-center gap-1.5 text-[11px] text-emerald-800 font-bold uppercase tracking-wider">
+                                <Headphones className="size-3.5 text-emerald-600 shrink-0" />
                                 Kanal
                             </span>
-                            <p className="mt-1 text-xs font-black text-emerald-950 truncate" title={service.channel}>{service.channel}</p>
+                            <p className="mt-1 text-xs font-bold text-slate-900 leading-snug break-words">
+                                {service.channel}
+                            </p>
                         </div>
-                        <div className="rounded-2xl bg-white p-4 shadow-lg border border-emerald-100">
-                            <span className="flex items-center gap-1.5 text-xs text-emerald-800 font-bold uppercase tracking-wider">
-                                <Clock3 className="size-3.5 text-emerald-600" />
+                        <div className="rounded-2xl bg-white p-4 shadow-lg border border-emerald-100 flex flex-col justify-center">
+                            <span className="flex items-center gap-1.5 text-[11px] text-emerald-800 font-bold uppercase tracking-wider">
+                                <Clock3 className="size-3.5 text-emerald-600 shrink-0" />
                                 Estimasi
                             </span>
-                            <p className="mt-1 text-xs font-black text-emerald-950 truncate" title={service.estimatedDuration}>{service.estimatedDuration}</p>
+                            <p className="mt-1 text-xs font-bold text-slate-900 leading-snug break-words">
+                                {service.estimatedDuration}
+                            </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* REQUIREMENTS & DOCUMENTS SECTION */}
+            {/* UNIFIED REQUIREMENTS & DOCUMENTS SECTION (Combined 1 Single Card) */}
             <section
-                aria-labelledby="requirements-heading"
-                className="bg-slate-50/50 py-12 md:py-16"
+                aria-labelledby="requirements-documents-heading"
+                className="bg-slate-50/50 py-10 md:py-14"
             >
-                <div className="mx-auto grid max-w-[1280px] gap-8 px-5 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:px-12">
-                    <div className="space-y-8">
-                        {/* Requirements Card */}
-                        <section className="rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 shadow-xs">
-                            <div className="flex items-start gap-4">
-                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-200/60">
-                                    <CheckCircle2
-                                        aria-hidden="true"
-                                        className="size-6"
+                <div className="mx-auto max-w-[1080px] px-5 lg:px-12">
+                    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 sm:p-10 shadow-xs space-y-10">
+                        {/* Main Header */}
+                        <div className="border-b border-slate-100 pb-5">
+                            <h2
+                                id="requirements-documents-heading"
+                                className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+                            >
+                                Persyaratan & Berkas Pendukung
+                            </h2>
+                            <p className="mt-1.5 text-xs text-slate-600 sm:text-sm">
+                                Pastikan seluruh kriteria dan dokumen fisik maupun digital telah siap sebelum mengisi formulir pengajuan.
+                            </p>
+                        </div>
+
+                        {/* SUB-SECTION 1: Persyaratan Pemohon (Numbered Steps List) */}
+                        <div>
+                            <div className="flex items-center gap-3.5 mb-5">
+                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50/80 p-2 border border-emerald-200/60 shadow-2xs">
+                                    <img
+                                        src="/assets/dokumen.png"
+                                        alt=""
+                                        className="size-6 object-contain"
                                     />
                                 </div>
                                 <div>
-                                    <span className="text-xs font-bold tracking-wider text-emerald-700 uppercase">
-                                        Sebelum Mengajukan
-                                    </span>
-                                    <h2
+                                    <h3
                                         id="requirements-heading"
-                                        className="mt-1 text-2xl font-black tracking-tight text-slate-900"
+                                        className="text-xl font-bold text-slate-900"
                                     >
                                         Persyaratan Pemohon
-                                    </h2>
+                                    </h3>
                                 </div>
                             </div>
 
-                            <ul className="mt-6 grid gap-3">
+                            <ol className="grid gap-3.5 sm:grid-cols-2">
                                 {detail.requirements.map(
                                     (requirement, index) => (
                                         <li
                                             key={requirement}
-                                            className="flex items-start gap-4 rounded-2xl border border-slate-100 bg-slate-50/70 p-4 transition-all hover:bg-slate-100/80"
+                                            className="flex items-start gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 transition-all hover:border-emerald-200 hover:bg-emerald-50/30"
                                         >
-                                            <span className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-xs font-bold text-white shadow-xs">
+                                            <span className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-xs font-black text-white shadow-xs">
                                                 {index + 1}
                                             </span>
-                                            <span className="pt-0.5 text-xs font-medium leading-relaxed text-slate-700">
+                                            <span className="pt-0.5 text-xs font-semibold leading-relaxed text-slate-700">
                                                 {requirement}
                                             </span>
                                         </li>
                                     ),
                                 )}
-                            </ul>
-                        </section>
+                            </ol>
+                        </div>
 
-                        {/* Documents Card */}
-                        <section
-                            aria-labelledby="documents-heading"
-                            className="rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 shadow-xs"
-                        >
-                            <div className="flex items-start gap-4">
-                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 border border-amber-200/60">
-                                    <FileCheck2
-                                        aria-hidden="true"
-                                        className="size-6"
+                        {/* Visual Sub-Section Divider */}
+                        <div className="border-t border-slate-100 my-6" />
+
+                        {/* SUB-SECTION 2: Dokumen yang Disiapkan */}
+                        <div>
+                            <div className="flex items-center gap-3.5 mb-5">
+                                <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-emerald-50/80 p-2 border border-emerald-200/60 shadow-2xs">
+                                    <img
+                                        src="/assets/dokumen.png"
+                                        alt=""
+                                        className="size-6 object-contain"
                                     />
                                 </div>
                                 <div>
-                                    <span className="text-xs font-bold tracking-wider text-amber-700 uppercase">
-                                        Berkas Pendukung
-                                    </span>
-                                    <h2
+                                    <h3
                                         id="documents-heading"
-                                        className="mt-1 text-2xl font-black tracking-tight text-slate-900"
+                                        className="text-xl font-bold text-slate-900"
                                     >
                                         Dokumen yang Perlu Disiapkan
-                                    </h2>
+                                    </h3>
                                 </div>
                             </div>
 
-                            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 {detail.requiredDocuments.map((document) => (
                                     <article
                                         key={document.key}
-                                        className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 shadow-2xs transition-all hover:border-emerald-300"
+                                        className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 shadow-2xs transition-all hover:border-emerald-300 hover:bg-white"
                                     >
                                         <div>
                                             <div className="flex items-start justify-between gap-3">
-                                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
-                                                    <FileText className="size-4.5" />
+                                                <div className="flex size-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-100 p-1.5">
+                                                    <img
+                                                        src="/assets/dokumen.png"
+                                                        alt=""
+                                                        className="size-5 object-contain"
+                                                    />
                                                 </div>
                                                 <span
                                                     className={`rounded-full px-2.5 py-0.5 text-[10px] font-extrabold uppercase tracking-wider ${
@@ -286,9 +305,9 @@ export default function ServiceShow({
                                                         : 'Opsional'}
                                                 </span>
                                             </div>
-                                            <h3 className="mt-3 font-bold text-slate-900 text-sm">
+                                            <h4 className="mt-3 font-bold text-slate-900 text-sm">
                                                 {document.label}
-                                            </h3>
+                                            </h4>
                                             <p className="mt-1 text-xs leading-relaxed text-slate-600">
                                                 {document.description}
                                             </p>
@@ -296,47 +315,10 @@ export default function ServiceShow({
                                     </article>
                                 ))}
                             </div>
-                        </section>
-                    </div>
-
-                    {/* Sidebar Help Card */}
-                    <aside className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs lg:sticky lg:top-28 space-y-6">
-                        <div className="space-y-4">
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 border border-emerald-200/60">
-                                Bantuan Layanan
-                            </span>
-                            <dl className="grid gap-4 text-xs">
-                                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3.5">
-                                    <dt className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
-                                        Petugas Penanggung Jawab
-                                    </dt>
-                                    <dd className="mt-1 font-bold text-slate-800 text-sm">
-                                        {detail.serviceContact}
-                                    </dd>
-                                </div>
-                                <div className="rounded-2xl border border-slate-100 bg-slate-50 p-3.5">
-                                    <dt className="text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
-                                        Jam Pelayanan Kantor Desa
-                                    </dt>
-                                    <dd className="mt-1 font-bold text-slate-800 leading-snug">
-                                        {detail.serviceHours}
-                                    </dd>
-                                </div>
-                            </dl>
-
-                            <a
-                                href="#form-pengajuan"
-                                className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl bg-emerald-700 px-4 py-3 text-xs font-bold text-white shadow-md shadow-emerald-900/10 transition-all hover:bg-emerald-800"
-                            >
-                                Ajukan Layanan Ini
-                                <ArrowDown
-                                    aria-hidden="true"
-                                    className="size-4"
-                                />
-                            </a>
                         </div>
 
-                        <div className="rounded-2xl border border-amber-200 bg-amber-50/70 p-4 text-xs leading-relaxed text-amber-900">
+                        {/* Information Disclaimer Banner inside Card */}
+                        <div className="rounded-2xl border border-amber-200/90 bg-amber-50/70 p-4.5 text-xs leading-relaxed text-amber-900">
                             <div className="flex items-start gap-2.5">
                                 <Info
                                     aria-hidden="true"
@@ -345,82 +327,53 @@ export default function ServiceShow({
                                 <span>Persyaratan ini merupakan direktori awal pelayanan publik Desa Ngampungan.</span>
                             </div>
                         </div>
-                    </aside>
-                </div>
-            </section>
-
-            {/* PROCESS STEPS SECTION */}
-            <section
-                aria-labelledby="service-process-heading"
-                className="border-y border-slate-200/80 bg-white py-12 md:py-16"
-            >
-                <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <div className="max-w-2xl">
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 border border-emerald-200/60 uppercase tracking-wider">
-                            Alur Pelayanan
-                        </span>
-                        <h2
-                            id="service-process-heading"
-                            className="mt-3 text-3xl font-black tracking-tight text-slate-900 sm:text-4xl"
-                        >
-                            Dari Pengajuan Sampai Selesai
-                        </h2>
-                    </div>
-
-                    <ol className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-                        {villageServiceProcessSteps.map((step, index) => (
-                            <li
-                                key={step.title}
-                                className="relative rounded-3xl border border-slate-200/90 bg-slate-50/60 p-6 shadow-xs transition-all hover:border-emerald-300 hover:bg-white"
-                            >
-                                <span className="text-4xl font-black tracking-tighter text-emerald-600/25 font-mono">
-                                    {String(index + 1).padStart(2, '0')}
-                                </span>
-                                <h3 className="mt-3 text-base font-bold text-slate-900">
-                                    {step.title}
-                                </h3>
-                                <p className="mt-1.5 text-xs leading-relaxed text-slate-600">
-                                    {step.description}
-                                </p>
-                            </li>
-                        ))}
-                    </ol>
-
-                    <div className="mt-8 rounded-3xl border border-amber-200 bg-amber-50/60 p-5 text-xs leading-relaxed text-amber-900">
-                        <div className="flex items-center gap-2 font-bold text-amber-950 mb-1">
-                            <ShieldAlert className="size-4 text-amber-700" />
-                            Catatan Penting Layanan:
-                        </div>
-                        <ul className="ml-6 list-disc space-y-1 text-amber-800">
-                            {detail.notes.map((note) => (
-                                <li key={note}>{note}</li>
-                            ))}
-                        </ul>
                     </div>
                 </div>
             </section>
 
-            {/* ONLINE APPLICATION FORM SECTION */}
+            {/* ONLINE APPLICATION FORM SECTION (With Integrated Process Summary) */}
             <section
                 id="form-pengajuan"
                 aria-labelledby="application-form-heading"
-                className="scroll-mt-24 bg-slate-50/50 py-12 md:py-16"
+                className="scroll-mt-24 bg-slate-50/50 py-10 md:py-14 border-t border-slate-200/80"
             >
                 <div className="mx-auto max-w-[1080px] px-5 lg:px-12">
                     <div className="rounded-3xl border border-slate-200/90 bg-white p-6 md:p-10 shadow-xs">
                         <div className="max-w-3xl">
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-800 border border-emerald-200/60">
-                                Form Daring
-                            </span>
                             <h2
                                 id="application-form-heading"
-                                className="mt-3 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
+                                className="text-2xl font-black tracking-tight text-slate-900 sm:text-3xl"
                             >
                                 Form Pengajuan Layanan Publik
                             </h2>
                             <p className="mt-2 text-xs leading-relaxed text-slate-600">
                                 Lengkapi data pemohon dan unggah berkas persyaratan. Setelah mengajukan, Anda akan menerima kode pelacakan untuk memantau status berkas Anda.
                             </p>
+                        </div>
+
+                        {/* Integrated Process Summary Strip */}
+                        <div className="mt-6 rounded-2xl bg-slate-50/80 border border-slate-200/80 p-4">
+                            <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 block mb-2">
+                                Ringkasan Alur Pelayanan Desa:
+                            </span>
+                            <div className="grid gap-2 sm:grid-cols-4 text-xs">
+                                {villageServiceProcessSteps.map((step, index) => (
+                                    <div
+                                        key={step.title}
+                                        className="flex items-center gap-2 rounded-xl bg-white border border-slate-200/70 p-2.5 shadow-2xs"
+                                    >
+                                        <span className="flex size-6 shrink-0 items-center justify-center rounded-lg bg-emerald-700 text-[11px] font-bold text-white">
+                                            {index + 1}
+                                        </span>
+                                        <span
+                                            className="font-bold text-slate-800 text-[11px] truncate"
+                                            title={step.description}
+                                        >
+                                            {step.title}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         <div className="mt-8 pt-6 border-t border-slate-100">

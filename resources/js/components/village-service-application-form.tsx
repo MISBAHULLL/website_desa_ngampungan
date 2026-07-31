@@ -322,11 +322,12 @@ export function VillageServiceApplicationForm({
 
     return (
         <form ref={formRef} noValidate onSubmit={submitApplication}>
+            {/* Modernized Stepper Header */}
             <ol
                 aria-label="Tahapan formulir pengajuan"
-                className="grid border border-village-border bg-white md:grid-cols-3"
+                className="grid grid-cols-1 gap-2.5 rounded-2xl bg-slate-100/80 p-2 md:grid-cols-3 border border-slate-200/60"
             >
-                {formSteps.map((step, index) => {
+                {formSteps.map((step) => {
                     const StepIcon = step.icon;
                     const isActive = currentStep === step.number;
                     const isComplete = currentStep > step.number;
@@ -335,67 +336,63 @@ export function VillageServiceApplicationForm({
                         <li
                             key={step.number}
                             aria-current={isActive ? 'step' : undefined}
-                            className={`relative flex items-center gap-4 p-4 md:p-5 ${
-                                index < formSteps.length - 1
-                                    ? 'border-b border-village-border md:border-r md:border-b-0'
-                                    : ''
-                            } ${isActive ? 'bg-village-primary-light' : ''}`}
+                            className={`relative flex items-center gap-3.5 rounded-xl p-3.5 transition-all duration-200 ${
+                                isActive
+                                    ? 'bg-white shadow-xs ring-1 ring-slate-900/5'
+                                    : isComplete
+                                    ? 'bg-white/60 text-slate-700'
+                                    : 'text-slate-500'
+                            }`}
                         >
                             <span
-                                className={`flex size-10 shrink-0 items-center justify-center ${
-                                    isComplete || isActive
-                                        ? 'bg-village-primary text-white'
-                                        : 'bg-village-surface-muted text-village-muted'
+                                className={`flex size-9 shrink-0 items-center justify-center rounded-xl font-bold transition-colors ${
+                                    isComplete
+                                        ? 'bg-emerald-700 text-white shadow-xs'
+                                        : isActive
+                                        ? 'bg-emerald-700 text-white shadow-xs'
+                                        : 'bg-slate-200/70 text-slate-600'
                                 }`}
                             >
                                 {isComplete ? (
                                     <Check
                                         aria-hidden="true"
-                                        className="size-5"
+                                        className="size-4.5 stroke-[2.5]"
                                     />
                                 ) : (
                                     <StepIcon
                                         aria-hidden="true"
-                                        className="size-5"
+                                        className="size-4.5"
                                     />
                                 )}
                             </span>
-                            <span>
-                                <span className="block text-xs font-bold tracking-[0.12em] text-village-muted uppercase">
+                            <div>
+                                <span className="block text-[10px] font-black tracking-wider text-slate-400 uppercase">
                                     Tahap {step.number}
                                 </span>
-                                <span className="mt-1 block text-sm font-bold text-village-ink">
+                                <span
+                                    className={`block text-xs font-bold leading-tight ${
+                                        isActive
+                                            ? 'text-slate-900'
+                                            : 'text-slate-700'
+                                    }`}
+                                >
                                     {step.label}
                                 </span>
-                            </span>
+                            </div>
                         </li>
                     );
                 })}
             </ol>
 
-            <div className="mt-5 border border-village-border bg-white p-5 md:p-8">
-                <div className="flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-4 text-sm leading-6 text-[#755018]">
-                    <ShieldAlert
-                        aria-hidden="true"
-                        className="mt-0.5 size-5 shrink-0"
-                    />
-                    <p>
-                        <strong>Sistem masih dalam tahap pengembangan.</strong>{' '}
-                        Data yang dikirim akan tersimpan di database
-                        pengembangan dan dokumen di penyimpanan privat. Gunakan
-                        data uji sampai persyaratan dikonfirmasi pemerintah
-                        desa.
-                    </p>
-                </div>
-
+            {/* Main Form Container */}
+            <div className="mt-6 rounded-3xl border border-slate-200/80 bg-white p-6 shadow-xs md:p-9">
                 {(Object.values(clientErrors).some(Boolean) ||
                     Object.values(serverErrors).some(Boolean)) && (
                     <div
                         role="alert"
-                        className="mt-5 border-l-4 border-village-error bg-red-50 px-4 py-3 text-sm font-semibold text-red-800"
+                        className="mb-6 rounded-2xl border-l-4 border-rose-500 bg-rose-50/80 p-4 text-xs font-semibold text-rose-800 shadow-2xs"
                     >
-                        Pengajuan belum dapat dikirim. Periksa kembali bagian
-                        yang ditandai.
+                        Pengajuan belum dapat dikirim. Periksa kembali bagian yang ditandai.
                     </div>
                 )}
 
@@ -416,25 +413,22 @@ export function VillageServiceApplicationForm({
                 </div>
 
                 {currentStep === 1 && (
-                    <fieldset className="mt-8">
-                        <legend className="text-2xl font-bold">
+                    <fieldset className="mt-2">
+                        <legend className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
                             Data pemohon
                         </legend>
-                        <p className="mt-2 text-sm leading-6 text-village-muted">
-                            Data ini digunakan petugas untuk memverifikasi dan
-                            menghubungi pemohon.
+                        <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                            Data ini digunakan petugas untuk memverifikasi dan menghubungi pemohon.
                         </p>
 
                         <div className="mt-6 grid gap-5 md:grid-cols-2">
                             <div>
                                 <label
                                     htmlFor="applicant-name"
-                                    className="text-sm font-bold"
+                                    className="text-xs font-bold text-slate-800"
                                 >
                                     Nama lengkap{' '}
-                                    <span className="text-village-error">
-                                        *
-                                    </span>
+                                    <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                     id="applicant-name"
@@ -451,7 +445,7 @@ export function VillageServiceApplicationForm({
                                     )}
                                     aria-describedby="applicant-name-error"
                                     autoComplete="name"
-                                    className="mt-2 min-h-12 w-full border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
                                 />
                                 <InputError
                                     id="applicant-name-error"
@@ -463,12 +457,10 @@ export function VillageServiceApplicationForm({
                             <div>
                                 <label
                                     htmlFor="applicant-national-id"
-                                    className="text-sm font-bold"
+                                    className="text-xs font-bold text-slate-800"
                                 >
                                     NIK{' '}
-                                    <span className="text-village-error">
-                                        *
-                                    </span>
+                                    <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                     id="applicant-national-id"
@@ -490,7 +482,7 @@ export function VillageServiceApplicationForm({
                                     )}
                                     aria-describedby="applicant-national-id-error"
                                     autoComplete="off"
-                                    className="mt-2 min-h-12 w-full border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
                                 />
                                 <InputError
                                     id="applicant-national-id-error"
@@ -502,12 +494,10 @@ export function VillageServiceApplicationForm({
                             <div>
                                 <label
                                     htmlFor="applicant-phone"
-                                    className="text-sm font-bold"
+                                    className="text-xs font-bold text-slate-800"
                                 >
                                     Nomor telepon{' '}
-                                    <span className="text-village-error">
-                                        *
-                                    </span>
+                                    <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                     id="applicant-phone"
@@ -526,7 +516,7 @@ export function VillageServiceApplicationForm({
                                     aria-invalid={Boolean(fieldError('phone'))}
                                     aria-describedby="applicant-phone-error"
                                     autoComplete="tel"
-                                    className="mt-2 min-h-12 w-full border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
                                 />
                                 <InputError
                                     id="applicant-phone-error"
@@ -538,12 +528,10 @@ export function VillageServiceApplicationForm({
                             <div>
                                 <label
                                     htmlFor="applicant-address"
-                                    className="text-sm font-bold"
+                                    className="text-xs font-bold text-slate-800"
                                 >
                                     Alamat{' '}
-                                    <span className="text-village-error">
-                                        *
-                                    </span>
+                                    <span className="text-rose-500">*</span>
                                 </label>
                                 <textarea
                                     id="applicant-address"
@@ -561,7 +549,7 @@ export function VillageServiceApplicationForm({
                                     )}
                                     aria-describedby="applicant-address-error"
                                     autoComplete="street-address"
-                                    className="mt-2 w-full resize-y border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                    className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
                                 />
                                 <InputError
                                     id="applicant-address-error"
@@ -573,12 +561,10 @@ export function VillageServiceApplicationForm({
                             <div className="md:col-span-2">
                                 <label
                                     htmlFor="application-purpose"
-                                    className="text-sm font-bold"
+                                    className="text-xs font-bold text-slate-800"
                                 >
                                     Tujuan pengajuan{' '}
-                                    <span className="text-village-error">
-                                        *
-                                    </span>
+                                    <span className="text-rose-500">*</span>
                                 </label>
                                 <textarea
                                     id="application-purpose"
@@ -595,7 +581,7 @@ export function VillageServiceApplicationForm({
                                         fieldError('purpose'),
                                     )}
                                     aria-describedby="application-purpose-error"
-                                    className="mt-2 w-full resize-y border border-village-border px-4 py-3 outline-hidden transition focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
+                                    className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
                                 />
                                 <InputError
                                     id="application-purpose-error"
@@ -608,11 +594,11 @@ export function VillageServiceApplicationForm({
                 )}
 
                 {currentStep === 2 && (
-                    <fieldset className="mt-8">
-                        <legend className="text-2xl font-bold">
+                    <fieldset className="mt-2">
+                        <legend className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
                             Dokumen persyaratan
                         </legend>
-                        <p className="mt-2 text-sm leading-6 text-village-muted">
+                        <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
                             PDF, JPG, JPEG, atau PNG. Maksimal 2 MB per berkas.
                         </p>
 
@@ -626,37 +612,37 @@ export function VillageServiceApplicationForm({
                                 return (
                                     <div
                                         key={document.key}
-                                        className="border border-village-border bg-village-canvas p-4 md:p-5"
+                                        className="rounded-2xl border border-slate-200/80 bg-slate-50/60 p-4 transition-all hover:border-emerald-200 hover:bg-emerald-50/20 md:p-5"
                                     >
-                                        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-start">
+                                        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                                             <div>
                                                 <label
                                                     htmlFor={`document-${document.key}`}
-                                                    className="font-bold"
+                                                    className="text-xs font-bold text-slate-800"
                                                 >
                                                     {document.label}
                                                     {document.required ? (
-                                                        <span className="text-village-error">
+                                                        <span className="text-rose-500">
                                                             {' '}
                                                             *
                                                         </span>
                                                     ) : (
-                                                        <span className="ml-2 text-xs font-semibold text-village-muted">
+                                                        <span className="ml-2 rounded-md bg-slate-200/60 px-2 py-0.5 text-[10px] font-extrabold uppercase text-slate-600">
                                                             Opsional
                                                         </span>
                                                     )}
                                                 </label>
-                                                <p className="mt-1 text-sm leading-6 text-village-muted">
+                                                <p className="mt-1 text-xs leading-relaxed text-slate-600">
                                                     {document.description}
                                                 </p>
                                             </div>
                                             <label
                                                 htmlFor={`document-${document.key}`}
-                                                className="inline-flex min-h-11 shrink-0 cursor-pointer items-center justify-center gap-2 border border-village-border bg-white px-4 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary"
+                                                className="inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-50 hover:border-emerald-300 active:scale-[0.98]"
                                             >
                                                 <Upload
                                                     aria-hidden="true"
-                                                    className="size-4"
+                                                    className="size-4 text-emerald-700"
                                                 />
                                                 Pilih berkas
                                             </label>
@@ -682,10 +668,10 @@ export function VillageServiceApplicationForm({
                                         />
                                         <p
                                             id={`${clientErrorKey}-status`}
-                                            className="mt-3 text-xs font-semibold text-village-muted"
+                                            className="mt-3 text-xs font-semibold text-slate-500"
                                         >
                                             {selectedFile
-                                                ? `${selectedFile.name} · ${formatFileSize(selectedFile.size)}`
+                                                ? `✓ ${selectedFile.name} · ${formatFileSize(selectedFile.size)}`
                                                 : 'Belum ada berkas dipilih'}
                                         </p>
                                         <InputError
@@ -704,26 +690,26 @@ export function VillageServiceApplicationForm({
                 )}
 
                 {currentStep === 3 && (
-                    <div className="mt-8">
-                        <h3 className="text-2xl font-bold">
+                    <div className="mt-2">
+                        <h3 className="text-xl font-black tracking-tight text-slate-900 sm:text-2xl">
                             Periksa pengajuan
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-village-muted">
+                        <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
                             Periksa kembali data sebelum dikirim ke server.
                         </p>
 
                         <div className="mt-6 grid gap-5 lg:grid-cols-2">
                             <section
                                 aria-labelledby="applicant-review-heading"
-                                className="border border-village-border p-5"
+                                className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5"
                             >
                                 <h4
                                     id="applicant-review-heading"
-                                    className="font-bold"
+                                    className="text-xs font-bold text-slate-900 uppercase tracking-wider"
                                 >
                                     Data pemohon
                                 </h4>
-                                <dl className="mt-4 grid gap-4 text-sm">
+                                <dl className="mt-4 grid gap-3 text-xs">
                                     {[
                                         ['Nama', form.data.applicant_name],
                                         [
@@ -738,12 +724,12 @@ export function VillageServiceApplicationForm({
                                     ].map(([label, value]) => (
                                         <div
                                             key={label}
-                                            className="border-t border-village-border pt-3"
+                                            className="border-t border-slate-200/70 pt-2.5"
                                         >
-                                            <dt className="text-village-muted">
+                                            <dt className="text-[11px] font-semibold text-slate-500">
                                                 {label}
                                             </dt>
-                                            <dd className="mt-1 font-semibold break-words">
+                                            <dd className="mt-0.5 font-bold text-slate-800 break-words">
                                                 {value}
                                             </dd>
                                         </div>
@@ -753,30 +739,30 @@ export function VillageServiceApplicationForm({
 
                             <section
                                 aria-labelledby="document-review-heading"
-                                className="border border-village-border p-5"
+                                className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5"
                             >
                                 <h4
                                     id="document-review-heading"
-                                    className="font-bold"
+                                    className="text-xs font-bold text-slate-900 uppercase tracking-wider"
                                 >
                                     Dokumen dipilih
                                 </h4>
-                                <ul className="mt-4 grid gap-3 text-sm">
+                                <ul className="mt-4 grid gap-3 text-xs">
                                     {detail.requiredDocuments.map(
                                         (document) => (
                                             <li
                                                 key={document.key}
-                                                className="flex items-start gap-3 border-t border-village-border pt-3"
+                                                className="flex items-start gap-3 border-t border-slate-200/70 pt-2.5"
                                             >
                                                 <FileText
                                                     aria-hidden="true"
-                                                    className="mt-0.5 size-4 shrink-0 text-village-primary"
+                                                    className="mt-0.5 size-4 shrink-0 text-emerald-700"
                                                 />
                                                 <span>
-                                                    <strong className="block">
+                                                    <strong className="block font-bold text-slate-800">
                                                         {document.label}
                                                     </strong>
-                                                    <span className="mt-1 block text-village-muted">
+                                                    <span className="mt-0.5 block text-slate-500">
                                                         {form.data.documents[
                                                             document.key
                                                         ]?.name ??
@@ -790,7 +776,7 @@ export function VillageServiceApplicationForm({
                             </section>
                         </div>
 
-                        <label className="mt-6 flex cursor-pointer items-start gap-3 border border-village-border bg-village-canvas p-4">
+                        <label className="mt-6 flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50/60 p-4 transition-all hover:bg-slate-100/60">
                             <input
                                 type="checkbox"
                                 checked={form.data.privacy_consent}
@@ -805,9 +791,9 @@ export function VillageServiceApplicationForm({
                                     fieldError('privacy_consent'),
                                 )}
                                 aria-describedby="privacy-consent-error"
-                                className="mt-1 size-4 accent-village-primary"
+                                className="mt-1 size-4 rounded-md border-slate-300 text-emerald-700 accent-emerald-700 focus:ring-emerald-600"
                             />
-                            <span className="text-sm leading-6 text-village-muted">
+                            <span className="text-xs leading-relaxed text-slate-600">
                                 Saya menyetujui penyimpanan dan pemrosesan data
                                 serta dokumen untuk keperluan layanan yang saya
                                 pilih.
@@ -824,31 +810,32 @@ export function VillageServiceApplicationForm({
                 {form.progress && (
                     <div
                         aria-live="polite"
-                        className="mt-6 border border-village-primary/20 bg-village-primary-light p-4"
+                        className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 shadow-2xs"
                     >
-                        <div className="flex items-center justify-between gap-4 text-sm font-bold text-village-primary-dark">
+                        <div className="flex items-center justify-between gap-4 text-xs font-bold text-emerald-950">
                             <span>Mengunggah dokumen</span>
                             <span>{form.progress.percentage}%</span>
                         </div>
                         <progress
                             value={form.progress.percentage}
                             max={100}
-                            className="mt-3 h-2 w-full accent-village-primary"
+                            className="mt-3 h-2 w-full accent-emerald-700"
                         >
                             {form.progress.percentage}%
                         </progress>
                     </div>
                 )}
 
-                <div className="mt-8 flex flex-col-reverse justify-between gap-3 border-t border-village-border pt-6 sm:flex-row">
+                {/* Modernized Bottom Action Bar */}
+                <div className="mt-8 flex flex-col-reverse justify-between gap-3 border-t border-slate-100 pt-6 sm:flex-row">
                     {currentStep > 1 ? (
                         <button
                             type="button"
                             onClick={returnToPreviousStep}
                             disabled={form.processing}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 shadow-2xs transition-all hover:bg-slate-50 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
                         >
-                            <ArrowLeft aria-hidden="true" className="size-4" />
+                            <ArrowLeft aria-hidden="true" className="size-4 text-emerald-700" />
                             Kembali
                         </button>
                     ) : (
@@ -859,7 +846,7 @@ export function VillageServiceApplicationForm({
                         <button
                             type="button"
                             onClick={continueToNextStep}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-emerald-800/15 transition-all hover:bg-emerald-800 hover:shadow-lg active:scale-[0.98]"
                         >
                             Lanjutkan
                             <ArrowRight aria-hidden="true" className="size-4" />
@@ -868,7 +855,7 @@ export function VillageServiceApplicationForm({
                         <button
                             type="submit"
                             disabled={form.processing}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark disabled:cursor-not-allowed disabled:opacity-60"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-emerald-800/15 transition-all hover:bg-emerald-800 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
                         >
                             {form.processing ? (
                                 <LoaderCircle
@@ -886,15 +873,6 @@ export function VillageServiceApplicationForm({
                                 : 'Kirim pengajuan'}
                         </button>
                     )}
-                </div>
-
-                <div className="mt-5 flex items-start gap-3 text-xs leading-5 text-village-muted">
-                    <Info
-                        aria-hidden="true"
-                        className="mt-0.5 size-4 shrink-0"
-                    />
-                    Jika koneksi terputus atau validasi server gagal, data tetap
-                    berada di formulir agar dapat diperbaiki dan dikirim ulang.
                 </div>
             </div>
         </form>
