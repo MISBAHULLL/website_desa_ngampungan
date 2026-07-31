@@ -167,21 +167,84 @@ class VillageGovernmentSeeder extends Seeder
 
         // ── Lembaga Desa ──
         $institutions = [
-            ['acronym' => 'BPD', 'name' => 'Badan Permusyawaratan Desa', 'leader' => 'Nama ketua menunggu data resmi', 'member_count' => 7,
+            [
+                'acronym' => 'BPD',
+                'name' => 'Badan Permusyawaratan Desa',
+                'leader' => 'Bapak Suparman, S.Pd.',
+                'member_count' => 7,
                 'focus' => 'Permusyawaratan dan pengawasan pemerintahan desa.',
-                'responsibilities' => ['Membahas dan menyepakati rancangan peraturan desa.', 'Menampung serta menyalurkan aspirasi masyarakat.', 'Melakukan pengawasan kinerja Kepala Desa.'],
+                'description' => 'BPD merupakan lembaga perwujudan demokrasi dalam penyelenggaraan pemerintahan desa yang berfungsi membahas dan menyepakati Peraturan Desa bersama Kepala Desa, menampung dan menyalurkan aspirasi masyarakat, serta melakukan pengawasan kinerja Kepala Desa.',
+                'responsibilities' => [
+                    'Membahas dan menyepakati rancangan peraturan desa.',
+                    'Menampung serta menyalurkan aspirasi masyarakat.',
+                    'Melakukan pengawasan kinerja Kepala Desa.',
+                ],
+                'members' => [
+                    ['name' => 'Bapak Suparman, S.Pd.', 'role' => 'Ketua BPD'],
+                    ['name' => 'Ibu Tri Wahyuni', 'role' => 'Wakil Ketua'],
+                    ['name' => 'Bapak H. Ahmad Subandi', 'role' => 'Sekretaris'],
+                    ['name' => 'Bapak Gatot Kaca', 'role' => 'Anggota (Bidang Pemerintahan)'],
+                    ['name' => 'Ibu Nani Wijaya', 'role' => 'Anggota (Bidang Pembangunan)'],
+                ],
             ],
-            ['acronym' => 'LPMD', 'name' => 'Lembaga Pemberdayaan Masyarakat Desa', 'leader' => 'Nama ketua menunggu data resmi', 'member_count' => 12,
+            [
+                'acronym' => 'LPMD',
+                'name' => 'Lembaga Pemberdayaan Masyarakat Desa',
+                'leader' => 'Bapak Drs. M. Yusuf',
+                'member_count' => 12,
                 'focus' => 'Partisipasi warga dalam perencanaan dan pembangunan.',
-                'responsibilities' => ['Mendorong partisipasi masyarakat dalam pembangunan.', 'Membantu penyusunan rencana pembangunan partisipatif.', 'Menggerakkan swadaya dan gotong royong warga.'],
+                'description' => 'LPMD bertugas membantu Pemerintah Desa dalam menyerap aspirasi masyarakat terkait pembangunan desa dan menggerakkan swadaya gotong royong masyarakat.',
+                'responsibilities' => [
+                    'Mendorong partisipasi masyarakat dalam pembangunan.',
+                    'Membantu penyusunan rencana pembangunan partisipatif.',
+                    'Menggerakkan swadaya dan gotong royong warga.',
+                ],
+                'members' => [
+                    ['name' => 'Bapak Drs. M. Yusuf', 'role' => 'Ketua LPMD'],
+                    ['name' => 'Bapak Bambang Hariyanto', 'role' => 'Sekretaris'],
+                    ['name' => 'Ibu Rahmawati', 'role' => 'Bendahara'],
+                    ['name' => 'Bapak Sugeng Supriadi', 'role' => 'Seksi Pembangunan'],
+                ],
             ],
-            ['acronym' => 'PKK', 'name' => 'Pemberdayaan dan Kesejahteraan Keluarga', 'leader' => 'Nama ketua menunggu data resmi', 'member_count' => 24,
+            [
+                'acronym' => 'PKK',
+                'name' => 'Pemberdayaan dan Kesejahteraan Keluarga',
+                'leader' => 'Ibu Hj. Endang Sulastri',
+                'member_count' => 24,
                 'focus' => 'Pemberdayaan keluarga, kesehatan, dan kesejahteraan.',
-                'responsibilities' => ['Mengelola program pemberdayaan keluarga.', 'Mendukung kegiatan kesehatan ibu dan anak.', 'Mendorong pendidikan serta ekonomi keluarga.'],
+                'description' => 'PKK Desa Ngampungan merupakan wadah pemberdayaan wanita yang berperan aktif dalam program kesehatan ibu-anak, posyandu, ketahanan pangan keluarga, dan peningkatan ekonomi kreatif warga.',
+                'responsibilities' => [
+                    'Mengelola program pemberdayaan keluarga.',
+                    'Mendukung kegiatan kesehatan ibu dan anak.',
+                    'Mendorong pendidikan serta ekonomi keluarga.',
+                ],
+                'members' => [
+                    ['name' => 'Ibu Hj. Endang Sulastri', 'role' => 'Ketua TP PKK'],
+                    ['name' => 'Ibu Siti Aminah', 'role' => 'Sekretaris PKK'],
+                    ['name' => 'Ibu Sri Rahayu', 'role' => 'Bendahara PKK'],
+                    ['name' => 'Ibu Lilik Suryani', 'role' => 'Ketua Pokja I'],
+                    ['name' => 'Ibu Dewanti', 'role' => 'Ketua Pokja II'],
+                ],
             ],
-            ['acronym' => 'KARTAR', 'name' => 'Karang Taruna', 'leader' => 'Nama ketua menunggu data resmi', 'member_count' => 30,
+            [
+                'acronym' => 'KARTAR',
+                'name' => 'Karang Taruna Tunas Muda',
+                'leader' => 'Aditya Pratama',
+                'member_count' => 30,
                 'focus' => 'Pengembangan kapasitas, kreativitas, dan kepedulian pemuda.',
-                'responsibilities' => ['Mengembangkan kegiatan kepemudaan.', 'Mendorong kreativitas dan usaha produktif pemuda.', 'Mendukung kegiatan sosial kemasyarakatan.'],
+                'description' => 'Karang Taruna Desa Ngampungan adalah wadah pengembangan generasi muda desa di bidang olahraga, kebudayaan, keagamaan, dan wirausaha muda.',
+                'responsibilities' => [
+                    'Mengembangkan kegiatan kepemudaan.',
+                    'Mendorong kreativitas dan usaha produktif pemuda.',
+                    'Mendukung kegiatan sosial kemasyarakatan.',
+                ],
+                'members' => [
+                    ['name' => 'Aditya Pratama', 'role' => 'Ketua Karang Taruna'],
+                    ['name' => 'Rian Hidayat', 'role' => 'Wakil Ketua'],
+                    ['name' => 'Dinda Permata', 'role' => 'Sekretaris'],
+                    ['name' => 'Fajar Sidik', 'role' => 'Bendahara'],
+                    ['name' => 'Bagus Setiawan', 'role' => 'Koordinator Olahraga'],
+                ],
             ],
         ];
 

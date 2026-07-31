@@ -20,9 +20,9 @@ export function VillageOfficialCard({
                     className="absolute -top-10 -right-10 size-36 rounded-full bg-emerald-500/5 blur-xl transition-all duration-500 group-hover:scale-125"
                 />
 
-                {official.photo ? (
+                {official.photo_url || official.photo ? (
                     <img
-                        src={official.photo}
+                        src={official.photo_url || official.photo || ''}
                         alt={`Profil ${official.name}`}
                         className="relative h-48 w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.04]"
                     />
