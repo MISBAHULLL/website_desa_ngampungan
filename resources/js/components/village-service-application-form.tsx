@@ -5,6 +5,8 @@ import {
     ArrowRight,
     Check,
     CheckCircle2,
+    ExternalLink,
+    Eye,
     FileText,
     Image as ImageIcon,
     Info,
@@ -188,6 +190,11 @@ export function VillageServiceApplicationForm({
         }
 
         setDeletingDocumentKey(null);
+    };
+
+    const previewUploadedDocument = (file: File) => {
+        const objectUrl = URL.createObjectURL(file);
+        window.open(objectUrl, '_blank');
     };
 
     const handleDocumentChange = (
@@ -737,32 +744,18 @@ export function VillageServiceApplicationForm({
                                                 </p>
                                             </div>
 
-                                            <label
-                                                htmlFor={`document-${docItem.key}`}
-                                                className={`inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold shadow-2xs transition-all active:scale-[0.98] ${
-                                                    isSelected
-                                                        ? 'border-emerald-300 bg-white text-emerald-800 hover:bg-emerald-50 hover:border-emerald-400'
-                                                        : 'border-emerald-200 bg-white text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300'
-                                                }`}
-                                            >
-                                                {isSelected ? (
-                                                    <>
-                                                        <RefreshCw
-                                                            aria-hidden="true"
-                                                            className="size-3.5 text-emerald-700"
-                                                        />
-                                                        Ganti berkas
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <Upload
-                                                            aria-hidden="true"
-                                                            className="size-4 text-emerald-700"
-                                                        />
-                                                        Pilih berkas
-                                                    </>
-                                                )}
-                                            </label>
+                                            {!isSelected && (
+                                                <label
+                                                    htmlFor={`document-${docItem.key}`}
+                                                    className="inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-50 hover:border-emerald-300 active:scale-[0.98]"
+                                                >
+                                                    <Upload
+                                                        aria-hidden="true"
+                                                        className="size-4 text-emerald-700"
+                                                    />
+                                                    Pilih berkas
+                                                </label>
+                                            )}
                                         </div>
 
                                         <input
@@ -782,8 +775,17 @@ export function VillageServiceApplicationForm({
 
                                         {isSelected && selectedFile ? (
                                             <div className="mt-3.5 flex flex-col justify-between gap-3 rounded-xl border border-emerald-200/80 bg-white p-3 shadow-2xs sm:flex-row sm:items-center">
-                                                <div className="flex items-center gap-3 min-w-0">
-                                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100/70 text-emerald-700">
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        previewUploadedDocument(
+                                                            selectedFile,
+                                                        )
+                                                    }
+                                                    className="group flex items-center gap-3 min-w-0 text-left transition-all hover:opacity-95 cursor-pointer"
+                                                    title="Klik untuk membuka & melihat pratinjau berkas"
+                                                >
+                                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100/70 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                                                         {selectedFile.type.includes(
                                                             'image',
                                                         ) ? (
@@ -793,22 +795,21 @@ export function VillageServiceApplicationForm({
                                                         )}
                                                     </div>
                                                     <div className="min-w-0">
-                                                        <p
-                                                            className="truncate text-xs font-bold text-slate-800"
-                                                            title={
-                                                                selectedFile.name
-                                                            }
-                                                        >
-                                                            {selectedFile.name}
-                                                        </p>
+                                                        <div className="flex items-center gap-1.5">
+                                                            <p className="truncate text-xs font-bold text-slate-800 group-hover:text-emerald-700 group-hover:underline">
+                                                                {
+                                                                    selectedFile.name
+                                                                }
+                                                            </p>
+                                                            <ExternalLink className="size-3 shrink-0 text-emerald-600 opacity-75 group-hover:opacity-100" />
+                                                        </div>
                                                         <p className="text-[11px] font-semibold text-slate-500">
                                                             {formatFileSize(
                                                                 selectedFile.size,
-                                                            )}{' '}
-                                                            · Ready
+                                                            )}
                                                         </p>
                                                     </div>
-                                                </div>
+                                                </button>
 
                                                 <button
                                                     type="button"
