@@ -192,9 +192,23 @@ export function VillageServiceApplicationForm({
         setDeletingDocumentKey(null);
     };
 
-    const previewUploadedDocument = (file: File) => {
-        const objectUrl = URL.createObjectURL(file);
-        window.open(objectUrl, '_blank');
+    const previewUploadedDocument = (file: File | null) => {
+        if (!file || typeof window === 'undefined') {
+            return;
+        }
+
+        try {
+            const objectUrl = URL.createObjectURL(file);
+            const previewWindow = window.open(objectUrl, '_blank');
+
+            if (!previewWindow) {
+                alert(
+                    'Pop-up diblokir oleh browser. Harap izinkan pop-up pada browser Anda untuk melihat pratinjau berkas.',
+                );
+            }
+        } catch (error) {
+            console.error('Gagal membuka pratinjau berkas:', error);
+        }
     };
 
     const handleDocumentChange = (
@@ -268,8 +282,12 @@ export function VillageServiceApplicationForm({
         setCurrentStep((step) => Math.max(step - 1, 1));
     };
 
-    const submitApplication = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
+    const submitApplication = (
+        event?: FormEvent<HTMLFormElement> | React.MouseEvent,
+    ) => {
+        if (event) {
+            event.preventDefault();
+        }
 
         if (!form.data.privacy_consent) {
             setClientErrors({
@@ -280,7 +298,7 @@ export function VillageServiceApplicationForm({
             return;
         }
 
-        form.submit(ServiceApplicationController(service.slug), {
+        form.post(ServiceApplicationController.url(service.slug), {
             forceFormData: true,
             preserveScroll: true,
             onError: (errors) => {
@@ -322,7 +340,9 @@ export function VillageServiceApplicationForm({
 
     if (visibleSuccess) {
         const waMessage = `Halo Admin Desa Ngampungan, saya telah mengirim pengajuan *${visibleSuccess.serviceTitle}* melalui website desa.\n\n*Rincian Pengajuan:*\n• Kode Resi: *${visibleSuccess.referenceNumber}*\n• Waktu: ${visibleSuccess.submittedAt} WIB\n\nMohon untuk dapat diproses. Terima kasih!`;
-        const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(waMessage)}`;
+        const villageWaNumber =
+            import.meta.env.VITE_VILLAGE_WHATSAPP_NUMBER || '6281234567890';
+        const waUrl = `https://wa.me/${villageWaNumber}?text=${encodeURIComponent(waMessage)}`;
 
         return (
             <div
@@ -348,23 +368,6 @@ export function VillageServiceApplicationForm({
                         </p>
                     </div>
 
-                    <div className="w-full rounded-2xl border border-emerald-200/80 bg-emerald-50/50 p-4 text-xs text-slate-700 sm:text-sm">
-                        <div className="flex items-start gap-3">
-                            <LockKeyhole
-                                aria-hidden="true"
-                                className="mt-0.5 size-5 shrink-0 text-emerald-700"
-                            />
-                            <div>
-                                <p className="font-bold text-emerald-950">
-                                    Berkas Tersimpan Aman di Server Desa
-                                </p>
-                                <p className="mt-1 text-slate-600 leading-relaxed text-xs">
-                                    Dokumen Anda telah dienkripsi secara privat. Untuk mempercepat proses verifikasi oleh perangkat desa, Anda dapat langsung mengonfirmasi pengajuan ini ke WhatsApp Resmi Desa Ngampungan.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
                     <div className="mt-2 flex w-full flex-wrap gap-3">
                         <a
                             href={waUrl}
@@ -373,7 +376,7 @@ export function VillageServiceApplicationForm({
                             className="inline-flex min-h-11 items-center justify-center gap-2.5 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-extrabold text-white shadow-md shadow-emerald-600/20 transition-all hover:bg-emerald-700 active:scale-[0.98]"
                         >
                             <svg className="size-4 fill-current" viewBox="0 0 24 24">
-                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.99c-.002 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c-.001 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.764.459 3.486 1.332 5.006L2 22l5.127-1.341c1.465.8 3.118 1.222 4.88 1.223h.005c5.507 0 9.991-4.478 9.992-9.985.001-2.666-1.033-5.172-2.918-7.058C17.199 3.033 14.685 2 12.012 2zm5.836 14.195c-.244.688-1.427 1.314-1.968 1.397-.541.082-1.227.118-3.522-.81-2.73-1.107-4.484-3.87-4.62-4.053-.135-.183-1.11-1.477-1.11-2.817 0-1.34.704-1.996.955-2.261.25-.265.545-.331.727-.331.183 0 .365.002.523.01.168.007.395-.064.618.472.228.548.775 1.892.842 2.03.068.138.114.301.023.485-.092.184-.138.3-.274.458-.137.158-.288.353-.412.474-.137.135-.28.283-.12.557.16.273.71 1.173 1.526 1.9 1.05.937 1.936 1.227 2.21 1.363.273.136.434.114.594-.069.16-.183.684-.798.867-1.072.183-.273.365-.228.616-.136.251.092 1.597.753 1.871.89.274.137.456.205.524.319.068.114.068.664-.176 1.352z"/>
                             </svg>
                             Konfirmasi via WA Desa
                         </a>
@@ -387,7 +390,7 @@ export function VillageServiceApplicationForm({
                         </button>
 
                         <Link
-                            href={trackServiceApplication({
+                            href={trackServiceApplication.url({
                                 query: {
                                     reference: visibleSuccess.referenceNumber,
                                 },
@@ -700,7 +703,11 @@ export function VillageServiceApplicationForm({
                                 const hasError = Boolean(
                                     fieldError(clientErrorKey, serverErrorKey),
                                 );
-                                const isSelected = Boolean(selectedFile);
+                                const isSelected = Boolean(
+                                    selectedFile &&
+                                        (selectedFile instanceof File ||
+                                            selectedFile instanceof Blob),
+                                );
 
                                 return (
                                     <div
@@ -969,25 +976,6 @@ export function VillageServiceApplicationForm({
                     </div>
                 )}
 
-                {form.progress && (
-                    <div
-                        aria-live="polite"
-                        className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/80 p-4 shadow-2xs"
-                    >
-                        <div className="flex items-center justify-between gap-4 text-xs font-bold text-emerald-950">
-                            <span>Mengunggah dokumen</span>
-                            <span>{form.progress.percentage}%</span>
-                        </div>
-                        <progress
-                            value={form.progress.percentage}
-                            max={100}
-                            className="mt-3 h-2 w-full accent-emerald-700"
-                        >
-                            {form.progress.percentage}%
-                        </progress>
-                    </div>
-                )}
-
                 {/* Modernized Bottom Action Bar */}
                 <div className="mt-8 flex flex-col-reverse justify-between gap-3 border-t border-slate-100 pt-6 sm:flex-row">
                     {currentStep > 1 ? (
@@ -1016,6 +1004,7 @@ export function VillageServiceApplicationForm({
                     ) : (
                         <button
                             type="submit"
+                            onClick={submitApplication}
                             disabled={form.processing}
                             className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-emerald-800/15 transition-all hover:bg-emerald-800 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
                         >

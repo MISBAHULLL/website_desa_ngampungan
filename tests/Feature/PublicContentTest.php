@@ -371,7 +371,7 @@ test('the second service increment exposes requirements, process, and a client-o
         ->toContain('validateDocuments')
         ->toContain('type="file"')
         ->toContain('maximumFileSize')
-        ->toContain('ServiceApplicationController(service.slug)')
+        ->toContain('ServiceApplicationController.url(service.slug)')
         ->toContain('forceFormData: true')
         ->toContain('Kirim pengajuan')
         ->toContain('Pengajuan Berhasil Diterima')

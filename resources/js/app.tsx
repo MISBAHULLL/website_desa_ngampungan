@@ -18,6 +18,7 @@ createInertiaApp({
             case name.startsWith('agenda/'):
             case name.startsWith('gallery/'):
             case name.startsWith('services/'):
+            case name.startsWith('service-applications/'):
             case name.startsWith('transparency/'):
             case name.startsWith('potentials/'):
             case name.startsWith('profile/'):

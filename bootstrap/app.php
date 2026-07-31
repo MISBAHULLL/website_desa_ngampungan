@@ -5,6 +5,7 @@ use App\Http\Middleware\HandleInertiaRequests;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
 use Illuminate\Http\Request;
 
@@ -27,4 +28,10 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
+
+        $exceptions->render(function (PostTooLargeException $e, Request $request) {
+            return back()->withErrors([
+                'documents' => 'Ukuran berkas yang diunggah melebihi batas maksimal konfigurasi server (PHP post_max_size).',
+            ]);
+        });
     })->create();
