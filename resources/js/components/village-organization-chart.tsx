@@ -1,50 +1,105 @@
 import { Link } from '@inertiajs/react';
-import { Building2, Network } from 'lucide-react';
-import type { VillageOfficial } from '@/lib/dummy-village-government';
-import { dummyVillageOfficials } from '@/lib/dummy-village-government';
+import { Building2, ChevronRight, Network, UserCheck } from 'lucide-react';
 import { show as officialShow } from '@/routes/government/officials';
+
+export type OfficialProp = {
+    id: number;
+    slug: string;
+    name: string;
+    initials: string;
+    position: string;
+    unit: string;
+    group: string;
+    photo_url: string | null;
+    term: string | null;
+    employee_id: string | null;
+    summary: string;
+    about: string | null;
+    responsibilities: string[];
+    service_focus: string[];
+    education: string[];
+    career: { period: string; role: string }[];
+    parent_id: number | null;
+    children?: OfficialProp[];
+};
 
 function OrganizationNode({
     official,
     emphasis = false,
+    onOpenDetail,
 }: {
-    official: VillageOfficial;
+    official: OfficialProp;
     emphasis?: boolean;
+    onOpenDetail?: (official: OfficialProp) => void;
 }) {
-    return (
-        <Link
-            href={officialShow(official.slug)}
-            className={
-                emphasis
-                    ? 'relative z-10 block w-full max-w-sm border border-village-primary bg-village-primary-dark p-5 text-center text-white shadow-village-floating transition hover:-translate-y-1 focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:ring-offset-2 focus-visible:outline-none'
-                    : 'relative z-10 block w-full border border-village-border bg-white p-4 text-center shadow-sm transition hover:-translate-y-0.5 hover:border-village-primary/50 hover:shadow-village-soft focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none'
-            }
-        >
+    const nodeContent = (
+        <>
             <span
                 className={
                     emphasis
-                        ? 'mx-auto flex size-11 items-center justify-center rounded-full bg-white/10 text-village-accent'
-                        : 'mx-auto flex size-10 items-center justify-center rounded-full bg-village-primary-light text-sm font-bold text-village-primary-dark'
+                        ? 'mx-auto flex size-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-300 ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105 overflow-hidden'
+                        : 'mx-auto flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-sm font-extrabold text-emerald-800 ring-1 ring-emerald-200/60 transition-transform duration-300 group-hover:scale-105 overflow-hidden'
                 }
             >
-                {emphasis ? (
-                    <Building2 aria-hidden="true" className="size-5" />
+                {official.photo_url ? (
+                    <img src={official.photo_url} alt={official.name} className="size-full object-cover" />
+                ) : emphasis ? (
+                    <Building2 aria-hidden="true" className="size-7" />
                 ) : (
                     official.initials
                 )}
             </span>
-            <span className="mt-3 block text-sm font-bold">
+            <span className={emphasis ? 'mt-3.5 block text-lg font-extrabold tracking-tight text-white' : 'mt-2.5 block text-sm font-bold text-gray-900 group-hover:text-emerald-700'}>
                 {official.name}
             </span>
             <span
                 className={
                     emphasis
-                        ? 'mt-1 block text-xs text-white/60'
-                        : 'mt-1 block text-xs text-village-muted'
+                        ? 'mt-1 block text-xs font-semibold text-emerald-200/90 uppercase tracking-wider'
+                        : 'mt-0.5 block text-xs font-medium text-gray-500'
                 }
             >
                 {official.position}
             </span>
+            <span
+                className={
+                    emphasis
+                        ? 'mt-3 inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold text-emerald-200'
+                        : 'mt-2.5 inline-flex items-center gap-1 text-[11px] font-bold text-emerald-600 transition-colors group-hover:text-emerald-700'
+                }
+            >
+                <span>Detail Profil</span>
+                <ChevronRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+            </span>
+        </>
+    );
+
+    if (onOpenDetail) {
+        return (
+            <button
+                type="button"
+                onClick={() => onOpenDetail(official)}
+                className={
+                    emphasis
+                        ? 'group relative z-10 block w-full max-w-md rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center text-white shadow-xl shadow-emerald-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer'
+                        : 'group relative z-10 block w-full rounded-xl border border-gray-200/90 bg-white p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer'
+                }
+            >
+                {nodeContent}
+            </button>
+        );
+    }
+
+    return (
+        <Link
+            href={officialShow(official.slug)}
+            className={
+                emphasis
+                    ? 'group relative z-10 block w-full max-w-md rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center text-white shadow-xl shadow-emerald-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400'
+                    : 'group relative z-10 block w-full rounded-xl border border-gray-200/90 bg-white p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500'
+            }
+        >
+            {nodeContent}
         </Link>
     );
 }
@@ -52,125 +107,159 @@ function OrganizationNode({
 function OrganizationGroup({
     title,
     officials,
+    badgeColor = 'bg-emerald-50 text-emerald-800 border-emerald-200',
+    onOpenDetail,
 }: {
     title: string;
-    officials: VillageOfficial[];
+    officials: OfficialProp[];
+    badgeColor?: string;
+    onOpenDetail?: (official: OfficialProp) => void;
 }) {
     return (
-        <div className="border border-village-border bg-village-surface-muted p-4 sm:p-5">
-            <div className="mb-4 flex items-center gap-2">
-                <Network
-                    aria-hidden="true"
-                    className="size-4 text-village-primary"
-                />
-                <h3 className="text-xs font-bold tracking-[0.14em] text-village-primary uppercase">
-                    {title}
-                </h3>
+        <div className="rounded-2xl border border-gray-200/80 bg-gray-50/50 p-5 shadow-2xs">
+            <div className="mb-4 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                    <span className={`flex size-7 items-center justify-center rounded-lg border text-xs ${badgeColor}`}>
+                        <Network aria-hidden="true" className="size-3.5" />
+                    </span>
+                    <h3 className="text-xs font-extrabold tracking-wider text-gray-800 uppercase">
+                        {title}
+                    </h3>
+                </div>
+                <span className="text-[11px] font-bold text-gray-400">
+                    {officials.length} Perangkat
+                </span>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
                 {officials.map((official) => (
-                    <OrganizationNode key={official.slug} official={official} />
+                    <OrganizationNode key={official.slug} official={official} onOpenDetail={onOpenDetail} />
                 ))}
             </div>
         </div>
     );
 }
 
-export function VillageOrganizationChart() {
-    const villageHead = dummyVillageOfficials.find(
+export function VillageOrganizationChart({
+    allOfficials = [],
+    onOpenDetail,
+}: {
+    allOfficials?: OfficialProp[];
+    onOpenDetail?: (official: OfficialProp) => void;
+}) {
+    const villageHead = allOfficials.find(
         (official) => official.group === 'leadership',
     );
-    const villageSecretary = dummyVillageOfficials.find(
+    const villageSecretary = allOfficials.find(
         (official) => official.position === 'Sekretaris Desa',
     );
-    const secretariatOfficials = dummyVillageOfficials.filter(
+    const secretariatOfficials = allOfficials.filter(
         (official) =>
             official.group === 'secretariat' &&
             official.position !== 'Sekretaris Desa',
     );
-    const technicalOfficials = dummyVillageOfficials.filter(
+    const technicalOfficials = allOfficials.filter(
         (official) => official.group === 'technical',
     );
-    const territorialOfficials = dummyVillageOfficials.filter(
+    const territorialOfficials = allOfficials.filter(
         (official) => official.group === 'territorial',
     );
 
-    if (!villageHead || !villageSecretary) {
+    if (!villageHead && !villageSecretary) {
         return null;
     }
 
     return (
         <div
             aria-label="Bagan struktur organisasi Pemerintah Desa Ngampungan"
-            className="overflow-hidden border border-village-border bg-white p-5 shadow-village-soft sm:p-8"
+            className="relative overflow-hidden rounded-3xl border border-gray-200/90 bg-white p-6 shadow-xl shadow-gray-200/40 sm:p-10"
         >
-            <div className="flex flex-col items-center">
-                <OrganizationNode official={villageHead} emphasis />
-                <span
-                    aria-hidden="true"
-                    className="h-8 w-px bg-village-primary/35"
-                />
-                <div className="w-full max-w-xs">
-                    <OrganizationNode official={villageSecretary} />
-                </div>
-                <span
-                    aria-hidden="true"
-                    className="h-8 w-px bg-village-primary/35"
-                />
+            {/* Background Decorative Grid */}
+            <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
 
+            <div className="relative flex flex-col items-center">
+                {/* Level 1: Kepala Desa */}
+                {villageHead && (
+                    <OrganizationNode official={villageHead} emphasis onOpenDetail={onOpenDetail} />
+                )}
+
+                {/* Connecting Vertical Line */}
+                {villageHead && villageSecretary && (
+                    <div aria-hidden="true" className="h-8 w-0.5 bg-gradient-to-b from-emerald-800 to-emerald-400" />
+                )}
+
+                {/* Level 2: Sekretaris Desa */}
+                {villageSecretary && (
+                    <div className="w-full max-w-sm">
+                        <OrganizationNode official={villageSecretary} onOpenDetail={onOpenDetail} />
+                    </div>
+                )}
+
+                {/* Connecting Vertical Line */}
+                <div aria-hidden="true" className="h-8 w-0.5 bg-emerald-300" />
+
+                {/* Level 3: Urusan Sekretariat & Pelaksana Teknis */}
                 <div className="relative w-full pt-6">
-                    <span
+                    <div
                         aria-hidden="true"
-                        className="absolute top-0 right-1/4 left-1/4 h-px bg-village-primary/35"
+                        className="absolute top-0 right-1/4 left-1/4 h-0.5 bg-emerald-200"
                     />
-                    <span
+                    <div
                         aria-hidden="true"
-                        className="absolute top-0 left-1/4 h-6 w-px bg-village-primary/35"
+                        className="absolute top-0 left-1/4 h-6 w-0.5 bg-emerald-200"
                     />
-                    <span
+                    <div
                         aria-hidden="true"
-                        className="absolute top-0 right-1/4 h-6 w-px bg-village-primary/35"
+                        className="absolute top-0 right-1/4 h-6 w-0.5 bg-emerald-200"
                     />
-                    <div className="grid gap-5 lg:grid-cols-2">
+
+                    <div className="grid gap-6 lg:grid-cols-2">
                         <OrganizationGroup
                             title="Urusan Sekretariat"
                             officials={secretariatOfficials}
+                            badgeColor="bg-emerald-50 text-emerald-700 border-emerald-200"
+                            onOpenDetail={onOpenDetail}
                         />
                         <OrganizationGroup
                             title="Pelaksana Teknis"
                             officials={technicalOfficials}
+                            badgeColor="bg-teal-50 text-teal-700 border-teal-200"
+                            onOpenDetail={onOpenDetail}
                         />
                     </div>
                 </div>
 
-                <span
-                    aria-hidden="true"
-                    className="h-8 w-px bg-village-primary/35"
-                />
-                <div className="w-full border border-village-border bg-village-primary-light p-4 sm:p-5">
-                    <div className="mb-4 flex items-center gap-2">
-                        <Network
-                            aria-hidden="true"
-                            className="size-4 text-village-primary"
-                        />
-                        <h3 className="text-xs font-bold tracking-[0.14em] text-village-primary uppercase">
-                            Pelaksana Kewilayahan
-                        </h3>
+                {/* Connecting Line to Territorial */}
+                <div aria-hidden="true" className="h-8 w-0.5 bg-emerald-200" />
+
+                {/* Level 4: Pelaksana Kewilayahan (Kepala Dusun) */}
+                <div className="w-full rounded-2xl border border-emerald-100 bg-emerald-50/40 p-5 sm:p-6">
+                    <div className="mb-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <span className="flex size-7 items-center justify-center rounded-lg border border-emerald-200 bg-white text-emerald-800 shadow-2xs">
+                                <UserCheck aria-hidden="true" className="size-3.5 text-emerald-600" />
+                            </span>
+                            <h3 className="text-xs font-extrabold tracking-wider text-emerald-900 uppercase">
+                                Pelaksana Kewilayahan (Kepala Dusun)
+                            </h3>
+                        </div>
+                        <span className="text-[11px] font-bold text-emerald-700">
+                            {territorialOfficials.length} Wilayah Kasun
+                        </span>
                     </div>
                     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {territorialOfficials.map((official) => (
                             <OrganizationNode
                                 key={official.slug}
                                 official={official}
+                                onOpenDetail={onOpenDetail}
                             />
                         ))}
                     </div>
                 </div>
             </div>
 
-            <p className="mt-6 text-center text-sm leading-6 text-village-muted">
-                Klik nama atau jabatan untuk membuka profil perangkat. Susunan
-                dan data personal masih berupa simulasi frontend.
+            <p className="mt-8 text-center text-xs font-medium leading-relaxed text-gray-500">
+                💡 Klik nama atau jabatan untuk melihat rincian tugas dan profil lengkap perangkat desa.
             </p>
         </div>
     );

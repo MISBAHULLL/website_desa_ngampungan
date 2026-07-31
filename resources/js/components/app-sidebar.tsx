@@ -5,17 +5,23 @@ import {
     Camera,
     ClipboardList,
     FolderGit2,
+    Landmark,
     LayoutGrid,
     Megaphone,
     MessagesSquare,
+    Network,
     Newspaper,
+    Users,
 } from 'lucide-react';
 import { index as agendasIndex } from '@/actions/App/Http/Controllers/Admin/AgendaController';
 import { index as announcementsIndex } from '@/actions/App/Http/Controllers/Admin/AnnouncementController';
 import { index as contactMessagesIndex } from '@/actions/App/Http/Controllers/Admin/ContactMessageController';
 import { index as galleryIndex } from '@/actions/App/Http/Controllers/Admin/GalleryController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsController';
+import { index as orgStructureIndex } from '@/actions/App/Http/Controllers/Admin/OrganizationStructureController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
+import { index as villageInstitutionsIndex } from '@/actions/App/Http/Controllers/Admin/VillageInstitutionController';
+import { index as villageOfficialsIndex } from '@/actions/App/Http/Controllers/Admin/VillageOfficialController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -57,6 +63,21 @@ const mainNavItems: NavItem[] = [
         title: 'Kelola Agenda',
         href: agendasIndex(),
         icon: CalendarDays,
+    },
+    {
+        title: 'Perangkat Desa',
+        href: villageOfficialsIndex(),
+        icon: Users,
+    },
+    {
+        title: 'Lembaga Desa',
+        href: villageInstitutionsIndex(),
+        icon: Landmark,
+    },
+    {
+        title: 'Struktur Organisasi',
+        href: orgStructureIndex(),
+        icon: Network,
     },
     {
         title: 'Pesan Masuk',

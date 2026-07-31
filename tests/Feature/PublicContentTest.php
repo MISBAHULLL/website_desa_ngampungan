@@ -120,8 +120,7 @@ test('the village government module exposes organization, officials, institution
         ->toContain('VillageOrganizationChart')
         ->toContain('VillageOfficialCard')
         ->toContain('officialFilters.map')
-        ->toContain('dummyVillageInstitutions.map')
-        ->toContain('Data simulasi frontend');
+        ->toContain('dummyVillageInstitutions.map');
 
     expect($governmentShowSource)
         ->not->toBeFalse()
@@ -154,8 +153,7 @@ test('the village government module exposes organization, officials, institution
     expect($officialCardSource)
         ->not->toBeFalse()
         ->toContain('officialShow(official.slug)')
-        ->toContain('Lihat profil')
-        ->toContain('Data simulasi');
+        ->toContain('Lihat Profil Lengkap');
 
     expect($homepageSource)
         ->not->toBeFalse()

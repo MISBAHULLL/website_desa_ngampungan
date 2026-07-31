@@ -1,63 +1,81 @@
 import { Link } from '@inertiajs/react';
-import { ArrowUpRight, BadgeInfo } from 'lucide-react';
+import { ArrowRight, UserCheck } from 'lucide-react';
 import type { VillageOfficial } from '@/lib/dummy-village-government';
 import { show as officialShow } from '@/routes/government/officials';
 
 export function VillageOfficialCard({
     official,
+    onOpenDetail,
 }: {
     official: VillageOfficial;
+    onOpenDetail?: (official: VillageOfficial) => void;
 }) {
     return (
-        <article className="group flex h-full flex-col overflow-hidden border border-village-border bg-white shadow-sm transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-village-primary/40 hover:shadow-village-soft">
-            <div className="relative flex min-h-48 items-end justify-center overflow-hidden bg-village-surface-muted px-6 pt-6">
+        <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-950/5">
+            {/* Header Image / Avatar Container */}
+            <div className="relative flex h-52 items-end justify-center overflow-hidden bg-gradient-to-b from-emerald-50/70 via-gray-50 to-white px-6 pt-6">
+                {/* Decorative background shape */}
                 <div
                     aria-hidden="true"
-                    className="absolute -top-12 -right-12 size-40 rounded-full border-[32px] border-village-primary/[0.055]"
+                    className="absolute -top-10 -right-10 size-36 rounded-full bg-emerald-500/5 blur-xl transition-all duration-500 group-hover:scale-125"
                 />
 
                 {official.photo ? (
                     <img
                         src={official.photo}
-                        alt={`Ilustrasi sementara ${official.name}`}
-                        className="relative h-44 w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.03]"
+                        alt={`Profil ${official.name}`}
+                        className="relative h-48 w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.04]"
                     />
                 ) : (
-                    <div className="relative mb-7 flex size-24 items-center justify-center rounded-full border-4 border-white bg-village-primary-light text-2xl font-bold text-village-primary-dark shadow-sm">
-                        {official.initials}
+                    <div className="relative mb-6 flex size-24 items-center justify-center rounded-2xl border border-emerald-100 bg-white font-bold text-emerald-800 shadow-md transition-transform duration-300 group-hover:scale-105">
+                        <span className="text-2xl font-extrabold tracking-wider">
+                            {official.initials}
+                        </span>
                     </div>
                 )}
 
-                <span className="absolute top-4 left-4 bg-white px-2.5 py-1.5 text-[0.625rem] font-bold tracking-[0.12em] text-village-muted uppercase shadow-sm">
-                    Data simulasi
+                {/* Unit Tag Badge */}
+                <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-800 shadow-xs border border-emerald-100 uppercase">
+                    <UserCheck aria-hidden="true" className="size-3 text-emerald-600" />
+                    {official.unit}
                 </span>
             </div>
 
-            <div className="flex grow flex-col p-5">
-                <p className="text-xs font-bold tracking-[0.14em] text-village-primary uppercase">
-                    {official.unit}
-                </p>
-                <h3 className="mt-2 text-xl font-bold text-village-ink">
+            {/* Content Details */}
+            <div className="flex grow flex-col p-6">
+                <h3 className="text-lg font-extrabold tracking-tight text-gray-900 transition-colors group-hover:text-emerald-700">
                     {official.name}
                 </h3>
-                <p className="mt-1 text-sm font-semibold text-village-muted">
+                <p className="mt-1 text-xs font-bold tracking-wide text-emerald-600 uppercase">
                     {official.position}
                 </p>
-                <p className="mt-4 line-clamp-3 text-sm leading-6 text-village-muted">
+
+                <p className="mt-3.5 line-clamp-3 text-xs leading-relaxed text-gray-600">
                     {official.summary}
                 </p>
 
                 <div className="mt-auto pt-6">
-                    <Link
-                        href={officialShow(official.slug)}
-                        className="inline-flex min-h-11 items-center gap-2 font-bold text-village-primary transition hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
-                    >
-                        <BadgeInfo aria-hidden="true" className="size-4" />
-                        Lihat profil
-                        <ArrowUpRight aria-hidden="true" className="size-4" />
-                    </Link>
+                    {onOpenDetail ? (
+                        <button
+                            type="button"
+                            onClick={() => onOpenDetail(official)}
+                            className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white group-hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer"
+                        >
+                            <span>Lihat Profil Lengkap</span>
+                            <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                        </button>
+                    ) : (
+                        <Link
+                            href={officialShow(official.slug)}
+                            className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white group-hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                        >
+                            <span>Lihat Profil Lengkap</span>
+                            <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                        </Link>
+                    )}
                 </div>
             </div>
         </article>
     );
 }
+

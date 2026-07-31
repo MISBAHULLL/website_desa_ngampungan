@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\OrganizationStructureController;
 use App\Http\Controllers\Admin\ServiceApplicationController as AdminServiceApplicationController;
 use App\Http\Controllers\Admin\ServiceApplicationDocumentController as AdminServiceApplicationDocumentController;
+use App\Http\Controllers\Admin\VillageInstitutionController;
+use App\Http\Controllers\Admin\VillageOfficialController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\ContactMessageController;
@@ -154,6 +157,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->names('admin.agendas');
     Route::patch('dashboard/agenda/{agenda}/toggle-featured', [App\Http\Controllers\Admin\AgendaController::class, 'toggleFeatured'])
         ->name('admin.agendas.toggle-featured');
+
+    Route::resource('dashboard/perangkat-desa', VillageOfficialController::class)
+        ->parameters(['perangkat-desa' => 'villageOfficial'])
+        ->names('admin.village-officials');
+
+    Route::resource('dashboard/lembaga-desa', VillageInstitutionController::class)
+        ->parameters(['lembaga-desa' => 'villageInstitution'])
+        ->names('admin.village-institutions');
+
+    Route::get('dashboard/struktur-organisasi', [OrganizationStructureController::class, 'index'])
+        ->name('admin.organization-structure.index');
+    Route::patch('dashboard/struktur-organisasi', [OrganizationStructureController::class, 'updateStructure'])
+        ->name('admin.organization-structure.update');
 });
 
 require __DIR__.'/settings.php';

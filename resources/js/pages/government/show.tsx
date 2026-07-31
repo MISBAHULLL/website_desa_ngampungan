@@ -2,6 +2,7 @@ import { Head, Link } from '@inertiajs/react';
 import {
     ArrowLeft,
     ArrowRight,
+    Award,
     BadgeCheck,
     BriefcaseBusiness,
     Check,
@@ -9,6 +10,7 @@ import {
     GraduationCap,
     Info,
     ShieldCheck,
+    UserCheck,
     UserRound,
 } from 'lucide-react';
 import { PublicPageShell } from '@/components/public-page-shell';
@@ -35,24 +37,23 @@ export default function VillageOfficialShow({
         return (
             <PublicPageShell activeSection="government">
                 <Head title="Profil Perangkat Tidak Ditemukan" />
-                <section className="bg-village-canvas py-20">
-                    <div className="mx-auto max-w-2xl px-5 text-center lg:px-12">
-                        <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-village-primary-light text-village-primary">
-                            <UserRound aria-hidden="true" className="size-6" />
+                <section className="bg-gray-50/60 py-20">
+                    <div className="mx-auto max-w-2xl px-4 text-center sm:px-6 lg:px-8">
+                        <span className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200">
+                            <UserRound aria-hidden="true" className="size-8" />
                         </span>
-                        <h1 className="mt-6 text-3xl font-bold">
+                        <h1 className="mt-6 text-3xl font-extrabold text-gray-900">
                             Profil perangkat tidak ditemukan
                         </h1>
-                        <p className="mt-4 leading-7 text-village-muted">
-                            Slug perangkat belum tersedia pada data dummy
-                            frontend.
+                        <p className="mt-3 text-sm leading-relaxed text-gray-600">
+                            Profil aparatur desa yang Anda cari belum tersedia.
                         </p>
                         <Link
                             href={`${governmentIndex.url()}#perangkat-desa`}
-                            className="mt-8 inline-flex min-h-11 items-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white"
+                            className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-2xl bg-emerald-600 px-6 text-sm font-bold text-white shadow-md shadow-emerald-600/20 transition-all hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                         >
                             <ArrowLeft aria-hidden="true" className="size-4" />
-                            Kembali ke daftar perangkat
+                            <span>Kembali ke Daftar Perangkat</span>
                         </Link>
                     </div>
                 </section>
@@ -60,7 +61,7 @@ export default function VillageOfficialShow({
         );
     }
 
-    const pageDescription = `${official.name}, ${official.position} Pemerintah Desa Ngampungan. Profil ini masih menggunakan data simulasi frontend.`;
+    const pageDescription = `${official.name}, ${official.position} Pemerintah Desa Ngampungan. Profil resmi aparatur desa Ngampungan.`;
     const relatedOfficials = dummyVillageOfficials
         .filter(
             (candidate) =>
@@ -101,196 +102,207 @@ export default function VillageOfficialShow({
                 />
             </Head>
 
-            <section className="border-b border-village-border bg-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-10 lg:px-12">
+            {/* BREADCRUMB HEADER */}
+            <section className="border-b border-gray-200/80 bg-white">
+                <div className="mx-auto max-w-[1440px] px-4 py-5 sm:px-6 lg:px-10">
                     <nav
                         aria-label="Breadcrumb"
-                        className="flex flex-wrap items-center gap-2 text-sm text-village-muted"
+                        className="flex flex-wrap items-center gap-2 text-xs font-medium text-gray-500"
                     >
                         <Link
                             href={home()}
-                            className="transition hover:text-village-primary"
+                            className="transition-colors hover:text-emerald-700"
                         >
                             Beranda
                         </Link>
                         <ChevronRight
                             aria-hidden="true"
-                            className="size-4 text-village-border"
+                            className="size-3.5 text-gray-300"
                         />
                         <Link
                             href={governmentIndex()}
-                            className="transition hover:text-village-primary"
+                            className="transition-colors hover:text-emerald-700"
                         >
                             Pemerintahan Desa
                         </Link>
                         <ChevronRight
                             aria-hidden="true"
-                            className="size-4 text-village-border"
+                            className="size-3.5 text-gray-300"
                         />
-                        <span aria-current="page" className="text-village-ink">
+                        <span aria-current="page" className="font-bold text-gray-900">
                             {official.name}
                         </span>
                     </nav>
                 </div>
             </section>
 
-            <section className="bg-village-primary-dark text-white">
-                <div className="mx-auto grid max-w-[1280px] gap-10 px-5 py-12 lg:grid-cols-12 lg:items-center lg:px-12 lg:py-16">
-                    <div className="lg:col-span-4">
-                        <div className="relative mx-auto flex aspect-[4/5] max-w-sm items-end justify-center overflow-hidden border border-white/15 bg-white/[0.06]">
-                            <div
-                                aria-hidden="true"
-                                className="absolute -top-12 -right-12 size-48 rounded-full border-[38px] border-white/[0.04]"
-                            />
-                            {official.photo ? (
-                                <img
-                                    src={official.photo}
-                                    alt={`Ilustrasi sementara ${official.name}`}
-                                    className="relative h-[92%] w-full object-contain object-bottom p-5"
-                                />
-                            ) : (
-                                <div className="relative mb-16 flex size-32 items-center justify-center rounded-full border-4 border-white/20 bg-white/10 text-4xl font-bold">
-                                    {official.initials}
-                                </div>
-                            )}
-                            <span className="absolute top-5 left-5 bg-village-accent px-3 py-1.5 text-[0.6875rem] font-bold tracking-[0.12em] text-village-primary-dark uppercase">
-                                Data simulasi
-                            </span>
-                        </div>
-                    </div>
+            {/* HERO PROFILE SUMMARY */}
+            <section className="relative overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-950 text-white">
+                <div
+                    aria-hidden="true"
+                    className="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-emerald-500/15 blur-3xl"
+                />
 
-                    <div className="lg:col-span-8">
-                        <p className="text-xs font-bold tracking-[0.18em] text-village-accent uppercase">
-                            Profil Perangkat Desa
-                        </p>
-                        <h1 className="mt-4 text-4xl font-bold tracking-tight md:text-6xl">
-                            {official.name}
-                        </h1>
-                        <p className="mt-3 text-xl font-semibold text-white/70">
-                            {official.position}
-                        </p>
-                        <p className="mt-7 max-w-3xl text-lg leading-8 text-white/65">
-                            {official.summary}
-                        </p>
-
-                        <dl className="mt-9 grid gap-px bg-white/15 sm:grid-cols-3">
-                            <div className="bg-village-primary-dark py-4 sm:pr-5">
-                                <dt className="text-xs tracking-[0.13em] text-white/45 uppercase">
-                                    Unit Kerja
-                                </dt>
-                                <dd className="mt-2 font-bold">
+                <div className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:px-10 md:py-16">
+                    <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
+                        {/* Profile Image Column */}
+                        <div className="lg:col-span-4">
+                            <div className="relative mx-auto aspect-[4/5] max-w-sm overflow-hidden rounded-3xl border border-emerald-700/60 bg-emerald-950/80 p-4 shadow-2xl">
+                                {official.photo ? (
+                                    <img
+                                        src={official.photo}
+                                        alt={`Foto ${official.name}`}
+                                        className="h-full w-full object-contain object-bottom"
+                                    />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center rounded-2xl bg-emerald-900 text-4xl font-extrabold text-white ring-1 ring-emerald-700/50">
+                                        {official.initials}
+                                    </div>
+                                )}
+                                <span className="absolute top-6 left-6 inline-flex items-center gap-1.5 rounded-full bg-emerald-600 px-3 py-1 text-[11px] font-bold tracking-wider text-white shadow-xs uppercase">
+                                    <UserCheck className="size-3" />
                                     {official.unit}
-                                </dd>
+                                </span>
                             </div>
-                            <div className="bg-village-primary-dark py-4 sm:px-5">
-                                <dt className="text-xs tracking-[0.13em] text-white/45 uppercase">
-                                    Kode Profil
-                                </dt>
-                                <dd className="mt-2 font-bold">
-                                    {official.employeeId}
-                                </dd>
-                            </div>
-                            <div className="bg-village-primary-dark py-4 sm:pl-5">
-                                <dt className="text-xs tracking-[0.13em] text-white/45 uppercase">
-                                    Periode
-                                </dt>
-                                <dd className="mt-2 font-bold">
-                                    {official.term}
-                                </dd>
-                            </div>
-                        </dl>
+                        </div>
+
+                        {/* Profile Title & Quick Data Column */}
+                        <div className="lg:col-span-8">
+                            <span className="inline-flex items-center gap-2 rounded-full border border-emerald-400/30 bg-emerald-500/10 px-4 py-1 text-xs font-bold tracking-wider text-emerald-300 uppercase">
+                                <Award className="size-3.5 text-emerald-400" />
+                                Aparatur Pemerintah Desa
+                            </span>
+                            <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white">
+                                {official.name}
+                            </h1>
+                            <p className="mt-2 text-lg font-bold text-emerald-300">
+                                {official.position}
+                            </p>
+                            <p className="mt-5 max-w-3xl text-sm leading-relaxed text-emerald-100/80 md:text-base">
+                                {official.summary}
+                            </p>
+
+                            <dl className="mt-8 grid grid-cols-2 gap-4 rounded-2xl border border-emerald-800 bg-emerald-900/60 p-5 sm:grid-cols-3">
+                                <div>
+                                    <dt className="text-[11px] font-bold tracking-wider text-emerald-200/70 uppercase">
+                                        Unit Kerja
+                                    </dt>
+                                    <dd className="mt-1 text-sm font-extrabold text-white">
+                                        {official.unit}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt className="text-[11px] font-bold tracking-wider text-emerald-200/70 uppercase">
+                                        Kode Jabatan
+                                    </dt>
+                                    <dd className="mt-1 text-sm font-extrabold text-white">
+                                        {official.employeeId}
+                                    </dd>
+                                </div>
+                                <div>
+                                    <dt className="text-[11px] font-bold tracking-wider text-emerald-200/70 uppercase">
+                                        Masa Jabatan
+                                    </dt>
+                                    <dd className="mt-1 text-sm font-extrabold text-white">
+                                        {official.term}
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
                     </div>
                 </div>
             </section>
 
-            <section className="bg-village-canvas py-14 md:py-20">
-                <div className="mx-auto grid max-w-[1280px] gap-6 px-5 lg:grid-cols-12 lg:px-12">
+            {/* DETAILED INFORMATION CARDS */}
+            <section className="bg-gray-50/60 py-14 md:py-20">
+                <div className="mx-auto grid max-w-[1440px] gap-8 px-4 sm:px-6 lg:grid-cols-12 lg:px-10">
                     <div className="grid gap-6 lg:col-span-8">
-                        <article className="border border-village-border bg-white p-6 shadow-sm sm:p-8">
+                        {/* Tentang Perangkat Card */}
+                        <article className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs sm:p-8">
                             <div className="flex items-center gap-3">
-                                <BadgeCheck
-                                    aria-hidden="true"
-                                    className="size-5 text-village-primary"
-                                />
-                                <h2 className="text-2xl font-bold">
+                                <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/60">
+                                    <BadgeCheck aria-hidden="true" className="size-5" />
+                                </span>
+                                <h2 className="text-xl font-extrabold text-gray-900">
                                     Tentang Perangkat
                                 </h2>
                             </div>
-                            <p className="mt-5 leading-8 text-village-muted">
+                            <p className="mt-4 text-sm leading-relaxed text-gray-600 md:text-base">
                                 {official.about}
                             </p>
                         </article>
 
-                        <article className="border border-village-border bg-white p-6 shadow-sm sm:p-8">
+                        {/* Tugas dan Tanggung Jawab Card */}
+                        <article className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs sm:p-8">
                             <div className="flex items-center gap-3">
-                                <BriefcaseBusiness
-                                    aria-hidden="true"
-                                    className="size-5 text-village-primary"
-                                />
-                                <h2 className="text-2xl font-bold">
+                                <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/60">
+                                    <BriefcaseBusiness aria-hidden="true" className="size-5" />
+                                </span>
+                                <h2 className="text-xl font-extrabold text-gray-900">
                                     Tugas dan Tanggung Jawab
                                 </h2>
                             </div>
-                            <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-                                {official.responsibilities.map(
-                                    (responsibility) => (
-                                        <li
-                                            key={responsibility}
-                                            className="flex items-start gap-3 border-t border-village-border pt-4 leading-7 text-village-muted"
-                                        >
-                                            <Check
-                                                aria-hidden="true"
-                                                className="mt-1 size-4 shrink-0 text-village-primary"
-                                            />
-                                            {responsibility}
-                                        </li>
-                                    ),
-                                )}
+                            <ul className="mt-6 grid gap-3 sm:grid-cols-2">
+                                {official.responsibilities.map((resp) => (
+                                    <li
+                                        key={resp}
+                                        className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/60 p-4 text-xs font-medium leading-relaxed text-gray-700"
+                                    >
+                                        <Check
+                                            aria-hidden="true"
+                                            className="mt-0.5 size-4 shrink-0 text-emerald-600"
+                                        />
+                                        <span>{resp}</span>
+                                    </li>
+                                ))}
                             </ul>
                         </article>
 
-                        <article className="border border-village-border bg-white p-6 shadow-sm sm:p-8">
+                        {/* Pendidikan dan Riwayat Jabatan Card */}
+                        <article className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs sm:p-8">
                             <div className="flex items-center gap-3">
-                                <GraduationCap
-                                    aria-hidden="true"
-                                    className="size-5 text-village-primary"
-                                />
-                                <h2 className="text-2xl font-bold">
+                                <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/60">
+                                    <GraduationCap aria-hidden="true" className="size-5" />
+                                </span>
+                                <h2 className="text-xl font-extrabold text-gray-900">
                                     Pendidikan dan Riwayat Jabatan
                                 </h2>
                             </div>
 
                             <div className="mt-6 grid gap-8 sm:grid-cols-2">
+                                {/* Education */}
                                 <div>
-                                    <h3 className="text-xs font-bold tracking-[0.14em] text-village-primary uppercase">
-                                        Pendidikan
+                                    <h3 className="text-xs font-extrabold tracking-wider text-emerald-700 uppercase">
+                                        Riwayat Pendidikan
                                     </h3>
                                     <ul className="mt-4 grid gap-3">
-                                        {official.education.map((education) => (
+                                        {official.education.map((edu) => (
                                             <li
-                                                key={education}
-                                                className="border-l-2 border-village-primary-light pl-4 text-sm leading-6 text-village-muted"
+                                                key={edu}
+                                                className="rounded-xl border-l-4 border-emerald-500 bg-emerald-50/40 p-3.5 text-xs font-semibold text-gray-800"
                                             >
-                                                {education}
+                                                {edu}
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
+
+                                {/* Career */}
                                 <div>
-                                    <h3 className="text-xs font-bold tracking-[0.14em] text-village-primary uppercase">
+                                    <h3 className="text-xs font-extrabold tracking-wider text-emerald-700 uppercase">
                                         Riwayat Jabatan
                                     </h3>
-                                    <ol className="mt-4 grid gap-4">
-                                        {official.career.map((career) => (
+                                    <ol className="mt-4 grid gap-3">
+                                        {official.career.map((car) => (
                                             <li
-                                                key={`${career.period}-${career.role}`}
-                                                className="border-l-2 border-village-accent pl-4"
+                                                key={`${car.period}-${car.role}`}
+                                                className="rounded-xl border border-gray-200/80 bg-gray-50/50 p-3.5"
                                             >
-                                                <p className="text-xs font-bold text-village-primary">
-                                                    {career.period}
-                                                </p>
-                                                <p className="mt-1 text-sm leading-6 text-village-muted">
-                                                    {career.role}
+                                                <span className="inline-block rounded-md bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                                                    {car.period}
+                                                </span>
+                                                <p className="mt-1 text-xs font-bold text-gray-900">
+                                                    {car.role}
                                                 </p>
                                             </li>
                                         ))}
@@ -300,20 +312,21 @@ export default function VillageOfficialShow({
                         </article>
                     </div>
 
+                    {/* Sidebar Information */}
                     <aside className="grid content-start gap-6 lg:col-span-4">
-                        <div className="border border-village-border bg-white p-6 shadow-sm">
-                            <ShieldCheck
-                                aria-hidden="true"
-                                className="size-6 text-village-primary"
-                            />
-                            <h2 className="mt-5 text-xl font-bold">
+                        {/* Service Focus */}
+                        <div className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs">
+                            <span className="flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-800 ring-1 ring-emerald-200/60">
+                                <ShieldCheck aria-hidden="true" className="size-5" />
+                            </span>
+                            <h2 className="mt-4 text-lg font-extrabold text-gray-900">
                                 Fokus Pelayanan
                             </h2>
-                            <div className="mt-5 flex flex-wrap gap-2">
+                            <div className="mt-4 flex flex-wrap gap-2">
                                 {official.serviceFocus.map((focus) => (
                                     <span
                                         key={focus}
-                                        className="bg-village-primary-light px-3 py-2 text-sm font-semibold text-village-primary-dark"
+                                        className="inline-flex items-center rounded-xl border border-emerald-200/70 bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800"
                                     >
                                         {focus}
                                     </span>
@@ -321,74 +334,61 @@ export default function VillageOfficialShow({
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-3 border border-[#efdcae] bg-[#fff8ea] p-5 text-sm leading-6 text-[#755018]">
-                            <Info
-                                aria-hidden="true"
-                                className="mt-0.5 size-5 shrink-0"
-                            />
-                            <p>
-                                <strong>Profil simulasi.</strong> Informasi
-                                personal, pendidikan, masa jabatan, dan tugas
-                                akan disesuaikan setelah data resmi tersedia.
-                            </p>
-                        </div>
-
+                        {/* Back Button */}
                         <Link
                             href={`${governmentIndex.url()}#perangkat-desa`}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary hover:bg-village-primary-light"
+                            className="inline-flex min-h-12 items-center justify-center gap-2 rounded-2xl border border-gray-200 bg-white px-5 text-sm font-bold text-gray-800 shadow-2xs transition-all hover:border-emerald-500 hover:bg-emerald-50 hover:text-emerald-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
                         >
                             <ArrowLeft aria-hidden="true" className="size-4" />
-                            Kembali ke daftar perangkat
+                            <span>Kembali ke Daftar Perangkat</span>
                         </Link>
                     </aside>
                 </div>
             </section>
 
+            {/* RELATED OFFICIALS SECTION */}
             {relatedOfficials.length > 0 && (
-                <section className="border-t border-village-border bg-white py-14 md:py-20">
-                    <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
+                <section className="border-t border-gray-200/80 bg-white py-14 md:py-20">
+                    <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10">
                         <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
                             <div>
-                                <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                <span className="text-xs font-bold tracking-wider text-emerald-600 uppercase">
                                     Satu Kelompok Kerja
-                                </p>
-                                <h2 className="mt-2 text-3xl font-bold">
+                                </span>
+                                <h2 className="mt-1 text-2xl font-extrabold text-gray-900 sm:text-3xl">
                                     Perangkat Terkait
                                 </h2>
                             </div>
                             <Link
                                 href={`${governmentIndex.url()}#perangkat-desa`}
-                                className="inline-flex min-h-11 items-center gap-2 font-bold text-village-primary"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 transition-colors hover:text-emerald-800"
                             >
-                                Lihat semua
-                                <ArrowRight
-                                    aria-hidden="true"
-                                    className="size-4"
-                                />
+                                <span>Lihat Semua Perangkat</span>
+                                <ArrowRight aria-hidden="true" className="size-3.5" />
                             </Link>
                         </div>
 
                         <div className="mt-8 grid gap-5 md:grid-cols-3">
-                            {relatedOfficials.map((relatedOfficial) => (
+                            {relatedOfficials.map((related) => (
                                 <Link
-                                    key={relatedOfficial.slug}
-                                    href={officialShow(relatedOfficial.slug)}
-                                    className="group flex items-center gap-4 border border-village-border bg-village-canvas p-5 transition hover:border-village-primary/50 hover:shadow-village-soft"
+                                    key={related.slug}
+                                    href={officialShow(related.slug)}
+                                    className="group flex items-center gap-4 rounded-2xl border border-gray-200/80 bg-gray-50/50 p-4 transition-all hover:-translate-y-0.5 hover:border-emerald-500/40 hover:bg-white hover:shadow-md"
                                 >
-                                    <span className="flex size-12 shrink-0 items-center justify-center rounded-full bg-village-primary-light font-bold text-village-primary-dark">
-                                        {relatedOfficial.initials}
+                                    <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-emerald-100 font-extrabold text-emerald-800">
+                                        {related.initials}
                                     </span>
                                     <span className="min-w-0">
-                                        <span className="block truncate font-bold">
-                                            {relatedOfficial.name}
+                                        <span className="block truncate font-bold text-gray-900 group-hover:text-emerald-700">
+                                            {related.name}
                                         </span>
-                                        <span className="mt-1 block truncate text-sm text-village-muted">
-                                            {relatedOfficial.position}
+                                        <span className="mt-0.5 block truncate text-xs font-medium text-gray-500">
+                                            {related.position}
                                         </span>
                                     </span>
                                     <ChevronRight
                                         aria-hidden="true"
-                                        className="ml-auto size-4 shrink-0 text-village-primary transition-transform group-hover:translate-x-1"
+                                        className="ml-auto size-4 shrink-0 text-gray-400 transition-transform group-hover:translate-x-1 group-hover:text-emerald-600"
                                     />
                                 </Link>
                             ))}
