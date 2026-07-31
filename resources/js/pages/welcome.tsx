@@ -40,6 +40,7 @@ import { PublicAnnouncementCard } from '@/components/public-announcement-card';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { Spinner } from '@/components/ui/spinner';
 import { VillagePotentialCarousel } from '@/components/village-potential-carousel';
+import { VillagePotentialDetailModal } from '@/components/village-potential-detail-modal';
 import {
     activeDummyAnnouncements,
     featuredDummyNewsArticle,
@@ -52,7 +53,10 @@ import {
     getDummyVillagePotentialEntries,
     villagePotentialCategories,
 } from '@/lib/dummy-village-potentials';
-import type { VillagePotentialKey } from '@/lib/dummy-village-potentials';
+import type {
+    VillagePotentialEntry,
+    VillagePotentialKey,
+} from '@/lib/dummy-village-potentials';
 import { dashboard, login } from '@/routes';
 import { index as agendasIndex } from '@/routes/agendas';
 import { index as announcementsIndex } from '@/routes/announcements';
@@ -925,6 +929,8 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
         useState(false);
     const [activePotentialCategory, setActivePotentialCategory] =
         useState<VillagePotentialKey>('umkm');
+    const [selectedPotentialDetailEntry, setSelectedPotentialDetailEntry] =
+        useState<VillagePotentialEntry | null>(null);
     const featuredImageRef = useRef<HTMLImageElement>(null);
     const [heroSlideIndex, setHeroSlideIndex] = useState(0);
     const activePotentialMetadata = findVillagePotentialCategory(
@@ -1544,6 +1550,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     key={activePotentialCategory}
                                     entries={activePotentialEntries}
                                     label={`Potensi kategori ${activePotentialMetadata.label}`}
+                                    onOpenDetail={(entry) =>
+                                        setSelectedPotentialDetailEntry(entry)
+                                    }
                                 />
                             </div>
                         </div>
@@ -2354,6 +2363,11 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         </div>
                     </div>
                 </footer>
+
+                <VillagePotentialDetailModal
+                    entry={selectedPotentialDetailEntry}
+                    onClose={() => setSelectedPotentialDetailEntry(null)}
+                />
             </div>
         </>
     );

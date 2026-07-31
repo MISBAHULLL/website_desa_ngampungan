@@ -133,7 +133,7 @@ export default function AdminAnnouncementIndex({
                     </div>
 
                     <Link
-                        href={announcementCreate()}
+                        href="/dashboard/pengumuman/create"
                         className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-5 py-2.5 text-sm font-bold text-white shadow-xs transition hover:bg-emerald-800 focus:outline-none dark:bg-emerald-600 dark:hover:bg-emerald-500"
                     >
                         <Plus className="size-4" />

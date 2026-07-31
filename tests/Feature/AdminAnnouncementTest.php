@@ -21,6 +21,14 @@ test('authenticated users can view admin announcement index', function () {
     $response->assertStatus(200);
 });
 
+test('authenticated users can view create announcement page', function () {
+    $user = User::factory()->create();
+
+    $response = $this->actingAs($user)->get('/dashboard/pengumuman/create');
+
+    $response->assertStatus(200);
+});
+
 test('authenticated users can create a new announcement', function () {
     $user = User::factory()->create();
 
