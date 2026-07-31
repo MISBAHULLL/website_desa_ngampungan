@@ -52,7 +52,7 @@ class StoreServiceApplicationRequest extends FormRequest
                 'file',
                 'mimes:pdf,jpg,jpeg,png',
                 'mimetypes:application/pdf,image/jpeg,image/png',
-                'max:2048',
+                'max:10240',
             ];
         }
 
@@ -81,7 +81,7 @@ class StoreServiceApplicationRequest extends FormRequest
             'documents.*.file' => 'Dokumen harus berupa berkas.',
             'documents.*.mimes' => 'Format dokumen harus PDF, JPG, JPEG, atau PNG.',
             'documents.*.mimetypes' => 'Isi dokumen tidak sesuai format yang diizinkan.',
-            'documents.*.max' => 'Ukuran setiap dokumen maksimal 2 MB.',
+            'documents.*.max' => 'Ukuran setiap dokumen maksimal 10 MB.',
             'privacy_consent.accepted' => 'Persetujuan penyimpanan data wajib diberikan.',
             'website.max' => 'Pengajuan tidak dapat diproses.',
         ];

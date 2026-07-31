@@ -374,7 +374,7 @@ test('the second service increment exposes requirements, process, and a client-o
         ->toContain('ServiceApplicationController(service.slug)')
         ->toContain('forceFormData: true')
         ->toContain('Kirim pengajuan')
-        ->toContain('Pengajuan berhasil diterima sistem')
+        ->toContain('Pengajuan Berhasil Diterima')
         ->toContain('privacy_consent')
         ->not->toContain('SIM-');
 

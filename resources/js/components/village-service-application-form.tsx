@@ -314,58 +314,89 @@ export function VillageServiceApplicationForm({
     };
 
     if (visibleSuccess) {
+        const waMessage = `Halo Admin Desa Ngampungan, saya telah mengirim pengajuan *${visibleSuccess.serviceTitle}* melalui website desa.\n\n*Rincian Pengajuan:*\n• Kode Resi: *${visibleSuccess.referenceNumber}*\n• Waktu: ${visibleSuccess.submittedAt} WIB\n\nMohon untuk dapat diproses. Terima kasih!`;
+        const waUrl = `https://wa.me/6281234567890?text=${encodeURIComponent(waMessage)}`;
+
         return (
             <div
                 role="status"
-                className="border border-village-primary/25 bg-white"
+                className="overflow-hidden rounded-3xl border border-emerald-200 bg-white p-6 shadow-xl md:p-8"
             >
-                <div className="border-l-4 border-village-primary p-6 md:p-8">
-                    <span className="flex size-12 items-center justify-center bg-village-primary-light text-village-primary">
-                        <CheckCircle2 aria-hidden="true" className="size-6" />
-                    </span>
-                    <p className="mt-6 text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                        Pengajuan Tersimpan
-                    </p>
-                    <h3 className="mt-2 text-2xl font-bold">
-                        Pengajuan berhasil diterima sistem
-                    </h3>
-                    <p className="mt-3 max-w-2xl leading-7 text-village-muted">
-                        Nomor referensi{' '}
-                        <strong className="text-village-ink">
-                            {visibleSuccess.referenceNumber}
-                        </strong>{' '}
-                        untuk {visibleSuccess.serviceTitle} telah dibuat pada{' '}
-                        {visibleSuccess.submittedAt} WIB.
-                    </p>
-
-                    <div className="mt-6 flex items-start gap-3 border border-village-primary/20 bg-village-primary-light p-4 text-sm leading-6 text-village-primary-dark">
-                        <LockKeyhole
-                            aria-hidden="true"
-                            className="mt-0.5 size-5 shrink-0"
-                        />
-                        Data tersimpan terenkripsi dan dokumen berada di
-                        penyimpanan privat. Simpan nomor referensi ini. Fitur
-                        pelacakan sudah tersedia melalui tombol di bawah.
+                <div className="flex flex-col items-start gap-4">
+                    <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 shadow-inner">
+                        <CheckCircle2 aria-hidden="true" className="size-8" />
+                    </div>
+                    <div>
+                        <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-100 px-2.5 py-1 text-xs font-black tracking-wider text-emerald-800 uppercase">
+                            Pengajuan Berhasil Diterima
+                        </span>
+                        <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
+                            Pengajuan {visibleSuccess.serviceTitle} Berhasil
+                        </h3>
+                        <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                            Nomor referensi resi Anda:{' '}
+                            <strong className="rounded-lg bg-slate-100 px-2.5 py-1 text-sm font-black text-slate-900 border border-slate-200">
+                                {visibleSuccess.referenceNumber}
+                            </strong>
+                        </p>
                     </div>
 
-                    <div className="mt-6 flex flex-wrap gap-3">
+                    <div className="w-full rounded-2xl border border-emerald-200/80 bg-emerald-50/50 p-4 text-xs text-slate-700 sm:text-sm">
+                        <div className="flex items-start gap-3">
+                            <LockKeyhole
+                                aria-hidden="true"
+                                className="mt-0.5 size-5 shrink-0 text-emerald-700"
+                            />
+                            <div>
+                                <p className="font-bold text-emerald-950">
+                                    Berkas Tersimpan Aman di Server Desa
+                                </p>
+                                <p className="mt-1 text-slate-600 leading-relaxed text-xs">
+                                    Dokumen Anda telah dienkripsi secara privat. Untuk mempercepat proses verifikasi oleh perangkat desa, Anda dapat langsung mengonfirmasi pengajuan ini ke WhatsApp Resmi Desa Ngampungan.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="mt-2 flex w-full flex-wrap gap-3">
+                        <a
+                            href={waUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center justify-center gap-2.5 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-extrabold text-white shadow-md shadow-emerald-600/20 transition-all hover:bg-emerald-700 active:scale-[0.98]"
+                        >
+                            <svg className="size-4 fill-current" viewBox="0 0 24 24">
+                                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.99c-.002 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c-.001 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
+                            </svg>
+                            Konfirmasi via WA Desa
+                        </a>
+
                         <button
                             type="button"
-                            onClick={startAnotherApplication}
-                            className="inline-flex min-h-11 items-center gap-2 bg-village-primary px-5 py-3 text-sm font-bold text-white transition hover:bg-village-primary-dark"
+                            onClick={() => window.print()}
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 shadow-2xs transition-all hover:bg-slate-50 active:scale-[0.98]"
                         >
-                            Ajukan layanan lagi
+                            Cetak Bukti Resi
                         </button>
+
                         <Link
                             href={trackServiceApplication({
                                 query: {
                                     reference: visibleSuccess.referenceNumber,
                                 },
                             })}
-                            className="inline-flex min-h-11 items-center gap-2 border border-village-border bg-white px-5 py-3 text-sm font-bold text-village-primary transition hover:border-village-primary"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-emerald-700 shadow-2xs transition-all hover:bg-emerald-50 active:scale-[0.98]"
                         >
-                            Lacak pengajuan
+                            Lacak Status Pengajuan
                         </Link>
+
+                        <button
+                            type="button"
+                            onClick={startAnotherApplication}
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-5 py-3 text-xs font-bold text-slate-600 transition-all hover:bg-slate-200 active:scale-[0.98]"
+                        >
+                            Buat Pengajuan Baru
+                        </button>
                     </div>
                 </div>
             </div>
