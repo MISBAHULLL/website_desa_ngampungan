@@ -5,6 +5,7 @@ import {
     ArrowRight,
     Check,
     CheckCircle2,
+    Copy,
     ExternalLink,
     Eye,
     FileText,
@@ -96,9 +97,17 @@ export function VillageServiceApplicationForm({
     const [currentStep, setCurrentStep] = useState(1);
     const [clientErrors, setClientErrors] = useState<ClientErrors>({});
     const [isSuccessDismissed, setIsSuccessDismissed] = useState(false);
+    const [copied, setCopied] = useState(false);
     const [deletingDocumentKey, setDeletingDocumentKey] = useState<
         string | null
     >(null);
+
+    const handleCopyReference = (refNo: string) => {
+        if (!refNo) return;
+        navigator.clipboard.writeText(refNo);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
 
     const form = useForm<ServiceApplicationFormData>({
         applicant_name: '',
@@ -353,19 +362,53 @@ export function VillageServiceApplicationForm({
                     <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-100 text-emerald-700 shadow-inner">
                         <CheckCircle2 aria-hidden="true" className="size-8" />
                     </div>
-                    <div>
+                    <div className="w-full">
                         <span className="inline-flex items-center gap-1.5 rounded-md bg-emerald-100 px-2.5 py-1 text-xs font-black tracking-wider text-emerald-800 uppercase">
                             Pengajuan Berhasil Diterima
                         </span>
                         <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
                             Pengajuan {visibleSuccess.serviceTitle} Berhasil
                         </h3>
-                        <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
-                            Nomor referensi resi Anda:{' '}
-                            <strong className="rounded-lg bg-slate-100 px-2.5 py-1 text-sm font-black text-slate-900 border border-slate-200">
-                                {visibleSuccess.referenceNumber}
-                            </strong>
-                        </p>
+                        
+                        <div className="mt-4 rounded-2xl border border-emerald-200/90 bg-emerald-50/60 p-4 sm:p-5">
+                            <div className="flex flex-wrap items-center justify-between gap-3">
+                                <div>
+                                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">
+                                        Nomor Resi Referensi Anda
+                                    </span>
+                                    <div className="mt-1.5 flex flex-wrap items-center gap-2.5">
+                                        <code className="rounded-xl border border-emerald-300 bg-white px-3.5 py-1.5 font-mono text-base font-black tracking-widest text-emerald-950 shadow-2xs">
+                                            {visibleSuccess.referenceNumber}
+                                        </code>
+                                        <button
+                                            type="button"
+                                            onClick={() =>
+                                                handleCopyReference(
+                                                    visibleSuccess.referenceNumber,
+                                                )
+                                            }
+                                            title="Salin Kode Resi"
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-white px-3.5 py-1.5 text-xs font-extrabold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-100 hover:text-emerald-900 active:scale-95 cursor-pointer"
+                                        >
+                                            {copied ? (
+                                                <>
+                                                    <Check className="size-4 text-emerald-600" />
+                                                    <span className="font-bold text-emerald-700">Resi Tersalin!</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Copy className="size-4 text-emerald-700" />
+                                                    <span>Salin Resi</span>
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p className="mt-3 text-xs leading-relaxed text-emerald-900/80">
+                                📌 <strong>Penting:</strong> Silakan salin atau simpan nomor resi di atas. Nomor resi ini digunakan untuk memantau perkembangan pengajuan layanan Anda secara mandiri di menu <strong>Lacak Pengajuan</strong> tanpa harus datang langsung ke balai desa.
+                            </p>
+                        </div>
                     </div>
 
                     <div className="mt-2 flex w-full flex-wrap gap-3">
