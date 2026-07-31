@@ -397,21 +397,21 @@ export default function VillageGovernmentIndex({
                                         <div className="flex items-start justify-between gap-3">
                                             <div className="flex items-center gap-3">
                                                 {institution.logo_url ? (
-                                                    <img
-                                                        src={institution.logo_url}
-                                                        alt={`Logo ${institution.name}`}
-                                                        className="size-10 object-contain rounded-lg p-0.5 border border-slate-200"
-                                                    />
+                                                    <>
+                                                        <img
+                                                            src={institution.logo_url}
+                                                            alt={`Logo ${institution.name}`}
+                                                            className="size-10 object-contain rounded-lg p-0.5 border border-slate-200"
+                                                        />
+                                                        <span className={`inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-bold tracking-wider ${getInstitutionBadgeStyle(institution.acronym)}`}>
+                                                            {institution.acronym}
+                                                        </span>
+                                                    </>
                                                 ) : (
-                                                    <span className={`inline-flex items-center justify-center rounded-xl border px-3 py-1.5 text-xs font-black tracking-wider shadow-2xs ${getInstitutionBadgeStyle(institution.acronym)}`}>
+                                                    <span className={`inline-flex items-center justify-center rounded-xl border px-3.5 py-1.5 text-xs font-black tracking-wider shadow-2xs ${getInstitutionBadgeStyle(institution.acronym)}`}>
                                                         {institution.acronym}
                                                     </span>
                                                 )}
-                                                <div>
-                                                    <span className={`inline-flex items-center justify-center rounded-md border px-2 py-0.5 text-[10px] font-bold tracking-wider ${getInstitutionBadgeStyle(institution.acronym)}`}>
-                                                        {institution.acronym}
-                                                    </span>
-                                                </div>
                                             </div>
 
                                             {institution.member_count > 0 && (

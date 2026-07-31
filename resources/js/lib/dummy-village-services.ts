@@ -119,6 +119,17 @@ export const dummyVillageServices = [
         fee: 'Gratis',
     },
     {
+        slug: 'surat-keterangan-belum-menikah',
+        title: 'Surat Keterangan Belum Menikah',
+        shortDescription:
+            'Informasi penerbitan surat keterangan status pejaka/perawan atau belum pernah menikah.',
+        category: 'administration',
+        audience: 'Penduduk desa yang belum menikah',
+        channel: 'Datang ke kantor desa',
+        estimatedDuration: '1 hari kerja',
+        fee: 'Gratis',
+    },
+    {
         slug: 'pengantar-ktp-dan-kartu-keluarga',
         title: 'Pengantar KTP-el dan Kartu Keluarga',
         shortDescription:
@@ -152,14 +163,14 @@ export const dummyVillageServices = [
         fee: 'Gratis',
     },
     {
-        slug: 'pelaporan-hasil-panen',
-        title: 'Pelaporan Hasil Panen',
+        slug: 'surat-keterangan-kematian',
+        title: 'Surat Keterangan Kematian',
         shortDescription:
-            'Pencatatan simulasi komoditas, volume panen, dan jadwal distribusi kelompok tani.',
-        category: 'agriculture',
-        audience: 'Petani dan kelompok tani',
-        channel: 'Koordinasi petugas pertanian',
-        estimatedDuration: 'Sesuai jadwal pendataan',
+            'Informasi penerbitan surat keterangan desa atas peristiwa kematian warga.',
+        category: 'population',
+        audience: 'Ahli waris atau keluarga almarhum/ah',
+        channel: 'Datang ke kantor desa',
+        estimatedDuration: '1 hari kerja',
         fee: 'Gratis',
     },
     {
@@ -329,6 +340,30 @@ export const dummyVillageServiceApplicationDetails: Record<
         serviceContact: 'Kasi Kesejahteraan',
         serviceHours: 'Senin–Kamis 08.00–15.00, Jumat 08.00–11.30',
     },
+    'surat-keterangan-belum-menikah': {
+        requirements: [
+            'Pemohon terdaftar sebagai penduduk Desa Ngampungan.',
+            'Pemohon belum pernah menikah secara hukum maupun agama.',
+            'Surat pernyataan status belum menikah ditandatangani pemohon dan saksi.',
+        ],
+        requiredDocuments: [
+            identityDocument,
+            familyCardDocument,
+            neighbourhoodLetterDocument,
+            {
+                key: 'single-statement-letter',
+                label: 'Surat Pernyataan Belum Menikah',
+                description: 'Surat pernyataan belum pernah menikah bermaterai.',
+                required: true,
+                acceptedFormats: '.pdf,.jpg,.jpeg,.png',
+            },
+        ],
+        notes: [
+            'Surat ini dapat digunakan sebagai syarat pernikahan, pekerjaan, atau beasiswa.',
+        ],
+        serviceContact: 'Kaur Pelayanan Desa',
+        serviceHours: 'Senin–Kamis 08.00–15.00, Jumat 08.00–11.30',
+    },
     'pengantar-ktp-dan-kartu-keluarga': {
         requirements: [
             'Pemohon atau anggota keluarga terdaftar sebagai penduduk desa.',
@@ -416,27 +451,35 @@ export const dummyVillageServiceApplicationDetails: Record<
         serviceContact: 'Kasi Pemerintahan',
         serviceHours: 'Senin–Kamis 08.00–15.00, Jumat 08.00–11.30',
     },
-    'pelaporan-hasil-panen': {
+    'surat-keterangan-kematian': {
         requirements: [
-            'Pelapor merupakan petani atau perwakilan kelompok tani.',
-            'Komoditas, luas lahan, dan perkiraan volume panen dicantumkan.',
+            'Almarhum/ah merupakan penduduk Desa Ngampungan.',
+            'Pelapor merupakan pelapor atau ahli waris yang sah.',
+            'Data waktu, lokasi, dan penyebab kematian disampaikan secara jelas.',
         ],
         requiredDocuments: [
-            identityDocument,
+            familyCardDocument,
             {
-                key: 'harvest-recap',
-                label: 'Rekap hasil panen',
-                description:
-                    'Catatan komoditas, luas lahan, volume, dan waktu panen.',
+                key: 'deceased-identity',
+                label: 'KTP Asli Almarhum/ah',
+                description: 'KTP asli almarhum/ah yang akan diserahkan/diverifikasi.',
                 required: true,
                 acceptedFormats: '.pdf,.jpg,.jpeg,.png',
             },
+            {
+                key: 'medical-death-letter',
+                label: 'Surat Keterangan Kematian dari Faskes',
+                description: 'Surat dari rumah sakit, puskesmas, atau dokter bilamana ada.',
+                required: false,
+                acceptedFormats: '.pdf,.jpg,.jpeg,.png',
+            },
+            neighbourhoodLetterDocument,
         ],
         notes: [
-            'Jadwal tindak lanjut mengikuti periode pendataan pertanian desa.',
+            'Surat Keterangan Kematian Desa digunakan sebagai dasar pembuatan Akta Kematian di Disdukcapil.',
         ],
-        serviceContact: 'Kasi Kesejahteraan',
-        serviceHours: 'Sesuai jadwal pendataan pertanian',
+        serviceContact: 'Kasi Pemerintahan',
+        serviceHours: 'Senin–Kamis 08.00–15.00, Jumat 08.00–11.30',
     },
     'rekomendasi-kebutuhan-kelompok-tani': {
         requirements: [

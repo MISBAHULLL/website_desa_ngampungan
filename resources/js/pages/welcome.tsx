@@ -61,6 +61,8 @@ import { index as governmentIndex } from '@/routes/government';
 import { index as newsIndex, show as newsShow } from '@/routes/news';
 import { index as potentialsIndex } from '@/routes/potentials';
 import { index as villageProfileIndex } from '@/routes/profile';
+import { track as trackServiceApplication } from '@/routes/service-applications';
+import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
 
 type NavigationChild = {
@@ -232,27 +234,27 @@ const navigationItems: NavigationItem[] = [
             {
                 label: 'Informasi Pelayanan',
                 description: 'Jam dan alur pelayanan kantor desa.',
-                href: '#layanan',
+                href: servicesIndex.url(),
             },
             {
                 label: 'Persyaratan Surat',
                 description: 'Dokumen yang perlu disiapkan warga.',
-                href: '#layanan',
+                href: servicesIndex.url(),
             },
             {
                 label: 'Pengajuan Surat',
                 description: 'Akses pengajuan administrasi desa.',
-                href: '#layanan',
+                href: servicesIndex.url(),
             },
             {
                 label: 'Pengaduan',
                 description: 'Sampaikan aspirasi atau laporan warga.',
-                href: '#layanan',
+                href: servicesIndex.url(),
             },
             {
                 label: 'Pelacakan Status',
                 description: 'Pantau proses layanan yang diajukan.',
-                href: '#layanan',
+                href: trackServiceApplication.url(),
             },
         ],
     },
@@ -1091,7 +1093,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             <DesktopNavigation />
 
                             <a
-                                href="#layanan"
+                                href={servicesIndex.url()}
                                 className={`${primaryButtonClassName} hidden xl:inline-flex`}
                             >
                                 Akses Layanan
@@ -1165,7 +1167,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 ))}
                             </div>
                             <a
-                                href="#layanan"
+                                href={servicesIndex.url()}
                                 onClick={closeMobileNavigation}
                                 className={`${primaryButtonClassName} mt-auto w-full`}
                             >
@@ -1222,7 +1224,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
 
                                         {/* Secondary Glass Button */}
                                         <a
-                                            href="#layanan"
+                                            href={servicesIndex.url()}
                                             className="bg-white/15 hover:bg-white/25 border border-white/20 hover:border-white/35 backdrop-blur-md text-white text-sm font-medium px-6 py-3 rounded-full transition-all duration-200 flex items-center justify-center gap-2"
                                         >
                                             <ChevronDown className="w-4 h-4 text-[#39d353]" />
@@ -1277,11 +1279,11 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     Layanan Digital & Informasi Terpadu Desa Ngampungan
                                 </p>
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center opacity-90 text-xs font-semibold tracking-wide">
-                                    <a href="#layanan" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                    <a href={servicesIndex.url()} className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
                                         <FileText className="w-4 h-4 text-[#39d353]" />
                                         <span>Surat Online</span>
                                     </a>
-                                    <a href="#layanan" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
+                                    <a href={servicesIndex.url()} className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
                                         <Sprout className="w-4 h-4 text-[#39d353]" />
                                         <span>Lapor Panen</span>
                                     </a>
@@ -2367,7 +2369,7 @@ function FooterLinks({ title, links }: { title: string; links: string[] }) {
                 {links.map((link) => (
                     <li key={link}>
                         <a
-                            href="#layanan"
+                            href={servicesIndex.url()}
                             className="transition-colors hover:text-white"
                         >
                             {link}
