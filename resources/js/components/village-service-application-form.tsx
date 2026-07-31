@@ -1,14 +1,18 @@
 import { Link, useForm } from '@inertiajs/react';
 import {
+    AlertCircle,
     ArrowLeft,
     ArrowRight,
     Check,
     CheckCircle2,
     FileText,
+    Image as ImageIcon,
     Info,
     LoaderCircle,
     LockKeyhole,
+    RefreshCw,
     ShieldAlert,
+    Trash2,
     Upload,
     UserRound,
 } from 'lucide-react';
@@ -47,7 +51,7 @@ type ServiceApplicationFormData = {
 
 type ClientErrors = Record<string, string | undefined>;
 
-const maximumFileSize = 2 * 1024 * 1024;
+const maximumFileSize = 10 * 1024 * 1024;
 
 const formSteps = [
     {
@@ -90,6 +94,10 @@ export function VillageServiceApplicationForm({
     const [currentStep, setCurrentStep] = useState(1);
     const [clientErrors, setClientErrors] = useState<ClientErrors>({});
     const [isSuccessDismissed, setIsSuccessDismissed] = useState(false);
+    const [deletingDocumentKey, setDeletingDocumentKey] = useState<
+        string | null
+    >(null);
+
     const form = useForm<ServiceApplicationFormData>({
         applicant_name: '',
         national_id: '',
@@ -163,6 +171,25 @@ export function VillageServiceApplicationForm({
         return Object.keys(nextErrors).length === 0;
     };
 
+    const confirmDeleteDocument = () => {
+        if (!deletingDocumentKey) return;
+
+        form.setData('documents', {
+            ...form.data.documents,
+            [deletingDocumentKey]: null,
+        });
+        clearFieldError(`document-${deletingDocumentKey}`);
+
+        const fileInput = document.getElementById(
+            `document-${deletingDocumentKey}`,
+        ) as HTMLInputElement | null;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+
+        setDeletingDocumentKey(null);
+    };
+
     const handleDocumentChange = (
         documentKey: string,
         event: ChangeEvent<HTMLInputElement>,
@@ -170,18 +197,43 @@ export function VillageServiceApplicationForm({
         const file = event.target.files?.[0] ?? null;
         const errorKey = `document-${documentKey}`;
 
-        if (file && file.size > maximumFileSize) {
-            form.setData('documents', {
-                ...form.data.documents,
-                [documentKey]: null,
-            });
-            setClientErrors((currentErrors) => ({
-                ...currentErrors,
-                [errorKey]: 'Ukuran berkas maksimal 2 MB.',
-            }));
-            event.target.value = '';
+        if (file) {
+            if (file.size > maximumFileSize) {
+                form.setData('documents', {
+                    ...form.data.documents,
+                    [documentKey]: null,
+                });
+                setClientErrors((currentErrors) => ({
+                    ...currentErrors,
+                    [errorKey]: 'Ukuran berkas melebihi batas maksimal 10 MB.',
+                }));
+                event.target.value = '';
 
-            return;
+                return;
+            }
+
+            const extension = `.${file.name.split('.').pop()?.toLowerCase()}`;
+            const targetDoc = detail.requiredDocuments.find(
+                (d) => d.key === documentKey,
+            );
+            const acceptedList =
+                targetDoc?.acceptedFormats
+                    .split(',')
+                    .map((f) => f.trim().toLowerCase()) ?? [];
+
+            if (acceptedList.length > 0 && !acceptedList.includes(extension)) {
+                form.setData('documents', {
+                    ...form.data.documents,
+                    [documentKey]: null,
+                });
+                setClientErrors((currentErrors) => ({
+                    ...currentErrors,
+                    [errorKey]: `Format berkas tidak didukung. Format yang diizinkan: ${targetDoc?.acceptedFormats}`,
+                }));
+                event.target.value = '';
+
+                return;
+            }
         }
 
         form.setData('documents', {
@@ -599,81 +651,159 @@ export function VillageServiceApplicationForm({
                             Dokumen persyaratan
                         </legend>
                         <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
-                            PDF, JPG, JPEG, atau PNG. Maksimal 2 MB per berkas.
+                            Format yang diizinkan: PDF, JPG, JPEG, atau PNG. Maksimal 10 MB per berkas.
                         </p>
 
                         <div className="mt-6 grid gap-4">
-                            {detail.requiredDocuments.map((document) => {
-                                const clientErrorKey = `document-${document.key}`;
-                                const serverErrorKey = `documents.${document.key}`;
-                                const selectedFile =
-                                    form.data.documents[document.key];
+                            {detail.requiredDocuments.map((docItem) => {
+                                const clientErrorKey = `document-${docItem.key}`;
+                                const serverErrorKey = `documents.${docItem.key}`;
+                                const selectedFile = form.data.documents[docItem.key];
+                                const hasError = Boolean(
+                                    fieldError(clientErrorKey, serverErrorKey),
+                                );
+                                const isSelected = Boolean(selectedFile);
 
                                 return (
                                     <div
-                                        key={document.key}
-                                        className="rounded-2xl border border-slate-200/80 bg-slate-50/60 p-4 transition-all hover:border-emerald-200 hover:bg-emerald-50/20 md:p-5"
+                                        key={docItem.key}
+                                        className={`rounded-2xl border p-4 transition-all md:p-5 ${
+                                            hasError
+                                                ? 'border-rose-300 bg-rose-50/40 ring-1 ring-rose-500/20'
+                                                : isSelected
+                                                ? 'border-emerald-300/80 bg-emerald-50/40 ring-1 ring-emerald-500/20'
+                                                : 'border-slate-200/80 bg-slate-50/60 hover:border-emerald-200 hover:bg-emerald-50/20'
+                                        }`}
                                     >
                                         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                                             <div>
-                                                <label
-                                                    htmlFor={`document-${document.key}`}
-                                                    className="text-xs font-bold text-slate-800"
-                                                >
-                                                    {document.label}
-                                                    {document.required ? (
-                                                        <span className="text-rose-500">
-                                                            {' '}
-                                                            *
-                                                        </span>
-                                                    ) : (
-                                                        <span className="ml-2 rounded-md bg-slate-200/60 px-2 py-0.5 text-[10px] font-extrabold uppercase text-slate-600">
-                                                            Opsional
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    <label
+                                                        htmlFor={`document-${docItem.key}`}
+                                                        className="text-xs font-bold text-slate-900"
+                                                    >
+                                                        {docItem.label}
+                                                        {docItem.required ? (
+                                                            <span className="text-rose-500">
+                                                                {' '}
+                                                                *
+                                                            </span>
+                                                        ) : (
+                                                            <span className="ml-2 rounded-md bg-slate-200/70 px-2 py-0.5 text-[10px] font-extrabold uppercase text-slate-600">
+                                                                Opsional
+                                                            </span>
+                                                        )}
+                                                    </label>
+                                                    {isSelected && (
+                                                        <span className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2 py-0.5 text-[10px] font-bold text-white shadow-2xs">
+                                                            <Check className="size-3 stroke-[3]" />
+                                                            Berkas Terpilih
                                                         </span>
                                                     )}
-                                                </label>
+                                                </div>
                                                 <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                                                    {document.description}
+                                                    {docItem.description}
                                                 </p>
                                             </div>
+
                                             <label
-                                                htmlFor={`document-${document.key}`}
-                                                className="inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-50 hover:border-emerald-300 active:scale-[0.98]"
+                                                htmlFor={`document-${docItem.key}`}
+                                                className={`inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-xs font-bold shadow-2xs transition-all active:scale-[0.98] ${
+                                                    isSelected
+                                                        ? 'border-emerald-300 bg-white text-emerald-800 hover:bg-emerald-50 hover:border-emerald-400'
+                                                        : 'border-emerald-200 bg-white text-emerald-800 hover:bg-emerald-50 hover:border-emerald-300'
+                                                }`}
                                             >
-                                                <Upload
-                                                    aria-hidden="true"
-                                                    className="size-4 text-emerald-700"
-                                                />
-                                                Pilih berkas
+                                                {isSelected ? (
+                                                    <>
+                                                        <RefreshCw
+                                                            aria-hidden="true"
+                                                            className="size-3.5 text-emerald-700"
+                                                        />
+                                                        Ganti berkas
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <Upload
+                                                            aria-hidden="true"
+                                                            className="size-4 text-emerald-700"
+                                                        />
+                                                        Pilih berkas
+                                                    </>
+                                                )}
                                             </label>
                                         </div>
+
                                         <input
-                                            id={`document-${document.key}`}
+                                            id={`document-${docItem.key}`}
                                             type="file"
-                                            accept={document.acceptedFormats}
+                                            accept={docItem.acceptedFormats}
                                             onChange={(event) =>
                                                 handleDocumentChange(
-                                                    document.key,
+                                                    docItem.key,
                                                     event,
                                                 )
                                             }
-                                            aria-invalid={Boolean(
-                                                fieldError(
-                                                    clientErrorKey,
-                                                    serverErrorKey,
-                                                ),
-                                            )}
+                                            aria-invalid={hasError}
                                             aria-describedby={`${clientErrorKey}-status ${clientErrorKey}-error`}
                                             className="sr-only"
                                         />
-                                        <p
-                                            id={`${clientErrorKey}-status`}
-                                            className="mt-3 text-xs font-semibold text-slate-500"
-                                        >
-                                            {selectedFile
-                                                ? `✓ ${selectedFile.name} · ${formatFileSize(selectedFile.size)}`
-                                                : 'Belum ada berkas dipilih'}
-                                        </p>
+
+                                        {isSelected && selectedFile ? (
+                                            <div className="mt-3.5 flex flex-col justify-between gap-3 rounded-xl border border-emerald-200/80 bg-white p-3 shadow-2xs sm:flex-row sm:items-center">
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100/70 text-emerald-700">
+                                                        {selectedFile.type.includes(
+                                                            'image',
+                                                        ) ? (
+                                                            <ImageIcon className="size-4.5" />
+                                                        ) : (
+                                                            <FileText className="size-4.5" />
+                                                        )}
+                                                    </div>
+                                                    <div className="min-w-0">
+                                                        <p
+                                                            className="truncate text-xs font-bold text-slate-800"
+                                                            title={
+                                                                selectedFile.name
+                                                            }
+                                                        >
+                                                            {selectedFile.name}
+                                                        </p>
+                                                        <p className="text-[11px] font-semibold text-slate-500">
+                                                            {formatFileSize(
+                                                                selectedFile.size,
+                                                            )}{' '}
+                                                            · Ready
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setDeletingDocumentKey(
+                                                            docItem.key,
+                                                        )
+                                                    }
+                                                    className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition-all hover:bg-rose-100 hover:border-rose-300 active:scale-[0.98]"
+                                                >
+                                                    <Trash2
+                                                        aria-hidden="true"
+                                                        className="size-3.5 text-rose-600"
+                                                    />
+                                                    Hapus berkas
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <p
+                                                id={`${clientErrorKey}-status`}
+                                                className="mt-3 text-xs font-semibold text-slate-500"
+                                            >
+                                                Belum ada berkas dipilih
+                                            </p>
+                                        )}
+
                                         <InputError
                                             id={`${clientErrorKey}-error`}
                                             message={fieldError(
@@ -875,6 +1005,57 @@ export function VillageServiceApplicationForm({
                     )}
                 </div>
             </div>
+
+            {deletingDocumentKey && (
+                <div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="delete-modal-title"
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+                >
+                    <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+                        <div className="flex size-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
+                            <Trash2 className="size-6" />
+                        </div>
+                        <h3
+                            id="delete-modal-title"
+                            className="mt-4 text-lg font-black tracking-tight text-slate-900"
+                        >
+                            Hapus Dokumen?
+                        </h3>
+                        <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                            Apakah Anda yakin ingin menghapus berkas{' '}
+                            <strong className="font-bold text-slate-900">
+                                {
+                                    detail.requiredDocuments.find(
+                                        (d) => d.key === deletingDocumentKey,
+                                    )?.label
+                                }
+                            </strong>
+                            ? Anda perlu memilih berkas baru jika dokumen ini
+                            diperlukan.
+                        </p>
+
+                        <div className="mt-6 flex justify-end gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setDeletingDocumentKey(null)}
+                                className="inline-flex min-h-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 shadow-2xs transition-all hover:bg-slate-50 active:scale-[0.98]"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="button"
+                                onClick={confirmDeleteDocument}
+                                className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-rose-600/20 transition-all hover:bg-rose-700 active:scale-[0.98]"
+                            >
+                                <Trash2 className="size-3.5" />
+                                Ya, Hapus Dokumen
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </form>
     );
 }
