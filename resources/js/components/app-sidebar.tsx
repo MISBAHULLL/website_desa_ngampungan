@@ -4,7 +4,7 @@ import {
     CalendarDays,
     Camera,
     ClipboardList,
-    FolderGit2,
+    Globe,
     Landmark,
     LayoutGrid,
     Megaphone,
@@ -35,7 +35,7 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
+import { dashboard, home } from '@/routes';
 import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
@@ -93,24 +93,19 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Lihat Portal Utama',
+        href: home(),
+        icon: Globe,
     },
 ];
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+        <Sidebar collapsible="icon" variant="inset" className="border-r border-slate-200/80 dark:border-slate-800">
+            <SidebarHeader className="border-b border-slate-100 dark:border-slate-800/80 px-3 py-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton size="lg" asChild className="hover:bg-slate-100/80 dark:hover:bg-slate-800/60 rounded-2xl transition-all">
                             <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
@@ -119,14 +114,15 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent>
+            <SidebarContent className="py-2">
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter>
+            <SidebarFooter className="border-t border-slate-100 dark:border-slate-800/80 pt-2">
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
     );
 }
+
