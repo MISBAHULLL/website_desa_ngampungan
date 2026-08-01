@@ -5,6 +5,7 @@ import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicPageShell } from '@/components/public-page-shell';
+import { CardSkeleton } from '@/components/ui/skeleton';
 import { VillagePotentialCard } from '@/components/village-potential-card';
 import { VillagePotentialDetailModal } from '@/components/village-potential-detail-modal';
 import {
@@ -245,16 +246,18 @@ export default function PotentialIndex({
                         )}
                     </div>
 
-                    {paginatedEntries.length > 0 ? (
+                    {isPageTransitioning ? (
+                        <div className="mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <CardSkeleton />
+                            <CardSkeleton />
+                            <CardSkeleton />
+                        </div>
+                    ) : paginatedEntries.length > 0 ? (
                         <>
                             <StaggerContainer
                                 key={currentPage}
                                 staggerDelay={0.06}
-                                className={`mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
-                                    isPageTransitioning
-                                        ? 'opacity-0 scale-[0.985]'
-                                        : 'opacity-100 scale-100'
-                                }`}
+                                className="mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out"
                             >
                                 {paginatedEntries.map((entry) => (
                                     <StaggerItem

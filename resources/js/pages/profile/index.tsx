@@ -882,27 +882,27 @@ export default function VillageProfileIndex({
                             </div>
 
                             <dl className="grid grid-cols-3 divide-x divide-village-border/60 rounded-2xl border border-village-border/80 bg-white p-2 shadow-sm lg:col-span-5">
-                                <div className="py-3 text-center">
-                                    <dt className="text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                <div className="py-2.5 sm:py-3 text-center">
+                                    <dt className="text-[10px] sm:text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
                                         Dusun
                                     </dt>
-                                    <dd className="mt-1 text-2xl font-extrabold text-village-primary">
+                                    <dd className="mt-1 text-xl sm:text-2xl font-extrabold text-village-primary">
                                         {hamlets.length}
                                     </dd>
                                 </div>
-                                <div className="py-3 text-center">
-                                    <dt className="text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                <div className="py-2.5 sm:py-3 text-center">
+                                    <dt className="text-[10px] sm:text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
                                         Total RW
                                     </dt>
-                                    <dd className="mt-1 text-2xl font-extrabold text-village-primary">
+                                    <dd className="mt-1 text-xl sm:text-2xl font-extrabold text-village-primary">
                                         {hamletTotals.rw}
                                     </dd>
                                 </div>
-                                <div className="py-3 text-center">
-                                    <dt className="text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                <div className="py-2.5 sm:py-3 text-center">
+                                    <dt className="text-[10px] sm:text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
                                         Total RT
                                     </dt>
-                                    <dd className="mt-1 text-2xl font-extrabold text-village-primary">
+                                    <dd className="mt-1 text-xl sm:text-2xl font-extrabold text-village-primary">
                                         {hamletTotals.rt}
                                     </dd>
                                 </div>

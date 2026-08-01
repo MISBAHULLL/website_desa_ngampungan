@@ -12,6 +12,7 @@ import { useMemo, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
+import { CardSkeleton } from '@/components/ui/skeleton';
 import {
     dummyVillageServices,
     findVillageServiceCategory,
@@ -366,17 +367,17 @@ export default function ServiceIndex({
                                             </div>
 
                                             {/* Metadata Pills Grid */}
-                                            <div className="grid grid-cols-3 gap-2 pt-2">
-                                                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-2 text-[11px]">
-                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Sasaran</span>
+                                            <div className="grid grid-cols-3 gap-1.5 sm:gap-2 pt-2">
+                                                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-1.5 sm:p-2 text-[10px] sm:text-[11px]">
+                                                    <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Sasaran</span>
                                                     <span className="font-semibold text-slate-700 truncate block mt-0.5" title={service.audience}>{service.audience}</span>
                                                 </div>
-                                                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-2 text-[11px]">
-                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi</span>
+                                                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-1.5 sm:p-2 text-[10px] sm:text-[11px]">
+                                                    <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Estimasi</span>
                                                     <span className="font-semibold text-slate-700 truncate block mt-0.5" title={service.estimatedDuration}>{service.estimatedDuration}</span>
                                                 </div>
-                                                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-2 text-[11px]">
-                                                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Kanal</span>
+                                                <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-1.5 sm:p-2 text-[10px] sm:text-[11px]">
+                                                    <span className="text-[8px] sm:text-[9px] font-bold text-slate-400 uppercase tracking-wider block">Kanal</span>
                                                     <span className="font-semibold text-slate-700 truncate block mt-0.5" title={service.channel}>{service.channel}</span>
                                                 </div>
                                             </div>

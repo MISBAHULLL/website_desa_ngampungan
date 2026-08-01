@@ -1,13 +1,18 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import {
     ArrowLeft,
     ChevronDown,
+    Loader2,
     MapPin,
+    Menu,
     PhoneCall,
     Search,
+    X,
 } from 'lucide-react';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Skeleton } from '@/components/ui/skeleton';
 import { home } from '@/routes';
 import { index as agendasIndex } from '@/routes/agendas';
 import { index as announcementsIndex } from '@/routes/announcements';
@@ -234,8 +239,53 @@ export function PublicPageShell({
     activeSection: PublicSection;
     children: ReactNode;
 }) {
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isNavigating, setIsNavigating] = useState(false);
+
+    useEffect(() => {
+        const removeStart = router.on('start', () => setIsNavigating(true));
+        const removeFinish = router.on('finish', () => setIsNavigating(false));
+        const removeCancel = router.on('cancel', () => setIsNavigating(false));
+
+        return () => {
+            removeStart();
+            removeFinish();
+            removeCancel();
+        };
+    }, []);
+
     return (
-        <div className="min-h-screen bg-village-canvas text-village-ink">
+        <div className="relative min-h-screen bg-village-canvas text-village-ink">
+            {/* Top Skeleton Progress Bar for Inertia Navigation / Network Lag */}
+            <AnimatePresence>
+                {isNavigating && (
+                    <motion.div
+                        initial={{ opacity: 0, scaleX: 0 }}
+                        animate={{ opacity: 1, scaleX: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed top-0 left-0 right-0 z-[100] h-1 origin-left bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 shadow-md shadow-emerald-500/30"
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Skeleton Loading Indicator Toast overlay during navigation lag */}
+            <AnimatePresence>
+                {isNavigating && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.2 }}
+                        className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 rounded-2xl border border-emerald-200 bg-white/95 px-4 py-2 text-xs font-extrabold text-emerald-950 shadow-2xl backdrop-blur-md"
+                    >
+                        <Loader2 className="size-4 animate-spin text-emerald-600" />
+                        <span>Memuat data halaman...</span>
+                        <Skeleton className="h-2 w-12 rounded-full" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <a
                 href="#main-content"
                 className="sr-only z-[100] rounded-xl bg-white px-4 py-3 font-semibold text-village-primary shadow-lg focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
@@ -347,14 +397,120 @@ export function PublicPageShell({
                         </Link>
                     </nav>
 
-                    <Link
-                        href={home()}
-                        aria-label="Kembali ke Beranda"
-                        className="flex size-11 items-center justify-center rounded-xl border border-village-border text-village-primary transition hover:border-village-primary hover:bg-village-primary-light focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none lg:hidden"
-                    >
-                        <ArrowLeft aria-hidden="true" className="size-4" />
-                    </Link>
+                    <div className="flex items-center gap-2 lg:hidden">
+                        <button
+                            type="button"
+                            onClick={() => setIsMobileMenuOpen((open) => !open)}
+                            aria-label={isMobileMenuOpen ? 'Tutup Menu' : 'Buka Menu'}
+                            className="flex size-11 items-center justify-center rounded-xl border border-village-border text-village-ink transition hover:border-village-primary hover:bg-village-primary-light"
+                        >
+                            {isMobileMenuOpen ? (
+                                <X className="size-5 text-village-primary" />
+                            ) : (
+                                <Menu className="size-5 text-village-primary" />
+                            )}
+                        </button>
+                    </div>
                 </div>
+
+                {/* Mobile Drawer Navigation Menu */}
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
+                        <motion.nav
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.25, ease: 'easeInOut' }}
+                            aria-label="Navigasi Seluler"
+                            className="overflow-hidden border-t border-village-border bg-white px-5 py-6 shadow-xl lg:hidden"
+                        >
+                            <div className="flex flex-col gap-2">
+                                <Link
+                                    href={villageProfileIndex()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold ${
+                                        activeSection === 'profile'
+                                            ? 'bg-village-primary-light text-village-primary-dark'
+                                            : 'text-village-ink hover:bg-village-surface-muted'
+                                    }`}
+                                >
+                                    <span>Profil Desa</span>
+                                </Link>
+
+                                <Link
+                                    href={governmentIndex()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold ${
+                                        activeSection === 'government'
+                                            ? 'bg-village-primary-light text-village-primary-dark'
+                                            : 'text-village-ink hover:bg-village-surface-muted'
+                                    }`}
+                                >
+                                    <span>Pemerintahan</span>
+                                </Link>
+
+                                <Link
+                                    href={servicesIndex()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold ${
+                                        activeSection === 'services'
+                                            ? 'bg-village-primary-light text-village-primary-dark'
+                                            : 'text-village-ink hover:bg-village-surface-muted'
+                                    }`}
+                                >
+                                    <span>Layanan Publik</span>
+                                </Link>
+
+                                <Link
+                                    href={newsIndex()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold ${
+                                        activeSection === 'news'
+                                            ? 'bg-village-primary-light text-village-primary-dark'
+                                            : 'text-village-ink hover:bg-village-surface-muted'
+                                    }`}
+                                >
+                                    <span>Berita & Informasi</span>
+                                </Link>
+
+                                <Link
+                                    href={transparencyIndex()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold ${
+                                        activeSection === 'transparency'
+                                            ? 'bg-village-primary-light text-village-primary-dark'
+                                            : 'text-village-ink hover:bg-village-surface-muted'
+                                    }`}
+                                >
+                                    <span>Transparansi APBDes</span>
+                                </Link>
+
+                                <Link
+                                    href={potentialsIndex()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className={`flex min-h-11 items-center justify-between rounded-xl px-4 py-2.5 text-sm font-bold ${
+                                        activeSection === 'potentials'
+                                            ? 'bg-village-primary-light text-village-primary-dark'
+                                            : 'text-village-ink hover:bg-village-surface-muted'
+                                    }`}
+                                >
+                                    <span>Potensi Desa</span>
+                                </Link>
+
+                                <div className="my-2 border-t border-village-border" />
+
+                                <Link
+                                    href={home()}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-village-primary px-4 py-2.5 text-sm font-bold text-white shadow-sm"
+                                >
+                                    <ArrowLeft className="size-4" />
+                                    <span>Kembali ke Beranda</span>
+                                </Link>
+                            </div>
+                        </motion.nav>
+                    )}
+                </AnimatePresence>
             </header>
 
             <main id="main-content">

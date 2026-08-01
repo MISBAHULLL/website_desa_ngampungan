@@ -381,12 +381,12 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             </div>
 
                             {/* Milestone Tick Indicators */}
-                            <div className="mt-2 flex items-center justify-between text-[10px] font-bold text-emerald-800/75">
+                            <div className="mt-2 flex items-center justify-between text-[9px] sm:text-[10px] font-bold text-emerald-800/75">
                                 <span>0%</span>
                                 <span>25%</span>
                                 <span>50%</span>
                                 <span>75%</span>
-                                <span>100% (Pagu Target)</span>
+                                <span>100% (Target)</span>
                             </div>
                         </div>
                     </div>
@@ -431,7 +431,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                         <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center">
                                             {/* Floating Tooltip Badge Outside the Circle (Light Theme) */}
                                             {activeSource && (
-                                                <div className="absolute -top-14 left-1/2 sm:left-24 -translate-x-1/2 z-30 pointer-events-none flex items-center gap-3 rounded-2xl bg-white px-4 py-2 text-gray-900 shadow-2xl border border-gray-200/90 animate-in fade-in zoom-in-95 duration-150 whitespace-nowrap">
+                                                <div className="absolute -top-14 left-1/2 -translate-x-1/2 sm:left-24 sm:translate-x-0 z-30 pointer-events-none flex items-center gap-3 rounded-2xl bg-white px-3.5 py-2 text-gray-900 shadow-2xl border border-gray-200/90 animate-in fade-in zoom-in-95 duration-150 max-w-[90vw] whitespace-normal sm:whitespace-nowrap">
                                                     <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
                                                         {activeSource.code}
                                                     </span>
