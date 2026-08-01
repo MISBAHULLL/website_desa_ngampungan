@@ -58,7 +58,7 @@ export function VillageGalleryLightbox({
                     onClose();
                 }
             }}
-            className="fixed inset-0 z-[100] grid place-items-center overflow-y-auto bg-slate-900/75 p-4 md:p-8 animate-in fade-in duration-200"
+            className="fixed inset-0 z-[100] grid animate-in place-items-center overflow-y-auto bg-slate-900/75 p-4 duration-200 fade-in md:p-8"
         >
             <div className="relative w-full max-w-6xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
                 {/* Close Button Floating */}
@@ -66,7 +66,7 @@ export function VillageGalleryLightbox({
                     type="button"
                     aria-label="Tutup galeri"
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-20 flex size-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition hover:bg-emerald-700 hover:text-white hover:border-emerald-700 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
+                    className="absolute top-4 right-4 z-20 flex size-10 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-md transition hover:border-emerald-700 hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                 >
                     <X aria-hidden="true" className="size-5" />
                 </button>
@@ -109,9 +109,9 @@ export function VillageGalleryLightbox({
                     </div>
 
                     {/* Meta Detail Sidebar - Pure Light Theme */}
-                    <div className="flex flex-col justify-between gap-8 bg-white p-7 text-slate-900 md:p-8 border-t lg:border-t-0 lg:border-l border-slate-200">
+                    <div className="flex flex-col justify-between gap-8 border-t border-slate-200 bg-white p-7 text-slate-900 md:p-8 lg:border-t-0 lg:border-l">
                         <div>
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900 border border-emerald-200">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-900">
                                 <Camera className="size-3 text-emerald-700" />
                                 {photo.category}
                             </span>
@@ -125,7 +125,7 @@ export function VillageGalleryLightbox({
 
                         <dl className="grid gap-4 border-t border-slate-200 pt-6 text-xs">
                             <div>
-                                <dt className="font-bold text-slate-500 uppercase tracking-wider text-[10px]">
+                                <dt className="text-[10px] font-bold tracking-wider text-slate-500 uppercase">
                                     Album Dokumentasi
                                 </dt>
                                 <dd className="mt-1 font-bold text-emerald-800">
@@ -134,15 +134,17 @@ export function VillageGalleryLightbox({
                             </div>
                             <div>
                                 <dt className="sr-only">Tanggal dokumentasi</dt>
-                                <dd className="flex items-center gap-2 text-slate-600 font-medium">
+                                <dd className="flex items-center gap-2 font-medium text-slate-600">
                                     <CalendarDays
                                         aria-hidden="true"
                                         className="size-4 text-emerald-700"
                                     />
-                                    <span>Dipublikasikan: {photo.capturedLabel}</span>
+                                    <span>
+                                        Dipublikasikan: {photo.capturedLabel}
+                                    </span>
                                 </dd>
                             </div>
-                            <div className="mt-2 rounded-xl bg-slate-100 p-3 text-center text-xs font-semibold text-slate-600 border border-slate-200">
+                            <div className="mt-2 rounded-xl border border-slate-200 bg-slate-100 p-3 text-center text-xs font-semibold text-slate-600">
                                 Foto {currentIndex + 1} dari {photos.length}
                             </div>
                         </dl>

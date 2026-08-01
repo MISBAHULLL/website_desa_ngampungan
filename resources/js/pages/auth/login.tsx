@@ -33,7 +33,10 @@ export default function Login({ status, canResetPassword }: Props) {
                     <>
                         <div className="grid gap-6">
                             <div className="grid gap-2.5">
-                                <Label htmlFor="email" className="text-sm font-bold text-slate-800">
+                                <Label
+                                    htmlFor="email"
+                                    className="text-sm font-bold text-slate-800"
+                                >
                                     Alamat Email
                                 </Label>
                                 <Input
@@ -45,20 +48,23 @@ export default function Login({ status, canResetPassword }: Props) {
                                     tabIndex={1}
                                     autoComplete="email"
                                     placeholder="nama@contoh.com"
-                                    className="h-12 sm:h-13 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2.5">
                                 <div className="flex items-center justify-between">
-                                    <Label htmlFor="password" className="text-sm font-bold text-slate-800">
+                                    <Label
+                                        htmlFor="password"
+                                        className="text-sm font-bold text-slate-800"
+                                    >
                                         Kata Sandi
                                     </Label>
                                     {canResetPassword && (
                                         <TextLink
                                             href={request()}
-                                            className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
+                                            className="text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline sm:text-sm"
                                             tabIndex={5}
                                         >
                                             Lupa kata sandi?
@@ -72,7 +78,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     tabIndex={2}
                                     autoComplete="current-password"
                                     placeholder="••••••••"
-                                    className="h-12 sm:h-13 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -82,28 +88,37 @@ export default function Login({ status, canResetPassword }: Props) {
                                     id="remember"
                                     name="remember"
                                     tabIndex={3}
-                                    className="size-5 rounded-md border-slate-300 data-[state=checked]:bg-emerald-600 data-[state=checked]:border-emerald-600"
+                                    className="size-5 rounded-md border-slate-300 data-[state=checked]:border-emerald-600 data-[state=checked]:bg-emerald-600"
                                 />
-                                <Label htmlFor="remember" className="text-sm font-medium text-slate-600 cursor-pointer select-none">
+                                <Label
+                                    htmlFor="remember"
+                                    className="cursor-pointer text-sm font-medium text-slate-600 select-none"
+                                >
                                     Ingat saya di perangkat ini
                                 </Label>
                             </div>
 
                             <Button
                                 type="submit"
-                                className="mt-2 h-13 sm:h-14 w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-base font-extrabold text-white shadow-xl shadow-emerald-600/30 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-emerald-600/40 active:scale-[0.99] disabled:opacity-70"
+                                className="mt-2 h-13 w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-base font-extrabold text-white shadow-xl shadow-emerald-600/30 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-emerald-600/40 active:scale-[0.99] disabled:opacity-70 sm:h-14"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
                             >
-                                {processing && <Spinner className="mr-2.5 size-5 border-2 border-white/30 border-t-white" />}
+                                {processing && (
+                                    <Spinner className="mr-2.5 size-5 border-2 border-white/30 border-t-white" />
+                                )}
                                 Masuk Sekarang
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm font-medium text-slate-600 pt-4 border-t border-slate-100">
+                        <div className="border-t border-slate-100 pt-4 text-center text-sm font-medium text-slate-600">
                             Belum memiliki akun?{' '}
-                            <TextLink href={register()} tabIndex={5} className="font-extrabold text-emerald-700 hover:text-emerald-800 hover:underline">
+                            <TextLink
+                                href={register()}
+                                tabIndex={5}
+                                className="font-extrabold text-emerald-700 hover:text-emerald-800 hover:underline"
+                            >
                                 Daftar Akun Baru
                             </TextLink>
                         </div>
@@ -122,6 +137,6 @@ export default function Login({ status, canResetPassword }: Props) {
 
 Login.layout = {
     title: 'Masuk ke Akun Anda',
-    description: 'Masukkan email dan kata sandi Anda untuk mengakses portal digital Desa Ngampungan',
+    description:
+        'Masukkan email dan kata sandi Anda untuk mengakses portal digital Desa Ngampungan',
 };
-

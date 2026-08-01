@@ -1,6 +1,9 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, CalendarDays, Plus, Trash2 } from 'lucide-react';
-import { index as agendaIndex, store as agendaStore } from '@/actions/App/Http/Controllers/Admin/AgendaController';
+import {
+    index as agendaIndex,
+    store as agendaStore,
+} from '@/actions/App/Http/Controllers/Admin/AgendaController';
 import { dashboard } from '@/routes';
 
 export default function AdminAgendaCreate() {
@@ -61,68 +64,102 @@ export default function AdminAgendaCreate() {
                 </header>
 
                 <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
-                    <div className="rounded-xl border border-sidebar-border/70 bg-background p-6 space-y-5 shadow-xs">
+                    <div className="space-y-5 rounded-xl border border-sidebar-border/70 bg-background p-6 shadow-xs">
                         <div>
-                            <label htmlFor="title" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                            <label
+                                htmlFor="title"
+                                className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                            >
                                 Judul Agenda *
                             </label>
                             <input
                                 id="title"
                                 type="text"
                                 value={data.title}
-                                onChange={(e) => setData('title', e.target.value)}
+                                onChange={(e) =>
+                                    setData('title', e.target.value)
+                                }
                                 placeholder="Contoh: Musyawarah Perencanaan Pembangunan Desa..."
                                 className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 required
                             />
-                            {errors.title && <p className="mt-1 text-xs text-red-600">{errors.title}</p>}
+                            {errors.title && (
+                                <p className="mt-1 text-xs text-red-600">
+                                    {errors.title}
+                                </p>
+                            )}
                         </div>
 
                         <div className="grid gap-5 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="category" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="category"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Kategori *
                                 </label>
                                 <select
                                     id="category"
                                     value={data.category}
-                                    onChange={(e) => setData('category', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('category', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 >
                                     <option value="Pelayanan">Pelayanan</option>
-                                    <option value="Musyawarah">Musyawarah</option>
-                                    <option value="Pemberdayaan">Pemberdayaan</option>
+                                    <option value="Musyawarah">
+                                        Musyawarah
+                                    </option>
+                                    <option value="Pemberdayaan">
+                                        Pemberdayaan
+                                    </option>
                                     <option value="Kesehatan">Kesehatan</option>
-                                    <option value="Infrastruktur">Infrastruktur</option>
+                                    <option value="Infrastruktur">
+                                        Infrastruktur
+                                    </option>
                                 </select>
                             </div>
 
                             <div>
-                                <label htmlFor="event_date" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="event_date"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Tanggal Pelaksanaan *
                                 </label>
                                 <input
                                     id="event_date"
                                     type="date"
                                     value={data.event_date}
-                                    onChange={(e) => setData('event_date', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('event_date', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
-                                {errors.event_date && <p className="mt-1 text-xs text-red-600">{errors.event_date}</p>}
+                                {errors.event_date && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.event_date}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         <div className="grid gap-5 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="time_label" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="time_label"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Waktu / Jam Pelaksanaan *
                                 </label>
                                 <input
                                     id="time_label"
                                     type="text"
                                     value={data.time_label}
-                                    onChange={(e) => setData('time_label', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('time_label', e.target.value)
+                                    }
                                     placeholder="Contoh: 08:00 WIB - 12:00 WIB"
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
@@ -130,14 +167,19 @@ export default function AdminAgendaCreate() {
                             </div>
 
                             <div>
-                                <label htmlFor="location" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="location"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Lokasi Pelaksanaan *
                                 </label>
                                 <input
                                     id="location"
                                     type="text"
                                     value={data.location}
-                                    onChange={(e) => setData('location', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('location', e.target.value)
+                                    }
                                     placeholder="Contoh: Balai Desa Ngampungan"
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
@@ -146,14 +188,19 @@ export default function AdminAgendaCreate() {
                         </div>
 
                         <div>
-                            <label htmlFor="summary" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                            <label
+                                htmlFor="summary"
+                                className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                            >
                                 Ringkasan Kegiatan *
                             </label>
                             <textarea
                                 id="summary"
                                 rows={2}
                                 value={data.summary}
-                                onChange={(e) => setData('summary', e.target.value)}
+                                onChange={(e) =>
+                                    setData('summary', e.target.value)
+                                }
                                 placeholder="Jelaskan secara singkat mengenai agenda kegiatan ini..."
                                 className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 required
@@ -163,7 +210,7 @@ export default function AdminAgendaCreate() {
                         {/* Details / Poin Poin */}
                         <div>
                             <div className="flex items-center justify-between">
-                                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label className="block text-xs font-bold tracking-wider text-foreground uppercase">
                                     Poin Pembahasan / Detail Kegiatan (Opsional)
                                 </label>
                                 <button
@@ -177,18 +224,28 @@ export default function AdminAgendaCreate() {
                             </div>
                             <div className="mt-2 space-y-2">
                                 {data.details.map((detail, index) => (
-                                    <div key={index} className="flex items-center gap-2">
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-2"
+                                    >
                                         <input
                                             type="text"
                                             value={detail}
-                                            onChange={(e) => handleDetailChange(index, e.target.value)}
+                                            onChange={(e) =>
+                                                handleDetailChange(
+                                                    index,
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder={`Poin ${index + 1}...`}
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
                                         {data.details.length > 1 && (
                                             <button
                                                 type="button"
-                                                onClick={() => removeDetailField(index)}
+                                                onClick={() =>
+                                                    removeDetailField(index)
+                                                }
                                                 className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                                             >
                                                 <Trash2 className="size-4" />
@@ -199,30 +256,40 @@ export default function AdminAgendaCreate() {
                             </div>
                         </div>
 
-                        <div className="grid gap-5 sm:grid-cols-2 pt-2 border-t border-sidebar-border/70">
+                        <div className="grid gap-5 border-t border-sidebar-border/70 pt-2 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="organizer" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="organizer"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Penyelenggara *
                                 </label>
                                 <input
                                     id="organizer"
                                     type="text"
                                     value={data.organizer}
-                                    onChange={(e) => setData('organizer', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('organizer', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="contact" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="contact"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Kontak / Narahubung
                                 </label>
                                 <input
                                     id="contact"
                                     type="text"
                                     value={data.contact}
-                                    onChange={(e) => setData('contact', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('contact', e.target.value)
+                                    }
                                     placeholder="Contoh: 0812-3456-7890 (Sekretariat)"
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 />
@@ -231,16 +298,27 @@ export default function AdminAgendaCreate() {
 
                         <div className="grid gap-5 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="status" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="status"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Status Agenda *
                                 </label>
                                 <select
                                     id="status"
                                     value={data.status}
-                                    onChange={(e) => setData('status', e.target.value as 'upcoming' | 'completed')}
+                                    onChange={(e) =>
+                                        setData(
+                                            'status',
+                                            e.target.value as
+                                                'upcoming' | 'completed',
+                                        )
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 >
-                                    <option value="upcoming">Akan Datang</option>
+                                    <option value="upcoming">
+                                        Akan Datang
+                                    </option>
                                     <option value="completed">Selesai</option>
                                 </select>
                             </div>
@@ -250,7 +328,12 @@ export default function AdminAgendaCreate() {
                                     <input
                                         type="checkbox"
                                         checked={data.registration_required}
-                                        onChange={(e) => setData('registration_required', e.target.checked)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'registration_required',
+                                                e.target.checked,
+                                            )
+                                        }
                                         className="size-4 rounded border-sidebar-border text-emerald-700 focus:ring-emerald-600"
                                     />
                                     <span>Memerlukan Pendaftaran Warga</span>
@@ -260,7 +343,12 @@ export default function AdminAgendaCreate() {
                                     <input
                                         type="checkbox"
                                         checked={data.is_featured}
-                                        onChange={(e) => setData('is_featured', e.target.checked)}
+                                        onChange={(e) =>
+                                            setData(
+                                                'is_featured',
+                                                e.target.checked,
+                                            )
+                                        }
                                         className="size-4 rounded border-sidebar-border text-emerald-700 focus:ring-emerald-600"
                                     />
                                     <span>Agenda Utama</span>
@@ -276,7 +364,9 @@ export default function AdminAgendaCreate() {
                             className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-800 disabled:opacity-50"
                         >
                             <CalendarDays className="size-4" />
-                            <span>{processing ? 'Menyimpan...' : 'Simpan Agenda'}</span>
+                            <span>
+                                {processing ? 'Menyimpan...' : 'Simpan Agenda'}
+                            </span>
                         </button>
                         <Link
                             href={agendaIndex()}

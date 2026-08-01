@@ -45,11 +45,15 @@ export default function PasskeyVerify({
                 <Button
                     type="button"
                     variant="outline"
-                    className="h-12 sm:h-13 w-full rounded-2xl border-slate-200 bg-white font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 transition-all text-sm sm:text-base"
+                    className="h-12 w-full rounded-2xl border-slate-200 bg-white text-sm font-bold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:text-slate-900 sm:h-13 sm:text-base"
                     onClick={verify}
                     disabled={isLoading}
                 >
-                    {isLoading ? <Spinner className="mr-2 size-5 border-2 border-slate-400 border-t-slate-800" /> : <KeyRound className="mr-2.5 size-5 text-emerald-600" />}
+                    {isLoading ? (
+                        <Spinner className="mr-2 size-5 border-2 border-slate-400 border-t-slate-800" />
+                    ) : (
+                        <KeyRound className="mr-2.5 size-5 text-emerald-600" />
+                    )}
                     {isLoading
                         ? (loadingLabel ?? 'Verifikasi Passkey...')
                         : (label ?? 'Masuk dengan Passkey')}
@@ -63,7 +67,7 @@ export default function PasskeyVerify({
                 <div className="absolute inset-0 flex items-center">
                     <Separator className="w-full bg-slate-200" />
                 </div>
-                <div className="relative flex justify-center text-xs font-bold uppercase tracking-wider">
+                <div className="relative flex justify-center text-xs font-bold tracking-wider uppercase">
                     <span className="bg-white px-3 text-slate-400">
                         {separator ?? 'atau lanjutkan dengan email'}
                     </span>
@@ -72,4 +76,3 @@ export default function PasskeyVerify({
         </>
     );
 }
-

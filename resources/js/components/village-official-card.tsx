@@ -35,8 +35,11 @@ export function VillageOfficialCard({
                 )}
 
                 {/* Unit Tag Badge */}
-                <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-800 shadow-xs border border-emerald-100 uppercase">
-                    <UserCheck aria-hidden="true" className="size-3 text-emerald-600" />
+                <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-white px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-800 uppercase shadow-xs">
+                    <UserCheck
+                        aria-hidden="true"
+                        className="size-3 text-emerald-600"
+                    />
                     {official.unit}
                 </span>
             </div>
@@ -59,18 +62,24 @@ export function VillageOfficialCard({
                         <button
                             type="button"
                             onClick={() => onOpenDetail(official)}
-                            className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white group-hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer"
+                            className="inline-flex min-h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 text-xs font-bold text-emerald-800 transition-all group-hover:shadow-md hover:bg-emerald-600 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
                         >
                             <span>Lihat Profil Lengkap</span>
-                            <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                            <ArrowRight
+                                aria-hidden="true"
+                                className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                            />
                         </button>
                     ) : (
                         <Link
                             href={officialShow(official.slug)}
-                            className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-600 hover:text-white group-hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+                            className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl bg-gray-50 px-4 text-xs font-bold text-emerald-800 transition-all group-hover:shadow-md hover:bg-emerald-600 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none"
                         >
                             <span>Lihat Profil Lengkap</span>
-                            <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                            <ArrowRight
+                                aria-hidden="true"
+                                className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                            />
                         </Link>
                     )}
                 </div>
@@ -78,4 +87,3 @@ export function VillageOfficialCard({
         </article>
     );
 }
-

@@ -25,7 +25,10 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     {({ processing, errors }) => (
                         <>
                             <div className="grid gap-2">
-                                <Label htmlFor="email" className="text-xs font-bold text-slate-700">
+                                <Label
+                                    htmlFor="email"
+                                    className="text-xs font-bold text-slate-700"
+                                >
                                     Alamat Email
                                 </Label>
                                 <Input
@@ -57,9 +60,12 @@ export default function ForgotPassword({ status }: { status?: string }) {
                     )}
                 </Form>
 
-                <div className="text-center text-xs font-medium text-slate-500 pt-2 border-t border-slate-100">
+                <div className="border-t border-slate-100 pt-2 text-center text-xs font-medium text-slate-500">
                     <span>Kembali ke halaman</span>{' '}
-                    <TextLink href={login()} className="font-bold text-emerald-700 hover:text-emerald-800 hover:underline">
+                    <TextLink
+                        href={login()}
+                        className="font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
+                    >
                         Masuk Akun
                     </TextLink>
                 </div>
@@ -70,6 +76,6 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
 ForgotPassword.layout = {
     title: 'Lupa Kata Sandi',
-    description: 'Masukkan alamat email Anda untuk menerima tautan atur ulang kata sandi',
+    description:
+        'Masukkan alamat email Anda untuk menerima tautan atur ulang kata sandi',
 };
-

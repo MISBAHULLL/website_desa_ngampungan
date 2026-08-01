@@ -124,7 +124,9 @@ export default function AdminNewsIndex({
                             Kelola Berita Desa
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Tambah, sunting, hapus, dan atur Berita Utama (Headline) yang tampil pada halaman publik Desa Ngampungan.
+                            Tambah, sunting, hapus, dan atur Berita Utama
+                            (Headline) yang tampil pada halaman publik Desa
+                            Ngampungan.
                         </p>
                     </div>
 
@@ -190,7 +192,7 @@ export default function AdminNewsIndex({
                     <div className="overflow-hidden rounded-xl border border-sidebar-border/70 bg-background shadow-xs">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
-                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                     <tr>
                                         <th scope="col" className="px-5 py-3.5">
                                             Artikel Berita
@@ -223,8 +225,13 @@ export default function AdminNewsIndex({
                                                     <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border border-sidebar-border/60 bg-muted">
                                                         {item.image_path ? (
                                                             <img
-                                                                src={item.image_path}
-                                                                alt={item.image_alt || item.title}
+                                                                src={
+                                                                    item.image_path
+                                                                }
+                                                                alt={
+                                                                    item.image_alt ||
+                                                                    item.title
+                                                                }
                                                                 className="size-full object-cover"
                                                             />
                                                         ) : (
@@ -233,11 +240,11 @@ export default function AdminNewsIndex({
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div className="min-w-0 max-w-md">
+                                                    <div className="max-w-md min-w-0">
                                                         <h2 className="line-clamp-1 font-bold text-foreground">
                                                             {item.title}
                                                         </h2>
-                                                        <p className="line-clamp-1 mt-1 text-xs text-muted-foreground">
+                                                        <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
                                                             {item.excerpt}
                                                         </p>
                                                     </div>
@@ -252,12 +259,16 @@ export default function AdminNewsIndex({
 
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <Form
-                                                    {...toggleFeatured.form(item.id)}
+                                                    {...toggleFeatured.form(
+                                                        item.id,
+                                                    )}
                                                 >
                                                     {({ processing }) => (
                                                         <button
                                                             type="submit"
-                                                            disabled={processing}
+                                                            disabled={
+                                                                processing
+                                                            }
                                                             className={
                                                                 item.is_featured
                                                                     ? 'inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 transition hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
@@ -286,12 +297,14 @@ export default function AdminNewsIndex({
                                                 </Form>
                                             </td>
 
-                                            <td className="px-4 py-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
+                                            <td className="px-4 py-4 text-xs font-medium whitespace-nowrap text-muted-foreground">
                                                 <div className="flex items-center gap-1.5">
                                                     <CalendarDays className="size-3.5 text-emerald-600" />
                                                     <span>
                                                         {dateFormatter.format(
-                                                            new Date(item.published_at),
+                                                            new Date(
+                                                                item.published_at,
+                                                            ),
                                                         )}
                                                     </span>
                                                 </div>
@@ -316,12 +329,14 @@ export default function AdminNewsIndex({
                                                             )
                                                         }
                                                         disabled={
-                                                            deletingId === item.id
+                                                            deletingId ===
+                                                            item.id
                                                         }
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
                                                         title="Hapus Berita"
                                                     >
-                                                        {deletingId === item.id ? (
+                                                        {deletingId ===
+                                                        item.id ? (
                                                             <Spinner />
                                                         ) : (
                                                             <Trash2 className="size-4" />
@@ -344,7 +359,8 @@ export default function AdminNewsIndex({
                             Berita tidak ditemukan
                         </h2>
                         <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                            Tidak ada data berita yang cocok dengan kriteria pencarian atau filter yang dipilih.
+                            Tidak ada data berita yang cocok dengan kriteria
+                            pencarian atau filter yang dipilih.
                         </p>
                     </div>
                 )}

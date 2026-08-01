@@ -106,7 +106,9 @@ export default function AdminAnnouncementIndex({
     }
 
     function handleDelete(id: number, title: string) {
-        if (confirm(`Apakah Anda yakin ingin menghapus pengumuman "${title}"?`)) {
+        if (
+            confirm(`Apakah Anda yakin ingin menghapus pengumuman "${title}"?`)
+        ) {
             setDeletingId(id);
             router.delete(announcementDestroy.url(id), {
                 onFinish: () => setDeletingId(null),
@@ -128,7 +130,9 @@ export default function AdminAnnouncementIndex({
                             Kelola Pengumuman Desa
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Tambah, edit, hapus, dan atur prioritas pengumuman resmi yang dipublikasikan untuk warga Desa Ngampungan.
+                            Tambah, edit, hapus, dan atur prioritas pengumuman
+                            resmi yang dipublikasikan untuk warga Desa
+                            Ngampungan.
                         </p>
                     </div>
 
@@ -161,20 +165,28 @@ export default function AdminAnnouncementIndex({
                         <span className="text-xs font-semibold text-muted-foreground">
                             Prioritas:
                         </span>
-                        {['Semua', 'normal', 'important', 'emergency'].map((p) => (
-                            <button
-                                key={p}
-                                type="button"
-                                onClick={() => handleFilterChange(p, filters.status)}
-                                className={
-                                    filters.priority === p
-                                        ? 'rounded-lg bg-foreground px-3 py-1.5 text-xs font-bold text-background capitalize'
-                                        : 'rounded-lg border border-sidebar-border/70 bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-foreground/30 capitalize'
-                                }
-                            >
-                                {p === 'important' ? 'Penting' : p === 'emergency' ? 'Darurat' : p}
-                            </button>
-                        ))}
+                        {['Semua', 'normal', 'important', 'emergency'].map(
+                            (p) => (
+                                <button
+                                    key={p}
+                                    type="button"
+                                    onClick={() =>
+                                        handleFilterChange(p, filters.status)
+                                    }
+                                    className={
+                                        filters.priority === p
+                                            ? 'rounded-lg bg-foreground px-3 py-1.5 text-xs font-bold text-background capitalize'
+                                            : 'rounded-lg border border-sidebar-border/70 bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground capitalize hover:border-foreground/30'
+                                    }
+                                >
+                                    {p === 'important'
+                                        ? 'Penting'
+                                        : p === 'emergency'
+                                          ? 'Darurat'
+                                          : p}
+                                </button>
+                            ),
+                        )}
 
                         <span className="ml-2 text-xs font-semibold text-muted-foreground">
                             Status:
@@ -183,14 +195,20 @@ export default function AdminAnnouncementIndex({
                             <button
                                 key={s}
                                 type="button"
-                                onClick={() => handleFilterChange(filters.priority, s)}
+                                onClick={() =>
+                                    handleFilterChange(filters.priority, s)
+                                }
                                 className={
                                     filters.status === s
                                         ? 'rounded-lg bg-emerald-700 px-3 py-1.5 text-xs font-bold text-white capitalize'
-                                        : 'rounded-lg border border-sidebar-border/70 bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:border-foreground/30 capitalize'
+                                        : 'rounded-lg border border-sidebar-border/70 bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground capitalize hover:border-foreground/30'
                                 }
                             >
-                                {s === 'active' ? 'Aktif' : s === 'archived' ? 'Arsip' : s}
+                                {s === 'active'
+                                    ? 'Aktif'
+                                    : s === 'archived'
+                                      ? 'Arsip'
+                                      : s}
                             </button>
                         ))}
                     </div>
@@ -201,7 +219,7 @@ export default function AdminAnnouncementIndex({
                     <div className="overflow-hidden rounded-xl border border-sidebar-border/70 bg-background shadow-xs">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
-                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                     <tr>
                                         <th scope="col" className="px-5 py-3.5">
                                             Judul & Ringkasan
@@ -230,7 +248,7 @@ export default function AdminAnnouncementIndex({
                                             className="transition hover:bg-muted/20"
                                         >
                                             <td className="px-5 py-4">
-                                                <div className="min-w-0 max-w-md">
+                                                <div className="max-w-md min-w-0">
                                                     <div className="flex items-center gap-2">
                                                         <h2 className="font-bold text-foreground">
                                                             {item.title}
@@ -242,19 +260,21 @@ export default function AdminAnnouncementIndex({
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <p className="line-clamp-2 mt-1 text-xs text-muted-foreground">
+                                                    <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
                                                         {item.summary}
                                                     </p>
                                                 </div>
                                             </td>
 
                                             <td className="px-4 py-4 whitespace-nowrap">
-                                                {item.priority === 'emergency' ? (
+                                                {item.priority ===
+                                                'emergency' ? (
                                                     <span className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-800 dark:border-rose-800 dark:bg-rose-950/60 dark:text-rose-300">
                                                         <ShieldAlert className="size-3.5" />
                                                         Darurat
                                                     </span>
-                                                ) : item.priority === 'important' ? (
+                                                ) : item.priority ===
+                                                  'important' ? (
                                                     <span className="inline-flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-800 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-300">
                                                         <AlertTriangle className="size-3.5" />
                                                         Penting
@@ -271,43 +291,63 @@ export default function AdminAnnouncementIndex({
                                                 <div className="flex flex-col gap-1.5">
                                                     <span
                                                         className={
-                                                            item.status === 'active'
+                                                            item.status ===
+                                                            'active'
                                                                 ? 'inline-flex w-fit rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300'
                                                                 : 'inline-flex w-fit rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300'
                                                         }
                                                     >
-                                                        {item.status === 'active' ? 'Aktif' : 'Arsip'}
+                                                        {item.status ===
+                                                        'active'
+                                                            ? 'Aktif'
+                                                            : 'Arsip'}
                                                     </span>
 
                                                     <Form
-                                                        {...togglePinned.form(item.id)}
+                                                        {...togglePinned.form(
+                                                            item.id,
+                                                        )}
                                                     >
                                                         {({ processing }) => (
                                                             <button
                                                                 type="submit"
-                                                                disabled={processing}
-                                                                className="text-[11px] text-muted-foreground hover:text-foreground hover:underline text-left"
+                                                                disabled={
+                                                                    processing
+                                                                }
+                                                                className="text-left text-[11px] text-muted-foreground hover:text-foreground hover:underline"
                                                             >
-                                                                {item.is_pinned ? 'Lepas Pin' : 'Sematkan di Atas'}
+                                                                {item.is_pinned
+                                                                    ? 'Lepas Pin'
+                                                                    : 'Sematkan di Atas'}
                                                             </button>
                                                         )}
                                                     </Form>
                                                 </div>
                                             </td>
 
-                                            <td className="px-4 py-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
+                                            <td className="px-4 py-4 text-xs font-medium whitespace-nowrap text-muted-foreground">
                                                 <div className="flex flex-col gap-1">
                                                     <div className="flex items-center gap-1.5">
                                                         <Calendar className="size-3.5 text-emerald-600" />
                                                         <span>
-                                                            Mulai: {dateFormatter.format(new Date(item.starts_at))}
+                                                            Mulai:{' '}
+                                                            {dateFormatter.format(
+                                                                new Date(
+                                                                    item.starts_at,
+                                                                ),
+                                                            )}
                                                         </span>
                                                     </div>
                                                     {item.ends_at && (
                                                         <div className="flex items-center gap-1.5 text-slate-500">
                                                             <Archive className="size-3.5" />
                                                             <span>
-                                                                Selesai: {dateFormatter.format(new Date(item.ends_at))}
+                                                                Selesai:{' '}
+                                                                {dateFormatter.format(
+                                                                    new Date(
+                                                                        item.ends_at,
+                                                                    ),
+                                                                )}
                                                             </span>
                                                         </div>
                                                     )}
@@ -317,7 +357,9 @@ export default function AdminAnnouncementIndex({
                                             <td className="px-5 py-4 text-right whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
-                                                        href={announcementEdit(item.id)}
+                                                        href={announcementEdit(
+                                                            item.id,
+                                                        )}
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-sidebar-border/70 bg-background text-foreground transition hover:border-emerald-500 hover:text-emerald-600"
                                                         title="Sunting Pengumuman"
                                                     >
@@ -333,12 +375,14 @@ export default function AdminAnnouncementIndex({
                                                             )
                                                         }
                                                         disabled={
-                                                            deletingId === item.id
+                                                            deletingId ===
+                                                            item.id
                                                         }
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
                                                         title="Hapus Pengumuman"
                                                     >
-                                                        {deletingId === item.id ? (
+                                                        {deletingId ===
+                                                        item.id ? (
                                                             <Spinner />
                                                         ) : (
                                                             <Trash2 className="size-4" />
@@ -361,7 +405,8 @@ export default function AdminAnnouncementIndex({
                             Pengumuman tidak ditemukan
                         </h2>
                         <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                            Tidak ada data pengumuman yang cocok dengan pencarian atau filter yang dipilih.
+                            Tidak ada data pengumuman yang cocok dengan
+                            pencarian atau filter yang dipilih.
                         </p>
                     </div>
                 )}
@@ -375,7 +420,8 @@ export default function AdminAnnouncementIndex({
                         {announcements.links.map((link, index) => {
                             const label = paginationLabel(link.label);
                             const isPrevious = index === 0;
-                            const isNext = index === announcements.links.length - 1;
+                            const isNext =
+                                index === announcements.links.length - 1;
 
                             if (!link.url) {
                                 return (

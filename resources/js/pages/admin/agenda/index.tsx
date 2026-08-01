@@ -122,7 +122,9 @@ export default function AdminAgendaIndex({
                             Kelola Agenda Desa
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Buat, perbarui, dan atur agenda pelayanan publik, musyawarah, dan kegiatan kemasyarakatan Desa Ngampungan.
+                            Buat, perbarui, dan atur agenda pelayanan publik,
+                            musyawarah, dan kegiatan kemasyarakatan Desa
+                            Ngampungan.
                         </p>
                     </div>
 
@@ -196,7 +198,7 @@ export default function AdminAgendaIndex({
                     <div className="overflow-hidden rounded-xl border border-sidebar-border/70 bg-background shadow-xs">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
-                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                     <tr>
                                         <th scope="col" className="px-5 py-3.5">
                                             Tanggal & Agenda
@@ -230,15 +232,19 @@ export default function AdminAgendaIndex({
                                                         <span className="text-[9px] font-black uppercase">
                                                             {item.day_label}
                                                         </span>
-                                                        <span className="text-base font-black leading-none">
-                                                            {item.date_label.split(' ')[0]}
+                                                        <span className="text-base leading-none font-black">
+                                                            {
+                                                                item.date_label.split(
+                                                                    ' ',
+                                                                )[0]
+                                                            }
                                                         </span>
                                                     </div>
-                                                    <div className="min-w-0 max-w-md">
+                                                    <div className="max-w-md min-w-0">
                                                         <span className="inline-block rounded-md bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
                                                             {item.category}
                                                         </span>
-                                                        <h2 className="line-clamp-1 font-bold text-foreground mt-1">
+                                                        <h2 className="mt-1 line-clamp-1 font-bold text-foreground">
                                                             {item.title}
                                                         </h2>
                                                         <p className="line-clamp-1 text-xs text-muted-foreground">
@@ -248,9 +254,9 @@ export default function AdminAgendaIndex({
                                                 </div>
                                             </td>
 
-                                            <td className="px-4 py-4 whitespace-nowrap text-xs">
+                                            <td className="px-4 py-4 text-xs whitespace-nowrap">
                                                 <div className="space-y-1">
-                                                    <span className="flex items-center gap-1.5 text-foreground font-semibold">
+                                                    <span className="flex items-center gap-1.5 font-semibold text-foreground">
                                                         <Clock className="size-3.5 text-emerald-600" />
                                                         {item.time_label}
                                                     </span>
@@ -264,12 +270,14 @@ export default function AdminAgendaIndex({
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <span
                                                     className={
-                                                        item.status === 'completed'
+                                                        item.status ===
+                                                        'completed'
                                                             ? 'inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
                                                             : 'inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
                                                     }
                                                 >
-                                                    {item.status === 'completed' ? (
+                                                    {item.status ===
+                                                    'completed' ? (
                                                         <>
                                                             <CheckCircle2 className="size-3 text-slate-400" />
                                                             <span>Selesai</span>
@@ -277,7 +285,9 @@ export default function AdminAgendaIndex({
                                                     ) : (
                                                         <>
                                                             <span className="size-1.5 rounded-full bg-emerald-600" />
-                                                            <span>Akan Datang</span>
+                                                            <span>
+                                                                Akan Datang
+                                                            </span>
                                                         </>
                                                     )}
                                                 </span>
@@ -285,12 +295,16 @@ export default function AdminAgendaIndex({
 
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <Form
-                                                    {...toggleFeatured.form(item.id)}
+                                                    {...toggleFeatured.form(
+                                                        item.id,
+                                                    )}
                                                 >
                                                     {({ processing }) => (
                                                         <button
                                                             type="submit"
-                                                            disabled={processing}
+                                                            disabled={
+                                                                processing
+                                                            }
                                                             className={
                                                                 item.is_featured
                                                                     ? 'inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 transition hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
@@ -317,7 +331,9 @@ export default function AdminAgendaIndex({
                                             <td className="px-5 py-4 text-right whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
-                                                        href={agendaEdit(item.id)}
+                                                        href={agendaEdit(
+                                                            item.id,
+                                                        )}
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-sidebar-border/70 bg-background text-foreground transition hover:border-emerald-500 hover:text-emerald-600"
                                                         title="Sunting Agenda"
                                                     >
@@ -333,12 +349,14 @@ export default function AdminAgendaIndex({
                                                             )
                                                         }
                                                         disabled={
-                                                            deletingId === item.id
+                                                            deletingId ===
+                                                            item.id
                                                         }
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
                                                         title="Hapus Agenda"
                                                     >
-                                                        {deletingId === item.id ? (
+                                                        {deletingId ===
+                                                        item.id ? (
                                                             <Spinner />
                                                         ) : (
                                                             <Trash2 className="size-4" />
@@ -361,7 +379,8 @@ export default function AdminAgendaIndex({
                             Agenda tidak ditemukan
                         </h2>
                         <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                            Belum ada agenda desa yang terdaftar atau cocok dengan pencarian.
+                            Belum ada agenda desa yang terdaftar atau cocok
+                            dengan pencarian.
                         </p>
                     </div>
                 )}

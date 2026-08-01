@@ -1,5 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, ChevronLeft, ChevronRight, Search, Store } from 'lucide-react';
+import {
+    ArrowRight,
+    ChevronLeft,
+    ChevronRight,
+    Search,
+    Store,
+} from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
@@ -65,7 +71,9 @@ export default function PotentialIndex({
                 entry.managerName,
                 entry.address,
                 ...entry.tags,
-                ...entry.offerings.map((offering: VillagePotentialOffering) => offering.name),
+                ...entry.offerings.map(
+                    (offering: VillagePotentialOffering) => offering.name,
+                ),
             ].some((value) =>
                 value.toLocaleLowerCase('id').includes(normalizedQuery),
             ),
@@ -77,7 +85,10 @@ export default function PotentialIndex({
         setCurrentPage(1);
     }, [initialCategory, searchQuery]);
 
-    const totalPages = Math.max(1, Math.ceil(filteredEntries.length / ITEMS_PER_PAGE));
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredEntries.length / ITEMS_PER_PAGE),
+    );
 
     const paginatedEntries = useMemo(() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -115,7 +126,11 @@ export default function PotentialIndex({
             </Head>
 
             <section className="bg-village-primary-dark text-white">
-                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn
+                    direction="up"
+                    duration={0.5}
+                    className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12"
+                >
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <p className="text-xs font-bold tracking-widest text-village-accent uppercase">
@@ -136,7 +151,9 @@ export default function PotentialIndex({
                                 {totalCount}
                             </p>
                             <p className="mt-1 text-xs leading-relaxed text-white/70">
-                                profil potensi terdaftar dalam {villagePotentialCategories.length} kategori utama desa.
+                                profil potensi terdaftar dalam{' '}
+                                {villagePotentialCategories.length} kategori
+                                utama desa.
                             </p>
                         </div>
                     </div>
@@ -149,7 +166,11 @@ export default function PotentialIndex({
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     {/* Integrated Search and Category Header */}
-                    <FadeIn direction="up" duration={0.5} className="flex flex-col gap-6 border-b border-gray-200/80 pb-6 lg:flex-row lg:items-center lg:justify-between">
+                    <FadeIn
+                        direction="up"
+                        duration={0.5}
+                        className="flex flex-col gap-6 border-b border-gray-200/80 pb-6 lg:flex-row lg:items-center lg:justify-between"
+                    >
                         <div>
                             <h2
                                 id="potential-directory-heading"
@@ -158,7 +179,8 @@ export default function PotentialIndex({
                                 Jelajahi berdasarkan kategori
                             </h2>
                             <p className="mt-1 text-xs text-gray-500">
-                                Pilih kategori atau gunakan kata kunci pencarian untuk menemukan potensi desa.
+                                Pilih kategori atau gunakan kata kunci pencarian
+                                untuk menemukan potensi desa.
                             </p>
                         </div>
 
@@ -175,7 +197,7 @@ export default function PotentialIndex({
                                     setSearchQuery(event.target.value)
                                 }
                                 placeholder="Cari nama, produk, pengelola..."
-                                className="h-11 w-full rounded-xl border border-gray-200 bg-white py-2 pr-4 pl-10 text-xs text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:border-village-primary focus:ring-2 focus:ring-village-primary/15 shadow-2xs"
+                                className="h-11 w-full rounded-xl border border-gray-200 bg-white py-2 pr-4 pl-10 text-xs text-gray-900 shadow-2xs transition-all outline-none placeholder:text-gray-400 focus:border-village-primary focus:ring-2 focus:ring-village-primary/15"
                             />
                         </div>
                     </FadeIn>
@@ -191,11 +213,13 @@ export default function PotentialIndex({
                                 preserveScroll
                                 className={`flex items-center rounded-full px-4 py-2 text-xs font-bold transition-all ${
                                     initialCategory === 'all'
-                                        ? 'bg-village-primary text-white shadow-xs font-extrabold'
+                                        ? 'bg-village-primary font-extrabold text-white shadow-xs'
                                         : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
                                 }`}
                                 aria-current={
-                                    initialCategory === 'all' ? 'page' : undefined
+                                    initialCategory === 'all'
+                                        ? 'page'
+                                        : undefined
                                 }
                             >
                                 Semua
@@ -209,7 +233,7 @@ export default function PotentialIndex({
                                     preserveScroll
                                     className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
                                         initialCategory === category.key
-                                            ? 'bg-village-primary text-white shadow-xs font-extrabold'
+                                            ? 'bg-village-primary font-extrabold text-white shadow-xs'
                                             : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
                                     }`}
                                     aria-current={
@@ -233,7 +257,11 @@ export default function PotentialIndex({
                             className="text-xs font-medium text-gray-500"
                             aria-live="polite"
                         >
-                            Menampilkan <strong className="font-bold text-gray-900">{paginatedEntries.length}</strong> dari {filteredEntries.length} potensi yang sesuai
+                            Menampilkan{' '}
+                            <strong className="font-bold text-gray-900">
+                                {paginatedEntries.length}
+                            </strong>{' '}
+                            dari {filteredEntries.length} potensi yang sesuai
                         </p>
                         {searchQuery !== '' && (
                             <button
@@ -257,7 +285,7 @@ export default function PotentialIndex({
                             <StaggerContainer
                                 key={currentPage}
                                 staggerDelay={0.06}
-                                className="mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out"
+                                className="mt-6 grid min-h-[440px] gap-6 transition-all duration-300 ease-out md:grid-cols-2 lg:grid-cols-3"
                             >
                                 {paginatedEntries.map((entry) => (
                                     <StaggerItem
@@ -276,14 +304,17 @@ export default function PotentialIndex({
                                 {paginatedEntries.length < ITEMS_PER_PAGE && (
                                     <StaggerItem className="flex flex-col justify-between rounded-3xl border border-dashed border-gray-200 bg-gradient-to-br from-gray-50/80 via-white to-emerald-50/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs">
                                         <div className="space-y-3">
-                                            <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
+                                            <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light font-bold text-village-primary shadow-2xs">
                                                 <Store className="size-5" />
                                             </span>
                                             <h4 className="text-base font-extrabold text-gray-900">
                                                 Daftarkan Usaha / Potensi
                                             </h4>
                                             <p className="text-xs leading-relaxed text-gray-500">
-                                                Punya produk UMKM, hasil tani, atau jasa di Desa Ngampungan? Hubungi pengelola desa untuk publikasi di direktori resmi.
+                                                Punya produk UMKM, hasil tani,
+                                                atau jasa di Desa Ngampungan?
+                                                Hubungi pengelola desa untuk
+                                                publikasi di direktori resmi.
                                             </p>
                                         </div>
                                         <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
@@ -308,36 +339,48 @@ export default function PotentialIndex({
                                     <button
                                         type="button"
                                         disabled={currentPage === 1}
-                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        onClick={() =>
+                                            handlePageChange(currentPage - 1)
+                                        }
                                         aria-label="Halaman sebelumnya"
                                         className="flex size-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                     >
                                         <ChevronLeft className="size-4" />
                                     </button>
 
-                                    {Array.from({ length: totalPages }, (_, index) => {
-                                        const pageNumber = index + 1;
-                                        const isActive = pageNumber === currentPage;
-                                        return (
-                                            <button
-                                                key={pageNumber}
-                                                type="button"
-                                                onClick={() => handlePageChange(pageNumber)}
-                                                className={`flex size-9 items-center justify-center rounded-lg text-xs font-bold transition-all ${
-                                                    isActive
-                                                        ? 'bg-village-primary text-white shadow-xs'
-                                                        : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
-                                                }`}
-                                            >
-                                                {pageNumber}
-                                            </button>
-                                        );
-                                    })}
+                                    {Array.from(
+                                        { length: totalPages },
+                                        (_, index) => {
+                                            const pageNumber = index + 1;
+                                            const isActive =
+                                                pageNumber === currentPage;
+                                            return (
+                                                <button
+                                                    key={pageNumber}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handlePageChange(
+                                                            pageNumber,
+                                                        )
+                                                    }
+                                                    className={`flex size-9 items-center justify-center rounded-lg text-xs font-bold transition-all ${
+                                                        isActive
+                                                            ? 'bg-village-primary text-white shadow-xs'
+                                                            : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    {pageNumber}
+                                                </button>
+                                            );
+                                        },
+                                    )}
 
                                     <button
                                         type="button"
                                         disabled={currentPage === totalPages}
-                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        onClick={() =>
+                                            handlePageChange(currentPage + 1)
+                                        }
                                         aria-label="Halaman selanjutnya"
                                         className="flex size-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
                                     >

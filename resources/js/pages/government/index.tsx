@@ -17,9 +17,19 @@ import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageOfficialCard } from '@/components/village-official-card';
-import { VillageOfficialData, VillageOfficialDetailModal } from '@/components/village-official-detail-modal';
-import { InstitutionMember, VillageInstitutionData, VillageInstitutionDetailModal } from '@/components/village-institution-detail-modal';
-import { OfficialProp, VillageOrganizationChart } from '@/components/village-organization-chart';
+import {
+    VillageOfficialData,
+    VillageOfficialDetailModal,
+} from '@/components/village-official-detail-modal';
+import {
+    InstitutionMember,
+    VillageInstitutionData,
+    VillageInstitutionDetailModal,
+} from '@/components/village-institution-detail-modal';
+import {
+    OfficialProp,
+    VillageOrganizationChart,
+} from '@/components/village-organization-chart';
 import { home } from '@/routes';
 
 type InstitutionProp = {
@@ -92,7 +102,10 @@ const institutionBadgeColors: Record<string, string> = {
 };
 
 function getInstitutionBadgeStyle(acronym: string) {
-    return institutionBadgeColors[acronym] || 'border-slate-200 bg-slate-100 text-slate-800';
+    return (
+        institutionBadgeColors[acronym] ||
+        'border-slate-200 bg-slate-100 text-slate-800'
+    );
 }
 
 export default function VillageGovernmentIndex({
@@ -107,8 +120,12 @@ export default function VillageGovernmentIndex({
     const [selectedInstitution, setSelectedInstitution] =
         useState<VillageInstitutionData | null>(null);
 
-    const villageHead = officials.leadership[0] || officials.all.find((o) => o.group === 'leadership');
-    const villageApparatus = officials.all.filter((o) => o.group !== 'leadership');
+    const villageHead =
+        officials.leadership[0] ||
+        officials.all.find((o) => o.group === 'leadership');
+    const villageApparatus = officials.all.filter(
+        (o) => o.group !== 'leadership',
+    );
 
     const visibleOfficials =
         activeOfficialFilter === 'all'
@@ -152,7 +169,11 @@ export default function VillageGovernmentIndex({
 
             {/* HERO SECTION */}
             <section className="bg-village-primary-dark text-white">
-                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn
+                    direction="up"
+                    duration={0.5}
+                    className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12"
+                >
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <nav
@@ -172,10 +193,14 @@ export default function VillageGovernmentIndex({
                             </nav>
 
                             <h1 className="mt-4 text-3xl font-black tracking-tight text-white sm:text-4xl lg:text-5xl">
-                                Struktur Pemerintahan & Tata Kelola Desa Ngampungan
+                                Struktur Pemerintahan & Tata Kelola Desa
+                                Ngampungan
                             </h1>
                             <p className="mt-4 text-sm leading-relaxed text-emerald-100/90 sm:text-base lg:text-lg">
-                                Transparansi kepemimpinan, jajaran aparatur pemerintah desa, dan lembaga kemasyarakatan yang melayani warga Desa Ngampungan dengan dedikasi dan profesionalitas.
+                                Transparansi kepemimpinan, jajaran aparatur
+                                pemerintah desa, dan lembaga kemasyarakatan yang
+                                melayani warga Desa Ngampungan dengan dedikasi
+                                dan profesionalitas.
                             </p>
                         </div>
 
@@ -211,53 +236,78 @@ export default function VillageGovernmentIndex({
                     {/* SECTION 1: PROFIL & CARD KEPALA DESA */}
                     {villageHead && (
                         <section id="kepala-desa" className="scroll-mt-24">
-                            <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-1">
+                            <FadeIn
+                                direction="up"
+                                duration={0.5}
+                                className="mb-6 flex flex-col gap-1"
+                            >
                                 <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                     Kepala Desa Ngampungan
                                 </h2>
-                                <p className="text-xs text-slate-500 font-medium">
-                                    Pemimpin penyelenggaraan pemerintahan, pembangunan, dan pembinaan kemasyarakatan Desa Ngampungan.
+                                <p className="text-xs font-medium text-slate-500">
+                                    Pemimpin penyelenggaraan pemerintahan,
+                                    pembangunan, dan pembinaan kemasyarakatan
+                                    Desa Ngampungan.
                                 </p>
                             </FadeIn>
 
                             <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch">
                                 {/* Left Column: Sambutan Photo Card */}
-                                <FadeIn direction="right" duration={0.5} className="lg:col-span-5 flex justify-center">
-                                    <div className="group relative h-[480px] sm:h-[500px] w-full max-w-[380px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl shrink-0 flex flex-col justify-end">
+                                <FadeIn
+                                    direction="right"
+                                    duration={0.5}
+                                    className="flex justify-center lg:col-span-5"
+                                >
+                                    <div className="group relative flex h-[480px] w-full max-w-[380px] shrink-0 flex-col justify-end overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl sm:h-[500px]">
                                         <img
-                                            src={villageHead.photo_url || '/assets/simulasi_profl.png'}
+                                            src={
+                                                villageHead.photo_url ||
+                                                '/assets/simulasi_profl.png'
+                                            }
                                             alt={villageHead.name}
                                             className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                             onError={(e) => {
-                                                (e.currentTarget as HTMLImageElement).src =
+                                                (
+                                                    e.currentTarget as HTMLImageElement
+                                                ).src =
                                                     'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';
                                             }}
                                         />
 
                                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-950/25 via-40% to-slate-950/95" />
 
-                                        <div className="relative z-10 flex flex-col justify-end space-y-3 p-6 sm:p-7 text-white">
+                                        <div className="relative z-10 flex flex-col justify-end space-y-3 p-6 text-white sm:p-7">
                                             <div className="space-y-1 text-left">
-                                                <h3 className="text-2xl font-black tracking-tight text-white leading-snug drop-shadow-sm sm:text-3xl">
+                                                <h3 className="text-2xl leading-snug font-black tracking-tight text-white drop-shadow-sm sm:text-3xl">
                                                     {villageHead.name}
                                                 </h3>
 
                                                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
                                                     <MapPin className="size-4 shrink-0 text-emerald-400" />
-                                                    <span>{villageHead.position}</span>
+                                                    <span>
+                                                        {villageHead.position}
+                                                    </span>
                                                 </div>
 
                                                 <p className="pl-6 text-xs font-medium text-slate-300">
-                                                    Masa Jabatan {villageHead.term || '2022–2028'}
+                                                    Masa Jabatan{' '}
+                                                    {villageHead.term ||
+                                                        '2022–2028'}
                                                 </p>
                                             </div>
 
                                             <button
                                                 type="button"
-                                                onClick={() => setSelectedOfficial(villageHead as any)}
-                                                className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-emerald-800 shadow-lg cursor-pointer"
+                                                onClick={() =>
+                                                    setSelectedOfficial(
+                                                        villageHead as any,
+                                                    )
+                                                }
+                                                className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-emerald-800"
                                             >
-                                                <span>Detail Profil Lengkap</span>
+                                                <span>
+                                                    Detail Profil Lengkap
+                                                </span>
                                                 <ArrowRight className="size-3.5" />
                                             </button>
                                         </div>
@@ -265,56 +315,98 @@ export default function VillageGovernmentIndex({
                                 </FadeIn>
 
                                 {/* Right Column: Detailed Visi & Komitmen Card */}
-                                <FadeIn direction="left" duration={0.5} className="lg:col-span-7 flex flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 sm:p-8 shadow-xl shadow-gray-200/40">
+                                <FadeIn
+                                    direction="left"
+                                    duration={0.5}
+                                    className="flex flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 shadow-xl shadow-gray-200/40 sm:p-8 lg:col-span-7"
+                                >
                                     <div className="space-y-6">
                                         <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
                                             <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
                                                 <FileText className="size-5 text-emerald-700" />
                                             </span>
                                             <div>
-                                                <h4 className="text-base font-bold text-gray-900">Visi & Komitmen Pelayanan</h4>
-                                                <p className="text-xs text-gray-500">Mewujudkan Desa Ngampungan yang Sejahtera & Mandiri</p>
+                                                <h4 className="text-base font-bold text-gray-900">
+                                                    Visi & Komitmen Pelayanan
+                                                </h4>
+                                                <p className="text-xs text-gray-500">
+                                                    Mewujudkan Desa Ngampungan
+                                                    yang Sejahtera & Mandiri
+                                                </p>
                                             </div>
                                         </div>
 
                                         <p className="text-xs leading-relaxed text-gray-600 sm:text-sm">
-                                            {villageHead.about || 'Pemerintah Desa Ngampungan berkomitmen tinggi untuk menghadirkan tata kelola pemerintahan yang terbuka, akuntabel, dan berorientasi penuh pada pelayanan masyarakat.'}
+                                            {villageHead.about ||
+                                                'Pemerintah Desa Ngampungan berkomitmen tinggi untuk menghadirkan tata kelola pemerintahan yang terbuka, akuntabel, dan berorientasi penuh pada pelayanan masyarakat.'}
                                         </p>
 
-                                        {villageHead.responsibilities && villageHead.responsibilities.length > 0 && (
-                                            <div className="space-y-2.5 pt-2 border-t border-gray-100">
-                                                <p className="text-[11px] font-extrabold uppercase tracking-wider text-gray-500">Tugas & Fungsi Kebijakan Utama</p>
-                                                <div className="space-y-2">
-                                                    {villageHead.responsibilities.slice(0, 3).map((item, index) => (
-                                                        <div key={index} className="flex items-start gap-2.5 text-xs font-medium text-gray-700">
-                                                            <CheckCircle2 className="size-4 shrink-0 text-emerald-700 mt-0.5" />
-                                                            <span>{item}</span>
-                                                        </div>
-                                                    ))}
+                                        {villageHead.responsibilities &&
+                                            villageHead.responsibilities
+                                                .length > 0 && (
+                                                <div className="space-y-2.5 border-t border-gray-100 pt-2">
+                                                    <p className="text-[11px] font-extrabold tracking-wider text-gray-500 uppercase">
+                                                        Tugas & Fungsi Kebijakan
+                                                        Utama
+                                                    </p>
+                                                    <div className="space-y-2">
+                                                        {villageHead.responsibilities
+                                                            .slice(0, 3)
+                                                            .map(
+                                                                (
+                                                                    item,
+                                                                    index,
+                                                                ) => (
+                                                                    <div
+                                                                        key={
+                                                                            index
+                                                                        }
+                                                                        className="flex items-start gap-2.5 text-xs font-medium text-gray-700"
+                                                                    >
+                                                                        <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-700" />
+                                                                        <span>
+                                                                            {
+                                                                                item
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
 
-                                        {villageHead.service_focus && villageHead.service_focus.length > 0 && (
-                                            <div className="pt-2 border-t border-gray-100">
-                                                <p className="text-[11px] font-extrabold uppercase tracking-wider text-gray-500 mb-2">Fokus Utama Pelayanan</p>
-                                                <div className="flex flex-wrap gap-2">
-                                                    {villageHead.service_focus.map((focus, idx) => (
-                                                        <span key={idx} className="rounded-lg bg-slate-100 border border-slate-200 px-3 py-1 text-xs font-bold text-gray-800">
-                                                            {focus}
-                                                        </span>
-                                                    ))}
+                                        {villageHead.service_focus &&
+                                            villageHead.service_focus.length >
+                                                0 && (
+                                                <div className="border-t border-gray-100 pt-2">
+                                                    <p className="mb-2 text-[11px] font-extrabold tracking-wider text-gray-500 uppercase">
+                                                        Fokus Utama Pelayanan
+                                                    </p>
+                                                    <div className="flex flex-wrap gap-2">
+                                                        {villageHead.service_focus.map(
+                                                            (focus, idx) => (
+                                                                <span
+                                                                    key={idx}
+                                                                    className="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-bold text-gray-800"
+                                                                >
+                                                                    {focus}
+                                                                </span>
+                                                            ),
+                                                        )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
                                     </div>
 
-                                    <div className="mt-8 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                                    <div className="mt-8 flex items-center justify-between border-t border-gray-100 pt-4 text-xs text-gray-500">
                                         <span className="flex items-center gap-1.5 font-semibold text-gray-700">
                                             <ShieldCheck className="size-4 text-emerald-700" />
                                             Pemerintah Desa Ngampungan
                                         </span>
-                                        <span className="font-bold text-emerald-800">Periode Jabatan Aktif</span>
+                                        <span className="font-bold text-emerald-800">
+                                            Periode Jabatan Aktif
+                                        </span>
                                     </div>
                                 </FadeIn>
                             </div>
@@ -323,26 +415,37 @@ export default function VillageGovernmentIndex({
 
                     {/* SECTION 2: STRUKTUR ORGANISASI */}
                     <section id="struktur-organisasi" className="scroll-mt-24">
-                        <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-1">
+                        <FadeIn
+                            direction="up"
+                            duration={0.5}
+                            className="mb-6 flex flex-col gap-1"
+                        >
                             <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                 Struktur Hirarki Organisasi Desa Ngampungan
                             </h2>
                             <p className="max-w-2xl text-xs text-gray-600">
-                                Visualisasi bagan kerja dan koordinasi internal antar aparatur pemerintah desa.
+                                Visualisasi bagan kerja dan koordinasi internal
+                                antar aparatur pemerintah desa.
                             </p>
                         </FadeIn>
 
                         <FadeIn direction="up" delay={0.1} duration={0.5}>
                             <VillageOrganizationChart
                                 allOfficials={officials.all}
-                                onOpenDetail={(official) => setSelectedOfficial(official as any)}
+                                onOpenDetail={(official) =>
+                                    setSelectedOfficial(official as any)
+                                }
                             />
                         </FadeIn>
                     </section>
 
                     {/* SECTION 3: PERANGKAT DESA */}
                     <section id="perangkat-desa" className="scroll-mt-24">
-                        <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                        <FadeIn
+                            direction="up"
+                            duration={0.5}
+                            className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
+                        >
                             <div>
                                 <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                     Direktori Perangkat Desa Ngampungan
@@ -355,7 +458,9 @@ export default function VillageGovernmentIndex({
                                     <button
                                         key={filter.key}
                                         type="button"
-                                        onClick={() => setActiveOfficialFilter(filter.key)}
+                                        onClick={() =>
+                                            setActiveOfficialFilter(filter.key)
+                                        }
                                         className={
                                             activeOfficialFilter === filter.key
                                                 ? 'rounded-lg bg-emerald-800 px-3 py-1.5 text-xs font-bold text-white shadow-2xs'
@@ -368,12 +473,17 @@ export default function VillageGovernmentIndex({
                             </div>
                         </FadeIn>
 
-                        <StaggerContainer staggerDelay={0.08} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <StaggerContainer
+                            staggerDelay={0.08}
+                            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+                        >
                             {visibleOfficials.map((official) => (
                                 <StaggerItem key={official.slug}>
                                     <VillageOfficialCard
                                         official={official as any}
-                                        onOpenDetail={(off) => setSelectedOfficial(off as any)}
+                                        onOpenDetail={(off) =>
+                                            setSelectedOfficial(off as any)
+                                        }
                                     />
                                 </StaggerItem>
                             ))}
@@ -382,21 +492,35 @@ export default function VillageGovernmentIndex({
 
                     {/* SECTION 4: LEMBAGA DESA */}
                     <section id="lembaga-desa" className="scroll-mt-24">
-                        <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-1">
+                        <FadeIn
+                            direction="up"
+                            duration={0.5}
+                            className="mb-6 flex flex-col gap-1"
+                        >
                             <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                 Lembaga Kemasyarakatan Desa (LKD)
                             </h2>
                             <p className="max-w-2xl text-xs text-gray-600">
-                                Wadah partisipasi warga dalam pembangunan, pemberdayaan, dan pengawasan tata kelola desa. Klik kartu untuk melihat susunan pengurus & anggota.
+                                Wadah partisipasi warga dalam pembangunan,
+                                pemberdayaan, dan pengawasan tata kelola desa.
+                                Klik kartu untuk melihat susunan pengurus &
+                                anggota.
                             </p>
                         </FadeIn>
 
-                        <StaggerContainer staggerDelay={0.1} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+                        <StaggerContainer
+                            staggerDelay={0.1}
+                            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2"
+                        >
                             {institutions.map((institution) => (
                                 <StaggerItem
                                     key={institution.id}
-                                    onClick={() => setSelectedInstitution(institution as any)}
-                                    className="group flex flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-950/5 cursor-pointer"
+                                    onClick={() =>
+                                        setSelectedInstitution(
+                                            institution as any,
+                                        )
+                                    }
+                                    className="group flex cursor-pointer flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-950/5"
                                 >
                                     <div className="space-y-4">
                                         <div className="flex items-start justify-between gap-3">
@@ -404,16 +528,24 @@ export default function VillageGovernmentIndex({
                                                 {institution.logo_url ? (
                                                     <>
                                                         <img
-                                                            src={institution.logo_url}
+                                                            src={
+                                                                institution.logo_url
+                                                            }
                                                             alt={`Logo ${institution.name}`}
-                                                            className="size-10 object-contain rounded-lg p-0.5 border border-slate-200"
+                                                            className="size-10 rounded-lg border border-slate-200 object-contain p-0.5"
                                                         />
-                                                        <span className={`inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-bold tracking-wider ${getInstitutionBadgeStyle(institution.acronym)}`}>
-                                                            {institution.acronym}
+                                                        <span
+                                                            className={`inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-bold tracking-wider ${getInstitutionBadgeStyle(institution.acronym)}`}
+                                                        >
+                                                            {
+                                                                institution.acronym
+                                                            }
                                                         </span>
                                                     </>
                                                 ) : (
-                                                    <span className={`inline-flex items-center justify-center rounded-xl border px-3.5 py-1.5 text-xs font-black tracking-wider shadow-2xs ${getInstitutionBadgeStyle(institution.acronym)}`}>
+                                                    <span
+                                                        className={`inline-flex items-center justify-center rounded-xl border px-3.5 py-1.5 text-xs font-black tracking-wider shadow-2xs ${getInstitutionBadgeStyle(institution.acronym)}`}
+                                                    >
                                                         {institution.acronym}
                                                     </span>
                                                 )}
@@ -421,44 +553,66 @@ export default function VillageGovernmentIndex({
 
                                             {institution.member_count > 0 && (
                                                 <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
-                                                    {institution.member_count} Anggota
+                                                    {institution.member_count}{' '}
+                                                    Anggota
                                                 </span>
                                             )}
                                         </div>
 
                                         <div>
-                                            <h3 className="text-lg font-bold text-gray-900 group-hover:text-emerald-700 transition-colors">
+                                            <h3 className="text-lg font-bold text-gray-900 transition-colors group-hover:text-emerald-700">
                                                 {institution.name}
                                             </h3>
                                             {institution.leader && (
                                                 <p className="mt-0.5 text-xs font-medium text-slate-600">
-                                                    Ketua: <span className="font-semibold text-gray-800">{institution.leader}</span>
+                                                    Ketua:{' '}
+                                                    <span className="font-semibold text-gray-800">
+                                                        {institution.leader}
+                                                    </span>
                                                 </p>
                                             )}
                                         </div>
 
-                                        <p className="text-xs leading-relaxed text-gray-600 line-clamp-2">
+                                        <p className="line-clamp-2 text-xs leading-relaxed text-gray-600">
                                             {institution.focus}
                                         </p>
 
-                                        {institution.responsibilities && institution.responsibilities.length > 0 && (
-                                            <div className="space-y-2 pt-2 border-t border-gray-100">
-                                                <p className="text-[11px] font-extrabold uppercase tracking-wider text-gray-400">Tugas & Fungsi Utama</p>
-                                                <div className="space-y-1.5">
-                                                    {institution.responsibilities.slice(0, 3).map((resp, idx) => (
-                                                        <div key={idx} className="flex items-start gap-2 text-xs text-gray-600">
-                                                            <span className="size-1.5 rounded-full bg-slate-400 mt-1.5 shrink-0" />
-                                                            <span className="line-clamp-1">{resp}</span>
-                                                        </div>
-                                                    ))}
+                                        {institution.responsibilities &&
+                                            institution.responsibilities
+                                                .length > 0 && (
+                                                <div className="space-y-2 border-t border-gray-100 pt-2">
+                                                    <p className="text-[11px] font-extrabold tracking-wider text-gray-400 uppercase">
+                                                        Tugas & Fungsi Utama
+                                                    </p>
+                                                    <div className="space-y-1.5">
+                                                        {institution.responsibilities
+                                                            .slice(0, 3)
+                                                            .map(
+                                                                (resp, idx) => (
+                                                                    <div
+                                                                        key={
+                                                                            idx
+                                                                        }
+                                                                        className="flex items-start gap-2 text-xs text-gray-600"
+                                                                    >
+                                                                        <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-slate-400" />
+                                                                        <span className="line-clamp-1">
+                                                                            {
+                                                                                resp
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                ),
+                                                            )}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        )}
+                                            )}
                                     </div>
 
-                                    <div className="mt-6 pt-4 border-t border-gray-100 flex items-center justify-between text-xs">
+                                    <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4 text-xs">
                                         <span className="font-medium text-gray-500">
-                                            {institution.members && institution.members.length > 0
+                                            {institution.members &&
+                                            institution.members.length > 0
                                                 ? `${institution.members.length} Pengurus Terdaftar`
                                                 : 'Mitra Resmi Pemdes'}
                                         </span>
@@ -466,9 +620,11 @@ export default function VillageGovernmentIndex({
                                             type="button"
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setSelectedInstitution(institution as any);
+                                                setSelectedInstitution(
+                                                    institution as any,
+                                                );
                                             }}
-                                            className="inline-flex items-center gap-1 font-bold text-emerald-800 group-hover:text-emerald-600 transition"
+                                            className="inline-flex items-center gap-1 font-bold text-emerald-800 transition group-hover:text-emerald-600"
                                         >
                                             <span>Detail & Anggota</span>
                                             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />

@@ -54,7 +54,10 @@ const badgeColors: Record<string, string> = {
 };
 
 function getBadgeStyle(acronym: string) {
-    return badgeColors[acronym] || 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800';
+    return (
+        badgeColors[acronym] ||
+        'bg-slate-100 text-slate-800 border-slate-300 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800'
+    );
 }
 
 function paginationLabel(label: string): string {
@@ -63,19 +66,28 @@ function paginationLabel(label: string): string {
         .replace('Next &raquo;', 'Berikutnya');
 }
 
-export default function AdminVillageInstitutionsIndex({ institutions, filters }: Props) {
+export default function AdminVillageInstitutionsIndex({
+    institutions,
+    filters,
+}: Props) {
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
     const [deletingId, setDeletingId] = useState<number | null>(null);
 
     function handleSearchSubmit(e: React.FormEvent) {
         e.preventDefault();
-        router.get(institutionIndex.url(), { search: searchQuery }, { preserveState: true });
+        router.get(
+            institutionIndex.url(),
+            { search: searchQuery },
+            { preserveState: true },
+        );
     }
 
     function handleDelete(id: number, name: string) {
         if (confirm(`Apakah Anda yakin ingin menghapus lembaga "${name}"?`)) {
             setDeletingId(id);
-            router.delete(institutionDestroy.url(id), { onFinish: () => setDeletingId(null) });
+            router.delete(institutionDestroy.url(id), {
+                onFinish: () => setDeletingId(null),
+            });
         }
     }
 
@@ -93,7 +105,8 @@ export default function AdminVillageInstitutionsIndex({ institutions, filters }:
                             Kelola Lembaga Desa
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Kelola data lembaga kemasyarakatan desa seperti BPD, LPMD, PKK, dan Karang Taruna.
+                            Kelola data lembaga kemasyarakatan desa seperti BPD,
+                            LPMD, PKK, dan Karang Taruna.
                         </p>
                     </div>
                     <Link
@@ -107,7 +120,10 @@ export default function AdminVillageInstitutionsIndex({ institutions, filters }:
 
                 {/* Search */}
                 <div className="flex flex-col gap-4 rounded-xl border border-sidebar-border/70 bg-background p-4 md:flex-row md:items-center">
-                    <form onSubmit={handleSearchSubmit} className="relative flex-1">
+                    <form
+                        onSubmit={handleSearchSubmit}
+                        className="relative flex-1"
+                    >
                         <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                         <input
                             type="search"
@@ -124,45 +140,82 @@ export default function AdminVillageInstitutionsIndex({ institutions, filters }:
                     <div className="overflow-hidden rounded-xl border border-sidebar-border/70 bg-background shadow-xs">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
-                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                     <tr>
-                                        <th scope="col" className="px-5 py-3.5">Singkatan & Nama Lembaga</th>
-                                        <th scope="col" className="px-4 py-3.5">Ketua</th>
-                                        <th scope="col" className="px-4 py-3.5">Anggota</th>
-                                        <th scope="col" className="px-4 py-3.5">Fokus Utama</th>
-                                        <th scope="col" className="px-4 py-3.5">Status</th>
-                                        <th scope="col" className="px-5 py-3.5 text-right">Aksi</th>
+                                        <th scope="col" className="px-5 py-3.5">
+                                            Singkatan & Nama Lembaga
+                                        </th>
+                                        <th scope="col" className="px-4 py-3.5">
+                                            Ketua
+                                        </th>
+                                        <th scope="col" className="px-4 py-3.5">
+                                            Anggota
+                                        </th>
+                                        <th scope="col" className="px-4 py-3.5">
+                                            Fokus Utama
+                                        </th>
+                                        <th scope="col" className="px-4 py-3.5">
+                                            Status
+                                        </th>
+                                        <th
+                                            scope="col"
+                                            className="px-5 py-3.5 text-right"
+                                        >
+                                            Aksi
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-sidebar-border/70">
                                     {institutions.data.map((item) => (
-                                        <tr key={item.id} className="transition hover:bg-muted/20">
+                                        <tr
+                                            key={item.id}
+                                            className="transition hover:bg-muted/20"
+                                        >
                                             <td className="px-5 py-4">
                                                 <div className="flex items-center gap-3">
-                                                    <span className={`inline-flex items-center justify-center rounded-lg border px-2.5 py-1 text-xs font-black tracking-wider ${getBadgeStyle(item.acronym)}`}>
+                                                    <span
+                                                        className={`inline-flex items-center justify-center rounded-lg border px-2.5 py-1 text-xs font-black tracking-wider ${getBadgeStyle(item.acronym)}`}
+                                                    >
                                                         {item.acronym}
                                                     </span>
                                                     <div className="min-w-0">
-                                                        <h2 className="font-bold text-foreground line-clamp-1">{item.name}</h2>
+                                                        <h2 className="line-clamp-1 font-bold text-foreground">
+                                                            {item.name}
+                                                        </h2>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-4 text-xs font-medium text-foreground">{item.leader || '-'}</td>
-                                            <td className="px-4 py-4 text-xs font-semibold text-muted-foreground">{item.member_count} orang</td>
-                                            <td className="px-4 py-4 text-xs text-muted-foreground max-w-xs line-clamp-2">{item.focus}</td>
+                                            <td className="px-4 py-4 text-xs font-medium text-foreground">
+                                                {item.leader || '-'}
+                                            </td>
+                                            <td className="px-4 py-4 text-xs font-semibold text-muted-foreground">
+                                                {item.member_count} orang
+                                            </td>
+                                            <td className="line-clamp-2 max-w-xs px-4 py-4 text-xs text-muted-foreground">
+                                                {item.focus}
+                                            </td>
                                             <td className="px-4 py-4">
-                                                <span className={item.is_active
-                                                    ? 'inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
-                                                    : 'inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
-                                                }>
-                                                    <span className={`size-1.5 rounded-full ${item.is_active ? 'bg-emerald-600' : 'bg-slate-400'}`} />
-                                                    {item.is_active ? 'Aktif' : 'Nonaktif'}
+                                                <span
+                                                    className={
+                                                        item.is_active
+                                                            ? 'inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-xs font-bold text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300'
+                                                            : 'inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400'
+                                                    }
+                                                >
+                                                    <span
+                                                        className={`size-1.5 rounded-full ${item.is_active ? 'bg-emerald-600' : 'bg-slate-400'}`}
+                                                    />
+                                                    {item.is_active
+                                                        ? 'Aktif'
+                                                        : 'Nonaktif'}
                                                 </span>
                                             </td>
                                             <td className="px-5 py-4 text-right whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
-                                                        href={institutionEdit(item.id)}
+                                                        href={institutionEdit(
+                                                            item.id,
+                                                        )}
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-sidebar-border/70 bg-background text-foreground transition hover:border-emerald-500 hover:text-emerald-600"
                                                         title="Sunting Lembaga"
                                                     >
@@ -170,12 +223,25 @@ export default function AdminVillageInstitutionsIndex({ institutions, filters }:
                                                     </Link>
                                                     <button
                                                         type="button"
-                                                        onClick={() => handleDelete(item.id, item.name)}
-                                                        disabled={deletingId === item.id}
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                item.id,
+                                                                item.name,
+                                                            )
+                                                        }
+                                                        disabled={
+                                                            deletingId ===
+                                                            item.id
+                                                        }
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
                                                         title="Hapus Lembaga"
                                                     >
-                                                        {deletingId === item.id ? <Spinner /> : <Trash2 className="size-4" />}
+                                                        {deletingId ===
+                                                        item.id ? (
+                                                            <Spinner />
+                                                        ) : (
+                                                            <Trash2 className="size-4" />
+                                                        )}
                                                     </button>
                                                 </div>
                                             </td>
@@ -190,7 +256,9 @@ export default function AdminVillageInstitutionsIndex({ institutions, filters }:
                         <span className="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground">
                             <Landmark className="size-6" />
                         </span>
-                        <h2 className="mt-5 text-xl font-bold">Lembaga tidak ditemukan</h2>
+                        <h2 className="mt-5 text-xl font-bold">
+                            Lembaga tidak ditemukan
+                        </h2>
                         <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
                             Belum ada data lembaga desa yang terdaftar.
                         </p>
@@ -199,21 +267,49 @@ export default function AdminVillageInstitutionsIndex({ institutions, filters }:
 
                 {/* Pagination */}
                 {institutions.last_page > 1 && (
-                    <nav aria-label="Pagination lembaga admin" className="flex flex-wrap items-center justify-center gap-2">
+                    <nav
+                        aria-label="Pagination lembaga admin"
+                        className="flex flex-wrap items-center justify-center gap-2"
+                    >
                         {institutions.links.map((link, index) => {
                             const label = paginationLabel(link.label);
                             const isPrevious = index === 0;
-                            const isNext = index === institutions.links.length - 1;
+                            const isNext =
+                                index === institutions.links.length - 1;
                             if (!link.url) {
                                 return (
-                                    <span key={`${link.label}-${index}`} className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-sidebar-border/50 px-3 text-sm text-muted-foreground/40">
-                                        {isPrevious ? <ChevronLeft className="size-4" /> : isNext ? <ChevronRight className="size-4" /> : label}
+                                    <span
+                                        key={`${link.label}-${index}`}
+                                        className="inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-sidebar-border/50 px-3 text-sm text-muted-foreground/40"
+                                    >
+                                        {isPrevious ? (
+                                            <ChevronLeft className="size-4" />
+                                        ) : isNext ? (
+                                            <ChevronRight className="size-4" />
+                                        ) : (
+                                            label
+                                        )}
                                     </span>
                                 );
                             }
                             return (
-                                <Link key={`${link.label}-${index}`} href={link.url} preserveScroll className={link.active ? 'inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg bg-foreground px-3 text-sm font-bold text-background' : 'inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-sidebar-border/70 bg-background px-3 text-sm font-semibold transition hover:border-foreground/30'}>
-                                    {isPrevious ? <ChevronLeft className="size-4" /> : isNext ? <ChevronRight className="size-4" /> : label}
+                                <Link
+                                    key={`${link.label}-${index}`}
+                                    href={link.url}
+                                    preserveScroll
+                                    className={
+                                        link.active
+                                            ? 'inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg bg-foreground px-3 text-sm font-bold text-background'
+                                            : 'inline-flex min-h-10 min-w-10 items-center justify-center rounded-lg border border-sidebar-border/70 bg-background px-3 text-sm font-semibold transition hover:border-foreground/30'
+                                    }
+                                >
+                                    {isPrevious ? (
+                                        <ChevronLeft className="size-4" />
+                                    ) : isNext ? (
+                                        <ChevronRight className="size-4" />
+                                    ) : (
+                                        label
+                                    )}
                                 </Link>
                             );
                         })}

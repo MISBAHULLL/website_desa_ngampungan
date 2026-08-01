@@ -6,7 +6,10 @@ interface PageTransitionProps {
     className?: string;
 }
 
-export function PageTransition({ children, className = '' }: PageTransitionProps) {
+export function PageTransition({
+    children,
+    className = '',
+}: PageTransitionProps) {
     return (
         <motion.div
             initial={{ opacity: 0, y: 8 }}

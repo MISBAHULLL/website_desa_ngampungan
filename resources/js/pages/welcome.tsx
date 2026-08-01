@@ -420,17 +420,33 @@ function DesktopNavigation() {
                                 <AnimatePresence>
                                     {openMenu === item.label && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 6, scale: 0.96 }}
-                                            transition={{ duration: 0.18, ease: "easeOut" }}
+                                            initial={{
+                                                opacity: 0,
+                                                y: 8,
+                                                scale: 0.96,
+                                            }}
+                                            animate={{
+                                                opacity: 1,
+                                                y: 0,
+                                                scale: 1,
+                                            }}
+                                            exit={{
+                                                opacity: 0,
+                                                y: 6,
+                                                scale: 0.96,
+                                            }}
+                                            transition={{
+                                                duration: 0.18,
+                                                ease: 'easeOut',
+                                            }}
                                             id={`desktop-submenu-${index}`}
                                             aria-label={`Submenu ${item.label}`}
                                             onMouseEnter={() =>
                                                 setOpenMenu(item.label)
                                             }
                                             className={`absolute top-full z-50 w-80 rounded-2xl border border-village-border bg-white p-2 text-village-ink shadow-village-floating ${
-                                                index >= navigationItems.length - 3
+                                                index >=
+                                                navigationItems.length - 3
                                                     ? 'right-0'
                                                     : 'left-0'
                                             }`}
@@ -441,7 +457,9 @@ function DesktopNavigation() {
                                                         <a
                                                             href={child.href}
                                                             onClick={() =>
-                                                                setOpenMenu(null)
+                                                                setOpenMenu(
+                                                                    null,
+                                                                )
                                                             }
                                                             className="group/link block rounded-xl p-3 transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:bg-village-primary-light focus-visible:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                                                         >
@@ -524,7 +542,7 @@ function MobileNavigationItem({
                         id={panelId}
                         role="region"
                         aria-label={`Submenu ${item.label}`}
-                        className="grid gap-1 pb-3 overflow-hidden"
+                        className="grid gap-1 overflow-hidden pb-3"
                     >
                         {item.children.map((child) => (
                             <a
@@ -551,7 +569,7 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
             aria-label="Informasi cepat Desa Ngampungan"
             className="bg-village-primary-dark text-village-primary-light"
         >
-            <div className="mx-auto grid max-w-[1440px] 2xl:max-w-[1536px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 px-4 sm:px-6 lg:px-10 py-2 text-[0.6875rem] leading-4 font-medium sm:text-xs lg:flex lg:min-h-9 lg:gap-5 lg:py-1.5">
+            <div className="mx-auto grid max-w-[1440px] grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1.5 px-4 py-2 text-[0.6875rem] leading-4 font-medium sm:px-6 sm:text-xs lg:flex lg:min-h-9 lg:gap-5 lg:px-10 lg:py-1.5 2xl:max-w-[1536px]">
                 <div className="col-start-1 row-start-1 flex min-w-0 items-start gap-1.5 lg:col-auto lg:row-auto lg:items-center">
                     <MapPin
                         aria-hidden="true"
@@ -598,9 +616,7 @@ function TransparansiSummarySection() {
         dummyApbdesSummaries.find((s) => s.year === selectedYear) ??
         dummyApbdesSummaries[0];
 
-    const incomeMetric = currentSummary.metrics.find(
-        (m) => m.key === 'income',
-    );
+    const incomeMetric = currentSummary.metrics.find((m) => m.key === 'income');
     const expenseMetric = currentSummary.metrics.find(
         (m) => m.key === 'expense',
     );
@@ -611,17 +627,24 @@ function TransparansiSummarySection() {
             aria-labelledby="transparansi-heading"
             className="scroll-mt-48 border-y border-village-border bg-[#f8faf8] py-16 md:py-24 xl:scroll-mt-32"
         >
-            <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+            <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                 {/* Section Header */}
-                <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                <FadeIn
+                    direction="up"
+                    duration={0.5}
+                    className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end"
+                >
                     <div className="max-w-2xl">
                         <div className="flex flex-wrap items-center gap-3">
                             <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                                 Keterbukaan Anggaran
                             </p>
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1 text-xs font-medium text-gray-600 border border-gray-200 shadow-2xs">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1 text-xs font-medium text-gray-600 shadow-2xs">
                                 <Clock3 className="size-3 text-village-primary" />
-                                Diperbarui: <strong className="text-gray-900">{currentSummary.updatedLabel}</strong>
+                                Diperbarui:{' '}
+                                <strong className="text-gray-900">
+                                    {currentSummary.updatedLabel}
+                                </strong>
                             </span>
                         </div>
                         <h2
@@ -631,7 +654,9 @@ function TransparansiSummarySection() {
                             Ringkasan APBDes {currentSummary.year}
                         </h2>
                         <p className="mt-4 text-base leading-relaxed text-village-muted md:text-lg">
-                            Pengelolaan keuangan publik Desa Ngampungan yang transparan, akuntabel, dan berfokus pada kesejahteraan warga.
+                            Pengelolaan keuangan publik Desa Ngampungan yang
+                            transparan, akuntabel, dan berfokus pada
+                            kesejahteraan warga.
                         </p>
                     </div>
 
@@ -651,11 +676,17 @@ function TransparansiSummarySection() {
                                 <select
                                     id="apbdes-year-select"
                                     value={selectedYear}
-                                    onChange={(e) => setSelectedYear(e.target.value)}
-                                    className="cursor-pointer rounded-md border-0 bg-transparent py-0.5 pl-0 pr-7 text-sm font-extrabold text-gray-900 focus:ring-0 focus:outline-none"
+                                    onChange={(e) =>
+                                        setSelectedYear(e.target.value)
+                                    }
+                                    className="cursor-pointer rounded-md border-0 bg-transparent py-0.5 pr-7 pl-0 text-sm font-extrabold text-gray-900 focus:ring-0 focus:outline-none"
                                 >
                                     {dummyApbdesSummaries.map((item) => (
-                                        <option key={item.year} value={item.year} className="font-bold">
+                                        <option
+                                            key={item.year}
+                                            value={item.year}
+                                            className="font-bold"
+                                        >
                                             Tahun Anggaran {item.year}
                                         </option>
                                     ))}
@@ -666,13 +697,10 @@ function TransparansiSummarySection() {
                         <Link
                             href={`${transparencyIndex.url()}#apbdes`}
                             prefetch
-                            className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-village-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-village-primary-dark hover:-translate-y-0.5 focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
+                            className="inline-flex min-h-11 w-fit items-center gap-2 rounded-full bg-village-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 hover:bg-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
                             <span>Lihat Transparansi Selengkapnya</span>
-                            <ArrowRight
-                                aria-hidden="true"
-                                className="size-4"
-                            />
+                            <ArrowRight aria-hidden="true" className="size-4" />
                         </Link>
                     </div>
                 </FadeIn>
@@ -685,7 +713,7 @@ function TransparansiSummarySection() {
                             {/* Card Header: Local Asset Avatar + Title */}
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-100 p-2.5 border border-gray-200 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
+                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-gray-100 p-2.5 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
                                         <img
                                             src="/assets/pendapatan.svg"
                                             alt="Pendapatan Desa"
@@ -693,27 +721,31 @@ function TransparansiSummarySection() {
                                         />
                                     </div>
                                     <div>
-                                        <h3 className="text-[15px] font-bold text-gray-900 leading-tight transition-colors duration-300 group-hover:text-village-primary">
+                                        <h3 className="text-[15px] leading-tight font-bold text-gray-900 transition-colors duration-300 group-hover:text-village-primary">
                                             Pendapatan Desa
                                         </h3>
-                                        <p className="text-xs font-medium text-gray-500 mt-0.5">
-                                            Target Operasional TA {currentSummary.year}
+                                        <p className="mt-0.5 text-xs font-medium text-gray-500">
+                                            Target Operasional TA{' '}
+                                            {currentSummary.year}
                                         </p>
                                     </div>
                                 </div>
 
-                                <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-200 transition-colors duration-300 group-hover:bg-village-primary group-hover:text-white group-hover:border-village-primary">
+                                <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 transition-colors duration-300 group-hover:border-village-primary group-hover:bg-village-primary group-hover:text-white">
                                     Penerimaan Kas
                                 </span>
                             </div>
 
                             {/* Main Metric Value */}
                             <div className="mt-6">
-                                <p className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl transition-colors duration-300 group-hover:text-village-primary">
-                                    {incomeMetric?.value ?? currentSummary.incomeValue}
+                                <p className="text-3xl font-extrabold tracking-tight text-gray-900 transition-colors duration-300 group-hover:text-village-primary sm:text-4xl">
+                                    {incomeMetric?.value ??
+                                        currentSummary.incomeValue}
                                 </p>
                                 <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                                    Target total pendapatan APBDes TA {currentSummary.year} dari Pendapatan Asli Desa, Dana Desa, & Bagi Hasil.
+                                    Target total pendapatan APBDes TA{' '}
+                                    {currentSummary.year} dari Pendapatan Asli
+                                    Desa, Dana Desa, & Bagi Hasil.
                                 </p>
                             </div>
                         </div>
@@ -724,7 +756,9 @@ function TransparansiSummarySection() {
 
                             {/* Bottom Action Bar */}
                             <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                                <span>Status: Berjalan (TA {currentSummary.year})</span>
+                                <span>
+                                    Status: Berjalan (TA {currentSummary.year})
+                                </span>
 
                                 <Link
                                     href={`${transparencyIndex.url()}#apbdes`}
@@ -732,7 +766,10 @@ function TransparansiSummarySection() {
                                     className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3.5 py-1.5 text-xs font-semibold text-gray-800 transition-all duration-300 group-hover:bg-village-primary group-hover:text-white group-hover:shadow-xs"
                                 >
                                     <span>Detail</span>
-                                    <ArrowRight aria-hidden="true" className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                                    />
                                 </Link>
                             </div>
                         </div>
@@ -744,7 +781,7 @@ function TransparansiSummarySection() {
                             {/* Card Header: Local Asset Avatar + Title */}
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-100 p-2.5 border border-gray-200 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
+                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-gray-100 p-2.5 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
                                         <img
                                             src="/assets/belanja.png"
                                             alt="Belanja Desa"
@@ -752,27 +789,31 @@ function TransparansiSummarySection() {
                                         />
                                     </div>
                                     <div>
-                                        <h3 className="text-[15px] font-bold text-gray-900 leading-tight transition-colors duration-300 group-hover:text-village-primary">
+                                        <h3 className="text-[15px] leading-tight font-bold text-gray-900 transition-colors duration-300 group-hover:text-village-primary">
                                             Belanja Desa
                                         </h3>
-                                        <p className="text-xs font-medium text-gray-500 mt-0.5">
-                                            Pagu Alokasi 5 Bidang (TA {currentSummary.year})
+                                        <p className="mt-0.5 text-xs font-medium text-gray-500">
+                                            Pagu Alokasi 5 Bidang (TA{' '}
+                                            {currentSummary.year})
                                         </p>
                                     </div>
                                 </div>
 
-                                <span className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 border border-gray-200 transition-colors duration-300 group-hover:bg-village-primary group-hover:text-white group-hover:border-village-primary">
+                                <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 transition-colors duration-300 group-hover:border-village-primary group-hover:bg-village-primary group-hover:text-white">
                                     Alokasi Anggaran
                                 </span>
                             </div>
 
                             {/* Main Metric Value */}
                             <div className="mt-6">
-                                <p className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl transition-colors duration-300 group-hover:text-village-primary">
-                                    {expenseMetric?.value ?? currentSummary.expenseValue}
+                                <p className="text-3xl font-extrabold tracking-tight text-gray-900 transition-colors duration-300 group-hover:text-village-primary sm:text-4xl">
+                                    {expenseMetric?.value ??
+                                        currentSummary.expenseValue}
                                 </p>
                                 <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                                    Pagu alokasi belanja untuk pembangunan fisik, pelayanan publik, pemerintahan, & pemberdayaan.
+                                    Pagu alokasi belanja untuk pembangunan
+                                    fisik, pelayanan publik, pemerintahan, &
+                                    pemberdayaan.
                                 </p>
                             </div>
                         </div>
@@ -783,7 +824,12 @@ function TransparansiSummarySection() {
 
                             {/* Bottom Action Bar */}
                             <div className="flex items-center justify-between text-xs font-medium text-gray-500">
-                                <span>Surplus: <strong className="text-gray-900 font-semibold group-hover:text-village-primary">{currentSummary.surplusValue}</strong></span>
+                                <span>
+                                    Surplus:{' '}
+                                    <strong className="font-semibold text-gray-900 group-hover:text-village-primary">
+                                        {currentSummary.surplusValue}
+                                    </strong>
+                                </span>
 
                                 <Link
                                     href={`${transparencyIndex.url()}#apbdes`}
@@ -791,7 +837,10 @@ function TransparansiSummarySection() {
                                     className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3.5 py-1.5 text-xs font-semibold text-gray-800 transition-all duration-300 group-hover:bg-village-primary group-hover:text-white group-hover:shadow-xs"
                                 >
                                     <span>Detail</span>
-                                    <ArrowRight aria-hidden="true" className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                                    />
                                 </Link>
                             </div>
                         </div>
@@ -803,7 +852,7 @@ function TransparansiSummarySection() {
                             {/* Card Header: Local Asset Avatar + Title */}
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-3">
-                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full bg-gray-100 p-2.5 border border-gray-200 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
+                                    <div className="flex size-11 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-gray-100 p-2.5 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:border-village-primary group-hover:bg-village-primary/10">
                                         <img
                                             src="/assets/realisasi.png"
                                             alt="Surplus APBDes"
@@ -811,10 +860,10 @@ function TransparansiSummarySection() {
                                         />
                                     </div>
                                     <div>
-                                        <h3 className="text-[15px] font-bold text-gray-900 leading-tight transition-colors duration-300 group-hover:text-village-primary">
+                                        <h3 className="text-[15px] leading-tight font-bold text-gray-900 transition-colors duration-300 group-hover:text-village-primary">
                                             Surplus APBDes
                                         </h3>
-                                        <p className="text-xs font-medium text-gray-500 mt-0.5">
+                                        <p className="mt-0.5 text-xs font-medium text-gray-500">
                                             Pendapatan - Belanja
                                         </p>
                                     </div>
@@ -827,11 +876,13 @@ function TransparansiSummarySection() {
 
                             {/* Main Metric Value */}
                             <div className="mt-6">
-                                <p className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl transition-colors duration-300 group-hover:text-village-primary">
+                                <p className="text-3xl font-extrabold tracking-tight text-gray-900 transition-colors duration-300 group-hover:text-village-primary sm:text-4xl">
                                     {currentSummary.surplusValue}
                                 </p>
                                 <p className="mt-2 text-xs leading-relaxed text-gray-500">
-                                    Selisih positif total pendapatan desa terhadap pagu belanja TA {currentSummary.year}.
+                                    Selisih positif total pendapatan desa
+                                    terhadap pagu belanja TA{' '}
+                                    {currentSummary.year}.
                                 </p>
                             </div>
                         </div>
@@ -844,11 +895,19 @@ function TransparansiSummarySection() {
                             <div className="flex items-center justify-between text-xs font-medium text-gray-500">
                                 <span
                                     role="progressbar"
-                                    aria-valuenow={currentSummary.realizationPercentage}
+                                    aria-valuenow={
+                                        currentSummary.realizationPercentage
+                                    }
                                     aria-valuemin={0}
                                     aria-valuemax={100}
                                     aria-label="Persentase serapan APBDes"
-                                >Serapan: <strong className="text-gray-900 font-semibold group-hover:text-village-primary">{currentSummary.realizationPercentage}% ({currentSummary.realizedAmount})</strong></span>
+                                >
+                                    Serapan:{' '}
+                                    <strong className="font-semibold text-gray-900 group-hover:text-village-primary">
+                                        {currentSummary.realizationPercentage}%
+                                        ({currentSummary.realizedAmount})
+                                    </strong>
+                                </span>
 
                                 <Link
                                     href={`${transparencyIndex()}#apbdes`}
@@ -856,7 +915,10 @@ function TransparansiSummarySection() {
                                     className="inline-flex items-center gap-1.5 rounded-full bg-gray-100 px-3.5 py-1.5 text-xs font-semibold text-gray-800 transition-all duration-300 group-hover:bg-village-primary group-hover:text-white group-hover:shadow-xs"
                                 >
                                     <span>Detail</span>
-                                    <ArrowRight aria-hidden="true" className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-3.5 transition-transform duration-300 group-hover:translate-x-0.5"
+                                    />
                                 </Link>
                             </div>
                         </div>
@@ -864,9 +926,14 @@ function TransparansiSummarySection() {
                 </div>
 
                 {/* Verification Strip */}
-                <FadeIn direction="up" delay={0.2} duration={0.5} className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[24px] border border-gray-200/80 bg-white p-5 shadow-xs md:flex-row md:px-7">
+                <FadeIn
+                    direction="up"
+                    delay={0.2}
+                    duration={0.5}
+                    className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[24px] border border-gray-200/80 bg-white p-5 shadow-xs md:flex-row md:px-7"
+                >
                     <div className="flex items-center gap-3.5 text-sm text-gray-600">
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-700 border border-gray-200">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-gray-100 text-gray-700">
                             <ShieldCheck
                                 aria-hidden="true"
                                 className="size-5"
@@ -876,7 +943,9 @@ function TransparansiSummarySection() {
                             <strong className="font-semibold text-gray-900">
                                 Terverifikasi & Diawasi:
                             </strong>{' '}
-                            Laporan keuangan APBDes (Data simulasi tampilan) diawasi oleh BPD dan terdaftar resmi di Pemerintah Kabupaten Jombang.
+                            Laporan keuangan APBDes (Data simulasi tampilan)
+                            diawasi oleh BPD dan terdaftar resmi di Pemerintah
+                            Kabupaten Jombang.
                         </p>
                     </div>
                     <Link
@@ -908,11 +977,7 @@ const heroCarouselImages = [
     },
 ];
 
-function HeroBackgroundCarousel({
-    currentIndex,
-}: {
-    currentIndex: number;
-}) {
+function HeroBackgroundCarousel({ currentIndex }: { currentIndex: number }) {
     return (
         <div className="absolute inset-0 z-0 overflow-hidden">
             {heroCarouselImages.map((image, index) => (
@@ -933,7 +998,11 @@ function HeroBackgroundCarousel({
     );
 }
 
-export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) {
+export default function Welcome({
+    dbArticles,
+}: {
+    dbArticles?: NewsArticle[];
+}) {
     const { auth } = usePage().props;
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -957,7 +1026,8 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
 
     const { featuredNewsArticle, latestNewsArticles } = useMemo(() => {
         if (dbArticles && dbArticles.length > 0) {
-            const featured = dbArticles.find((a) => a.featured) || dbArticles[0];
+            const featured =
+                dbArticles.find((a) => a.featured) || dbArticles[0];
             const latest = dbArticles.filter((a) => a.slug !== featured.slug);
             return {
                 featuredNewsArticle: featured,
@@ -974,9 +1044,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
     const [isNewsPageTransitioning, setIsNewsPageTransitioning] =
         useState(false);
     const NEWS_PER_PAGE = 6;
-    const totalNewsPages = Math.ceil(
-        latestNewsArticles.length / NEWS_PER_PAGE,
-    );
+    const totalNewsPages = Math.ceil(latestNewsArticles.length / NEWS_PER_PAGE);
     const paginatedNewsArticles = useMemo(() => {
         const start = (newsCurrentPage - 1) * NEWS_PER_PAGE;
         return latestNewsArticles.slice(start, start + NEWS_PER_PAGE);
@@ -1102,7 +1170,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 : 'border-village-border/60 bg-white/90 text-village-ink shadow-sm backdrop-blur-md'
                         }`}
                     >
-                        <div className="mx-auto flex max-w-[1440px] 2xl:max-w-[1536px] items-center justify-between px-4 sm:px-6 lg:px-10">
+                        <div className="mx-auto flex max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                             <a
                                 href="#beranda"
                                 aria-label="Kembali ke beranda Desa Ngampungan"
@@ -1138,7 +1206,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         ? closeMobileNavigation()
                                         : setIsMobileMenuOpen(true)
                                 }
-                                className="flex size-11 items-center justify-center rounded-xl transition hover:bg-gray-100 text-village-ink focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none xl:hidden"
+                                className="flex size-11 items-center justify-center rounded-xl text-village-ink transition hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-current focus-visible:outline-none xl:hidden"
                             >
                                 {isMobileMenuOpen ? (
                                     <X aria-hidden="true" />
@@ -1170,7 +1238,11 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 initial={{ x: '100%' }}
                                 animate={{ x: 0 }}
                                 exit={{ x: '100%' }}
-                                transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                                transition={{
+                                    type: 'spring',
+                                    damping: 28,
+                                    stiffness: 300,
+                                }}
                                 role="dialog"
                                 aria-modal="true"
                                 aria-label="Menu navigasi"
@@ -1182,7 +1254,8 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                             key={item.label}
                                             item={item}
                                             isExpanded={
-                                                expandedMobileMenu === item.label
+                                                expandedMobileMenu ===
+                                                item.label
                                             }
                                             onToggle={() =>
                                                 setExpandedMobileMenu(
@@ -1215,43 +1288,58 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                 <main id="main-content">
                     <header
                         id="beranda"
-                        className="scroll-mt-44 pt-36 sm:pt-40 pb-8 sm:pb-12 px-4 sm:px-6 lg:px-10 max-w-[1440px] 2xl:max-w-[1536px] mx-auto"
+                        className="mx-auto max-w-[1440px] scroll-mt-44 px-4 pt-36 pb-8 sm:px-6 sm:pt-40 sm:pb-12 lg:px-10 2xl:max-w-[1536px]"
                     >
-                        <div className="relative w-full rounded-[28px] sm:rounded-[36px] bg-[#0c1f16] overflow-hidden border border-white/10 text-white shadow-2xl min-h-[680px] sm:min-h-[760px] lg:min-h-[820px] flex flex-col justify-between p-6 sm:p-10 lg:p-12">
+                        <div className="relative flex min-h-[680px] w-full flex-col justify-between overflow-hidden rounded-[28px] border border-white/10 bg-[#0c1f16] p-6 text-white shadow-2xl sm:min-h-[760px] sm:rounded-[36px] sm:p-10 lg:min-h-[820px] lg:p-12">
                             {/* Carousel Background Images (3 gambar, auto delay 3s & kontrol manual) */}
-                            <HeroBackgroundCarousel currentIndex={heroSlideIndex} />
+                            <HeroBackgroundCarousel
+                                currentIndex={heroSlideIndex}
+                            />
 
                             {/* Atmospheric Lighting Rays & Glows */}
-                            <div className="absolute -top-24 -left-24 w-96 h-96 bg-[#39d353]/20 rounded-full blur-[100px] pointer-events-none" />
-                            <div className="absolute top-0 right-1/4 w-[500px] h-[600px] bg-gradient-to-br from-white/20 via-[#39d353]/15 to-transparent blur-[30px] opacity-60 pointer-events-none -rotate-12" />
-                            <div className="absolute bottom-0 right-0 w-80 h-80 bg-emerald-950/40 rounded-full blur-[80px] pointer-events-none" />
+                            <div className="pointer-events-none absolute -top-24 -left-24 h-96 w-96 rounded-full bg-[#39d353]/20 blur-[100px]" />
+                            <div className="pointer-events-none absolute top-0 right-1/4 h-[600px] w-[500px] -rotate-12 bg-gradient-to-br from-white/20 via-[#39d353]/15 to-transparent opacity-60 blur-[30px]" />
+                            <div className="pointer-events-none absolute right-0 bottom-0 h-80 w-80 rounded-full bg-emerald-950/40 blur-[80px]" />
 
                             {/* Hero Main Grid */}
-                            <FadeIn direction="up" delay={0.1} duration={0.6} className="relative z-10 pt-6 sm:pt-10 lg:pt-12 max-w-3xl">
-                                <div className="space-y-6 sm:space-y-8 text-left">
+                            <FadeIn
+                                direction="up"
+                                delay={0.1}
+                                duration={0.6}
+                                className="relative z-10 max-w-3xl pt-6 sm:pt-10 lg:pt-12"
+                            >
+                                <div className="space-y-6 text-left sm:space-y-8">
                                     {/* Main Headline */}
-                                    <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08] text-balance">
-                                        Harmoni Warga,<br />
-                                        <span className="text-[#39d353]">Kemajuan Bersama.</span>
+                                    <h1 className="text-3xl leading-[1.08] font-bold tracking-tight text-balance text-white sm:text-5xl lg:text-6xl">
+                                        Harmoni Warga,
+                                        <br />
+                                        <span className="text-[#39d353]">
+                                            Kemajuan Bersama.
+                                        </span>
                                     </h1>
 
                                     {/* Subtitle */}
-                                    <p className="text-base sm:text-lg text-gray-200/90 font-normal max-w-xl leading-relaxed text-balance">
-                                        Website resmi Desa Ngampungan. Melayani kebutuhan administrasi warga dan menyajikan informasi terkini seputar potensi, budaya, dan pembangunan desa.
+                                    <p className="max-w-xl text-base leading-relaxed font-normal text-balance text-gray-200/90 sm:text-lg">
+                                        Website resmi Desa Ngampungan. Melayani
+                                        kebutuhan administrasi warga dan
+                                        menyajikan informasi terkini seputar
+                                        potensi, budaya, dan pembangunan desa.
                                     </p>
 
                                     {/* Dual Action Buttons */}
-                                    <div className="pt-6 sm:pt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                                    <div className="flex flex-col items-stretch gap-3 pt-6 sm:flex-row sm:items-center sm:gap-4 sm:pt-10">
                                         {/* Primary Button: White Pill + Green Arrow Circle Icon */}
                                         <motion.a
                                             whileHover={{ scale: 1.03, y: -2 }}
                                             whileTap={{ scale: 0.98 }}
                                             href="#profil"
-                                            className="bg-white hover:bg-gray-100 text-gray-900 font-semibold pl-6 pr-2 py-2 rounded-full transition-all duration-200 flex items-center justify-center gap-3 shadow-lg group focus:ring-2 focus:ring-[#39d353]"
+                                            className="group flex items-center justify-center gap-3 rounded-full bg-white py-2 pr-2 pl-6 font-semibold text-gray-900 shadow-lg transition-all duration-200 hover:bg-gray-100 focus:ring-2 focus:ring-[#39d353]"
                                         >
-                                            <span className="text-sm">Kenali Desa</span>
-                                            <div className="w-8 h-8 rounded-full bg-village-primary group-hover:bg-village-primary-dark flex items-center justify-center text-white group-hover:scale-105 transition-transform">
-                                                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
+                                            <span className="text-sm">
+                                                Kenali Desa
+                                            </span>
+                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-village-primary text-white transition-transform group-hover:scale-105 group-hover:bg-village-primary-dark">
+                                                <ArrowRight className="h-4 w-4 stroke-[2.5]" />
                                             </div>
                                         </motion.a>
 
@@ -1260,9 +1348,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                             whileHover={{ scale: 1.03, y: -2 }}
                                             whileTap={{ scale: 0.98 }}
                                             href={servicesIndex.url()}
-                                            className="bg-white/15 hover:bg-white/25 border border-white/20 hover:border-white/35 backdrop-blur-md text-white text-sm font-medium px-6 py-3 rounded-full transition-all duration-200 flex items-center justify-center gap-2"
+                                            className="flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/15 px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-200 hover:border-white/35 hover:bg-white/25"
                                         >
-                                            <ChevronDown className="w-4 h-4 text-[#39d353]" />
+                                            <ChevronDown className="h-4 w-4 text-[#39d353]" />
                                             <span>Lihat Layanan</span>
                                         </motion.a>
                                     </div>
@@ -1270,7 +1358,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             </FadeIn>
 
                             {/* HERO BOTTOM: Quick Highlights Banner */}
-                            <FadeIn direction="up" delay={0.3} duration={0.6} className="relative z-10 pt-8 sm:pt-10 border-t border-white/10 mt-10 sm:mt-14">
+                            <FadeIn
+                                direction="up"
+                                delay={0.3}
+                                duration={0.6}
+                                className="relative z-10 mt-10 border-t border-white/10 pt-8 sm:mt-14 sm:pt-10"
+                            >
                                 {/* Centered Hero Carousel Controls */}
                                 <div className="mb-4 flex justify-center">
                                     <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md">
@@ -1284,19 +1377,26 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         </button>
 
                                         <div className="flex items-center gap-1.5">
-                                            {heroCarouselImages.map((_, idx) => (
-                                                <button
-                                                    key={idx}
-                                                    type="button"
-                                                    onClick={() => setHeroSlideIndex(idx)}
-                                                    aria-label={`Slide ${idx + 1}`}
-                                                    className={`h-2 rounded-full transition-all duration-300 ${
-                                                        idx === heroSlideIndex
-                                                            ? 'w-6 bg-[#39d353]'
-                                                            : 'w-2 bg-white/40 hover:bg-white/70'
-                                                    }`}
-                                                />
-                                            ))}
+                                            {heroCarouselImages.map(
+                                                (_, idx) => (
+                                                    <button
+                                                        key={idx}
+                                                        type="button"
+                                                        onClick={() =>
+                                                            setHeroSlideIndex(
+                                                                idx,
+                                                            )
+                                                        }
+                                                        aria-label={`Slide ${idx + 1}`}
+                                                        className={`h-2 rounded-full transition-all duration-300 ${
+                                                            idx ===
+                                                            heroSlideIndex
+                                                                ? 'w-6 bg-[#39d353]'
+                                                                : 'w-2 bg-white/40 hover:bg-white/70'
+                                                        }`}
+                                                    />
+                                                ),
+                                            )}
                                         </div>
 
                                         <button
@@ -1310,32 +1410,48 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     </div>
                                 </div>
 
-                                <p className="text-[0.6875rem] uppercase tracking-widest text-emerald-400 text-center mb-6 font-mono font-semibold">
-                                    Layanan Digital & Informasi Terpadu Desa Ngampungan
+                                <p className="mb-6 text-center font-mono text-[0.6875rem] font-semibold tracking-widest text-emerald-400 uppercase">
+                                    Layanan Digital & Informasi Terpadu Desa
+                                    Ngampungan
                                 </p>
-                                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 items-center justify-items-center opacity-90 text-xs font-semibold tracking-wide">
-                                    <a href={servicesIndex.url()} className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
-                                        <FileText className="w-4 h-4 text-[#39d353]" />
+                                <div className="grid grid-cols-2 items-center justify-items-center gap-4 text-xs font-semibold tracking-wide opacity-90 sm:grid-cols-3 sm:gap-6 lg:grid-cols-6">
+                                    <a
+                                        href={servicesIndex.url()}
+                                        className="flex items-center gap-2 text-white transition-colors hover:text-[#39d353]"
+                                    >
+                                        <FileText className="h-4 w-4 text-[#39d353]" />
                                         <span>Surat Online</span>
                                     </a>
-                                    <a href={servicesIndex.url()} className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
-                                        <Sprout className="w-4 h-4 text-[#39d353]" />
+                                    <a
+                                        href={servicesIndex.url()}
+                                        className="flex items-center gap-2 text-white transition-colors hover:text-[#39d353]"
+                                    >
+                                        <Sprout className="h-4 w-4 text-[#39d353]" />
                                         <span>Lapor Panen</span>
                                     </a>
-                                    <a href="#transparansi" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
-                                        <Landmark className="w-4 h-4 text-[#39d353]" />
+                                    <a
+                                        href="#transparansi"
+                                        className="flex items-center gap-2 text-white transition-colors hover:text-[#39d353]"
+                                    >
+                                        <Landmark className="h-4 w-4 text-[#39d353]" />
                                         <span>APBDes Transparan</span>
                                     </a>
-                                    <a href="#potensi" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
-                                        <TrendingUp className="w-4 h-4 text-[#39d353]" />
+                                    <a
+                                        href="#potensi"
+                                        className="flex items-center gap-2 text-white transition-colors hover:text-[#39d353]"
+                                    >
+                                        <TrendingUp className="h-4 w-4 text-[#39d353]" />
                                         <span>Potensi UMKM</span>
                                     </a>
-                                    <a href="#kontak" className="flex items-center gap-2 text-white hover:text-[#39d353] transition-colors">
-                                        <CircleAlert className="w-4 h-4 text-[#39d353]" />
+                                    <a
+                                        href="#kontak"
+                                        className="flex items-center gap-2 text-white transition-colors hover:text-[#39d353]"
+                                    >
+                                        <CircleAlert className="h-4 w-4 text-[#39d353]" />
                                         <span>Pengaduan Warga</span>
                                     </a>
                                     <div className="flex items-center gap-2 text-[#39d353]">
-                                        <ShieldCheck className="w-4 h-4" />
+                                        <ShieldCheck className="h-4 w-4" />
                                         <span>Layanan 24/7</span>
                                     </div>
                                 </div>
@@ -1347,49 +1463,61 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                     <section
                         id="profil"
                         aria-labelledby="profil-heading"
-                        className="py-12 sm:py-16 bg-[#f8f9fa] border-b border-gray-200/60 scroll-mt-24"
+                        className="scroll-mt-24 border-b border-gray-200/60 bg-[#f8f9fa] py-12 sm:py-16"
                     >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-                                
+                        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
+                            <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-12">
                                 {/* Left Column: Heading */}
-                                <FadeIn direction="right" duration={0.5} className="lg:col-span-5 space-y-4">
+                                <FadeIn
+                                    direction="right"
+                                    duration={0.5}
+                                    className="space-y-4 lg:col-span-5"
+                                >
                                     <h2
                                         id="profil-heading"
-                                        className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight leading-[1.12]"
+                                        className="text-3xl leading-[1.12] font-medium tracking-tight text-gray-900 sm:text-4xl lg:text-5xl"
                                     >
-                                        Statistik Desa<br />
+                                        Statistik Desa
+                                        <br />
                                         Ngampungan
                                     </h2>
-                                    <p className="mt-4 text-gray-600 text-sm sm:text-base leading-relaxed">
-                                        Data kependudukan, wilayah, dan tata kelola Desa Ngampungan disajikan secara transparan, akurat, dan terus diperbarui untuk melayani seluruh warga.
+                                    <p className="mt-4 text-sm leading-relaxed text-gray-600 sm:text-base">
+                                        Data kependudukan, wilayah, dan tata
+                                        kelola Desa Ngampungan disajikan secara
+                                        transparan, akurat, dan terus diperbarui
+                                        untuk melayani seluruh warga.
                                     </p>
                                 </FadeIn>
 
                                 {/* Right Column: KPI Metrics Grid with Vertical Dividers */}
-                                <StaggerContainer staggerDelay={0.12} className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x divide-gray-200 bg-white sm:bg-transparent p-6 sm:p-0 rounded-2xl border sm:border-0 border-gray-200">
+                                <StaggerContainer
+                                    staggerDelay={0.12}
+                                    className="grid grid-cols-1 gap-6 divide-gray-200 rounded-2xl border border-gray-200 bg-white p-6 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:border-0 sm:bg-transparent sm:p-0 lg:col-span-7"
+                                >
                                     {dummyVillageStatistics.map((statistic) => (
                                         <StaggerItem key={statistic.label}>
                                             <motion.a
                                                 whileHover={{ y: -3 }}
                                                 href={statistic.href}
-                                                className="block sm:px-5 first:pl-0 space-y-2 group cursor-pointer transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-2 sm:p-0"
+                                                className="group block cursor-pointer space-y-2 rounded-lg p-2 transition duration-200 first:pl-0 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none sm:p-0 sm:px-5"
                                             >
-                                                <span className="text-xs font-medium text-gray-500 block transition-colors group-hover:text-emerald-600">
+                                                <span className="block text-xs font-medium text-gray-500 transition-colors group-hover:text-emerald-600">
                                                     {statistic.label}
                                                 </span>
-                                                <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight font-sans transition-colors group-hover:text-emerald-600">
+                                                <div className="font-sans text-3xl font-medium tracking-tight text-gray-900 transition-colors group-hover:text-emerald-600 sm:text-4xl lg:text-5xl">
                                                     {statistic.value}
                                                 </div>
-                                                <p className="text-xs text-gray-400 flex items-center gap-1 group-hover:text-emerald-700 transition-colors">
-                                                    <span>{statistic.suffix} terdaftar</span>
-                                                    <ChevronRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" />
+                                                <p className="flex items-center gap-1 text-xs text-gray-400 transition-colors group-hover:text-emerald-700">
+                                                    <span>
+                                                        {statistic.suffix}{' '}
+                                                        terdaftar
+                                                    </span>
+                                                    <ChevronRight className="h-3 w-3 transition-transform duration-200 group-hover:translate-x-1" />
                                                 </p>
                                             </motion.a>
                                         </StaggerItem>
                                     ))}
                                 </StaggerContainer>
-
                             </div>
                         </div>
                     </section>
@@ -1399,17 +1527,23 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         aria-labelledby="sambutan-kepala-desa-heading"
                         className="scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto grid max-w-[1440px] 2xl:max-w-[1536px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-10">
-                            <FadeIn direction="left" duration={0.6} className="lg:col-span-5 flex justify-center lg:justify-start">
+                        <div className="mx-auto grid max-w-[1440px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-10 2xl:max-w-[1536px]">
+                            <FadeIn
+                                direction="left"
+                                duration={0.6}
+                                className="flex justify-center lg:col-span-5 lg:justify-start"
+                            >
                                 {/* Profile Card Container */}
-                                <div className="group relative h-[550px] sm:h-[560px] w-full max-w-[390px] sm:max-w-[420px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl">
+                                <div className="group relative h-[550px] w-full max-w-[390px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl sm:h-[560px] sm:max-w-[420px]">
                                     {/* Background Image */}
                                     <img
                                         src="/assets/simulasi_profl.png"
                                         alt="Bapak. Rohan - Kepala Desa Ngampungan"
                                         className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                         onError={(e) => {
-                                            (e.currentTarget as HTMLImageElement).src =
+                                            (
+                                                e.currentTarget as HTMLImageElement
+                                            ).src =
                                                 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800';
                                         }}
                                     />
@@ -1418,16 +1552,18 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/20 via-35% to-slate-950/95" />
 
                                     {/* Content Area (Bottom Overlay) */}
-                                    <div className="absolute bottom-0 inset-x-0 z-10 flex flex-col justify-end space-y-4 p-6 sm:p-7 text-white">
+                                    <div className="absolute inset-x-0 bottom-0 z-10 flex flex-col justify-end space-y-4 p-6 text-white sm:p-7">
                                         {/* Main Info */}
                                         <div className="space-y-1 text-left">
-                                            <h3 className="text-2xl font-extrabold tracking-tight text-white leading-snug drop-shadow-sm sm:text-3xl">
+                                            <h3 className="text-2xl leading-snug font-extrabold tracking-tight text-white drop-shadow-sm sm:text-3xl">
                                                 Bapak. Rohan
                                             </h3>
 
                                             <div className="flex items-center gap-2 text-xs font-medium text-slate-200 sm:text-sm">
                                                 <MapPin className="size-4 shrink-0 text-emerald-400" />
-                                                <span>Kepala Desa Ngampungan</span>
+                                                <span>
+                                                    Kepala Desa Ngampungan
+                                                </span>
                                             </div>
 
                                             <p className="pl-6 text-xs font-medium text-slate-300">
@@ -1438,7 +1574,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 </div>
                             </FadeIn>
 
-                            <FadeIn direction="right" duration={0.6} delay={0.15} className="lg:col-span-7">
+                            <FadeIn
+                                direction="right"
+                                duration={0.6}
+                                delay={0.15}
+                                className="lg:col-span-7"
+                            >
                                 <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                                     Sambutan Kepala Desa
                                 </p>
@@ -1485,15 +1626,18 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
 
                     <TransparansiSummarySection />
 
-
                     <section
                         id="potensi"
                         aria-labelledby="potensi-heading"
                         className="scroll-mt-48 overflow-hidden border-b border-village-border bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                             {/* Unified Header & Description */}
-                            <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                            <FadeIn
+                                direction="up"
+                                duration={0.5}
+                                className="flex flex-col justify-between gap-6 md:flex-row md:items-end"
+                            >
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                                         Direktori Potensi Desa
@@ -1505,7 +1649,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         Temukan Usaha & Potensi Warga
                                     </h2>
                                     <p className="mt-4 max-w-2xl text-base leading-relaxed text-village-muted md:text-lg">
-                                        Jelajahi produk UMKM unggulan, sektor pertanian, destinasi wisata, dan ekonomi kreatif warga Ngampungan.
+                                        Jelajahi produk UMKM unggulan, sektor
+                                        pertanian, destinasi wisata, dan ekonomi
+                                        kreatif warga Ngampungan.
                                     </p>
                                 </div>
 
@@ -1518,7 +1664,10 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     prefetch
                                     className="inline-flex items-center gap-2 rounded-full border border-village-border bg-village-canvas px-5 py-2.5 text-xs font-bold text-village-primary transition-all hover:border-village-primary hover:bg-village-primary-light hover:shadow-xs focus-visible:outline-none"
                                 >
-                                    <span>Buka Direktori {activePotentialMetadata.label}</span>
+                                    <span>
+                                        Buka Direktori{' '}
+                                        {activePotentialMetadata.label}
+                                    </span>
                                     <ArrowRight
                                         aria-hidden="true"
                                         className="size-4"
@@ -1533,36 +1682,40 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     aria-label="Filter kategori potensi desa"
                                     className="flex items-center gap-2 overflow-x-auto py-1"
                                 >
-                                    {villagePotentialCategories.map((category) => {
-                                        const isSelected = activePotentialCategory === category.key;
+                                    {villagePotentialCategories.map(
+                                        (category) => {
+                                            const isSelected =
+                                                activePotentialCategory ===
+                                                category.key;
 
-                                        return (
-                                            <button
-                                                key={category.key}
-                                                type="button"
-                                                role="tab"
-                                                id={`potential-tab-${category.key}`}
-                                                aria-controls="homepage-potential-panel"
-                                                aria-selected={isSelected}
-                                                onClick={() =>
-                                                    setActivePotentialCategory(
-                                                        category.key,
-                                                    )
-                                                }
-                                                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
-                                                    isSelected
-                                                        ? 'bg-village-primary text-white shadow-sm font-extrabold'
-                                                        : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
-                                                }`}
-                                            >
-                                                <PotentialCategoryIcon
-                                                    category={category.key}
-                                                    className="size-4 shrink-0 object-contain"
-                                                />
-                                                {category.label}
-                                            </button>
-                                        );
-                                    })}
+                                            return (
+                                                <button
+                                                    key={category.key}
+                                                    type="button"
+                                                    role="tab"
+                                                    id={`potential-tab-${category.key}`}
+                                                    aria-controls="homepage-potential-panel"
+                                                    aria-selected={isSelected}
+                                                    onClick={() =>
+                                                        setActivePotentialCategory(
+                                                            category.key,
+                                                        )
+                                                    }
+                                                    className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                                                        isSelected
+                                                            ? 'bg-village-primary font-extrabold text-white shadow-sm'
+                                                            : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    <PotentialCategoryIcon
+                                                        category={category.key}
+                                                        className="size-4 shrink-0 object-contain"
+                                                    />
+                                                    {category.label}
+                                                </button>
+                                            );
+                                        },
+                                    )}
                                 </div>
 
                                 <span className="hidden text-xs font-medium text-gray-500 lg:inline-block">
@@ -1594,8 +1747,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         aria-labelledby="berita-heading"
                         className="scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
                     >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
+                            <FadeIn
+                                direction="up"
+                                duration={0.5}
+                                className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end"
+                            >
                                 <div className="max-w-2xl">
                                     <h2
                                         id="berita-heading"
@@ -1621,7 +1778,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 </Link>
                             </FadeIn>
 
-                            <FadeIn direction="up" delay={0.15} duration={0.5} className="mt-10">
+                            <FadeIn
+                                direction="up"
+                                delay={0.15}
+                                duration={0.5}
+                                className="mt-10"
+                            >
                                 <article className="group grid overflow-hidden rounded-3xl border border-village-border bg-white shadow-village-soft lg:grid-cols-12">
                                     <Link
                                         href={newsShow(
@@ -1633,12 +1795,14 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         <img
                                             ref={featuredImageRef}
                                             src={
-                                                !isFeaturedImageUnavailable && featuredNewsArticle.image
+                                                !isFeaturedImageUnavailable &&
+                                                featuredNewsArticle.image
                                                     ? featuredNewsArticle.image
                                                     : '/images/news/featured.png'
                                             }
                                             alt={
-                                                featuredNewsArticle.alt || featuredNewsArticle.title
+                                                featuredNewsArticle.alt ||
+                                                featuredNewsArticle.title
                                             }
                                             onError={() =>
                                                 setIsFeaturedImageUnavailable(
@@ -1702,172 +1866,175 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 </article>
                             </FadeIn>
 
-                                <div className="mt-10 flex items-end justify-between gap-5">
-                                    <div>
-                                        <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
-                                            Kabar lainnya
-                                        </p>
-                                        <h3
-                                            id="berita-lainnya-heading"
-                                            className="mt-2 text-2xl font-bold"
-                                        >
-                                            Berita Lainnya
-                                        </h3>
-                                    </div>
-                                    <span className="text-xs font-medium text-village-muted sm:text-sm">
-                                        Menampilkan{' '}
-                                        <strong className="font-bold text-gray-900">
-                                            {paginatedNewsArticles.length}
-                                        </strong>{' '}
-                                        dari {latestNewsArticles.length} berita
-                                    </span>
-                                </div>
-
-                                <div
-                                    key={newsCurrentPage}
-                                    className={`mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
-                                        isNewsPageTransitioning
-                                            ? 'opacity-0 scale-[0.985]'
-                                            : 'opacity-100 scale-100'
-                                    }`}
-                                >
-                                    {paginatedNewsArticles.map((article, idx) => (
-                                        <div
-                                            key={article.slug}
-                                            className="animate-page-fade-in flex h-full flex-col"
-                                            style={{ animationDelay: `${idx * 40}ms` }}
-                                        >
-                                            <PublicNewsCard
-                                                article={article}
-                                            />
-                                        </div>
-                                    ))}
-
-                                    {paginatedNewsArticles.length < NEWS_PER_PAGE && (
-                                        <div
-                                            className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
-                                            style={{
-                                                animationDelay: `${paginatedNewsArticles.length * 40}ms`,
-                                            }}
-                                        >
-                                            <div className="space-y-3">
-                                                <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
-                                                    <Newspaper className="size-5" />
-                                                </span>
-                                                <h4 className="text-base font-extrabold text-village-ink">
-                                                    Pusat Arsip & Informasi
-                                                </h4>
-                                                <p className="text-xs leading-relaxed text-village-muted">
-                                                    Menampilkan sisa {paginatedNewsArticles.length} berita terbaru pada halaman ini. Ingin membaca rilis pembangunan & pengumuman lainnya?
-                                                </p>
-                                            </div>
-                                            <div className="mt-6 flex items-center justify-between border-t border-village-border/60 pt-4">
-                                                <span className="text-[11px] font-semibold text-village-primary">
-                                                    Terverifikasi Pemdes
-                                                </span>
-                                                <Link
-                                                    href={newsIndex()}
-                                                    className="inline-flex items-center gap-1.5 rounded-full bg-village-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-village-primary-dark"
-                                                >
-                                                    <span>Arsip Berita</span>
-                                                    <ArrowRight className="size-3.5" />
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {totalNewsPages > 1 && (
-                                    <nav
-                                        aria-label="Navigasi halaman berita"
-                                        className="mt-10 flex items-center justify-center gap-2 border-t border-village-border/80 pt-6"
+                            <div className="mt-10 flex items-end justify-between gap-5">
+                                <div>
+                                    <p className="text-xs font-bold tracking-[0.16em] text-village-primary uppercase">
+                                        Kabar lainnya
+                                    </p>
+                                    <h3
+                                        id="berita-lainnya-heading"
+                                        className="mt-2 text-2xl font-bold"
                                     >
-                                        <button
-                                            type="button"
-                                            disabled={newsCurrentPage === 1}
-                                            onClick={() =>
-                                                handleNewsPageChange(
-                                                    newsCurrentPage - 1,
-                                                )
-                                            }
-                                            aria-label="Halaman berita sebelumnya"
-                                            className="flex size-9 items-center justify-center rounded-xl border border-village-border bg-white text-village-ink shadow-2xs transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                                        >
-                                            <ChevronLeft className="size-4" />
-                                        </button>
+                                        Berita Lainnya
+                                    </h3>
+                                </div>
+                                <span className="text-xs font-medium text-village-muted sm:text-sm">
+                                    Menampilkan{' '}
+                                    <strong className="font-bold text-gray-900">
+                                        {paginatedNewsArticles.length}
+                                    </strong>{' '}
+                                    dari {latestNewsArticles.length} berita
+                                </span>
+                            </div>
 
-                                        {Array.from(
-                                            { length: totalNewsPages },
-                                            (_, index) => {
-                                                const pageNumber = index + 1;
-                                                const isActive =
-                                                    pageNumber ===
-                                                    newsCurrentPage;
-                                                return (
-                                                    <button
-                                                        key={pageNumber}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            handleNewsPageChange(
-                                                                pageNumber,
-                                                            )
-                                                        }
-                                                        aria-current={
-                                                            isActive
-                                                                ? 'page'
-                                                                : undefined
-                                                        }
-                                                        aria-label={`Halaman berita ${pageNumber}`}
-                                                        className={`flex size-9 items-center justify-center rounded-xl text-xs font-bold transition-all ${
-                                                            isActive
-                                                                ? 'bg-village-primary text-white shadow-xs'
-                                                                : 'border border-village-border bg-white text-village-ink hover:border-village-primary/40 hover:bg-gray-50'
-                                                        }`}
-                                                    >
-                                                        {pageNumber}
-                                                    </button>
-                                                );
-                                            },
-                                        )}
+                            <div
+                                key={newsCurrentPage}
+                                className={`mt-6 grid min-h-[440px] gap-6 transition-all duration-300 ease-out md:grid-cols-2 lg:grid-cols-3 ${
+                                    isNewsPageTransitioning
+                                        ? 'scale-[0.985] opacity-0'
+                                        : 'scale-100 opacity-100'
+                                }`}
+                            >
+                                {paginatedNewsArticles.map((article, idx) => (
+                                    <div
+                                        key={article.slug}
+                                        className="animate-page-fade-in flex h-full flex-col"
+                                        style={{
+                                            animationDelay: `${idx * 40}ms`,
+                                        }}
+                                    >
+                                        <PublicNewsCard article={article} />
+                                    </div>
+                                ))}
 
-                                        <button
-                                            type="button"
-                                            disabled={
-                                                newsCurrentPage ===
-                                                totalNewsPages
-                                            }
-                                            onClick={() =>
-                                                handleNewsPageChange(
-                                                    newsCurrentPage + 1,
-                                                )
-                                            }
-                                            aria-label="Halaman berita selanjutnya"
-                                            className="flex size-9 items-center justify-center rounded-xl border border-village-border bg-white text-village-ink shadow-2xs transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
-                                        >
-                                            <ChevronRight className="size-4" />
-                                        </button>
-                                    </nav>
+                                {paginatedNewsArticles.length <
+                                    NEWS_PER_PAGE && (
+                                    <div
+                                        className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
+                                        style={{
+                                            animationDelay: `${paginatedNewsArticles.length * 40}ms`,
+                                        }}
+                                    >
+                                        <div className="space-y-3">
+                                            <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light font-bold text-village-primary shadow-2xs">
+                                                <Newspaper className="size-5" />
+                                            </span>
+                                            <h4 className="text-base font-extrabold text-village-ink">
+                                                Pusat Arsip & Informasi
+                                            </h4>
+                                            <p className="text-xs leading-relaxed text-village-muted">
+                                                Menampilkan sisa{' '}
+                                                {paginatedNewsArticles.length}{' '}
+                                                berita terbaru pada halaman ini.
+                                                Ingin membaca rilis pembangunan
+                                                & pengumuman lainnya?
+                                            </p>
+                                        </div>
+                                        <div className="mt-6 flex items-center justify-between border-t border-village-border/60 pt-4">
+                                            <span className="text-[11px] font-semibold text-village-primary">
+                                                Terverifikasi Pemdes
+                                            </span>
+                                            <Link
+                                                href={newsIndex()}
+                                                className="inline-flex items-center gap-1.5 rounded-full bg-village-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-xs transition hover:bg-village-primary-dark"
+                                            >
+                                                <span>Arsip Berita</span>
+                                                <ArrowRight className="size-3.5" />
+                                            </Link>
+                                        </div>
+                                    </div>
                                 )}
                             </div>
-                        </section>
+
+                            {totalNewsPages > 1 && (
+                                <nav
+                                    aria-label="Navigasi halaman berita"
+                                    className="mt-10 flex items-center justify-center gap-2 border-t border-village-border/80 pt-6"
+                                >
+                                    <button
+                                        type="button"
+                                        disabled={newsCurrentPage === 1}
+                                        onClick={() =>
+                                            handleNewsPageChange(
+                                                newsCurrentPage - 1,
+                                            )
+                                        }
+                                        aria-label="Halaman berita sebelumnya"
+                                        className="flex size-9 items-center justify-center rounded-xl border border-village-border bg-white text-village-ink shadow-2xs transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <ChevronLeft className="size-4" />
+                                    </button>
+
+                                    {Array.from(
+                                        { length: totalNewsPages },
+                                        (_, index) => {
+                                            const pageNumber = index + 1;
+                                            const isActive =
+                                                pageNumber === newsCurrentPage;
+                                            return (
+                                                <button
+                                                    key={pageNumber}
+                                                    type="button"
+                                                    onClick={() =>
+                                                        handleNewsPageChange(
+                                                            pageNumber,
+                                                        )
+                                                    }
+                                                    aria-current={
+                                                        isActive
+                                                            ? 'page'
+                                                            : undefined
+                                                    }
+                                                    aria-label={`Halaman berita ${pageNumber}`}
+                                                    className={`flex size-9 items-center justify-center rounded-xl text-xs font-bold transition-all ${
+                                                        isActive
+                                                            ? 'bg-village-primary text-white shadow-xs'
+                                                            : 'border border-village-border bg-white text-village-ink hover:border-village-primary/40 hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    {pageNumber}
+                                                </button>
+                                            );
+                                        },
+                                    )}
+
+                                    <button
+                                        type="button"
+                                        disabled={
+                                            newsCurrentPage === totalNewsPages
+                                        }
+                                        onClick={() =>
+                                            handleNewsPageChange(
+                                                newsCurrentPage + 1,
+                                            )
+                                        }
+                                        aria-label="Halaman berita selanjutnya"
+                                        className="flex size-9 items-center justify-center rounded-xl border border-village-border bg-white text-village-ink shadow-2xs transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                    >
+                                        <ChevronRight className="size-4" />
+                                    </button>
+                                </nav>
+                            )}
+                        </div>
+                    </section>
 
                     <section
                         id="pengumuman"
                         aria-labelledby="pengumuman-heading"
-                        className="relative overflow-hidden scroll-mt-20 border-t border-village-border/80 bg-gradient-to-b from-emerald-50/50 via-white to-emerald-50/30 py-16 md:py-24"
+                        className="relative scroll-mt-20 overflow-hidden border-t border-village-border/80 bg-gradient-to-b from-emerald-50/50 via-white to-emerald-50/30 py-16 md:py-24"
                     >
                         {/* Ambient Animated Aurora Mesh Blobs */}
                         <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute -top-36 -left-20 size-[30rem] rounded-full bg-emerald-200/45 blur-3xl animate-aurora-slow"
+                            className="animate-aurora-slow pointer-events-none absolute -top-36 -left-20 size-[30rem] rounded-full bg-emerald-200/45 blur-3xl"
                         />
                         <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute -bottom-36 -right-20 size-[32rem] rounded-full bg-teal-200/40 blur-3xl animate-aurora-reverse"
+                            className="animate-aurora-reverse pointer-events-none absolute -right-20 -bottom-36 size-[32rem] rounded-full bg-teal-200/40 blur-3xl"
                         />
                         <div
                             aria-hidden="true"
-                            className="pointer-events-none absolute top-1/2 left-1/3 size-[24rem] -translate-y-1/2 rounded-full bg-amber-100/35 blur-3xl animate-aurora-slow"
+                            className="animate-aurora-slow pointer-events-none absolute top-1/2 left-1/3 size-[24rem] -translate-y-1/2 rounded-full bg-amber-100/35 blur-3xl"
                         />
 
                         {/* Flowing Animated Wave SVG Background Lines */}
@@ -1896,8 +2063,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             />
                         </svg>
 
-                        <div className="relative mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 border-b border-village-border/80 pb-8 md:flex-row md:items-end">
+                        <div className="relative mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
+                            <FadeIn
+                                direction="up"
+                                duration={0.5}
+                                className="flex flex-col justify-between gap-6 border-b border-village-border/80 pb-8 md:flex-row md:items-end"
+                            >
                                 <div className="max-w-2xl">
                                     <h2
                                         id="pengumuman-heading"
@@ -1924,7 +2095,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 </Link>
                             </FadeIn>
 
-                            <FadeIn direction="up" delay={0.1} duration={0.5} className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                            <FadeIn
+                                direction="up"
+                                delay={0.1}
+                                duration={0.5}
+                                className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end"
+                            >
                                 <div>
                                     <p className="text-xs font-extrabold tracking-[0.16em] text-village-primary uppercase">
                                         Masih berlaku
@@ -1938,8 +2114,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 </p>
                             </FadeIn>
 
-                            <StaggerContainer staggerDelay={0.12} className="mt-6 grid gap-6 lg:grid-cols-3">
-                                {((usePage().props as any).dbAnnouncements?.length > 0
+                            <StaggerContainer
+                                staggerDelay={0.12}
+                                className="mt-6 grid gap-6 lg:grid-cols-3"
+                            >
+                                {((usePage().props as any).dbAnnouncements
+                                    ?.length > 0
                                     ? (usePage().props as any).dbAnnouncements
                                     : [...activeDummyAnnouncements].sort(
                                           (a, b) =>
@@ -1965,7 +2145,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         aria-labelledby="kontak-heading"
                         className="scroll-mt-48 border-t border-village-border bg-village-canvas py-16 md:py-24 xl:scroll-mt-32"
                     >
-                        <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                        <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                             <div className="grid gap-8 border-b border-village-border pb-9 lg:grid-cols-[1fr_auto] lg:items-end">
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
@@ -2010,7 +2190,11 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             </div>
 
                             <div className="mt-9 grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-                                <FadeIn direction="right" duration={0.5} className="overflow-hidden border border-village-border bg-white shadow-village-soft">
+                                <FadeIn
+                                    direction="right"
+                                    duration={0.5}
+                                    className="overflow-hidden border border-village-border bg-white shadow-village-soft"
+                                >
                                     <div className="relative aspect-[4/3] min-h-[330px] bg-village-primary-light">
                                         <iframe
                                             title="Peta lokasi Kantor Desa Ngampungan"
@@ -2054,7 +2238,11 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     </div>
                                 </FadeIn>
 
-                                <FadeIn direction="left" duration={0.5} className="border border-village-border bg-white p-6 shadow-village-soft md:p-8">
+                                <FadeIn
+                                    direction="left"
+                                    duration={0.5}
+                                    className="border border-village-border bg-white p-6 shadow-village-soft md:p-8"
+                                >
                                     <div className="flex items-start gap-4 border-b border-village-border pb-6">
                                         <span className="flex size-11 shrink-0 items-center justify-center bg-village-primary-light text-village-primary">
                                             <MailOpen
@@ -2300,7 +2488,11 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                 </main>
 
                 <footer className="bg-village-primary-dark pt-16 pb-8 text-white/80">
-                    <FadeIn direction="up" duration={0.6} className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                    <FadeIn
+                        direction="up"
+                        duration={0.6}
+                        className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]"
+                    >
                         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
                             <div className="flex flex-col gap-4">
                                 <div className="text-white">

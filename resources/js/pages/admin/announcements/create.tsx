@@ -65,7 +65,8 @@ export default function AdminAnnouncementCreate() {
                             Buat Pengumuman Baru
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Publikasikan pengumuman atau pemberitahuan resmi terbaru untuk warga desa.
+                            Publikasikan pengumuman atau pemberitahuan resmi
+                            terbaru untuk warga desa.
                         </p>
                     </div>
                 </header>
@@ -80,7 +81,8 @@ export default function AdminAnnouncementCreate() {
                                         htmlFor="title"
                                         className="text-sm font-bold text-foreground"
                                     >
-                                        Judul Pengumuman <span className="text-red-500">*</span>
+                                        Judul Pengumuman{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <span
                                         className={
@@ -96,7 +98,9 @@ export default function AdminAnnouncementCreate() {
                                     id="title"
                                     type="text"
                                     value={data.title}
-                                    onChange={(e) => setData('title', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('title', e.target.value)
+                                    }
                                     placeholder="Contoh: Perubahan Jadwal Pelayanan Administrasi Kependudukan"
                                     className="min-h-11 w-full rounded-lg border border-sidebar-border/70 bg-background px-4 py-2 text-sm font-medium transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
@@ -111,7 +115,8 @@ export default function AdminAnnouncementCreate() {
                                         htmlFor="summary"
                                         className="text-sm font-bold text-foreground"
                                     >
-                                        Ringkasan Pengumuman <span className="text-red-500">*</span>
+                                        Ringkasan Pengumuman{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <span
                                         className={
@@ -127,7 +132,9 @@ export default function AdminAnnouncementCreate() {
                                     id="summary"
                                     rows={3}
                                     value={data.summary}
-                                    onChange={(e) => setData('summary', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('summary', e.target.value)
+                                    }
                                     placeholder="Tulis ringkasan singkat pengumuman yang akan langsung dibaca warga di card landing page..."
                                     className="w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
@@ -143,7 +150,8 @@ export default function AdminAnnouncementCreate() {
                                             Detail Paragraf Tambahan (Opsional)
                                         </h2>
                                         <p className="text-xs text-muted-foreground">
-                                            Tambahkan paragraf penjelasan lengkap untuk detail pengumuman.
+                                            Tambahkan paragraf penjelasan
+                                            lengkap untuk detail pengumuman.
                                         </p>
                                     </div>
 
@@ -166,7 +174,9 @@ export default function AdminAnnouncementCreate() {
                                             {data.content.length > 1 && (
                                                 <button
                                                     type="button"
-                                                    onClick={() => removeParagraph(index)}
+                                                    onClick={() =>
+                                                        removeParagraph(index)
+                                                    }
                                                     className="text-red-600 hover:underline"
                                                 >
                                                     Hapus
@@ -176,7 +186,12 @@ export default function AdminAnnouncementCreate() {
                                         <textarea
                                             rows={3}
                                             value={para}
-                                            onChange={(e) => updateParagraph(index, e.target.value)}
+                                            onChange={(e) =>
+                                                updateParagraph(
+                                                    index,
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder={`Penjelasan paragraf ${index + 1}...`}
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
@@ -199,7 +214,7 @@ export default function AdminAnnouncementCreate() {
                                     </label>
                                     <div className="grid gap-2">
                                         <label
-                                            className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition ${
+                                            className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
                                                 data.priority === 'normal'
                                                     ? 'border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/20'
                                                     : 'border-sidebar-border/70'
@@ -209,18 +224,27 @@ export default function AdminAnnouncementCreate() {
                                                 type="radio"
                                                 name="priority"
                                                 value="normal"
-                                                checked={data.priority === 'normal'}
-                                                onChange={() => setData('priority', 'normal')}
+                                                checked={
+                                                    data.priority === 'normal'
+                                                }
+                                                onChange={() =>
+                                                    setData(
+                                                        'priority',
+                                                        'normal',
+                                                    )
+                                                }
                                                 className="accent-emerald-600"
                                             />
                                             <div className="flex items-center gap-2">
                                                 <Bell className="size-4 text-emerald-600" />
-                                                <span className="text-sm font-bold">Normal</span>
+                                                <span className="text-sm font-bold">
+                                                    Normal
+                                                </span>
                                             </div>
                                         </label>
 
                                         <label
-                                            className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition ${
+                                            className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
                                                 data.priority === 'important'
                                                     ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20'
                                                     : 'border-sidebar-border/70'
@@ -230,18 +254,28 @@ export default function AdminAnnouncementCreate() {
                                                 type="radio"
                                                 name="priority"
                                                 value="important"
-                                                checked={data.priority === 'important'}
-                                                onChange={() => setData('priority', 'important')}
+                                                checked={
+                                                    data.priority ===
+                                                    'important'
+                                                }
+                                                onChange={() =>
+                                                    setData(
+                                                        'priority',
+                                                        'important',
+                                                    )
+                                                }
                                                 className="accent-amber-600"
                                             />
                                             <div className="flex items-center gap-2">
                                                 <AlertTriangle className="size-4 text-amber-600" />
-                                                <span className="text-sm font-bold">Penting</span>
+                                                <span className="text-sm font-bold">
+                                                    Penting
+                                                </span>
                                             </div>
                                         </label>
 
                                         <label
-                                            className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition ${
+                                            className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
                                                 data.priority === 'emergency'
                                                     ? 'border-rose-600 bg-rose-50/50 dark:bg-rose-950/20'
                                                     : 'border-sidebar-border/70'
@@ -251,13 +285,23 @@ export default function AdminAnnouncementCreate() {
                                                 type="radio"
                                                 name="priority"
                                                 value="emergency"
-                                                checked={data.priority === 'emergency'}
-                                                onChange={() => setData('priority', 'emergency')}
+                                                checked={
+                                                    data.priority ===
+                                                    'emergency'
+                                                }
+                                                onChange={() =>
+                                                    setData(
+                                                        'priority',
+                                                        'emergency',
+                                                    )
+                                                }
                                                 className="accent-rose-600"
                                             />
                                             <div className="flex items-center gap-2">
                                                 <ShieldAlert className="size-4 text-rose-600" />
-                                                <span className="text-sm font-bold text-rose-700 dark:text-rose-400">Darurat</span>
+                                                <span className="text-sm font-bold text-rose-700 dark:text-rose-400">
+                                                    Darurat
+                                                </span>
                                             </div>
                                         </label>
                                     </div>
@@ -265,32 +309,52 @@ export default function AdminAnnouncementCreate() {
 
                                 {/* Status Selector */}
                                 <div className="space-y-1.5">
-                                    <label htmlFor="status" className="text-xs font-bold text-muted-foreground uppercase">
+                                    <label
+                                        htmlFor="status"
+                                        className="text-xs font-bold text-muted-foreground uppercase"
+                                    >
                                         Status Publikasi
                                     </label>
                                     <select
                                         id="status"
                                         value={data.status}
-                                        onChange={(e) => setData('status', e.target.value as 'active' | 'archived')}
+                                        onChange={(e) =>
+                                            setData(
+                                                'status',
+                                                e.target.value as
+                                                    'active' | 'archived',
+                                            )
+                                        }
                                         className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
                                     >
-                                        <option value="active">Aktif (Tampil di Landing Page)</option>
-                                        <option value="archived">Arsip (Dipindahkan ke Arsip)</option>
+                                        <option value="active">
+                                            Aktif (Tampil di Landing Page)
+                                        </option>
+                                        <option value="archived">
+                                            Arsip (Dipindahkan ke Arsip)
+                                        </option>
                                     </select>
                                 </div>
 
                                 {/* Pinned Checkbox */}
-                                <div className="pt-2 border-t border-sidebar-border/70">
-                                    <label className="flex items-center gap-2.5 cursor-pointer">
+                                <div className="border-t border-sidebar-border/70 pt-2">
+                                    <label className="flex cursor-pointer items-center gap-2.5">
                                         <input
                                             type="checkbox"
                                             checked={data.is_pinned}
-                                            onChange={(e) => setData('is_pinned', e.target.checked)}
+                                            onChange={(e) =>
+                                                setData(
+                                                    'is_pinned',
+                                                    e.target.checked,
+                                                )
+                                            }
                                             className="size-4 rounded border-sidebar-border text-emerald-600 focus:ring-emerald-600"
                                         />
                                         <div className="flex items-center gap-1.5">
                                             <Pin className="size-4 text-emerald-700" />
-                                            <span className="text-sm font-bold">Sematkan di Atas (Pinned)</span>
+                                            <span className="text-sm font-bold">
+                                                Sematkan di Atas (Pinned)
+                                            </span>
                                         </div>
                                     </label>
                                 </div>
@@ -303,14 +367,20 @@ export default function AdminAnnouncementCreate() {
                                 </h2>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="starts_at" className="text-xs font-bold text-muted-foreground uppercase">
-                                        Tanggal & Waktu Mulai <span className="text-red-500">*</span>
+                                    <label
+                                        htmlFor="starts_at"
+                                        className="text-xs font-bold text-muted-foreground uppercase"
+                                    >
+                                        Tanggal & Waktu Mulai{' '}
+                                        <span className="text-red-500">*</span>
                                     </label>
                                     <input
                                         id="starts_at"
                                         type="datetime-local"
                                         value={data.starts_at}
-                                        onChange={(e) => setData('starts_at', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('starts_at', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
                                         required
                                     />
@@ -318,14 +388,19 @@ export default function AdminAnnouncementCreate() {
                                 </div>
 
                                 <div className="space-y-1.5">
-                                    <label htmlFor="ends_at" className="text-xs font-bold text-muted-foreground uppercase">
+                                    <label
+                                        htmlFor="ends_at"
+                                        className="text-xs font-bold text-muted-foreground uppercase"
+                                    >
                                         Tanggal & Waktu Selesai (Opsional)
                                     </label>
                                     <input
                                         id="ends_at"
                                         type="datetime-local"
                                         value={data.ends_at}
-                                        onChange={(e) => setData('ends_at', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('ends_at', e.target.value)
+                                        }
                                         className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
                                     />
                                     <InputError message={errors.ends_at} />

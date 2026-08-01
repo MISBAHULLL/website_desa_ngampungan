@@ -37,25 +37,35 @@ function OrganizationNode({
             <span
                 className={
                     emphasis
-                        ? 'mx-auto flex size-14 items-center justify-center rounded-2xl bg-white/10 text-emerald-300 ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105 overflow-hidden'
-                        : 'mx-auto flex size-10 items-center justify-center rounded-xl bg-emerald-50 text-sm font-extrabold text-emerald-800 ring-1 ring-emerald-200/60 transition-transform duration-300 group-hover:scale-105 overflow-hidden'
+                        ? 'mx-auto flex size-14 items-center justify-center overflow-hidden rounded-2xl bg-white/10 text-emerald-300 ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105'
+                        : 'mx-auto flex size-10 items-center justify-center overflow-hidden rounded-xl bg-emerald-50 text-sm font-extrabold text-emerald-800 ring-1 ring-emerald-200/60 transition-transform duration-300 group-hover:scale-105'
                 }
             >
                 {official.photo_url ? (
-                    <img src={official.photo_url} alt={official.name} className="size-full object-cover" />
+                    <img
+                        src={official.photo_url}
+                        alt={official.name}
+                        className="size-full object-cover"
+                    />
                 ) : emphasis ? (
                     <Building2 aria-hidden="true" className="size-7" />
                 ) : (
                     official.initials
                 )}
             </span>
-            <span className={emphasis ? 'mt-3.5 block text-lg font-extrabold tracking-tight text-white' : 'mt-2.5 block text-sm font-bold text-gray-900 group-hover:text-emerald-700'}>
+            <span
+                className={
+                    emphasis
+                        ? 'mt-3.5 block text-lg font-extrabold tracking-tight text-white'
+                        : 'mt-2.5 block text-sm font-bold text-gray-900 group-hover:text-emerald-700'
+                }
+            >
                 {official.name}
             </span>
             <span
                 className={
                     emphasis
-                        ? 'mt-1 block text-xs font-semibold text-emerald-200/90 uppercase tracking-wider'
+                        ? 'mt-1 block text-xs font-semibold tracking-wider text-emerald-200/90 uppercase'
                         : 'mt-0.5 block text-xs font-medium text-gray-500'
                 }
             >
@@ -81,8 +91,8 @@ function OrganizationNode({
                 onClick={() => onOpenDetail(official)}
                 className={
                     emphasis
-                        ? 'group relative z-10 block w-full max-w-md rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center text-white shadow-xl shadow-emerald-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 cursor-pointer'
-                        : 'group relative z-10 block w-full rounded-xl border border-gray-200/90 bg-white p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 cursor-pointer'
+                        ? 'group relative z-10 block w-full max-w-md cursor-pointer rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center text-white shadow-xl shadow-emerald-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/20 focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none'
+                        : 'group relative z-10 block w-full cursor-pointer rounded-xl border border-gray-200/90 bg-white p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none'
                 }
             >
                 {nodeContent}
@@ -95,8 +105,8 @@ function OrganizationNode({
             href={officialShow(official.slug)}
             className={
                 emphasis
-                    ? 'group relative z-10 block w-full max-w-md rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center text-white shadow-xl shadow-emerald-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400'
-                    : 'group relative z-10 block w-full rounded-xl border border-gray-200/90 bg-white p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500'
+                    ? 'group relative z-10 block w-full max-w-md rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-800 to-emerald-950 p-6 text-center text-white shadow-xl shadow-emerald-950/15 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-emerald-900/20 focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none'
+                    : 'group relative z-10 block w-full rounded-xl border border-gray-200/90 bg-white p-4 text-center shadow-xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none'
             }
         >
             {nodeContent}
@@ -119,7 +129,9 @@ function OrganizationGroup({
         <div className="rounded-2xl border border-gray-200/80 bg-gray-50/50 p-5 shadow-2xs">
             <div className="mb-4 flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                    <span className={`flex size-7 items-center justify-center rounded-lg border text-xs ${badgeColor}`}>
+                    <span
+                        className={`flex size-7 items-center justify-center rounded-lg border text-xs ${badgeColor}`}
+                    >
                         <Network aria-hidden="true" className="size-3.5" />
                     </span>
                     <h3 className="text-xs font-extrabold tracking-wider text-gray-800 uppercase">
@@ -132,7 +144,11 @@ function OrganizationGroup({
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
                 {officials.map((official) => (
-                    <OrganizationNode key={official.slug} official={official} onOpenDetail={onOpenDetail} />
+                    <OrganizationNode
+                        key={official.slug}
+                        official={official}
+                        onOpenDetail={onOpenDetail}
+                    />
                 ))}
             </div>
         </div>
@@ -174,23 +190,36 @@ export function VillageOrganizationChart({
             className="relative overflow-hidden rounded-3xl border border-gray-200/90 bg-white p-6 shadow-xl shadow-gray-200/40 sm:p-10"
         >
             {/* Background Decorative Grid */}
-            <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40" />
+            <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] opacity-40"
+            />
 
             <div className="relative flex flex-col items-center">
                 {/* Level 1: Kepala Desa */}
                 {villageHead && (
-                    <OrganizationNode official={villageHead} emphasis onOpenDetail={onOpenDetail} />
+                    <OrganizationNode
+                        official={villageHead}
+                        emphasis
+                        onOpenDetail={onOpenDetail}
+                    />
                 )}
 
                 {/* Connecting Vertical Line */}
                 {villageHead && villageSecretary && (
-                    <div aria-hidden="true" className="h-8 w-0.5 bg-gradient-to-b from-emerald-800 to-emerald-400" />
+                    <div
+                        aria-hidden="true"
+                        className="h-8 w-0.5 bg-gradient-to-b from-emerald-800 to-emerald-400"
+                    />
                 )}
 
                 {/* Level 2: Sekretaris Desa */}
                 {villageSecretary && (
                     <div className="w-full max-w-sm">
-                        <OrganizationNode official={villageSecretary} onOpenDetail={onOpenDetail} />
+                        <OrganizationNode
+                            official={villageSecretary}
+                            onOpenDetail={onOpenDetail}
+                        />
                     </div>
                 )}
 
@@ -236,7 +265,10 @@ export function VillageOrganizationChart({
                     <div className="mb-4 flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <span className="flex size-7 items-center justify-center rounded-lg border border-emerald-200 bg-white text-emerald-800 shadow-2xs">
-                                <UserCheck aria-hidden="true" className="size-3.5 text-emerald-600" />
+                                <UserCheck
+                                    aria-hidden="true"
+                                    className="size-3.5 text-emerald-600"
+                                />
                             </span>
                             <h3 className="text-xs font-extrabold tracking-wider text-emerald-900 uppercase">
                                 Pelaksana Kewilayahan (Kepala Dusun)
@@ -258,8 +290,9 @@ export function VillageOrganizationChart({
                 </div>
             </div>
 
-            <p className="mt-8 text-center text-xs font-medium leading-relaxed text-gray-500">
-                💡 Klik nama atau jabatan untuk melihat rincian tugas dan profil lengkap perangkat desa.
+            <p className="mt-8 text-center text-xs leading-relaxed font-medium text-gray-500">
+                💡 Klik nama atau jabatan untuk melihat rincian tugas dan profil
+                lengkap perangkat desa.
             </p>
         </div>
     );

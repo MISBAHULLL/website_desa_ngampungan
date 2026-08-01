@@ -36,7 +36,12 @@ export type ApbdesIncomeSource = {
 export type ApbdesActivityItem = {
     code: string;
     name: string;
-    category: 'pemerintahan' | 'pembangunan' | 'pembinaan' | 'pemberdayaan' | 'darurat';
+    category:
+        | 'pemerintahan'
+        | 'pembangunan'
+        | 'pembinaan'
+        | 'pemberdayaan'
+        | 'darurat';
     categoryLabel: string;
     budget: string;
     realized: string;
@@ -131,7 +136,8 @@ export const dummyApbdesSummaries: readonly ApbdesSummaryRecord[] = [
                 label: 'Dana Desa (DD - APBN)',
                 amount: 'Rp1.120.000.000',
                 percentage: 52.3,
-                description: 'Transfer pemerintah pusat untuk pembangunan & BLT',
+                description:
+                    'Transfer pemerintah pusat untuk pembangunan & BLT',
             },
             {
                 code: '4.2',
@@ -384,7 +390,9 @@ export const dummyApbdesSummaries: readonly ApbdesSummaryRecord[] = [
  * Dynamically computes total budget, realized amounts, absorption percentages,
  * 5-bidang allocation breakdowns, and SILPA from underlying activity records.
  */
-export function computeDynamicSummary(summary: ApbdesSummaryRecord): ApbdesSummaryRecord {
+export function computeDynamicSummary(
+    summary: ApbdesSummaryRecord,
+): ApbdesSummaryRecord {
     // 1. Calculate total income from income sources
     const totalIncomeNum = summary.incomeSources.reduce((acc, src) => {
         const val = parseFloat(src.amount.replace(/[^0-9]/g, '')) || 0;
@@ -396,12 +404,35 @@ export function computeDynamicSummary(summary: ApbdesSummaryRecord): ApbdesSumma
     let totalBudgetNum = 0;
     let totalRealizedNum = 0;
 
-    const categoryTotals: Record<string, { label: string; budget: number; realized: number }> = {
-        pemerintahan: { label: 'Penyelenggaraan Pemerintahan Desa', budget: 0, realized: 0 },
-        pembangunan: { label: 'Pelaksanaan Pembangunan Desa', budget: 0, realized: 0 },
-        pembinaan: { label: 'Pembinaan Kemasyarakatan', budget: 0, realized: 0 },
-        pemberdayaan: { label: 'Pemberdayaan Masyarakat', budget: 0, realized: 0 },
-        darurat: { label: 'Penanggulangan Bencana dan Keadaan Mendesak', budget: 0, realized: 0 },
+    const categoryTotals: Record<
+        string,
+        { label: string; budget: number; realized: number }
+    > = {
+        pemerintahan: {
+            label: 'Penyelenggaraan Pemerintahan Desa',
+            budget: 0,
+            realized: 0,
+        },
+        pembangunan: {
+            label: 'Pelaksanaan Pembangunan Desa',
+            budget: 0,
+            realized: 0,
+        },
+        pembinaan: {
+            label: 'Pembinaan Kemasyarakatan',
+            budget: 0,
+            realized: 0,
+        },
+        pemberdayaan: {
+            label: 'Pemberdayaan Masyarakat',
+            budget: 0,
+            realized: 0,
+        },
+        darurat: {
+            label: 'Penanggulangan Bencana dan Keadaan Mendesak',
+            budget: 0,
+            realized: 0,
+        },
     };
 
     summary.activities.forEach((act) => {
@@ -416,12 +447,18 @@ export function computeDynamicSummary(summary: ApbdesSummaryRecord): ApbdesSumma
         }
     });
 
-    const realizationPercentage = totalBudgetNum > 0
-        ? Math.round((totalRealizedNum / totalBudgetNum) * 100)
-        : 0;
+    const realizationPercentage =
+        totalBudgetNum > 0
+            ? Math.round((totalRealizedNum / totalBudgetNum) * 100)
+            : 0;
 
-    const dynamicAllocations: ApbdesAllocation[] = Object.values(categoryTotals).map((cat) => {
-        const pct = totalBudgetNum > 0 ? parseFloat(((cat.budget / totalBudgetNum) * 100).toFixed(1)) : 0;
+    const dynamicAllocations: ApbdesAllocation[] = Object.values(
+        categoryTotals,
+    ).map((cat) => {
+        const pct =
+            totalBudgetNum > 0
+                ? parseFloat(((cat.budget / totalBudgetNum) * 100).toFixed(1))
+                : 0;
         const valJuta = (cat.budget / 1_000_000).toLocaleString('id-ID');
 
         return {

@@ -52,9 +52,9 @@ export default function AdminAnnouncementEdit({
             ? announcement.content
             : [''],
     );
-    const [priority, setPriority] = useState<'normal' | 'important' | 'emergency'>(
-        announcement.priority,
-    );
+    const [priority, setPriority] = useState<
+        'normal' | 'important' | 'emergency'
+    >(announcement.priority);
     const [status, setStatus] = useState<'active' | 'archived'>(
         announcement.status,
     );
@@ -100,7 +100,8 @@ export default function AdminAnnouncementEdit({
                             Edit Pengumuman
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Perbarui rincian, status, atau prioritas pengumuman desa.
+                            Perbarui rincian, status, atau prioritas pengumuman
+                            desa.
                         </p>
                     </div>
                 </header>
@@ -109,7 +110,9 @@ export default function AdminAnnouncementEdit({
                     {...announcementUpdate.form(announcement.id, {
                         title,
                         summary,
-                        content: contentParagraphs.filter((p) => p.trim() !== ''),
+                        content: contentParagraphs.filter(
+                            (p) => p.trim() !== '',
+                        ),
                         priority,
                         status,
                         is_pinned: isPinned,
@@ -128,7 +131,10 @@ export default function AdminAnnouncementEdit({
                                             htmlFor="title"
                                             className="text-sm font-bold text-foreground"
                                         >
-                                            Judul Pengumuman <span className="text-red-500">*</span>
+                                            Judul Pengumuman{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
                                         </label>
                                         <span
                                             className={
@@ -144,7 +150,9 @@ export default function AdminAnnouncementEdit({
                                         id="title"
                                         type="text"
                                         value={title}
-                                        onChange={(e) => setTitle(e.target.value)}
+                                        onChange={(e) =>
+                                            setTitle(e.target.value)
+                                        }
                                         placeholder="Judul pengumuman..."
                                         className="min-h-11 w-full rounded-lg border border-sidebar-border/70 bg-background px-4 py-2 text-sm font-medium transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         required
@@ -159,7 +167,10 @@ export default function AdminAnnouncementEdit({
                                             htmlFor="summary"
                                             className="text-sm font-bold text-foreground"
                                         >
-                                            Ringkasan Pengumuman <span className="text-red-500">*</span>
+                                            Ringkasan Pengumuman{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
                                         </label>
                                         <span
                                             className={
@@ -175,7 +186,9 @@ export default function AdminAnnouncementEdit({
                                         id="summary"
                                         rows={3}
                                         value={summary}
-                                        onChange={(e) => setSummary(e.target.value)}
+                                        onChange={(e) =>
+                                            setSummary(e.target.value)
+                                        }
                                         placeholder="Ringkasan pengumuman..."
                                         className="w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         required
@@ -188,10 +201,12 @@ export default function AdminAnnouncementEdit({
                                     <div className="flex items-center justify-between">
                                         <div>
                                             <h2 className="text-sm font-bold text-foreground">
-                                                Detail Paragraf Tambahan (Opsional)
+                                                Detail Paragraf Tambahan
+                                                (Opsional)
                                             </h2>
                                             <p className="text-xs text-muted-foreground">
-                                                Tambahkan paragraf penjelasan lengkap untuk detail pengumuman.
+                                                Tambahkan paragraf penjelasan
+                                                lengkap untuk detail pengumuman.
                                             </p>
                                         </div>
 
@@ -206,15 +221,23 @@ export default function AdminAnnouncementEdit({
                                     </div>
 
                                     {contentParagraphs.map((para, index) => (
-                                        <div key={index} className="space-y-1.5">
+                                        <div
+                                            key={index}
+                                            className="space-y-1.5"
+                                        >
                                             <div className="flex items-center justify-between text-xs text-muted-foreground">
                                                 <span className="font-semibold">
                                                     Paragraf {index + 1}
                                                 </span>
-                                                {contentParagraphs.length > 1 && (
+                                                {contentParagraphs.length >
+                                                    1 && (
                                                     <button
                                                         type="button"
-                                                        onClick={() => removeParagraph(index)}
+                                                        onClick={() =>
+                                                            removeParagraph(
+                                                                index,
+                                                            )
+                                                        }
                                                         className="text-red-600 hover:underline"
                                                     >
                                                         Hapus
@@ -224,7 +247,12 @@ export default function AdminAnnouncementEdit({
                                             <textarea
                                                 rows={3}
                                                 value={para}
-                                                onChange={(e) => updateParagraph(index, e.target.value)}
+                                                onChange={(e) =>
+                                                    updateParagraph(
+                                                        index,
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 placeholder={`Penjelasan paragraf ${index + 1}...`}
                                                 className="w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                             />
@@ -247,7 +275,7 @@ export default function AdminAnnouncementEdit({
                                         </label>
                                         <div className="grid gap-2">
                                             <label
-                                                className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition ${
+                                                className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
                                                     priority === 'normal'
                                                         ? 'border-emerald-600 bg-emerald-50/50 dark:bg-emerald-950/20'
                                                         : 'border-sidebar-border/70'
@@ -257,18 +285,24 @@ export default function AdminAnnouncementEdit({
                                                     type="radio"
                                                     name="priority"
                                                     value="normal"
-                                                    checked={priority === 'normal'}
-                                                    onChange={() => setPriority('normal')}
+                                                    checked={
+                                                        priority === 'normal'
+                                                    }
+                                                    onChange={() =>
+                                                        setPriority('normal')
+                                                    }
                                                     className="accent-emerald-600"
                                                 />
                                                 <div className="flex items-center gap-2">
                                                     <Bell className="size-4 text-emerald-600" />
-                                                    <span className="text-sm font-bold">Normal</span>
+                                                    <span className="text-sm font-bold">
+                                                        Normal
+                                                    </span>
                                                 </div>
                                             </label>
 
                                             <label
-                                                className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition ${
+                                                className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
                                                     priority === 'important'
                                                         ? 'border-amber-500 bg-amber-50/50 dark:bg-amber-950/20'
                                                         : 'border-sidebar-border/70'
@@ -278,18 +312,24 @@ export default function AdminAnnouncementEdit({
                                                     type="radio"
                                                     name="priority"
                                                     value="important"
-                                                    checked={priority === 'important'}
-                                                    onChange={() => setPriority('important')}
+                                                    checked={
+                                                        priority === 'important'
+                                                    }
+                                                    onChange={() =>
+                                                        setPriority('important')
+                                                    }
                                                     className="accent-amber-600"
                                                 />
                                                 <div className="flex items-center gap-2">
                                                     <AlertTriangle className="size-4 text-amber-600" />
-                                                    <span className="text-sm font-bold">Penting</span>
+                                                    <span className="text-sm font-bold">
+                                                        Penting
+                                                    </span>
                                                 </div>
                                             </label>
 
                                             <label
-                                                className={`flex items-center gap-3 rounded-lg border p-3 cursor-pointer transition ${
+                                                className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition ${
                                                     priority === 'emergency'
                                                         ? 'border-rose-600 bg-rose-50/50 dark:bg-rose-950/20'
                                                         : 'border-sidebar-border/70'
@@ -299,13 +339,19 @@ export default function AdminAnnouncementEdit({
                                                     type="radio"
                                                     name="priority"
                                                     value="emergency"
-                                                    checked={priority === 'emergency'}
-                                                    onChange={() => setPriority('emergency')}
+                                                    checked={
+                                                        priority === 'emergency'
+                                                    }
+                                                    onChange={() =>
+                                                        setPriority('emergency')
+                                                    }
                                                     className="accent-rose-600"
                                                 />
                                                 <div className="flex items-center gap-2">
                                                     <ShieldAlert className="size-4 text-rose-600" />
-                                                    <span className="text-sm font-bold text-rose-700 dark:text-rose-400">Darurat</span>
+                                                    <span className="text-sm font-bold text-rose-700 dark:text-rose-400">
+                                                        Darurat
+                                                    </span>
                                                 </div>
                                             </label>
                                         </div>
@@ -313,32 +359,50 @@ export default function AdminAnnouncementEdit({
 
                                     {/* Status Selector */}
                                     <div className="space-y-1.5">
-                                        <label htmlFor="status" className="text-xs font-bold text-muted-foreground uppercase">
+                                        <label
+                                            htmlFor="status"
+                                            className="text-xs font-bold text-muted-foreground uppercase"
+                                        >
                                             Status Publikasi
                                         </label>
                                         <select
                                             id="status"
                                             value={status}
-                                            onChange={(e) => setStatus(e.target.value as 'active' | 'archived')}
+                                            onChange={(e) =>
+                                                setStatus(
+                                                    e.target.value as
+                                                        'active' | 'archived',
+                                                )
+                                            }
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
                                         >
-                                            <option value="active">Aktif (Tampil di Landing Page)</option>
-                                            <option value="archived">Arsip (Dipindahkan ke Arsip)</option>
+                                            <option value="active">
+                                                Aktif (Tampil di Landing Page)
+                                            </option>
+                                            <option value="archived">
+                                                Arsip (Dipindahkan ke Arsip)
+                                            </option>
                                         </select>
                                     </div>
 
                                     {/* Pinned Checkbox */}
-                                    <div className="pt-2 border-t border-sidebar-border/70">
-                                        <label className="flex items-center gap-2.5 cursor-pointer">
+                                    <div className="border-t border-sidebar-border/70 pt-2">
+                                        <label className="flex cursor-pointer items-center gap-2.5">
                                             <input
                                                 type="checkbox"
                                                 checked={isPinned}
-                                                onChange={(e) => setIsPinned(e.target.checked)}
+                                                onChange={(e) =>
+                                                    setIsPinned(
+                                                        e.target.checked,
+                                                    )
+                                                }
                                                 className="size-4 rounded border-sidebar-border text-emerald-600 focus:ring-emerald-600"
                                             />
                                             <div className="flex items-center gap-1.5">
                                                 <Pin className="size-4 text-emerald-700" />
-                                                <span className="text-sm font-bold">Sematkan di Atas (Pinned)</span>
+                                                <span className="text-sm font-bold">
+                                                    Sematkan di Atas (Pinned)
+                                                </span>
                                             </div>
                                         </label>
                                     </div>
@@ -351,29 +415,44 @@ export default function AdminAnnouncementEdit({
                                     </h2>
 
                                     <div className="space-y-1.5">
-                                        <label htmlFor="starts_at" className="text-xs font-bold text-muted-foreground uppercase">
-                                            Tanggal & Waktu Mulai <span className="text-red-500">*</span>
+                                        <label
+                                            htmlFor="starts_at"
+                                            className="text-xs font-bold text-muted-foreground uppercase"
+                                        >
+                                            Tanggal & Waktu Mulai{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
                                         </label>
                                         <input
                                             id="starts_at"
                                             type="datetime-local"
                                             value={startsAt}
-                                            onChange={(e) => setStartsAt(e.target.value)}
+                                            onChange={(e) =>
+                                                setStartsAt(e.target.value)
+                                            }
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
                                             required
                                         />
-                                        <InputError message={errors.starts_at} />
+                                        <InputError
+                                            message={errors.starts_at}
+                                        />
                                     </div>
 
                                     <div className="space-y-1.5">
-                                        <label htmlFor="ends_at" className="text-xs font-bold text-muted-foreground uppercase">
+                                        <label
+                                            htmlFor="ends_at"
+                                            className="text-xs font-bold text-muted-foreground uppercase"
+                                        >
                                             Tanggal & Waktu Selesai (Opsional)
                                         </label>
                                         <input
                                             id="ends_at"
                                             type="datetime-local"
                                             value={endsAt}
-                                            onChange={(e) => setEndsAt(e.target.value)}
+                                            onChange={(e) =>
+                                                setEndsAt(e.target.value)
+                                            }
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
                                         />
                                         <InputError message={errors.ends_at} />

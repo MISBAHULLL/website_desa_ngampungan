@@ -180,7 +180,11 @@ function CoverflowPotentialCard({
                         onActivate();
                     }
                 }}
-                aria-label={isActive ? `Lihat detail ${entry.name}` : `Tampilkan ${entry.name}`}
+                aria-label={
+                    isActive
+                        ? `Lihat detail ${entry.name}`
+                        : `Tampilkan ${entry.name}`
+                }
                 className="block size-full cursor-pointer text-left focus-visible:ring-2 focus-visible:ring-[#f4c75c] focus-visible:outline-none focus-visible:ring-inset"
             >
                 {cardContent}
@@ -324,7 +328,7 @@ export function VillagePotentialCarousel({
                             className={
                                 activeIndex === index
                                     ? 'size-3 rounded-full bg-village-primary ring-4 ring-village-primary/20 transition-all duration-300 motion-reduce:transition-none'
-                                    : 'size-2.5 rounded-full bg-gray-200 hover:bg-village-primary/60 transition-all duration-300 motion-reduce:transition-none'
+                                    : 'size-2.5 rounded-full bg-gray-200 transition-all duration-300 hover:bg-village-primary/60 motion-reduce:transition-none'
                             }
                         />
                     ))}

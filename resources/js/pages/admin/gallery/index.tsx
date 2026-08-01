@@ -120,7 +120,9 @@ export default function AdminGalleryIndex({
                             Kelola Galeri Desa
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Unggah foto dokumentasi kegiatan, hasil pembangunan, UMKM, dan bentang alam desa yang tampil pada halaman galeri publik.
+                            Unggah foto dokumentasi kegiatan, hasil pembangunan,
+                            UMKM, dan bentang alam desa yang tampil pada halaman
+                            galeri publik.
                         </p>
                     </div>
 
@@ -186,7 +188,7 @@ export default function AdminGalleryIndex({
                     <div className="overflow-hidden rounded-xl border border-sidebar-border/70 bg-background shadow-xs">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-sm">
-                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                                <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                     <tr>
                                         <th scope="col" className="px-5 py-3.5">
                                             Foto & Judul
@@ -219,8 +221,13 @@ export default function AdminGalleryIndex({
                                                     <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-sidebar-border/60 bg-muted">
                                                         {item.image_path ? (
                                                             <img
-                                                                src={item.image_path}
-                                                                alt={item.image_alt || item.title}
+                                                                src={
+                                                                    item.image_path
+                                                                }
+                                                                alt={
+                                                                    item.image_alt ||
+                                                                    item.title
+                                                                }
                                                                 className="size-full object-cover"
                                                             />
                                                         ) : (
@@ -229,11 +236,11 @@ export default function AdminGalleryIndex({
                                                             </div>
                                                         )}
                                                     </div>
-                                                    <div className="min-w-0 max-w-md">
+                                                    <div className="max-w-md min-w-0">
                                                         <h2 className="line-clamp-1 font-bold text-foreground">
                                                             {item.title}
                                                         </h2>
-                                                        <p className="line-clamp-1 mt-1 text-xs text-muted-foreground">
+                                                        <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
                                                             {item.caption}
                                                         </p>
                                                     </div>
@@ -242,7 +249,7 @@ export default function AdminGalleryIndex({
 
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <div className="space-y-1">
-                                                    <span className="inline-block rounded-md bg-emerald-100 dark:bg-emerald-950 px-2.5 py-0.5 text-xs font-bold text-emerald-900 dark:text-emerald-300">
+                                                    <span className="inline-block rounded-md bg-emerald-100 px-2.5 py-0.5 text-xs font-bold text-emerald-900 dark:bg-emerald-950 dark:text-emerald-300">
                                                         {item.category}
                                                     </span>
                                                     <span className="block text-xs font-medium text-muted-foreground">
@@ -253,12 +260,16 @@ export default function AdminGalleryIndex({
 
                                             <td className="px-4 py-4 whitespace-nowrap">
                                                 <Form
-                                                    {...toggleFeatured.form(item.id)}
+                                                    {...toggleFeatured.form(
+                                                        item.id,
+                                                    )}
                                                 >
                                                     {({ processing }) => (
                                                         <button
                                                             type="submit"
-                                                            disabled={processing}
+                                                            disabled={
+                                                                processing
+                                                            }
                                                             className={
                                                                 item.is_featured
                                                                     ? 'inline-flex items-center gap-1.5 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800 transition hover:bg-amber-100 dark:border-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
@@ -282,14 +293,18 @@ export default function AdminGalleryIndex({
                                                 </Form>
                                             </td>
 
-                                            <td className="px-4 py-4 text-xs font-medium text-muted-foreground whitespace-nowrap">
-                                                {item.captured_at ? item.captured_at : '-'}
+                                            <td className="px-4 py-4 text-xs font-medium whitespace-nowrap text-muted-foreground">
+                                                {item.captured_at
+                                                    ? item.captured_at
+                                                    : '-'}
                                             </td>
 
                                             <td className="px-5 py-4 text-right whitespace-nowrap">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <Link
-                                                        href={galleryEdit(item.id)}
+                                                        href={galleryEdit(
+                                                            item.id,
+                                                        )}
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-sidebar-border/70 bg-background text-foreground transition hover:border-emerald-500 hover:text-emerald-600"
                                                         title="Sunting Foto"
                                                     >
@@ -305,12 +320,14 @@ export default function AdminGalleryIndex({
                                                             )
                                                         }
                                                         disabled={
-                                                            deletingId === item.id
+                                                            deletingId ===
+                                                            item.id
                                                         }
                                                         className="inline-flex size-9 items-center justify-center rounded-lg border border-red-200 bg-red-50 text-red-700 transition hover:bg-red-100 disabled:opacity-50 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300"
                                                         title="Hapus Foto"
                                                     >
-                                                        {deletingId === item.id ? (
+                                                        {deletingId ===
+                                                        item.id ? (
                                                             <Spinner />
                                                         ) : (
                                                             <Trash2 className="size-4" />
@@ -333,7 +350,8 @@ export default function AdminGalleryIndex({
                             Foto galeri tidak ditemukan
                         </h2>
                         <p className="mt-2 max-w-md text-sm leading-6 text-muted-foreground">
-                            Belum ada foto galeri yang diunggah atau cocok dengan filter pencarian.
+                            Belum ada foto galeri yang diunggah atau cocok
+                            dengan filter pencarian.
                         </p>
                     </div>
                 )}

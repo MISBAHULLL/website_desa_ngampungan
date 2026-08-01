@@ -143,19 +143,21 @@ export default function ServiceApplicationTracking({
                                 Lacak Pengajuan Layanan Desa
                             </h1>
                             <p className="mt-4 text-sm leading-relaxed text-emerald-100/90 sm:text-base lg:text-lg">
-                                Masukkan nomor resi referensi yang Anda dapatkan setelah formulir dikirim untuk memeriksa perkembangan dan petunjuk petugas.
+                                Masukkan nomor resi referensi yang Anda dapatkan
+                                setelah formulir dikirim untuk memeriksa
+                                perkembangan dan petunjuk petugas.
                             </p>
                         </div>
 
                         {/* Privacy Info Card (Rounded-3xl Glass Card) */}
                         <div className="lg:col-span-4">
-                            <div className="rounded-3xl border border-white/20 bg-white/10 p-6 backdrop-blur-md shadow-xl">
+                            <div className="rounded-3xl border border-white/20 bg-white/10 p-6 shadow-xl backdrop-blur-md">
                                 <div className="flex items-center gap-3">
                                     <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-village-accent text-village-primary-dark shadow-sm">
                                         <ShieldCheck className="size-6" />
                                     </div>
                                     <div>
-                                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-emerald-300">
+                                        <h3 className="text-xs font-extrabold tracking-wider text-emerald-300 uppercase">
                                             Privasi Terjamin
                                         </h3>
                                         <p className="mt-0.5 text-xs text-white/80">
@@ -164,7 +166,8 @@ export default function ServiceApplicationTracking({
                                     </div>
                                 </div>
                                 <p className="mt-3.5 text-xs leading-relaxed text-emerald-100/80">
-                                    Halaman ini tidak menampilkan NIK, alamat, nomor telepon, maupun dokumen pribadi warga.
+                                    Halaman ini tidak menampilkan NIK, alamat,
+                                    nomor telepon, maupun dokumen pribadi warga.
                                 </p>
                             </div>
                         </div>
@@ -173,14 +176,14 @@ export default function ServiceApplicationTracking({
             </section>
 
             {/* SEARCH INPUT CARD SECTION */}
-            <section className="bg-slate-50/50 py-8 md:py-12 border-b border-slate-200/80">
+            <section className="border-b border-slate-200/80 bg-slate-50/50 py-8 md:py-12">
                 <div className="mx-auto max-w-[980px] px-5 lg:px-12">
                     <Form
                         {...ServiceApplicationTrackingController.form()}
                         options={{ preserveScroll: true }}
                     >
                         {({ errors, processing }) => (
-                            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 shadow-xs">
+                            <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs md:p-8">
                                 <div className="flex flex-col gap-1">
                                     <label
                                         htmlFor="reference"
@@ -189,7 +192,10 @@ export default function ServiceApplicationTracking({
                                         Nomor Pengajuan / Kode Resi
                                     </label>
                                     <p className="text-xs text-slate-500">
-                                        Contoh format: <span className="font-mono font-bold text-emerald-700">NGP-20260731-VMMRXBRB</span>
+                                        Contoh format:{' '}
+                                        <span className="font-mono font-bold text-emerald-700">
+                                            NGP-20260731-VMMRXBRB
+                                        </span>
                                     </p>
                                 </div>
 
@@ -253,7 +259,7 @@ export default function ServiceApplicationTracking({
                             <section className="overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-xs">
                                 <div className="grid gap-6 border-b border-slate-100 bg-slate-50/50 p-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-start md:p-8">
                                     <div>
-                                        <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-200/80 bg-emerald-100/70 px-3 py-1 text-xs font-mono font-bold tracking-wider text-emerald-950">
+                                        <div className="inline-flex items-center gap-2 rounded-xl border border-emerald-200/80 bg-emerald-100/70 px-3 py-1 font-mono text-xs font-bold tracking-wider text-emerald-950">
                                             {application.referenceNumber}
                                         </div>
                                         <h2 className="mt-3 text-2xl font-black text-slate-900 md:text-3xl">
@@ -277,20 +283,22 @@ export default function ServiceApplicationTracking({
                                 </div>
 
                                 <div className="grid gap-5 p-6 md:grid-cols-[auto_minmax(0,1fr)] md:p-8">
-                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-2xs">
+                                    <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-2xs">
                                         <ClipboardCheck className="size-7" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                                        <p className="text-xs font-extrabold tracking-wider text-emerald-700 uppercase">
                                             Perkembangan Terkini
                                         </p>
-                                        <p className="mt-1.5 text-base md:text-lg leading-snug font-bold text-slate-900">
+                                        <p className="mt-1.5 text-base leading-snug font-bold text-slate-900 md:text-lg">
                                             {application.statusDescription}
                                         </p>
 
                                         {application.publicNotes && (
-                                            <div className="mt-4 rounded-2xl border-l-4 border-amber-400 bg-amber-50/80 p-4 text-xs md:text-sm leading-relaxed text-amber-950">
-                                                <strong className="font-bold text-amber-900">Catatan Petugas:</strong>{' '}
+                                            <div className="mt-4 rounded-2xl border-l-4 border-amber-400 bg-amber-50/80 p-4 text-xs leading-relaxed text-amber-950 md:text-sm">
+                                                <strong className="font-bold text-amber-900">
+                                                    Catatan Petugas:
+                                                </strong>{' '}
                                                 {application.publicNotes}
                                             </div>
                                         )}
@@ -307,13 +315,13 @@ export default function ServiceApplicationTracking({
                             </section>
 
                             {/* Timeline Progression Card */}
-                            <section className="rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 shadow-xs">
+                            <section className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs md:p-8">
                                 <div className="flex items-start gap-4">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-2xs">
+                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-2xs">
                                         <CheckCircle2 className="size-6" />
                                     </div>
                                     <div>
-                                        <p className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                                        <p className="text-xs font-extrabold tracking-wider text-emerald-700 uppercase">
                                             Riwayat Tahapan
                                         </p>
                                         <h2 className="mt-1 text-2xl font-black text-slate-900">
@@ -343,7 +351,7 @@ export default function ServiceApplicationTracking({
                                                 </span>
                                                 <div className="pt-0.5">
                                                     <div className="flex flex-wrap items-center justify-between gap-2">
-                                                        <h3 className="font-bold text-slate-900 text-base">
+                                                        <h3 className="text-base font-bold text-slate-900">
                                                             {entry.statusLabel}
                                                         </h3>
                                                         <time
@@ -359,7 +367,7 @@ export default function ServiceApplicationTracking({
                                                             )}
                                                         </time>
                                                     </div>
-                                                    <p className="mt-1 text-xs md:text-sm leading-relaxed text-slate-600">
+                                                    <p className="mt-1 text-xs leading-relaxed text-slate-600 md:text-sm">
                                                         {entry.description}
                                                     </p>
                                                     {entry.publicNotes && (
@@ -375,21 +383,24 @@ export default function ServiceApplicationTracking({
                             </section>
                         </div>
                     ) : lookupAttempted ? (
-                        <div className="rounded-3xl border border-slate-200/90 bg-white p-8 md:p-12 text-center shadow-xs">
-                            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100">
+                        <div className="rounded-3xl border border-slate-200/90 bg-white p-8 text-center shadow-xs md:p-12">
+                            <div className="mx-auto flex size-14 items-center justify-center rounded-2xl border border-rose-100 bg-rose-50 text-rose-600">
                                 <TriangleAlert className="size-7" />
                             </div>
                             <h2 className="mt-5 text-2xl font-black text-slate-900">
                                 Pengajuan Belum Ditemukan
                             </h2>
-                            <p className="mx-auto mt-2 max-w-xl text-xs md:text-sm leading-relaxed text-slate-500">
-                                Periksa kembali setiap huruf dan angka pada nomor resi pengajuan Anda. Demi keamanan data warga, sistem hanya menampilkan data apabila nomor resi yang dimasukkan cocok.
+                            <p className="mx-auto mt-2 max-w-xl text-xs leading-relaxed text-slate-500 md:text-sm">
+                                Periksa kembali setiap huruf dan angka pada
+                                nomor resi pengajuan Anda. Demi keamanan data
+                                warga, sistem hanya menampilkan data apabila
+                                nomor resi yang dimasukkan cocok.
                             </p>
                         </div>
                     ) : (
-                        <div className="rounded-3xl border border-slate-200/90 bg-white p-6 md:p-8 shadow-xs">
+                        <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs md:p-8">
                             <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 shadow-2xs">
+                                <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-emerald-50 text-emerald-700 shadow-2xs">
                                     <Info className="size-6" />
                                 </div>
                                 <div>
@@ -397,7 +408,12 @@ export default function ServiceApplicationTracking({
                                         Petunjuk Penggunaan Kode Resi
                                     </h2>
                                     <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                                        Kode Resi ditampilkan pada halaman konfirmasi segera setelah formulir pengajuan berhasil dikirim. Jika Anda kehilangan kode resi, silakan hubungi perangkat desa melalui kantor desa atau kontak resmi.
+                                        Kode Resi ditampilkan pada halaman
+                                        konfirmasi segera setelah formulir
+                                        pengajuan berhasil dikirim. Jika Anda
+                                        kehilangan kode resi, silakan hubungi
+                                        perangkat desa melalui kantor desa atau
+                                        kontak resmi.
                                     </p>
                                 </div>
                             </div>
@@ -408,4 +424,3 @@ export default function ServiceApplicationTracking({
         </PublicPageShell>
     );
 }
-

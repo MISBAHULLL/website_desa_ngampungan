@@ -31,15 +31,18 @@ export default function AnnouncementIndex({
 }: AnnouncementIndexProps) {
     const [activeTab, setActiveTab] = useState<AnnouncementTab>('active');
 
-    const activeList = dbAnnouncements && dbAnnouncements.length > 0
-        ? dbAnnouncements.filter((a) => a.status === 'active')
-        : activeDummyAnnouncements;
+    const activeList =
+        dbAnnouncements && dbAnnouncements.length > 0
+            ? dbAnnouncements.filter((a) => a.status === 'active')
+            : activeDummyAnnouncements;
 
-    const archivedList = dbAnnouncements && dbAnnouncements.length > 0
-        ? dbAnnouncements.filter((a) => a.status === 'archived')
-        : archivedDummyAnnouncements;
+    const archivedList =
+        dbAnnouncements && dbAnnouncements.length > 0
+            ? dbAnnouncements.filter((a) => a.status === 'archived')
+            : archivedDummyAnnouncements;
 
-    const visibleAnnouncements = activeTab === 'active' ? activeList : archivedList;
+    const visibleAnnouncements =
+        activeTab === 'active' ? activeList : archivedList;
 
     return (
         <PublicPageShell activeSection="announcements">

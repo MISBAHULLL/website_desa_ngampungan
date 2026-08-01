@@ -1,5 +1,11 @@
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, FileText, Newspaper, Search, SlidersHorizontal } from 'lucide-react';
+import {
+    ArrowRight,
+    FileText,
+    Newspaper,
+    Search,
+    SlidersHorizontal,
+} from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
@@ -10,15 +16,24 @@ import { dummyNewsArticles } from '@/lib/dummy-public-content';
 
 const articlesPerPage = 6;
 
-export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }) {
+export default function NewsIndex({
+    dbArticles,
+}: {
+    dbArticles?: NewsArticle[];
+}) {
     const articles = useMemo(() => {
-        return dbArticles && dbArticles.length > 0 ? dbArticles : dummyNewsArticles;
+        return dbArticles && dbArticles.length > 0
+            ? dbArticles
+            : dummyNewsArticles;
     }, [dbArticles]);
 
-    const newsCategories = useMemo(() => [
-        'Semua',
-        ...new Set(articles.map((article) => article.category)),
-    ], [articles]);
+    const newsCategories = useMemo(
+        () => [
+            'Semua',
+            ...new Set(articles.map((article) => article.category)),
+        ],
+        [articles],
+    );
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
@@ -83,7 +98,11 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
             <Head title="Berita Desa" />
 
             <section className="border-b border-village-border bg-white">
-                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-14 md:py-20 lg:px-12">
+                <FadeIn
+                    direction="up"
+                    duration={0.5}
+                    className="mx-auto max-w-[1280px] px-5 py-14 md:py-20 lg:px-12"
+                >
                     <div className="max-w-3xl">
                         <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                             Pusat Informasi Desa
@@ -104,7 +123,11 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                 className="py-12 md:py-16"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <FadeIn direction="up" duration={0.5} className="rounded-3xl border border-village-border bg-white p-5 shadow-village-soft md:p-6">
+                    <FadeIn
+                        direction="up"
+                        duration={0.5}
+                        className="rounded-3xl border border-village-border bg-white p-5 shadow-village-soft md:p-6"
+                    >
                         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
                             <div>
                                 <label
@@ -194,10 +217,10 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                         <StaggerContainer
                             key={currentPage}
                             staggerDelay={0.06}
-                            className={`mt-7 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
+                            className={`mt-7 grid min-h-[440px] gap-6 transition-all duration-300 ease-out md:grid-cols-2 lg:grid-cols-3 ${
                                 isPageTransitioning
-                                    ? 'opacity-0 scale-[0.985]'
-                                    : 'opacity-100 scale-100'
+                                    ? 'scale-[0.985] opacity-0'
+                                    : 'scale-100 opacity-100'
                             }`}
                         >
                             {visibleArticles.map((article) => (
@@ -212,14 +235,18 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                             {visibleArticles.length < articlesPerPage && (
                                 <StaggerItem className="flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs">
                                     <div className="space-y-3">
-                                        <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
+                                        <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light font-bold text-village-primary shadow-2xs">
                                             <FileText className="size-5" />
                                         </span>
                                         <h4 className="text-base font-extrabold text-village-ink">
                                             Informasi Publik Desa
                                         </h4>
                                         <p className="text-xs leading-relaxed text-village-muted">
-                                            Menampilkan sisa {visibleArticles.length} artikel pada halaman ini. Seluruh artikel resmi telah terverifikasi oleh Pemerintah Desa Ngampungan.
+                                            Menampilkan sisa{' '}
+                                            {visibleArticles.length} artikel
+                                            pada halaman ini. Seluruh artikel
+                                            resmi telah terverifikasi oleh
+                                            Pemerintah Desa Ngampungan.
                                         </p>
                                     </div>
                                     <div className="mt-6 flex items-center justify-between border-t border-village-border/60 pt-4">
@@ -260,7 +287,9 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                             <button
                                 type="button"
                                 disabled={currentPage === 1}
-                                onClick={() => handlePageChange(currentPage - 1)}
+                                onClick={() =>
+                                    handlePageChange(currentPage - 1)
+                                }
                                 className="min-h-11 rounded-xl border border-village-border bg-white px-4 py-2 text-sm font-semibold transition hover:border-village-primary hover:text-village-primary disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Sebelumnya
@@ -290,7 +319,9 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                             <button
                                 type="button"
                                 disabled={currentPage === totalPages}
-                                onClick={() => handlePageChange(currentPage + 1)}
+                                onClick={() =>
+                                    handlePageChange(currentPage + 1)
+                                }
                                 className="min-h-11 rounded-xl border border-village-border bg-white px-4 py-2 text-sm font-semibold transition hover:border-village-primary hover:text-village-primary disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Berikutnya

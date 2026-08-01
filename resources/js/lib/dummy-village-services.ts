@@ -353,7 +353,8 @@ export const dummyVillageServiceApplicationDetails: Record<
             {
                 key: 'single-statement-letter',
                 label: 'Surat Pernyataan Belum Menikah',
-                description: 'Surat pernyataan belum pernah menikah bermaterai.',
+                description:
+                    'Surat pernyataan belum pernah menikah bermaterai.',
                 required: true,
                 acceptedFormats: '.pdf,.jpg,.jpeg,.png',
             },
@@ -462,14 +463,16 @@ export const dummyVillageServiceApplicationDetails: Record<
             {
                 key: 'deceased-identity',
                 label: 'KTP Asli Almarhum/ah',
-                description: 'KTP asli almarhum/ah yang akan diserahkan/diverifikasi.',
+                description:
+                    'KTP asli almarhum/ah yang akan diserahkan/diverifikasi.',
                 required: true,
                 acceptedFormats: '.pdf,.jpg,.jpeg,.png',
             },
             {
                 key: 'medical-death-letter',
                 label: 'Surat Keterangan Kematian dari Faskes',
-                description: 'Surat dari rumah sakit, puskesmas, atau dokter bilamana ada.',
+                description:
+                    'Surat dari rumah sakit, puskesmas, atau dokter bilamana ada.',
                 required: false,
                 acceptedFormats: '.pdf,.jpg,.jpeg,.png',
             },

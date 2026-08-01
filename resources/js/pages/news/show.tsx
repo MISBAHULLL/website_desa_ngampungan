@@ -36,8 +36,8 @@ export default function NewsShow({
         dbRelatedArticles && dbRelatedArticles.length > 0
             ? dbRelatedArticles
             : article
-            ? getRelatedDummyNewsArticles(article)
-            : [];
+              ? getRelatedDummyNewsArticles(article)
+              : [];
 
     // State for copy link action feedback
     const [isCopied, setIsCopied] = useState(false);
@@ -46,24 +46,27 @@ export default function NewsShow({
     const handleCopyLink = () => {
         if (typeof window !== 'undefined') {
             const currentUrl = window.location.href;
-            navigator.clipboard.writeText(currentUrl).then(() => {
-                setIsCopied(true);
-                setShowToast(true);
-                setTimeout(() => setIsCopied(false), 3000);
-                setTimeout(() => setShowToast(false), 3500);
-            }).catch(() => {
-                // Fallback for older browsers
-                const textArea = document.createElement('textarea');
-                textArea.value = currentUrl;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                setIsCopied(true);
-                setShowToast(true);
-                setTimeout(() => setIsCopied(false), 3000);
-                setTimeout(() => setShowToast(false), 3500);
-            });
+            navigator.clipboard
+                .writeText(currentUrl)
+                .then(() => {
+                    setIsCopied(true);
+                    setShowToast(true);
+                    setTimeout(() => setIsCopied(false), 3000);
+                    setTimeout(() => setShowToast(false), 3500);
+                })
+                .catch(() => {
+                    // Fallback for older browsers
+                    const textArea = document.createElement('textarea');
+                    textArea.value = currentUrl;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    setIsCopied(true);
+                    setShowToast(true);
+                    setTimeout(() => setIsCopied(false), 3000);
+                    setTimeout(() => setShowToast(false), 3500);
+                });
         }
     };
 
@@ -81,7 +84,8 @@ export default function NewsShow({
                             Berita tidak ditemukan
                         </h1>
                         <p className="mt-3 leading-7 text-village-muted">
-                            Artikel berita yang Anda cari tidak ditemukan atau telah dipindahkan.
+                            Artikel berita yang Anda cari tidak ditemukan atau
+                            telah dipindahkan.
                         </p>
                         <Link
                             href={newsIndex()}
@@ -111,8 +115,8 @@ export default function NewsShow({
 
             {/* Floating Toast Feedback for Link Copied */}
             {showToast && (
-                <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-2xl transition-all duration-300 animate-in fade-in slide-in-from-bottom-4">
-                    <div className="flex size-6 items-center justify-center rounded-full bg-emerald-500 text-slate-950 font-bold">
+                <div className="fixed right-6 bottom-6 z-50 flex animate-in items-center gap-3 rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-2xl transition-all duration-300 fade-in slide-in-from-bottom-4">
+                    <div className="flex size-6 items-center justify-center rounded-full bg-emerald-500 font-bold text-slate-950">
                         <Check className="size-3.5 stroke-[3]" />
                     </div>
                     <span>Tautan berita berhasil disalin ke clipboard!</span>
@@ -135,7 +139,7 @@ export default function NewsShow({
                                 <span>Beranda</span>
                             </Link>
                         </li>
-                        <ChevronRight className="size-3.5 text-slate-400 shrink-0" />
+                        <ChevronRight className="size-3.5 shrink-0 text-slate-400" />
                         <li>
                             <Link
                                 href={newsIndex()}
@@ -144,8 +148,8 @@ export default function NewsShow({
                                 Kabar Desa
                             </Link>
                         </li>
-                        <ChevronRight className="size-3.5 text-slate-400 shrink-0" />
-                        <li className="max-w-[180px] truncate sm:max-w-xs font-semibold text-village-primary-dark">
+                        <ChevronRight className="size-3.5 shrink-0 text-slate-400" />
+                        <li className="max-w-[180px] truncate font-semibold text-village-primary-dark sm:max-w-xs">
                             {article.category}
                         </li>
                     </ol>
@@ -155,7 +159,10 @@ export default function NewsShow({
                         className="inline-flex items-center gap-2 rounded-lg border border-village-border/90 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm transition hover:border-village-primary hover:text-village-primary"
                     >
                         <ArrowLeft className="size-3.5" />
-                        <span className="hidden sm:inline">Kembali ke</span> Semua Berita
+                        <span className="hidden sm:inline">
+                            Kembali ke
+                        </span>{' '}
+                        Semua Berita
                     </Link>
                 </div>
             </nav>
@@ -166,12 +173,12 @@ export default function NewsShow({
                     <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
                         {/* Category & Badge */}
                         <div className="flex flex-wrap items-center gap-3">
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-village-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-village-primary-dark border border-village-primary/20">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-village-primary/20 bg-village-primary/10 px-3.5 py-1 text-xs font-bold tracking-wider text-village-primary-dark uppercase">
                                 <Tag className="size-3" />
                                 {article.category}
                             </span>
                             {article.featured && (
-                                <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800 border border-amber-200">
+                                <span className="inline-flex items-center rounded-full border border-amber-200 bg-amber-100 px-3 py-1 text-xs font-bold text-amber-800">
                                     Berita Utama
                                 </span>
                             )}
@@ -183,7 +190,7 @@ export default function NewsShow({
                         </h1>
 
                         {/* Excerpt Lead Text */}
-                        <p className="mt-5 text-lg leading-relaxed text-slate-600 md:text-xl font-normal border-l-4 border-village-primary/60 pl-4 py-0.5">
+                        <p className="mt-5 border-l-4 border-village-primary/60 py-0.5 pl-4 text-lg leading-relaxed font-normal text-slate-600 md:text-xl">
                             {article.excerpt}
                         </p>
 
@@ -192,16 +199,22 @@ export default function NewsShow({
                             <div className="flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-slate-600 sm:text-sm">
                                 {/* Dynamic Author Field */}
                                 <span className="flex items-center gap-2">
-                                    <div className="flex size-7 items-center justify-center rounded-full bg-village-primary-light text-village-primary-dark font-bold">
+                                    <div className="flex size-7 items-center justify-center rounded-full bg-village-primary-light font-bold text-village-primary-dark">
                                         <UserRound className="size-4" />
                                     </div>
-                                    <span className="font-semibold text-slate-800" title="Penulis / Kontributor Berita">
+                                    <span
+                                        className="font-semibold text-slate-800"
+                                        title="Penulis / Kontributor Berita"
+                                    >
                                         {article.author}
                                     </span>
                                 </span>
 
                                 {/* Dynamic Creation/Publication Date */}
-                                <span className="flex items-center gap-1.5" title="Tanggal Diterbitkan oleh Admin">
+                                <span
+                                    className="flex items-center gap-1.5"
+                                    title="Tanggal Diterbitkan oleh Admin"
+                                >
                                     <CalendarDays className="size-4 text-village-primary" />
                                     <time dateTime={article.publishedAt}>
                                         {article.publishedLabel}
@@ -209,9 +222,14 @@ export default function NewsShow({
                                 </span>
 
                                 {/* Estimated Reading Time */}
-                                <span className="flex items-center gap-1.5" title="Estimasi Waktu Baca">
+                                <span
+                                    className="flex items-center gap-1.5"
+                                    title="Estimasi Waktu Baca"
+                                >
                                     <Clock className="size-4 text-village-primary" />
-                                    <span>{estimatedReadMinutes} menit baca</span>
+                                    <span>
+                                        {estimatedReadMinutes} menit baca
+                                    </span>
                                 </span>
                             </div>
 
@@ -219,7 +237,7 @@ export default function NewsShow({
                             <button
                                 type="button"
                                 onClick={handleCopyLink}
-                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold transition shadow-sm ${
+                                className={`inline-flex items-center gap-2 rounded-xl px-4 py-2 text-xs font-bold shadow-sm transition ${
                                     isCopied
                                         ? 'bg-emerald-600 text-white'
                                         : 'bg-slate-100 text-slate-700 hover:bg-village-primary hover:text-white'
@@ -252,7 +270,7 @@ export default function NewsShow({
                                 className="aspect-[16/9] w-full object-cover transition-transform duration-700 hover:scale-[1.01]"
                             />
                             {article.alt && (
-                                <figcaption className="bg-slate-50 px-5 py-3 text-center text-xs font-medium text-slate-500 border-t border-slate-200/80">
+                                <figcaption className="border-t border-slate-200/80 bg-slate-50 px-5 py-3 text-center text-xs font-medium text-slate-500">
                                     {article.alt}
                                 </figcaption>
                             )}
@@ -266,7 +284,7 @@ export default function NewsShow({
                                 return (
                                     <p
                                         key={index}
-                                        className="text-lg md:text-xl leading-relaxed text-slate-900 font-medium"
+                                        className="text-lg leading-relaxed font-medium text-slate-900 md:text-xl"
                                     >
                                         {paragraph}
                                     </p>
@@ -285,16 +303,18 @@ export default function NewsShow({
                     <div className="mt-14 flex flex-wrap items-center justify-between gap-4 border-t border-b border-village-border py-6">
                         <div className="flex items-center gap-2 text-sm font-semibold text-slate-700">
                             <Copy className="size-4 text-village-primary" />
-                            <span>Bagikan berita ini kepada warga lainnya:</span>
+                            <span>
+                                Bagikan berita ini kepada warga lainnya:
+                            </span>
                         </div>
 
                         <button
                             type="button"
                             onClick={handleCopyLink}
-                            className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold transition shadow-sm ${
+                            className={`inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold shadow-sm transition ${
                                 isCopied
                                     ? 'bg-emerald-600 text-white'
-                                    : 'border border-village-border bg-white text-slate-700 hover:bg-slate-50 hover:border-village-primary hover:text-village-primary'
+                                    : 'border border-village-border bg-white text-slate-700 hover:border-village-primary hover:bg-slate-50 hover:text-village-primary'
                             }`}
                         >
                             {isCopied ? (
@@ -322,7 +342,7 @@ export default function NewsShow({
                     <div className="mx-auto max-w-[1280px] px-4 sm:px-6 lg:px-10">
                         <div className="flex flex-col justify-between gap-4 border-b border-village-border pb-6 md:flex-row md:items-end">
                             <div>
-                                <p className="text-xs font-bold uppercase tracking-wider text-village-primary">
+                                <p className="text-xs font-bold tracking-wider text-village-primary uppercase">
                                     Rekomendasi Bacaan
                                 </p>
                                 <h2

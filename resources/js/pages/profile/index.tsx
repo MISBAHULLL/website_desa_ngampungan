@@ -1,11 +1,5 @@
 import { Head } from '@inertiajs/react';
-import {
-    ArrowRight,
-    Info,
-    LandPlot,
-    LocateFixed,
-    MapPin,
-} from 'lucide-react';
+import { ArrowRight, Info, LandPlot, LocateFixed, MapPin } from 'lucide-react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
@@ -67,19 +61,22 @@ const villageOfficialIdentity = [
 const villageCharacteristics = [
     {
         title: 'Kawasan Agraris Subur',
-        description: 'Potensi pertanian padi, palawija, dan komoditas perkebunan lokal.',
+        description:
+            'Potensi pertanian padi, palawija, dan komoditas perkebunan lokal.',
         iconSrc: '/assets/agraris.png',
         alt: 'Ikon Kawasan Agraris',
     },
     {
         title: 'Topografi Pegunungan',
-        description: 'Wilayah berada di kawasan kaki pegunungan dengan udara sejuk.',
+        description:
+            'Wilayah berada di kawasan kaki pegunungan dengan udara sejuk.',
         iconSrc: '/assets/topografi.png',
         alt: 'Ikon Topografi Pegunungan',
     },
     {
         title: 'Layanan Publik Digital',
-        description: 'Kemudahan akses informasi dan administrasi berbasis teknologi.',
+        description:
+            'Kemudahan akses informasi dan administrasi berbasis teknologi.',
         iconSrc: '/assets/layanan.png',
         alt: 'Ikon Layanan Publik',
     },
@@ -359,7 +356,11 @@ export default function VillageProfileIndex({
 
             {/* Clean Modern Hero Header */}
             <section className="bg-village-primary-dark text-white">
-                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn
+                    direction="up"
+                    duration={0.5}
+                    className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12"
+                >
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <p className="text-xs font-bold tracking-widest text-village-accent uppercase">
@@ -406,7 +407,11 @@ export default function VillageProfileIndex({
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
                         {/* Left Column: Heading & Enhanced Identity Card */}
-                        <FadeIn direction="right" duration={0.5} className="lg:col-span-5">
+                        <FadeIn
+                            direction="right"
+                            duration={0.5}
+                            className="lg:col-span-5"
+                        >
                             <h2
                                 id="selayang-pandang-heading"
                                 className="text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
@@ -414,7 +419,8 @@ export default function VillageProfileIndex({
                                 Selayang Pandang
                             </h2>
                             <p className="mt-3 text-base leading-7 text-village-muted">
-                                Gambaran umum, posisi geografis, serta identitas administrasi resmi Desa Ngampungan.
+                                Gambaran umum, posisi geografis, serta identitas
+                                administrasi resmi Desa Ngampungan.
                             </p>
 
                             {/* Official Identity Card Box with Hover Animation & Asset Icon */}
@@ -433,7 +439,7 @@ export default function VillageProfileIndex({
                                         />
                                     </div>
                                     <div>
-                                        <h3 className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                        <h3 className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                             Identitas Administrasi
                                         </h3>
                                         <p className="text-sm font-extrabold text-village-ink">
@@ -461,7 +467,11 @@ export default function VillageProfileIndex({
                         </FadeIn>
 
                         {/* Right Column: Clean Text Narrative Card & Interactive Characteristics */}
-                        <FadeIn direction="left" duration={0.5} className="space-y-6 lg:col-span-7">
+                        <FadeIn
+                            direction="left"
+                            duration={0.5}
+                            className="space-y-6 lg:col-span-7"
+                        >
                             {/* Main Narrative Card (Clean Text Only) */}
                             <article className="group relative overflow-hidden rounded-3xl border border-village-border/80 bg-white p-7 shadow-md transition-all duration-300 hover:border-village-primary/30 hover:shadow-xl sm:p-9">
                                 <div
@@ -472,10 +482,21 @@ export default function VillageProfileIndex({
                                     Mengenal Desa Ngampungan
                                 </h3>
                                 <p className="relative mt-4 text-base leading-8 text-village-muted">
-                                    Desa Ngampungan terletak di Kecamatan Bareng, Kabupaten Jombang, Jawa Timur. Kawasan ini dikenal dengan bentang alamnya yang asri, potensi pertanian yang subur, serta semangat gotong royong masyarakatnya yang masih terjaga dengan erat.
+                                    Desa Ngampungan terletak di Kecamatan
+                                    Bareng, Kabupaten Jombang, Jawa Timur.
+                                    Kawasan ini dikenal dengan bentang alamnya
+                                    yang asri, potensi pertanian yang subur,
+                                    serta semangat gotong royong masyarakatnya
+                                    yang masih terjaga dengan erat.
                                 </p>
                                 <p className="relative mt-4 text-base leading-8 text-village-muted">
-                                    Sebagai bagian penting dari wilayah Kecamatan Bareng, Pemerintah Desa Ngampungan berkomitmen untuk terus mendorong kemajuan desa melalui tata kelola yang transparan, pelayanan publik yang responsif, serta pemanfaatan teknologi digital untuk kesejahteraan warga.
+                                    Sebagai bagian penting dari wilayah
+                                    Kecamatan Bareng, Pemerintah Desa Ngampungan
+                                    berkomitmen untuk terus mendorong kemajuan
+                                    desa melalui tata kelola yang transparan,
+                                    pelayanan publik yang responsif, serta
+                                    pemanfaatan teknologi digital untuk
+                                    kesejahteraan warga.
                                 </p>
                             </article>
 
@@ -514,7 +535,11 @@ export default function VillageProfileIndex({
                 className="scroll-mt-24 border-t border-village-border bg-white py-14 md:py-20"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <FadeIn direction="up" duration={0.5} className="max-w-2xl mb-10">
+                    <FadeIn
+                        direction="up"
+                        duration={0.5}
+                        className="mb-10 max-w-2xl"
+                    >
                         <h2
                             id="visi-misi-heading"
                             className="text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
@@ -522,17 +547,24 @@ export default function VillageProfileIndex({
                             Visi & Misi Pembangunan
                         </h2>
                         <p className="mt-3 text-base leading-7 text-village-muted">
-                            Arah kebijakan strategis dan komitmen Pemerintah Desa Ngampungan dalam mewujudkan kesejahteraan warga.
+                            Arah kebijakan strategis dan komitmen Pemerintah
+                            Desa Ngampungan dalam mewujudkan kesejahteraan
+                            warga.
                         </p>
                     </FadeIn>
 
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch">
                         {/* Variant B: Dark Glassmorphic Card (Visi Utama) */}
-                        <FadeIn direction="up" delay={0.1} duration={0.5} className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/15 bg-village-primary-dark p-7 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_32px_rgba(26,77,46,0.45)] sm:p-9 lg:col-span-5">
+                        <FadeIn
+                            direction="up"
+                            delay={0.1}
+                            duration={0.5}
+                            className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/15 bg-village-primary-dark p-7 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_32px_rgba(26,77,46,0.45)] sm:p-9 lg:col-span-5"
+                        >
                             <div className="relative">
                                 {/* Header Badge */}
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs font-extrabold uppercase tracking-widest text-village-accent">
+                                    <span className="text-xs font-extrabold tracking-widest text-village-accent uppercase">
                                         Visi Utama Desa
                                     </span>
                                 </div>
@@ -542,10 +574,11 @@ export default function VillageProfileIndex({
                                 </h3>
 
                                 <div className="mt-6 rounded-2xl border border-white/15 bg-white/10 p-6 backdrop-blur-md">
-                                    <p className="text-base leading-8 font-semibold italic text-white/95 sm:text-lg">
+                                    <p className="text-base leading-8 font-semibold text-white/95 italic sm:text-lg">
                                         “Terwujudnya Desa Ngampungan yang maju,
-                                        mandiri, sejahtera, dan berkarakter melalui
-                                        pelayanan publik yang transparan.”
+                                        mandiri, sejahtera, dan berkarakter
+                                        melalui pelayanan publik yang
+                                        transparan.”
                                     </p>
                                 </div>
                             </div>
@@ -582,10 +615,15 @@ export default function VillageProfileIndex({
                         </FadeIn>
 
                         {/* Variant A: Light Surface Card (5 Misi Pembangunan) */}
-                        <FadeIn direction="up" delay={0.2} duration={0.5} className="group flex flex-col justify-between rounded-3xl border border-village-border bg-white p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-xl sm:p-9 lg:col-span-7">
+                        <FadeIn
+                            direction="up"
+                            delay={0.2}
+                            duration={0.5}
+                            className="group flex flex-col justify-between rounded-3xl border border-village-border bg-white p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-xl sm:p-9 lg:col-span-7"
+                        >
                             <div>
                                 <div className="border-b border-village-border pb-4">
-                                    <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                    <span className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                         5 Misi Pembangunan
                                     </span>
                                     <h3 className="mt-1 text-2xl font-extrabold text-village-ink">
@@ -600,10 +638,13 @@ export default function VillageProfileIndex({
                                             className="group/item flex items-start gap-4 rounded-2xl p-3.5 transition-all duration-200 hover:bg-village-primary-light/60 hover:shadow-2xs"
                                         >
                                             <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-village-primary-light text-xs font-extrabold text-village-primary transition-all duration-200 group-hover/item:bg-village-primary group-hover/item:text-white group-hover/item:shadow-xs">
-                                                {String(index + 1).padStart(2, '0')}
+                                                {String(index + 1).padStart(
+                                                    2,
+                                                    '0',
+                                                )}
                                             </span>
                                             <div>
-                                                <span className="text-[11px] font-extrabold uppercase tracking-wider text-village-primary/80 transition-colors group-hover/item:text-village-primary">
+                                                <span className="text-[11px] font-extrabold tracking-wider text-village-primary/80 uppercase transition-colors group-hover/item:text-village-primary">
                                                     Pilar {item.category}
                                                 </span>
                                                 <p className="mt-0.5 text-sm leading-6 font-semibold text-village-ink transition-colors group-hover/item:text-village-primary-dark">
@@ -619,7 +660,10 @@ export default function VillageProfileIndex({
                             <div className="mt-6 border-t border-village-border pt-5">
                                 <div className="flex items-center justify-between gap-3 text-xs text-village-muted">
                                     <span className="font-semibold">
-                                        Status Implementasi: <strong className="text-village-ink font-bold">Rencana Strategis Desa</strong>
+                                        Status Implementasi:{' '}
+                                        <strong className="font-bold text-village-ink">
+                                            Rencana Strategis Desa
+                                        </strong>
                                     </span>
                                 </div>
                             </div>
@@ -637,15 +681,19 @@ export default function VillageProfileIndex({
                 {/* Background Ambient Glow Orbs */}
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-[28rem] size-80 rounded-full bg-village-primary-light/40 blur-3xl transition-all duration-700 group-hover/section:scale-110"
+                    className="pointer-events-none absolute top-1/4 left-1/2 size-80 -translate-x-[28rem] rounded-full bg-village-primary-light/40 blur-3xl transition-all duration-700 group-hover/section:scale-110"
                 />
                 <div
                     aria-hidden="true"
-                    className="pointer-events-none absolute bottom-1/4 right-1/2 translate-x-[28rem] size-96 rounded-full bg-village-accent/15 blur-3xl transition-all duration-700 group-hover/section:scale-110"
+                    className="pointer-events-none absolute right-1/2 bottom-1/4 size-96 translate-x-[28rem] rounded-full bg-village-accent/15 blur-3xl transition-all duration-700 group-hover/section:scale-110"
                 />
 
                 <div className="relative mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <FadeIn direction="up" duration={0.5} className="mx-auto max-w-2xl text-center">
+                    <FadeIn
+                        direction="up"
+                        duration={0.5}
+                        className="mx-auto max-w-2xl text-center"
+                    >
                         <h2
                             id="sejarah-desa-heading"
                             className="text-3xl font-bold tracking-tight text-village-ink sm:text-4xl md:text-5xl"
@@ -653,12 +701,14 @@ export default function VillageProfileIndex({
                             Sejarah Perjalanan Desa
                         </h2>
                         <p className="mt-4 text-base leading-relaxed text-village-muted">
-                            Alur perkembangan Desa Ngampungan dari masa awal perintisan pemukiman hingga era transformasi pelayanan publik modern.
+                            Alur perkembangan Desa Ngampungan dari masa awal
+                            perintisan pemukiman hingga era transformasi
+                            pelayanan publik modern.
                         </p>
                     </FadeIn>
 
                     {/* Vertical Timeline Container */}
-                    <div className="relative mt-16 mx-auto max-w-4xl">
+                    <div className="relative mx-auto mt-16 max-w-4xl">
                         {/* Desktop: Clean Centered Vertical Line */}
                         <div
                             aria-hidden="true"
@@ -672,7 +722,10 @@ export default function VillageProfileIndex({
                         />
 
                         {/* 5 Timeline Stages */}
-                        <StaggerContainer staggerDelay={0.12} className="space-y-10 md:space-y-16">
+                        <StaggerContainer
+                            staggerDelay={0.12}
+                            className="space-y-10 md:space-y-16"
+                        >
                             {historyStages.map((item, index) => {
                                 const isEven = index % 2 === 0;
 
@@ -680,19 +733,23 @@ export default function VillageProfileIndex({
                                     <StaggerItem
                                         key={item.title}
                                         className={`group relative flex items-start md:items-center ${
-                                            isEven ? 'md:flex-row' : 'md:flex-row-reverse'
+                                            isEven
+                                                ? 'md:flex-row'
+                                                : 'md:flex-row-reverse'
                                         }`}
                                     >
                                         {/* Numbered Node Dot */}
-                                        <div className="absolute left-[1.375rem] md:left-1/2 z-20 -translate-x-1/2 flex size-11 items-center justify-center rounded-full border-[3px] border-white bg-village-primary text-sm font-extrabold text-white shadow-md ring-[3px] ring-village-primary/15 transition-all duration-400 group-hover:scale-110 group-hover:bg-village-primary-dark group-hover:ring-village-primary/30 group-hover:shadow-lg">
+                                        <div className="absolute left-[1.375rem] z-20 flex size-11 -translate-x-1/2 items-center justify-center rounded-full border-[3px] border-white bg-village-primary text-sm font-extrabold text-white shadow-md ring-[3px] ring-village-primary/15 transition-all duration-400 group-hover:scale-110 group-hover:bg-village-primary-dark group-hover:shadow-lg group-hover:ring-village-primary/30 md:left-1/2">
                                             {String(index + 1).padStart(2, '0')}
                                         </div>
 
                                         {/* Content Card */}
-                                        <div className="w-full pl-14 md:pl-0 md:w-[calc(50%-2.5rem)]">
+                                        <div className="w-full pl-14 md:w-[calc(50%-2.5rem)] md:pl-0">
                                             <article
                                                 className={`group/card rounded-2xl border border-village-border/80 bg-white p-6 shadow-sm transition-all duration-400 hover:-translate-y-1.5 hover:border-village-primary/40 hover:shadow-xl sm:p-7 ${
-                                                    isEven ? 'md:mr-auto' : 'md:ml-auto'
+                                                    isEven
+                                                        ? 'md:mr-auto'
+                                                        : 'md:ml-auto'
                                                 }`}
                                             >
                                                 <div className="flex items-center justify-between gap-3">
@@ -738,7 +795,9 @@ export default function VillageProfileIndex({
                                 Data Wilayah
                             </h2>
                             <p className="mt-4 text-base leading-relaxed text-village-muted sm:text-lg">
-                                Informasi terpadu demografi, batas administratif, pembagian dusun, penggunaan lahan, dan peta geospasial Desa Ngampungan.
+                                Informasi terpadu demografi, batas
+                                administratif, pembagian dusun, penggunaan
+                                lahan, dan peta geospasial Desa Ngampungan.
                             </p>
                         </div>
                     </div>
@@ -819,7 +878,8 @@ export default function VillageProfileIndex({
                                             Batas Administratif Desa
                                         </h3>
                                         <p className="text-xs text-village-muted">
-                                            Batas geografis wilayah Desa Ngampungan
+                                            Batas geografis wilayah Desa
+                                            Ngampungan
                                         </p>
                                     </div>
                                 </div>
@@ -832,8 +892,9 @@ export default function VillageProfileIndex({
                                             <dt className="text-xs font-extrabold tracking-widest text-village-primary uppercase">
                                                 Batas {boundary.direction}
                                             </dt>
-                                            <dd className="mt-1.5 text-sm font-semibold leading-relaxed text-village-ink">
-                                                {boundary.value || 'Data belum diisi'}
+                                            <dd className="mt-1.5 text-sm leading-relaxed font-semibold text-village-ink">
+                                                {boundary.value ||
+                                                    'Data belum diisi'}
                                             </dd>
                                         </div>
                                     ))}
@@ -846,7 +907,11 @@ export default function VillageProfileIndex({
                                         Status Data Wilayah
                                     </h3>
                                     <p className="mt-3 text-sm leading-relaxed text-white/80">
-                                        Seluruh indikator kependudukan, batas geografis, dan penggunaan lahan tersambung secara linier dengan database backend dan dapat diperbarui secara dinamis dari dashboard admin.
+                                        Seluruh indikator kependudukan, batas
+                                        geografis, dan penggunaan lahan
+                                        tersambung secara linier dengan database
+                                        backend dan dapat diperbarui secara
+                                        dinamis dari dashboard admin.
                                     </p>
                                 </div>
                                 <a
@@ -863,11 +928,11 @@ export default function VillageProfileIndex({
                     {/* Sub-block 2: Pembagian Wilayah (Dusun, RW, RT) */}
                     <div
                         id="pembagian-wilayah"
-                        className="scroll-mt-24 mt-16 border-t border-village-border/60 pt-14"
+                        className="mt-16 scroll-mt-24 border-t border-village-border/60 pt-14"
                     >
                         <div className="grid gap-8 lg:grid-cols-12 lg:items-end">
                             <div className="max-w-2xl lg:col-span-7">
-                                <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                <span className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                     Struktur Administrasi
                                 </span>
                                 <h3
@@ -877,32 +942,34 @@ export default function VillageProfileIndex({
                                     Pembagian Dusun, RW, dan RT
                                 </h3>
                                 <p className="mt-3 text-sm leading-relaxed text-village-muted sm:text-base">
-                                    Rincian pembagian wilayah administratif tingkat dusun, rukun warga (RW), dan rukun tetangga (RT) Desa Ngampungan.
+                                    Rincian pembagian wilayah administratif
+                                    tingkat dusun, rukun warga (RW), dan rukun
+                                    tetangga (RT) Desa Ngampungan.
                                 </p>
                             </div>
 
                             <dl className="grid grid-cols-3 divide-x divide-village-border/60 rounded-2xl border border-village-border/80 bg-white p-2 shadow-sm lg:col-span-5">
-                                <div className="py-2.5 sm:py-3 text-center">
-                                    <dt className="text-[10px] sm:text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                <div className="py-2.5 text-center sm:py-3">
+                                    <dt className="text-[10px] font-extrabold tracking-wider text-village-muted uppercase sm:text-[11px]">
                                         Dusun
                                     </dt>
-                                    <dd className="mt-1 text-xl sm:text-2xl font-extrabold text-village-primary">
+                                    <dd className="mt-1 text-xl font-extrabold text-village-primary sm:text-2xl">
                                         {hamlets.length}
                                     </dd>
                                 </div>
-                                <div className="py-2.5 sm:py-3 text-center">
-                                    <dt className="text-[10px] sm:text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                <div className="py-2.5 text-center sm:py-3">
+                                    <dt className="text-[10px] font-extrabold tracking-wider text-village-muted uppercase sm:text-[11px]">
                                         Total RW
                                     </dt>
-                                    <dd className="mt-1 text-xl sm:text-2xl font-extrabold text-village-primary">
+                                    <dd className="mt-1 text-xl font-extrabold text-village-primary sm:text-2xl">
                                         {hamletTotals.rw}
                                     </dd>
                                 </div>
-                                <div className="py-2.5 sm:py-3 text-center">
-                                    <dt className="text-[10px] sm:text-[11px] font-extrabold tracking-wider text-village-muted uppercase">
+                                <div className="py-2.5 text-center sm:py-3">
+                                    <dt className="text-[10px] font-extrabold tracking-wider text-village-muted uppercase sm:text-[11px]">
                                         Total RT
                                     </dt>
-                                    <dd className="mt-1 text-xl sm:text-2xl font-extrabold text-village-primary">
+                                    <dd className="mt-1 text-xl font-extrabold text-village-primary sm:text-2xl">
                                         {hamletTotals.rt}
                                     </dd>
                                 </div>
@@ -977,7 +1044,9 @@ export default function VillageProfileIndex({
                                                 KK
                                             </dt>
                                             <dd className="mt-0.5 text-base font-extrabold text-village-ink">
-                                                {formatNumber(division.households)}
+                                                {formatNumber(
+                                                    division.households,
+                                                )}
                                             </dd>
                                         </div>
                                     </dl>
@@ -989,11 +1058,11 @@ export default function VillageProfileIndex({
                     {/* Sub-block 3: Penggunaan Lahan */}
                     <div
                         id="penggunaan-lahan"
-                        className="scroll-mt-24 mt-16 border-t border-village-border/60 pt-14"
+                        className="mt-16 scroll-mt-24 border-t border-village-border/60 pt-14"
                     >
                         <div className="grid gap-8 lg:grid-cols-12">
                             <div className="lg:col-span-4">
-                                <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                <span className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                     Tata Ruang
                                 </span>
                                 <h3
@@ -1003,7 +1072,9 @@ export default function VillageProfileIndex({
                                     Penggunaan Lahan
                                 </h3>
                                 <p className="mt-3 text-sm leading-relaxed text-village-muted">
-                                    Visualisasi pemanfaatan tata ruang wilayah untuk pertanian, permukiman, kawasan terbuka hijau, dan sarana publik.
+                                    Visualisasi pemanfaatan tata ruang wilayah
+                                    untuk pertanian, permukiman, kawasan terbuka
+                                    hijau, dan sarana publik.
                                 </p>
 
                                 <dl className="mt-8 rounded-2xl border border-village-primary/20 bg-village-primary-light/30 p-5">
@@ -1055,8 +1126,8 @@ export default function VillageProfileIndex({
                                                 />
 
                                                 {/* Floating Custom Tooltip */}
-                                                <div className="pointer-events-none absolute bottom-full left-1/2 mb-3 -translate-x-1/2 opacity-0 transition-all duration-200 group-hover:opacity-100 group-hover:-translate-y-1 z-50 min-w-max">
-                                                    <div className="flex items-center gap-2 rounded-xl bg-village-ink/95 px-3.5 py-2 text-xs font-bold text-white shadow-2xl backdrop-blur-md ring-1 ring-white/10">
+                                                <div className="pointer-events-none absolute bottom-full left-1/2 z-50 mb-3 min-w-max -translate-x-1/2 opacity-0 transition-all duration-200 group-hover:-translate-y-1 group-hover:opacity-100">
+                                                    <div className="flex items-center gap-2 rounded-xl bg-village-ink/95 px-3.5 py-2 text-xs font-bold text-white shadow-2xl ring-1 ring-white/10 backdrop-blur-md">
                                                         <span
                                                             className={`size-2.5 rounded-full ${style.barClassName} ring-2 ring-white/30`}
                                                         />
@@ -1145,10 +1216,10 @@ export default function VillageProfileIndex({
                     {/* Sub-block 4: Peta Administratif Desa */}
                     <div
                         id="peta-administratif"
-                        className="scroll-mt-24 mt-16 border-t border-village-border/60 pt-14"
+                        className="mt-16 scroll-mt-24 border-t border-village-border/60 pt-14"
                     >
                         <div className="max-w-3xl">
-                            <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                            <span className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                 Peta Geospasial
                             </span>
                             <h3
@@ -1158,7 +1229,8 @@ export default function VillageProfileIndex({
                                 Peta Administratif Desa
                             </h3>
                             <p className="mt-3 text-sm leading-relaxed text-village-muted sm:text-base">
-                                Peta visualisasi batas administratif dan pembagian wilayah dusun Desa Ngampungan.
+                                Peta visualisasi batas administratif dan
+                                pembagian wilayah dusun Desa Ngampungan.
                             </p>
                         </div>
 
@@ -1176,11 +1248,11 @@ export default function VillageProfileIndex({
                     {/* Sub-block 5: Demografi Terperinci */}
                     <div
                         id="demografi"
-                        className="scroll-mt-24 mt-16 border-t border-village-border/60 pt-14"
+                        className="mt-16 scroll-mt-24 border-t border-village-border/60 pt-14"
                     >
                         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                             <div className="max-w-3xl">
-                                <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
+                                <span className="text-xs font-extrabold tracking-wider text-village-primary uppercase">
                                     Statistik Kependudukan
                                 </span>
                                 <h3
@@ -1190,7 +1262,10 @@ export default function VillageProfileIndex({
                                     Demografi Penduduk Terperinci
                                 </h3>
                                 <p className="mt-3 text-sm leading-relaxed text-village-muted sm:text-base">
-                                    Komposisi dan distribusi statistik penduduk berdasarkan kategori gender, kelompok usia, tingkat pendidikan, mata pencaharian, agama, dan status kependudukan.
+                                    Komposisi dan distribusi statistik penduduk
+                                    berdasarkan kategori gender, kelompok usia,
+                                    tingkat pendidikan, mata pencaharian, agama,
+                                    dan status kependudukan.
                                 </p>
                             </div>
                         </div>

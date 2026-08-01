@@ -101,11 +101,19 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     return (
-        <Sidebar collapsible="icon" variant="inset" className="border-r border-slate-200/80 dark:border-slate-800">
-            <SidebarHeader className="border-b border-slate-100 dark:border-slate-800/80 px-3 py-3">
+        <Sidebar
+            collapsible="icon"
+            variant="inset"
+            className="border-r border-slate-200/80 dark:border-slate-800"
+        >
+            <SidebarHeader className="border-b border-slate-100 px-3 py-3 dark:border-slate-800/80">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="hover:bg-slate-100/80 dark:hover:bg-slate-800/60 rounded-2xl transition-all">
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="rounded-2xl transition-all hover:bg-slate-100/80 dark:hover:bg-slate-800/60"
+                        >
                             <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
@@ -118,11 +126,10 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-slate-100 dark:border-slate-800/80 pt-2">
+            <SidebarFooter className="border-t border-slate-100 pt-2 dark:border-slate-800/80">
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>
         </Sidebar>
     );
 }
-

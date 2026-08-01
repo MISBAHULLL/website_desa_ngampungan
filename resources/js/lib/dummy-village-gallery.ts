@@ -1,8 +1,5 @@
 export type VillageGalleryCategory =
-    | 'Kegiatan Desa'
-    | 'Pembangunan'
-    | 'UMKM'
-    | 'Alam & Pertanian';
+    'Kegiatan Desa' | 'Pembangunan' | 'UMKM' | 'Alam & Pertanian';
 
 export type VillageGalleryPhoto = {
     id: number;

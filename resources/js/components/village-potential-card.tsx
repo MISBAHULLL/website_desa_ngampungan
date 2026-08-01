@@ -44,7 +44,7 @@ export function VillagePotentialCard({
                     }
                 }}
                 aria-label={`Lihat detail ${entry.name}`}
-                className="flex h-full flex-col justify-between cursor-pointer focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset rounded-[24px]"
+                className="flex h-full cursor-pointer flex-col justify-between rounded-[24px] focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset"
             >
                 {/* Image Banner Section */}
                 <div
@@ -90,7 +90,7 @@ export function VillagePotentialCard({
                                 ? `Hapus ${entry.name} dari favorit`
                                 : `Simpan ${entry.name} ke favorit`
                         }
-                        className={`absolute top-3 right-3 z-10 flex size-9 items-center justify-center rounded-full border border-white/40 bg-white/90 shadow-sm backdrop-blur-xs transition hover:scale-110 active:scale-95 cursor-pointer ${
+                        className={`absolute top-3 right-3 z-10 flex size-9 cursor-pointer items-center justify-center rounded-full border border-white/40 bg-white/90 shadow-sm backdrop-blur-xs transition hover:scale-110 active:scale-95 ${
                             isFavorite ? 'text-rose-500' : 'text-gray-600'
                         }`}
                     >
@@ -104,18 +104,18 @@ export function VillagePotentialCard({
                 <div className="mt-4 flex flex-1 flex-col justify-between px-1">
                     <div className="space-y-2">
                         {/* Title */}
-                        <h3 className="text-base font-extrabold text-gray-900 leading-snug transition-colors group-hover:text-village-primary">
+                        <h3 className="text-base leading-snug font-extrabold text-gray-900 transition-colors group-hover:text-village-primary">
                             {entry.name}
                         </h3>
 
                         {/* Location Subtitle */}
                         <div className="flex items-center gap-1.5 text-xs text-gray-500">
-                            <MapPin className="size-3.5 text-village-primary shrink-0" />
+                            <MapPin className="size-3.5 shrink-0 text-village-primary" />
                             <span className="truncate">{entry.address}</span>
                         </div>
 
                         {/* Short Description */}
-                        <p className="text-xs leading-relaxed text-gray-500 line-clamp-2">
+                        <p className="line-clamp-2 text-xs leading-relaxed text-gray-500">
                             {entry.shortDescription}
                         </p>
                     </div>
@@ -124,18 +124,18 @@ export function VillagePotentialCard({
                     <div className="mt-5 flex items-end justify-between gap-3 border-t border-gray-100 pt-3">
                         <div className="grid grid-cols-2 gap-3">
                             <div>
-                                <p className="truncate text-xs font-bold text-gray-900 leading-snug">
+                                <p className="truncate text-xs leading-snug font-bold text-gray-900">
                                     {entry.managerName}
                                 </p>
-                                <p className="mt-0.5 text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+                                <p className="mt-0.5 text-[10px] font-medium tracking-wider text-gray-400 uppercase">
                                     {entry.managerLabel}
                                 </p>
                             </div>
                             <div>
-                                <p className="truncate text-xs font-bold text-gray-900 leading-snug">
+                                <p className="truncate text-xs leading-snug font-bold text-gray-900">
                                     {entry.offerings.length} Produk
                                 </p>
-                                <p className="mt-0.5 text-[10px] font-medium text-gray-400 uppercase tracking-wider">
+                                <p className="mt-0.5 text-[10px] font-medium tracking-wider text-gray-400 uppercase">
                                     Layanan
                                 </p>
                             </div>
@@ -144,7 +144,10 @@ export function VillagePotentialCard({
                         {/* Primary Pill Button */}
                         <span className="flex shrink-0 items-center gap-1.5 rounded-full bg-village-primary px-4 py-2.5 text-xs font-bold text-white shadow-md transition-all group-hover:bg-village-primary-dark group-hover:shadow-lg">
                             <span>Lihat detail</span>
-                            <ArrowRight aria-hidden="true" className="size-3.5 transition-transform group-hover:translate-x-0.5" />
+                            <ArrowRight
+                                aria-hidden="true"
+                                className="size-3.5 transition-transform group-hover:translate-x-0.5"
+                            />
                         </span>
                     </div>
                 </div>

@@ -1,7 +1,10 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Edit, Plus, Trash2, Upload, X } from 'lucide-react';
 import { useState } from 'react';
-import { index as officialIndex, update as officialUpdate } from '@/actions/App/Http/Controllers/Admin/VillageOfficialController';
+import {
+    index as officialIndex,
+    update as officialUpdate,
+} from '@/actions/App/Http/Controllers/Admin/VillageOfficialController';
 import { dashboard } from '@/routes';
 
 type OfficialData = {
@@ -38,7 +41,10 @@ type Props = {
     parentOptions: ParentOption[];
 };
 
-export default function AdminVillageOfficialEdit({ official, parentOptions }: Props) {
+export default function AdminVillageOfficialEdit({
+    official,
+    parentOptions,
+}: Props) {
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
         name: official.name || '',
@@ -52,16 +58,25 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
         employee_id: official.employee_id || '',
         summary: official.summary || '',
         about: official.about || '',
-        responsibilities: official.responsibilities?.length ? official.responsibilities : [''],
-        service_focus: official.service_focus?.length ? official.service_focus : [''],
+        responsibilities: official.responsibilities?.length
+            ? official.responsibilities
+            : [''],
+        service_focus: official.service_focus?.length
+            ? official.service_focus
+            : [''],
         education: official.education?.length ? official.education : [''],
-        career: official.career?.length ? official.career : [{ period: '', role: '' }],
+        career: official.career?.length
+            ? official.career
+            : [{ period: '', role: '' }],
         sort_order: official.sort_order || 0,
-        parent_id: (official.parent_id !== null ? official.parent_id : '') as string | number,
+        parent_id: (official.parent_id !== null ? official.parent_id : '') as
+            string | number,
         is_active: official.is_active ?? true,
     });
 
-    const [photoPreview, setPhotoPreview] = useState<string | null>(official.photo_url || null);
+    const [photoPreview, setPhotoPreview] = useState<string | null>(
+        official.photo_url || null,
+    );
 
     function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
@@ -79,24 +94,37 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
     }
 
     // Dynamic Array Handlers
-    function handleArrayChange(field: 'responsibilities' | 'service_focus' | 'education', index: number, value: string) {
+    function handleArrayChange(
+        field: 'responsibilities' | 'service_focus' | 'education',
+        index: number,
+        value: string,
+    ) {
         const updated = [...data[field]];
         updated[index] = value;
         setData(field, updated);
     }
 
-    function addArrayField(field: 'responsibilities' | 'service_focus' | 'education') {
+    function addArrayField(
+        field: 'responsibilities' | 'service_focus' | 'education',
+    ) {
         setData(field, [...data[field], '']);
     }
 
-    function removeArrayField(field: 'responsibilities' | 'service_focus' | 'education', index: number) {
+    function removeArrayField(
+        field: 'responsibilities' | 'service_focus' | 'education',
+        index: number,
+    ) {
         if (data[field].length === 1) return;
         const updated = data[field].filter((_, i) => i !== index);
         setData(field, updated);
     }
 
     // Career Handlers
-    function handleCareerChange(index: number, key: 'period' | 'role', value: string) {
+    function handleCareerChange(
+        index: number,
+        key: 'period' | 'role',
+        value: string,
+    ) {
         const updated = [...data.career];
         updated[index] = { ...updated[index], [key]: value };
         setData('career', updated);
@@ -134,25 +162,31 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                         <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
                             Sunting Data Perangkat
                         </h1>
-                        <p className="mt-1 text-sm text-muted-foreground">{official.name} — {official.position}</p>
+                        <p className="mt-1 text-sm text-muted-foreground">
+                            {official.name} — {official.position}
+                        </p>
                     </div>
                 </header>
 
                 <form onSubmit={handleSubmit} className="max-w-4xl space-y-6">
-                    <div className="rounded-xl border border-sidebar-border/70 bg-background p-6 space-y-6 shadow-xs">
-                        <h2 className="text-base font-bold text-foreground border-b border-sidebar-border/70 pb-3">
+                    <div className="space-y-6 rounded-xl border border-sidebar-border/70 bg-background p-6 shadow-xs">
+                        <h2 className="border-b border-sidebar-border/70 pb-3 text-base font-bold text-foreground">
                             Informasi Utama & Foto
                         </h2>
 
                         {/* Photo Upload */}
                         <div>
-                            <label className="block text-xs font-bold text-foreground uppercase tracking-wider mb-2">
+                            <label className="mb-2 block text-xs font-bold tracking-wider text-foreground uppercase">
                                 Foto Perangkat
                             </label>
                             <div className="flex items-center gap-4">
                                 {photoPreview ? (
-                                    <div className="relative size-24 shrink-0 rounded-xl border border-sidebar-border overflow-hidden group">
-                                        <img src={photoPreview} alt="Preview" className="size-full object-cover" />
+                                    <div className="group relative size-24 shrink-0 overflow-hidden rounded-xl border border-sidebar-border">
+                                        <img
+                                            src={photoPreview}
+                                            alt="Preview"
+                                            className="size-full object-cover"
+                                        />
                                         <button
                                             type="button"
                                             onClick={removePhoto}
@@ -163,8 +197,10 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                                     </div>
                                 ) : (
                                     <div className="flex size-24 shrink-0 flex-col items-center justify-center rounded-xl border border-dashed border-sidebar-border bg-muted/30 text-muted-foreground">
-                                        <Upload className="size-6 mb-1" />
-                                        <span className="text-[10px] font-semibold">Upload Foto</span>
+                                        <Upload className="mb-1 size-6" />
+                                        <span className="text-[10px] font-semibold">
+                                            Upload Foto
+                                        </span>
                                     </div>
                                 )}
                                 <div className="space-y-1">
@@ -174,8 +210,14 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                                         onChange={handlePhotoChange}
                                         className="text-xs text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-700 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-emerald-800"
                                     />
-                                    <p className="text-[11px] text-muted-foreground">Format JPG, PNG, WebP (maks. 2MB).</p>
-                                    {errors.photo && <p className="text-xs text-red-600">{errors.photo}</p>}
+                                    <p className="text-[11px] text-muted-foreground">
+                                        Format JPG, PNG, WebP (maks. 2MB).
+                                    </p>
+                                    {errors.photo && (
+                                        <p className="text-xs text-red-600">
+                                            {errors.photo}
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -183,102 +225,165 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                         {/* Name & Initials */}
                         <div className="grid gap-5 sm:grid-cols-3">
                             <div className="sm:col-span-2">
-                                <label htmlFor="name" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="name"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Nama Lengkap & Gelar *
                                 </label>
                                 <input
                                     id="name"
                                     type="text"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
-                                {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
+                                {errors.name && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.name}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label htmlFor="initials" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="initials"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Inisial *
                                 </label>
                                 <input
                                     id="initials"
                                     type="text"
                                     value={data.initials}
-                                    onChange={(e) => setData('initials', e.target.value.toUpperCase())}
+                                    onChange={(e) =>
+                                        setData(
+                                            'initials',
+                                            e.target.value.toUpperCase(),
+                                        )
+                                    }
                                     maxLength={5}
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
-                                {errors.initials && <p className="mt-1 text-xs text-red-600">{errors.initials}</p>}
+                                {errors.initials && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.initials}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         {/* Position & Unit */}
                         <div className="grid gap-5 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="position" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="position"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Jabatan *
                                 </label>
                                 <input
                                     id="position"
                                     type="text"
                                     value={data.position}
-                                    onChange={(e) => setData('position', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('position', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
-                                {errors.position && <p className="mt-1 text-xs text-red-600">{errors.position}</p>}
+                                {errors.position && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.position}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label htmlFor="unit" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="unit"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Unit Kerja *
                                 </label>
                                 <input
                                     id="unit"
                                     type="text"
                                     value={data.unit}
-                                    onChange={(e) => setData('unit', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('unit', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
-                                {errors.unit && <p className="mt-1 text-xs text-red-600">{errors.unit}</p>}
+                                {errors.unit && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.unit}
+                                    </p>
+                                )}
                             </div>
                         </div>
 
                         {/* Group & Atasan (Parent ID) */}
                         <div className="grid gap-5 sm:grid-cols-2">
                             <div>
-                                <label htmlFor="group" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="group"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Kelompok / Kategori *
                                 </label>
                                 <select
                                     id="group"
                                     value={data.group}
-                                    onChange={(e) => setData('group', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('group', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 >
-                                    <option value="leadership">Pimpinan (Kepala Desa)</option>
-                                    <option value="secretariat">Sekretariat Desa</option>
-                                    <option value="technical">Pelaksana Teknis (Kasi)</option>
-                                    <option value="territorial">Pelaksana Kewilayahan (Kadus)</option>
+                                    <option value="leadership">
+                                        Pimpinan (Kepala Desa)
+                                    </option>
+                                    <option value="secretariat">
+                                        Sekretariat Desa
+                                    </option>
+                                    <option value="technical">
+                                        Pelaksana Teknis (Kasi)
+                                    </option>
+                                    <option value="territorial">
+                                        Pelaksana Kewilayahan (Kadus)
+                                    </option>
                                 </select>
                             </div>
 
                             <div>
-                                <label htmlFor="parent_id" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="parent_id"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Atasan Langsung (Struktur Org)
                                 </label>
                                 <select
                                     id="parent_id"
                                     value={data.parent_id}
-                                    onChange={(e) => setData('parent_id', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('parent_id', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 >
-                                    <option value="">-- Tidak ada atasan (Top Level / Kades) --</option>
+                                    <option value="">
+                                        -- Tidak ada atasan (Top Level / Kades)
+                                        --
+                                    </option>
                                     {parentOptions.map((parent) => (
-                                        <option key={parent.id} value={parent.id}>
+                                        <option
+                                            key={parent.id}
+                                            value={parent.id}
+                                        >
                                             {parent.name} ({parent.position})
                                         </option>
                                     ))}
@@ -289,33 +394,46 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                         {/* Term & NIP/ID */}
                         <div className="grid gap-5 sm:grid-cols-3">
                             <div>
-                                <label htmlFor="term" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="term"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Masa Jabatan
                                 </label>
                                 <input
                                     id="term"
                                     type="text"
                                     value={data.term}
-                                    onChange={(e) => setData('term', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('term', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="employee_id" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="employee_id"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     NIP / ID Perangkat
                                 </label>
                                 <input
                                     id="employee_id"
                                     type="text"
                                     value={data.employee_id}
-                                    onChange={(e) => setData('employee_id', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('employee_id', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="sort_order" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="sort_order"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Urutan Tampilan
                                 </label>
                                 <input
@@ -323,7 +441,12 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                                     type="number"
                                     min={0}
                                     value={data.sort_order}
-                                    onChange={(e) => setData('sort_order', parseInt(e.target.value) || 0)}
+                                    onChange={(e) =>
+                                        setData(
+                                            'sort_order',
+                                            parseInt(e.target.value) || 0,
+                                        )
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 />
                             </div>
@@ -332,46 +455,62 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                         {/* Summary & About */}
                         <div className="space-y-4">
                             <div>
-                                <label htmlFor="summary" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="summary"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Ringkasan Tugas (Card) *
                                 </label>
                                 <textarea
                                     id="summary"
                                     rows={2}
                                     value={data.summary}
-                                    onChange={(e) => setData('summary', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('summary', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                     required
                                 />
-                                {errors.summary && <p className="mt-1 text-xs text-red-600">{errors.summary}</p>}
+                                {errors.summary && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.summary}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
-                                <label htmlFor="about" className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                                <label
+                                    htmlFor="about"
+                                    className="block text-xs font-bold tracking-wider text-foreground uppercase"
+                                >
                                     Tentang Perangkat (Modal Detail)
                                 </label>
                                 <textarea
                                     id="about"
                                     rows={3}
                                     value={data.about}
-                                    onChange={(e) => setData('about', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('about', e.target.value)
+                                    }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 />
                             </div>
                         </div>
 
                         {/* Responsibilities */}
-                        <h2 className="text-base font-bold text-foreground border-b border-sidebar-border/70 pb-3 pt-2">
+                        <h2 className="border-b border-sidebar-border/70 pt-2 pb-3 text-base font-bold text-foreground">
                             Poin Tugas & Tanggung Jawab
                         </h2>
                         <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                            <div className="mb-2 flex items-center justify-between">
+                                <label className="block text-xs font-bold tracking-wider text-foreground uppercase">
                                     Tugas Utama (Modal Detail)
                                 </label>
                                 <button
                                     type="button"
-                                    onClick={() => addArrayField('responsibilities')}
+                                    onClick={() =>
+                                        addArrayField('responsibilities')
+                                    }
                                     className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800"
                                 >
                                     <Plus className="size-3.5" />
@@ -380,17 +519,31 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                             </div>
                             <div className="space-y-2">
                                 {data.responsibilities.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-2">
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-2"
+                                    >
                                         <input
                                             type="text"
                                             value={item}
-                                            onChange={(e) => handleArrayChange('responsibilities', index, e.target.value)}
+                                            onChange={(e) =>
+                                                handleArrayChange(
+                                                    'responsibilities',
+                                                    index,
+                                                    e.target.value,
+                                                )
+                                            }
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
                                         {data.responsibilities.length > 1 && (
                                             <button
                                                 type="button"
-                                                onClick={() => removeArrayField('responsibilities', index)}
+                                                onClick={() =>
+                                                    removeArrayField(
+                                                        'responsibilities',
+                                                        index,
+                                                    )
+                                                }
                                                 className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                                             >
                                                 <Trash2 className="size-4" />
@@ -403,13 +556,15 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
 
                         {/* Service Focus */}
                         <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                            <div className="mb-2 flex items-center justify-between">
+                                <label className="block text-xs font-bold tracking-wider text-foreground uppercase">
                                     Fokus Pelayanan
                                 </label>
                                 <button
                                     type="button"
-                                    onClick={() => addArrayField('service_focus')}
+                                    onClick={() =>
+                                        addArrayField('service_focus')
+                                    }
                                     className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 hover:text-emerald-800"
                                 >
                                     <Plus className="size-3.5" />
@@ -418,17 +573,31 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                             </div>
                             <div className="space-y-2">
                                 {data.service_focus.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-2">
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-2"
+                                    >
                                         <input
                                             type="text"
                                             value={item}
-                                            onChange={(e) => handleArrayChange('service_focus', index, e.target.value)}
+                                            onChange={(e) =>
+                                                handleArrayChange(
+                                                    'service_focus',
+                                                    index,
+                                                    e.target.value,
+                                                )
+                                            }
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
                                         {data.service_focus.length > 1 && (
                                             <button
                                                 type="button"
-                                                onClick={() => removeArrayField('service_focus', index)}
+                                                onClick={() =>
+                                                    removeArrayField(
+                                                        'service_focus',
+                                                        index,
+                                                    )
+                                                }
                                                 className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                                             >
                                                 <Trash2 className="size-4" />
@@ -441,8 +610,8 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
 
                         {/* Education */}
                         <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                            <div className="mb-2 flex items-center justify-between">
+                                <label className="block text-xs font-bold tracking-wider text-foreground uppercase">
                                     Riwayat Pendidikan
                                 </label>
                                 <button
@@ -456,17 +625,31 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                             </div>
                             <div className="space-y-2">
                                 {data.education.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-2">
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-2"
+                                    >
                                         <input
                                             type="text"
                                             value={item}
-                                            onChange={(e) => handleArrayChange('education', index, e.target.value)}
+                                            onChange={(e) =>
+                                                handleArrayChange(
+                                                    'education',
+                                                    index,
+                                                    e.target.value,
+                                                )
+                                            }
                                             className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
                                         {data.education.length > 1 && (
                                             <button
                                                 type="button"
-                                                onClick={() => removeArrayField('education', index)}
+                                                onClick={() =>
+                                                    removeArrayField(
+                                                        'education',
+                                                        index,
+                                                    )
+                                                }
                                                 className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                                             >
                                                 <Trash2 className="size-4" />
@@ -479,8 +662,8 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
 
                         {/* Career */}
                         <div>
-                            <div className="flex items-center justify-between mb-2">
-                                <label className="block text-xs font-bold text-foreground uppercase tracking-wider">
+                            <div className="mb-2 flex items-center justify-between">
+                                <label className="block text-xs font-bold tracking-wider text-foreground uppercase">
                                     Riwayat Karir
                                 </label>
                                 <button
@@ -494,25 +677,42 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                             </div>
                             <div className="space-y-2">
                                 {data.career.map((item, index) => (
-                                    <div key={index} className="flex items-center gap-2">
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-2"
+                                    >
                                         <input
                                             type="text"
                                             value={item.period}
-                                            onChange={(e) => handleCareerChange(index, 'period', e.target.value)}
+                                            onChange={(e) =>
+                                                handleCareerChange(
+                                                    index,
+                                                    'period',
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="Periode"
                                             className="w-1/3 rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
                                         <input
                                             type="text"
                                             value={item.role}
-                                            onChange={(e) => handleCareerChange(index, 'role', e.target.value)}
+                                            onChange={(e) =>
+                                                handleCareerChange(
+                                                    index,
+                                                    'role',
+                                                    e.target.value,
+                                                )
+                                            }
                                             placeholder="Jabatan / Peran"
                                             className="w-2/3 rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                         />
                                         {data.career.length > 1 && (
                                             <button
                                                 type="button"
-                                                onClick={() => removeCareerField(index)}
+                                                onClick={() =>
+                                                    removeCareerField(index)
+                                                }
                                                 className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg border border-red-200 text-red-600 hover:bg-red-50"
                                             >
                                                 <Trash2 className="size-4" />
@@ -524,15 +724,19 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                         </div>
 
                         {/* Status Checkbox */}
-                        <div className="pt-2 border-t border-sidebar-border/70">
+                        <div className="border-t border-sidebar-border/70 pt-2">
                             <label className="inline-flex items-center gap-2 text-xs font-bold text-foreground">
                                 <input
                                     type="checkbox"
                                     checked={data.is_active}
-                                    onChange={(e) => setData('is_active', e.target.checked)}
+                                    onChange={(e) =>
+                                        setData('is_active', e.target.checked)
+                                    }
                                     className="size-4 rounded border-sidebar-border text-emerald-700 focus:ring-emerald-600"
                                 />
-                                <span>Status Aktif (Tampilkan di Website Public)</span>
+                                <span>
+                                    Status Aktif (Tampilkan di Website Public)
+                                </span>
                             </label>
                         </div>
                     </div>
@@ -544,7 +748,11 @@ export default function AdminVillageOfficialEdit({ official, parentOptions }: Pr
                             className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-800 disabled:opacity-50"
                         >
                             <Edit className="size-4" />
-                            <span>{processing ? 'Menyimpan...' : 'Perbarui Perangkat'}</span>
+                            <span>
+                                {processing
+                                    ? 'Menyimpan...'
+                                    : 'Perbarui Perangkat'}
+                            </span>
                         </button>
                         <Link
                             href={officialIndex()}

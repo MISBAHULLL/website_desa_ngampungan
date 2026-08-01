@@ -52,7 +52,8 @@ export default function VillageOfficialShow({
     slug,
     canonicalUrl,
 }: VillageOfficialShowPageProps) {
-    const official = propOfficial || (slug ? findDummyVillageOfficial(slug) : null);
+    const official =
+        propOfficial || (slug ? findDummyVillageOfficial(slug) : null);
 
     if (!official) {
         return (
@@ -83,13 +84,22 @@ export default function VillageOfficialShow({
     }
 
     const photoSrc = official.photo_url || official.photo;
-    const employeeId = official.employee_id || official.employeeId || 'Perangkat Desa';
+    const employeeId =
+        official.employee_id || official.employeeId || 'Perangkat Desa';
     const term = official.term || '2022–2028';
-    const serviceFocusList = official.service_focus || official.serviceFocus || [];
+    const serviceFocusList =
+        official.service_focus || official.serviceFocus || [];
     const responsibilitiesList = official.responsibilities || [];
     const educationList = official.education || [];
     const careerList = official.career || [];
-    const initials = official.initials || official.name.split(' ').map((n) => n[0]).join('').substring(0, 2).toUpperCase();
+    const initials =
+        official.initials ||
+        official.name
+            .split(' ')
+            .map((n) => n[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase();
 
     const pageDescription = `${official.name}, ${official.position} Pemerintah Desa Ngampungan. Profil resmi aparatur desa Ngampungan.`;
     const relatedOfficials = dummyVillageOfficials
@@ -159,7 +169,10 @@ export default function VillageOfficialShow({
                             aria-hidden="true"
                             className="size-3.5 text-gray-300"
                         />
-                        <span aria-current="page" className="font-bold text-gray-900">
+                        <span
+                            aria-current="page"
+                            className="font-bold text-gray-900"
+                        >
                             {official.name}
                         </span>
                     </nav>
@@ -173,7 +186,7 @@ export default function VillageOfficialShow({
                     className="pointer-events-none absolute -top-32 -right-32 size-96 rounded-full bg-emerald-500/15 blur-3xl"
                 />
 
-                <div className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 lg:px-10 md:py-16">
+                <div className="mx-auto max-w-[1440px] px-4 py-12 sm:px-6 md:py-16 lg:px-10">
                     <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
                         {/* Profile Image Column */}
                         <div className="lg:col-span-4">
@@ -189,7 +202,7 @@ export default function VillageOfficialShow({
                                         {initials}
                                     </div>
                                 )}
-                                <span className="absolute top-6 left-6 inline-flex items-center gap-1.5 rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-bold tracking-wider text-white shadow-xs uppercase">
+                                <span className="absolute top-6 left-6 inline-flex items-center gap-1.5 rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-bold tracking-wider text-white uppercase shadow-xs">
                                     <UserCheck className="size-3" />
                                     {official.unit}
                                 </span>
@@ -202,7 +215,7 @@ export default function VillageOfficialShow({
                                 <Award className="size-3.5 text-emerald-400" />
                                 Aparatur Pemerintah Desa
                             </span>
-                            <h1 className="mt-4 text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white">
+                            <h1 className="mt-4 text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
                                 {official.name}
                             </h1>
                             <p className="mt-2 text-lg font-bold text-emerald-300">
@@ -255,7 +268,10 @@ export default function VillageOfficialShow({
                             <article className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs sm:p-8">
                                 <div className="flex items-center gap-3">
                                     <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
-                                        <BadgeCheck aria-hidden="true" className="size-5 text-emerald-700" />
+                                        <BadgeCheck
+                                            aria-hidden="true"
+                                            className="size-5 text-emerald-700"
+                                        />
                                     </span>
                                     <h2 className="text-xl font-extrabold text-gray-900">
                                         Tentang Perangkat
@@ -272,7 +288,10 @@ export default function VillageOfficialShow({
                             <article className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs sm:p-8">
                                 <div className="flex items-center gap-3">
                                     <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
-                                        <BriefcaseBusiness aria-hidden="true" className="size-5 text-emerald-700" />
+                                        <BriefcaseBusiness
+                                            aria-hidden="true"
+                                            className="size-5 text-emerald-700"
+                                        />
                                     </span>
                                     <h2 className="text-xl font-extrabold text-gray-900">
                                         Tugas dan Tanggung Jawab
@@ -282,7 +301,7 @@ export default function VillageOfficialShow({
                                     {responsibilitiesList.map((resp) => (
                                         <li
                                             key={resp}
-                                            className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/60 p-4 text-xs font-medium leading-relaxed text-gray-700"
+                                            className="flex items-start gap-3 rounded-2xl border border-gray-100 bg-gray-50/60 p-4 text-xs leading-relaxed font-medium text-gray-700"
                                         >
                                             <Check
                                                 aria-hidden="true"
@@ -296,11 +315,15 @@ export default function VillageOfficialShow({
                         )}
 
                         {/* Pendidikan dan Riwayat Jabatan Card */}
-                        {(educationList.length > 0 || careerList.length > 0) && (
+                        {(educationList.length > 0 ||
+                            careerList.length > 0) && (
                             <article className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs sm:p-8">
                                 <div className="flex items-center gap-3">
                                     <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
-                                        <GraduationCap aria-hidden="true" className="size-5 text-emerald-700" />
+                                        <GraduationCap
+                                            aria-hidden="true"
+                                            className="size-5 text-emerald-700"
+                                        />
                                     </span>
                                     <h2 className="text-xl font-extrabold text-gray-900">
                                         Pendidikan dan Riwayat Jabatan
@@ -361,7 +384,10 @@ export default function VillageOfficialShow({
                         {serviceFocusList.length > 0 && (
                             <div className="rounded-3xl border border-gray-200/80 bg-white p-6 shadow-xs">
                                 <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
-                                    <ShieldCheck aria-hidden="true" className="size-5 text-emerald-700" />
+                                    <ShieldCheck
+                                        aria-hidden="true"
+                                        className="size-5 text-emerald-700"
+                                    />
                                 </span>
                                 <h2 className="mt-4 text-lg font-extrabold text-gray-900">
                                     Fokus Pelayanan

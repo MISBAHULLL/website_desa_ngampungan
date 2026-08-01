@@ -27,7 +27,10 @@ export default function Register({ passwordRules }: Props) {
                     <>
                         <div className="grid gap-5">
                             <div className="grid gap-2">
-                                <Label htmlFor="name" className="text-sm font-bold text-slate-800">
+                                <Label
+                                    htmlFor="name"
+                                    className="text-sm font-bold text-slate-800"
+                                >
                                     Nama Lengkap
                                 </Label>
                                 <Input
@@ -39,7 +42,7 @@ export default function Register({ passwordRules }: Props) {
                                     autoComplete="name"
                                     name="name"
                                     placeholder="Masukkan nama lengkap Anda"
-                                    className="h-12 sm:h-13 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError
                                     message={errors.name}
@@ -48,7 +51,10 @@ export default function Register({ passwordRules }: Props) {
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="email" className="text-sm font-bold text-slate-800">
+                                <Label
+                                    htmlFor="email"
+                                    className="text-sm font-bold text-slate-800"
+                                >
                                     Alamat Email
                                 </Label>
                                 <Input
@@ -59,13 +65,16 @@ export default function Register({ passwordRules }: Props) {
                                     autoComplete="email"
                                     name="email"
                                     placeholder="nama@contoh.com"
-                                    className="h-12 sm:h-13 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError message={errors.email} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password" className="text-sm font-bold text-slate-800">
+                                <Label
+                                    htmlFor="password"
+                                    className="text-sm font-bold text-slate-800"
+                                >
                                     Kata Sandi
                                 </Label>
                                 <PasswordInput
@@ -76,13 +85,16 @@ export default function Register({ passwordRules }: Props) {
                                     name="password"
                                     placeholder="••••••••"
                                     passwordrules={passwordRules}
-                                    className="h-12 sm:h-13 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError message={errors.password} />
                             </div>
 
                             <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation" className="text-sm font-bold text-slate-800">
+                                <Label
+                                    htmlFor="password_confirmation"
+                                    className="text-sm font-bold text-slate-800"
+                                >
                                     Konfirmasi Kata Sandi
                                 </Label>
                                 <PasswordInput
@@ -93,7 +105,7 @@ export default function Register({ passwordRules }: Props) {
                                     name="password_confirmation"
                                     placeholder="••••••••"
                                     passwordrules={passwordRules}
-                                    className="h-12 sm:h-13 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 transition-all"
+                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError
                                     message={errors.password_confirmation}
@@ -102,18 +114,24 @@ export default function Register({ passwordRules }: Props) {
 
                             <Button
                                 type="submit"
-                                className="mt-2 h-13 sm:h-14 w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-base font-extrabold text-white shadow-xl shadow-emerald-600/30 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-emerald-600/40 active:scale-[0.99] disabled:opacity-70"
+                                className="mt-2 h-13 w-full rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 text-base font-extrabold text-white shadow-xl shadow-emerald-600/30 transition-all hover:from-emerald-700 hover:to-teal-700 hover:shadow-emerald-600/40 active:scale-[0.99] disabled:opacity-70 sm:h-14"
                                 tabIndex={5}
                                 data-test="register-user-button"
                             >
-                                {processing && <Spinner className="mr-2.5 size-5 border-2 border-white/30 border-t-white" />}
+                                {processing && (
+                                    <Spinner className="mr-2.5 size-5 border-2 border-white/30 border-t-white" />
+                                )}
                                 Daftar Akun Sekarang
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm font-medium text-slate-600 pt-4 border-t border-slate-100">
+                        <div className="border-t border-slate-100 pt-4 text-center text-sm font-medium text-slate-600">
                             Sudah memiliki akun?{' '}
-                            <TextLink href={login()} tabIndex={6} className="font-bold text-emerald-700 hover:text-emerald-800 hover:underline">
+                            <TextLink
+                                href={login()}
+                                tabIndex={6}
+                                className="font-bold text-emerald-700 hover:text-emerald-800 hover:underline"
+                            >
                                 Masuk di sini
                             </TextLink>
                         </div>
@@ -126,6 +144,6 @@ export default function Register({ passwordRules }: Props) {
 
 Register.layout = {
     title: 'Buat Akun Baru',
-    description: 'Daftarkan diri Anda untuk mengakses seluruh portal & layanan digital Desa Ngampungan',
+    description:
+        'Daftarkan diri Anda untuk mengakses seluruh portal & layanan digital Desa Ngampungan',
 };
-

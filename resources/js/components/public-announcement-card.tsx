@@ -26,23 +26,28 @@ const priorityPresentation: Record<
         label: 'Normal',
         badgeClassName:
             'border-emerald-200/90 bg-emerald-50/90 text-emerald-800 shadow-2xs',
-        iconClassName: 'bg-emerald-100/90 text-emerald-700 ring-4 ring-emerald-500/10',
+        iconClassName:
+            'bg-emerald-100/90 text-emerald-700 ring-4 ring-emerald-500/10',
         borderTopGradient: 'from-emerald-500 via-teal-400 to-emerald-600',
         glowBg: 'from-emerald-500/5 via-teal-500/5 to-transparent',
         icon: Info,
     },
     important: {
         label: 'Penting',
-        badgeClassName: 'border-amber-200/90 bg-amber-50/90 text-amber-900 shadow-2xs',
-        iconClassName: 'bg-amber-100/90 text-amber-800 ring-4 ring-amber-500/10',
+        badgeClassName:
+            'border-amber-200/90 bg-amber-50/90 text-amber-900 shadow-2xs',
+        iconClassName:
+            'bg-amber-100/90 text-amber-800 ring-4 ring-amber-500/10',
         borderTopGradient: 'from-amber-500 via-yellow-400 to-amber-600',
         glowBg: 'from-amber-500/8 via-yellow-500/5 to-transparent',
         icon: TriangleAlert,
     },
     emergency: {
         label: 'Darurat',
-        badgeClassName: 'border-red-200/90 bg-red-50/90 text-red-900 shadow-2xs font-extrabold',
-        iconClassName: 'bg-red-100/90 text-red-700 ring-4 ring-red-500/15 animate-pulse',
+        badgeClassName:
+            'border-red-200/90 bg-red-50/90 text-red-900 shadow-2xs font-extrabold',
+        iconClassName:
+            'bg-red-100/90 text-red-700 ring-4 ring-red-500/15 animate-pulse',
         borderTopGradient: 'from-red-500 via-rose-400 to-red-600',
         glowBg: 'from-red-500/10 via-rose-500/5 to-transparent',
         icon: CircleAlert,
@@ -61,14 +66,14 @@ export function PublicAnnouncementCard({
 
     return (
         <article
-            className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-village-border/90 bg-white/95 backdrop-blur-md shadow-village-soft transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-village-primary/40 hover:shadow-village-floating motion-reduce:transform-none motion-reduce:transition-none ${
+            className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-village-border/90 bg-white/95 shadow-village-soft backdrop-blur-md transition-all duration-300 ease-out hover:-translate-y-1.5 hover:border-village-primary/40 hover:shadow-village-floating motion-reduce:transform-none motion-reduce:transition-none ${
                 compact ? 'p-5 sm:p-6' : 'p-6 md:p-8'
             }`}
         >
             {/* Top Glowing Color Accent Bar */}
             <div
                 aria-hidden="true"
-                className={`absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r ${presentation.borderTopGradient} transition-opacity duration-300 group-hover:opacity-100`}
+                className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${presentation.borderTopGradient} transition-opacity duration-300 group-hover:opacity-100`}
             />
 
             {/* Background Soft Ambient Glow */}
@@ -128,7 +133,9 @@ export function PublicAnnouncementCard({
                         </span>
                         <h2
                             className={`${
-                                compact ? 'mt-2.5 text-lg' : 'mt-3.5 text-xl md:text-2xl'
+                                compact
+                                    ? 'mt-2.5 text-lg'
+                                    : 'mt-3.5 text-xl md:text-2xl'
                             } leading-snug font-extrabold text-village-ink transition-colors group-hover:text-village-primary`}
                         >
                             {announcement.title}
@@ -139,8 +146,10 @@ export function PublicAnnouncementCard({
                 {/* Announcement Body Summary */}
                 <p
                     className={`${
-                        compact ? 'mt-3.5 line-clamp-2 text-sm' : 'mt-4 text-sm md:text-base'
-                    } leading-relaxed text-slate-600 font-normal`}
+                        compact
+                            ? 'mt-3.5 line-clamp-2 text-sm'
+                            : 'mt-4 text-sm md:text-base'
+                    } leading-relaxed font-normal text-slate-600`}
                 >
                     {announcement.summary}
                 </p>
@@ -149,7 +158,10 @@ export function PublicAnnouncementCard({
             {/* Footer Period Label */}
             <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4 text-xs font-semibold text-slate-500">
                 <div className="flex items-center gap-1.5">
-                    <CalendarClock aria-hidden="true" className="size-4 text-village-primary shrink-0" />
+                    <CalendarClock
+                        aria-hidden="true"
+                        className="size-4 shrink-0 text-village-primary"
+                    />
                     <span>
                         Berlaku{' '}
                         <time
@@ -162,7 +174,10 @@ export function PublicAnnouncementCard({
                     </span>
                 </div>
 
-                <Waves aria-hidden="true" className="size-4 text-emerald-400/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                <Waves
+                    aria-hidden="true"
+                    className="size-4 text-emerald-400/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                />
             </div>
         </article>
     );

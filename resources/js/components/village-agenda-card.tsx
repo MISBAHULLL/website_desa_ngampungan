@@ -30,7 +30,7 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                         className={
                             isCompleted
                                 ? 'rounded-full bg-slate-200 px-3 py-1 text-[10px] font-extrabold tracking-wider text-slate-700 uppercase'
-                                : 'rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-extrabold tracking-wider text-emerald-900 uppercase border border-emerald-200/80'
+                                : 'rounded-full border border-emerald-200/80 bg-emerald-100 px-3 py-1 text-[10px] font-extrabold tracking-wider text-emerald-900 uppercase'
                         }
                     >
                         {agenda.dayLabel}
@@ -38,7 +38,7 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                     <span className="mt-3 block text-4xl leading-none font-black tracking-tight text-emerald-950 transition-transform duration-300 group-hover:scale-110">
                         {agenda.dateLabel.split(' ')[0]}
                     </span>
-                    <span className="mt-2 block text-xs font-bold text-emerald-800 uppercase tracking-wider">
+                    <span className="mt-2 block text-xs font-bold tracking-wider text-emerald-800 uppercase">
                         {agenda.dateLabel.split(' ').slice(1).join(' ')}
                     </span>
                 </div>
@@ -46,7 +46,7 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                 {/* Body Details Content */}
                 <div className="p-6 md:p-7">
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-900 border border-emerald-200/60">
+                        <span className="rounded-full border border-emerald-200/60 bg-emerald-100 px-3 py-1 text-[11px] font-bold text-emerald-900">
                             {agenda.category}
                         </span>
                         <span
@@ -63,14 +63,14 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                                 </>
                             ) : (
                                 <>
-                                    <span className="size-1.5 rounded-full bg-emerald-600 animate-pulse" />
+                                    <span className="size-1.5 animate-pulse rounded-full bg-emerald-600" />
                                     <span>Akan datang</span>
                                 </>
                             )}
                         </span>
                     </div>
 
-                    <h2 className="mt-4 text-xl leading-snug font-extrabold tracking-tight text-slate-900 md:text-2xl group-hover:text-emerald-700 transition-colors duration-200">
+                    <h2 className="mt-4 text-xl leading-snug font-extrabold tracking-tight text-slate-900 transition-colors duration-200 group-hover:text-emerald-700 md:text-2xl">
                         {agenda.title}
                     </h2>
                     <p className="mt-2.5 max-w-3xl text-sm leading-relaxed text-slate-600">
@@ -78,37 +78,43 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                     </p>
 
                     <dl className="mt-5 grid gap-3 text-xs text-slate-700 sm:grid-cols-2">
-                        <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 border border-slate-200/80 transition-colors group-hover:border-slate-300">
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3 transition-colors group-hover:border-slate-300">
                             <Clock3
                                 aria-hidden="true"
                                 className="size-4 shrink-0 text-emerald-700"
                             />
                             <div>
                                 <dt className="sr-only">Waktu</dt>
-                                <dd className="font-semibold text-slate-800">{agenda.timeLabel}</dd>
+                                <dd className="font-semibold text-slate-800">
+                                    {agenda.timeLabel}
+                                </dd>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 border border-slate-200/80 transition-colors group-hover:border-slate-300">
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3 transition-colors group-hover:border-slate-300">
                             <MapPin
                                 aria-hidden="true"
                                 className="size-4 shrink-0 text-emerald-700"
                             />
                             <div>
                                 <dt className="sr-only">Lokasi</dt>
-                                <dd className="font-semibold text-slate-800">{agenda.location}</dd>
+                                <dd className="font-semibold text-slate-800">
+                                    {agenda.location}
+                                </dd>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 border border-slate-200/80 transition-colors group-hover:border-slate-300">
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3 transition-colors group-hover:border-slate-300">
                             <UserRoundCheck
                                 aria-hidden="true"
                                 className="size-4 shrink-0 text-emerald-700"
                             />
                             <div>
                                 <dt className="sr-only">Penyelenggara</dt>
-                                <dd className="font-semibold text-slate-800">{agenda.organizer}</dd>
+                                <dd className="font-semibold text-slate-800">
+                                    {agenda.organizer}
+                                </dd>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3 rounded-xl bg-slate-50 p-3 border border-slate-200/80 transition-colors group-hover:border-slate-300">
+                        <div className="flex items-center gap-3 rounded-xl border border-slate-200/80 bg-slate-50 p-3 transition-colors group-hover:border-slate-300">
                             <CalendarDays
                                 aria-hidden="true"
                                 className="size-4 shrink-0 text-emerald-700"
@@ -129,9 +135,13 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                         aria-expanded={isExpanded}
                         aria-controls={detailsId}
                         onClick={() => setIsExpanded((expanded) => !expanded)}
-                        className="mt-6 inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-emerald-800 transition-all hover:bg-emerald-100/80 hover:border-emerald-300 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
+                        className="mt-6 inline-flex min-h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-emerald-800 transition-all hover:border-emerald-300 hover:bg-emerald-100/80 focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                     >
-                        <span>{isExpanded ? 'Sembunyikan rincian' : 'Lihat rincian lengkap'}</span>
+                        <span>
+                            {isExpanded
+                                ? 'Sembunyikan rincian'
+                                : 'Lihat rincian lengkap'}
+                        </span>
                         <ChevronDown
                             aria-hidden="true"
                             className={`size-4 transition-transform duration-300 ${
@@ -143,9 +153,9 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                     {isExpanded && (
                         <div
                             id={detailsId}
-                            className="mt-5 rounded-xl border border-emerald-200 bg-emerald-50/60 p-5 animate-in fade-in slide-in-from-top-2 duration-300"
+                            className="mt-5 animate-in rounded-xl border border-emerald-200 bg-emerald-50/60 p-5 duration-300 fade-in slide-in-from-top-2"
                         >
-                            <h3 className="text-xs font-extrabold tracking-wider text-emerald-900 uppercase mb-3">
+                            <h3 className="mb-3 text-xs font-extrabold tracking-wider text-emerald-900 uppercase">
                                 Rincian Agenda & Ketentuan:
                             </h3>
                             <ul className="space-y-2 text-xs leading-relaxed text-slate-700">
@@ -162,7 +172,7 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                                     </li>
                                 ))}
                             </ul>
-                            <div className="mt-4 pt-3 border-t border-emerald-200/80 flex items-center gap-2 text-xs font-bold text-emerald-900">
+                            <div className="mt-4 flex items-center gap-2 border-t border-emerald-200/80 pt-3 text-xs font-bold text-emerald-900">
                                 <PhoneCall
                                     aria-hidden="true"
                                     className="size-4 text-emerald-700"

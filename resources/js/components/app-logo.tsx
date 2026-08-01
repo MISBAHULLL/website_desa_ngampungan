@@ -9,14 +9,13 @@ export default function AppLogo() {
                 />
             </div>
             <div className="flex flex-col text-left leading-tight">
-                <span className="truncate text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">
+                <span className="truncate text-sm font-extrabold tracking-tight text-slate-900 dark:text-white">
                     Desa Ngampungan
                 </span>
-                <span className="truncate text-[10px] font-bold text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
+                <span className="truncate text-[10px] font-bold tracking-wider text-emerald-700 uppercase dark:text-emerald-400">
                     Bareng, Kab. Jombang
                 </span>
             </div>
         </div>
     );
 }
-

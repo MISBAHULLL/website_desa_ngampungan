@@ -68,7 +68,8 @@ const statusBadges: Record<
 > = {
     selesai: {
         label: 'Selesai 100%',
-        className: 'bg-emerald-50 text-emerald-700 border border-emerald-200/90',
+        className:
+            'bg-emerald-50 text-emerald-700 border border-emerald-200/90',
     },
     berjalan: {
         label: 'Dalam Proses',
@@ -82,10 +83,15 @@ const statusBadges: Record<
 
 interface TransparencyProps {
     dbSummaries?: readonly ApbdesSummaryRecord[];
-    dbPublicDocuments?: readonly (DummyPublicDocument & { downloadUrl?: string })[];
+    dbPublicDocuments?: readonly (DummyPublicDocument & {
+        downloadUrl?: string;
+    })[];
 }
 
-export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: TransparencyProps) {
+export default function TransparencyIndex({
+    dbSummaries,
+    dbPublicDocuments,
+}: TransparencyProps) {
     const latest5Years = useMemo(() => {
         if (dbSummaries && dbSummaries.length > 0) {
             return dbSummaries;
@@ -107,9 +113,14 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
     );
     const [activeCategory, setActiveCategory] = useState<string>('all');
     const [searchQuery, setSearchQuery] = useState<string>('');
-    const [isYearDropdownOpen, setIsYearDropdownOpen] = useState<boolean>(false);
-    const [hoveredIncomeCode, setHoveredIncomeCode] = useState<string | null>(null);
-    const [hoveredAllocLabel, setHoveredAllocLabel] = useState<string | null>(null);
+    const [isYearDropdownOpen, setIsYearDropdownOpen] =
+        useState<boolean>(false);
+    const [hoveredIncomeCode, setHoveredIncomeCode] = useState<string | null>(
+        null,
+    );
+    const [hoveredAllocLabel, setHoveredAllocLabel] = useState<string | null>(
+        null,
+    );
     const dropdownRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -144,7 +155,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                 activeCategory === 'all' || act.category === activeCategory;
             const matchesQuery =
                 act.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                act.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                act.location
+                    .toLowerCase()
+                    .includes(searchQuery.toLowerCase()) ||
                 act.code.includes(searchQuery);
 
             return matchesCategory && matchesQuery;
@@ -153,7 +166,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
     return (
         <PublicPageShell activeSection="transparency">
-            <Head title={`Transparansi APBDes TA ${currentSummary.year} - Desa Ngampungan`}>
+            <Head
+                title={`Transparansi APBDes TA ${currentSummary.year} - Desa Ngampungan`}
+            >
                 <meta
                     name="description"
                     content={`Rincian APBDes TA ${currentSummary.year}, sumber pendapatan, alokasi 5 bidang belanja, dan transparansi anggaran Desa Ngampungan.`}
@@ -161,8 +176,12 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             </Head>
 
             {/* Page Header */}
-            <section className="bg-village-primary-dark text-white pb-16 md:pb-20 pt-12 md:pt-16">
-                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
+            <section className="bg-village-primary-dark pt-12 pb-16 text-white md:pt-16 md:pb-20">
+                <FadeIn
+                    direction="up"
+                    duration={0.5}
+                    className="mx-auto max-w-[1440px] px-5 lg:px-12 2xl:max-w-[1536px]"
+                >
                     <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                         {/* Title & Description Block */}
                         <div className="max-w-2xl">
@@ -173,7 +192,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 Transparansi & APBDes
                             </h1>
                             <p className="mt-4 text-base leading-relaxed text-white/80 md:text-lg">
-                                Laporan resmi Anggaran Pendapatan dan Belanja Desa Ngampungan. Dikelola secara terbuka, akuntabel, dan dapat diawasi bersama oleh seluruh warga.
+                                Laporan resmi Anggaran Pendapatan dan Belanja
+                                Desa Ngampungan. Dikelola secara terbuka,
+                                akuntabel, dan dapat diawasi bersama oleh
+                                seluruh warga.
                             </p>
                         </div>
 
@@ -182,7 +204,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             <div ref={dropdownRef} className="relative">
                                 <button
                                     type="button"
-                                    onClick={() => setIsYearDropdownOpen((prev) => !prev)}
+                                    onClick={() =>
+                                        setIsYearDropdownOpen((prev) => !prev)
+                                    }
                                     className="group flex items-center gap-3.5 rounded-2xl border border-white/25 bg-white/10 px-5 py-3 shadow-lg backdrop-blur-md transition-all hover:border-village-accent hover:bg-white/15 focus:outline-none"
                                     aria-expanded={isYearDropdownOpen}
                                     aria-label="Pilih Tahun Anggaran APBDes"
@@ -198,7 +222,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                             Tahun Anggaran {selectedYear}
                                             <ChevronDown
                                                 className={`size-4 text-village-accent transition-transform duration-200 ${
-                                                    isYearDropdownOpen ? 'rotate-180' : ''
+                                                    isYearDropdownOpen
+                                                        ? 'rotate-180'
+                                                        : ''
                                                 }`}
                                             />
                                         </span>
@@ -207,9 +233,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
                                 {/* Custom Floating Light-Mode Dropdown Menu */}
                                 {isYearDropdownOpen && (
-                                    <div className="absolute left-0 lg:left-auto lg:right-0 top-full mt-2.5 z-50 w-72 rounded-2xl border border-gray-200 bg-white p-2 shadow-2xl animate-in fade-in slide-in-from-top-2">
-                                        <div className="px-3 py-2 border-b border-gray-100 mb-1 flex items-center justify-between">
-                                            <span className="text-[10px] font-bold uppercase tracking-wider text-village-primary">
+                                    <div className="absolute top-full left-0 z-50 mt-2.5 w-72 animate-in rounded-2xl border border-gray-200 bg-white p-2 shadow-2xl fade-in slide-in-from-top-2 lg:right-0 lg:left-auto">
+                                        <div className="mb-1 flex items-center justify-between border-b border-gray-100 px-3 py-2">
+                                            <span className="text-[10px] font-bold tracking-wider text-village-primary uppercase">
                                                 Daftar Tahun Anggaran
                                             </span>
                                             <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[10px] font-semibold text-gray-600">
@@ -218,19 +244,24 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                         </div>
                                         <div className="space-y-1">
                                             {latest5Years.map((item) => {
-                                                const isSelected = item.year === selectedYear;
+                                                const isSelected =
+                                                    item.year === selectedYear;
 
                                                 return (
                                                     <button
                                                         key={item.year}
                                                         type="button"
                                                         onClick={() => {
-                                                            setSelectedYear(item.year);
-                                                            setIsYearDropdownOpen(false);
+                                                            setSelectedYear(
+                                                                item.year,
+                                                            );
+                                                            setIsYearDropdownOpen(
+                                                                false,
+                                                            );
                                                         }}
                                                         className={`flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-bold transition-all ${
                                                             isSelected
-                                                                ? 'bg-village-primary text-white shadow-sm font-extrabold'
+                                                                ? 'bg-village-primary font-extrabold text-white shadow-sm'
                                                                 : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
                                                         }`}
                                                     >
@@ -242,7 +273,8 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                                                         : 'bg-gray-400'
                                                                 }`}
                                                             />
-                                                            Tahun Anggaran {item.year}
+                                                            Tahun Anggaran{' '}
+                                                            {item.year}
                                                         </span>
                                                         {isSelected && (
                                                             <Check className="size-4 shrink-0 text-white" />
@@ -263,11 +295,15 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             <section
                 id="apbdes"
                 aria-labelledby="apbdes-overview-heading"
-                className="scroll-mt-24 bg-[#f8faf8] py-12 md:py-16 border-b border-gray-200/80"
+                className="scroll-mt-24 border-b border-gray-200/80 bg-[#f8faf8] py-12 md:py-16"
             >
-                <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12 2xl:max-w-[1536px]">
                     {/* Header Strip */}
-                    <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-4 border-b border-gray-200 pb-6 sm:flex-row sm:items-center">
+                    <FadeIn
+                        direction="up"
+                        duration={0.5}
+                        className="flex flex-col justify-between gap-4 border-b border-gray-200 pb-6 sm:flex-row sm:items-center"
+                    >
                         <div>
                             <span className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
                                 Ringkasan Keuangan
@@ -280,15 +316,21 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             </h2>
                         </div>
                         <div className="flex items-center gap-3 text-xs font-medium text-gray-600">
-                            <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3.5 py-1.5 border border-gray-200 shadow-2xs">
+                            <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3.5 py-1.5 shadow-2xs">
                                 <Clock className="size-3.5 text-village-primary" />
-                                Diperbarui: <strong className="text-gray-900">{currentSummary.updatedLabel}</strong>
+                                Diperbarui:{' '}
+                                <strong className="text-gray-900">
+                                    {currentSummary.updatedLabel}
+                                </strong>
                             </span>
                         </div>
                     </FadeIn>
 
                     {/* 4 Executive Metric Cards Grid */}
-                    <StaggerContainer staggerDelay={0.08} className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                    <StaggerContainer
+                        staggerDelay={0.08}
+                        className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4"
+                    >
                         {currentSummary.metrics.map((metric: ApbdesMetric) => {
                             const presentation = metricPresentation[metric.key];
 
@@ -330,14 +372,16 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                     {/* Serapan Realisasi Progress Banner Interaktif */}
                     <div className="group relative mt-6 rounded-[22px] border border-emerald-200/90 bg-gradient-to-r from-emerald-50/90 via-emerald-50/50 to-teal-50/60 p-6 shadow-xs transition-all duration-300 hover:border-emerald-300 hover:shadow-md">
                         {/* Floating Status Detail Tooltip on Hover */}
-                        <div className="absolute -top-11 right-6 z-20 hidden items-center gap-2.5 rounded-xl bg-white px-3.5 py-1.5 text-xs text-gray-900 shadow-xl border border-emerald-200/90 animate-in fade-in zoom-in-95 duration-150 group-hover:flex">
+                        <div className="absolute -top-11 right-6 z-20 hidden animate-in items-center gap-2.5 rounded-xl border border-emerald-200/90 bg-white px-3.5 py-1.5 text-xs text-gray-900 shadow-xl duration-150 zoom-in-95 fade-in group-hover:flex">
                             <span className="size-2 rounded-full bg-emerald-600" />
                             <div className="flex flex-col text-left">
-                                <span className="text-[9px] font-medium text-gray-500 uppercase tracking-wider">
+                                <span className="text-[9px] font-medium tracking-wider text-gray-500 uppercase">
                                     Status Serapan TA {currentSummary.year}
                                 </span>
                                 <span className="text-xs font-bold text-emerald-700">
-                                    Sisa Pagu Belum Terserap: {100 - currentSummary.realizationPercentage}%
+                                    Sisa Pagu Belum Terserap:{' '}
+                                    {100 - currentSummary.realizationPercentage}
+                                    %
                                 </span>
                             </div>
                         </div>
@@ -346,12 +390,21 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             <div>
                                 <div className="flex items-center gap-2">
                                     <span className="size-2.5 rounded-full bg-emerald-600" />
-                                    <h3 className="text-xs font-extrabold text-emerald-950 uppercase tracking-wider">
-                                        Tingkat Serapan Realisasi Belanja (TA {currentSummary.year})
+                                    <h3 className="text-xs font-extrabold tracking-wider text-emerald-950 uppercase">
+                                        Tingkat Serapan Realisasi Belanja (TA{' '}
+                                        {currentSummary.year})
                                     </h3>
                                 </div>
                                 <p className="mt-1 text-xs text-emerald-800">
-                                    Sebanyak <strong className="text-emerald-950">{currentSummary.realizedAmount}</strong> telah terserap dari total pagu belanja <strong className="text-emerald-950">{currentSummary.budgetAmount}</strong>.
+                                    Sebanyak{' '}
+                                    <strong className="text-emerald-950">
+                                        {currentSummary.realizedAmount}
+                                    </strong>{' '}
+                                    telah terserap dari total pagu belanja{' '}
+                                    <strong className="text-emerald-950">
+                                        {currentSummary.budgetAmount}
+                                    </strong>
+                                    .
                                 </p>
                             </div>
                             <div className="flex items-center gap-3">
@@ -368,12 +421,14 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 aria-label={`Serapan belanja ${currentSummary.realizationPercentage} persen`}
                                 aria-valuemin={0}
                                 aria-valuemax={100}
-                                aria-valuenow={currentSummary.realizationPercentage}
+                                aria-valuenow={
+                                    currentSummary.realizationPercentage
+                                }
                                 className="relative h-3.5 w-full overflow-hidden rounded-full bg-emerald-200/60 p-0.5 shadow-inner"
                             >
                                 {/* Solid Fill Bar */}
                                 <div
-                                    className="h-full rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 transition-all duration-700 ease-out shadow-xs"
+                                    className="h-full rounded-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-500 shadow-xs transition-all duration-700 ease-out"
                                     style={{
                                         width: `${currentSummary.realizationPercentage}%`,
                                     }}
@@ -381,7 +436,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             </div>
 
                             {/* Milestone Tick Indicators */}
-                            <div className="mt-2 flex items-center justify-between text-[9px] sm:text-[10px] font-bold text-emerald-800/75">
+                            <div className="mt-2 flex items-center justify-between text-[9px] font-bold text-emerald-800/75 sm:text-[10px]">
                                 <span>0%</span>
                                 <span>25%</span>
                                 <span>50%</span>
@@ -394,11 +449,15 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             </section>
 
             {/* Visualizers: Sumber Pendapatan & Belanja 5 Bidang */}
-            <section className="bg-white py-12 md:py-16 border-b border-village-border">
-                <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
-                    <div className="grid gap-10 lg:grid-cols-2 items-stretch">
+            <section className="border-b border-village-border bg-white py-12 md:py-16">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12 2xl:max-w-[1536px]">
+                    <div className="grid items-stretch gap-10 lg:grid-cols-2">
                         {/* Visualizer 1: Donut Chart Sumber Pendapatan Desa */}
-                        <FadeIn direction="right" duration={0.5} className="flex flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 sm:p-8 shadow-xs h-full">
+                        <FadeIn
+                            direction="right"
+                            duration={0.5}
+                            className="flex h-full flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 shadow-xs sm:p-8"
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50/80 p-2 shadow-2xs">
                                     <img
@@ -412,27 +471,36 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                         Sumber Pendapatan Desa (Donut Chart)
                                     </h3>
                                     <p className="text-xs text-gray-500">
-                                        Grafik Donut proporsi sumber kas TA {currentSummary.year}
+                                        Grafik Donut proporsi sumber kas TA{' '}
+                                        {currentSummary.year}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="my-auto pt-3 sm:pt-4">
                                 {(() => {
-                                    const colors = ['#10b981', '#0284c7', '#6366f1', '#f59e0b', '#ec4899'];
+                                    const colors = [
+                                        '#10b981',
+                                        '#0284c7',
+                                        '#6366f1',
+                                        '#f59e0b',
+                                        '#ec4899',
+                                    ];
                                     const circumference = 251.327; // 2 * PI * 40
                                     let accumulatedPercentage = 0;
 
-                                    const activeSource = currentSummary.incomeSources?.find(
-                                        (s: ApbdesIncomeSource) => s.code === hoveredIncomeCode,
-                                    );
+                                    const activeSource =
+                                        currentSummary.incomeSources?.find(
+                                            (s: ApbdesIncomeSource) =>
+                                                s.code === hoveredIncomeCode,
+                                        );
 
                                     return (
                                         <div className="relative flex flex-col items-center gap-6 sm:flex-row sm:items-center">
                                             {/* Floating Tooltip Badge Outside the Circle (Light Theme) */}
                                             {activeSource && (
-                                                <div className="absolute -top-14 left-1/2 -translate-x-1/2 sm:left-24 sm:translate-x-0 z-30 pointer-events-none flex items-center gap-3 rounded-2xl bg-white px-3.5 py-2 text-gray-900 shadow-2xl border border-gray-200/90 animate-in fade-in zoom-in-95 duration-150 max-w-[90vw] whitespace-normal sm:whitespace-nowrap">
-                                                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                                                <div className="pointer-events-none absolute -top-14 left-1/2 z-30 flex max-w-[90vw] -translate-x-1/2 animate-in items-center gap-3 rounded-2xl border border-gray-200/90 bg-white px-3.5 py-2 whitespace-normal text-gray-900 shadow-2xl duration-150 zoom-in-95 fade-in sm:left-24 sm:translate-x-0 sm:whitespace-nowrap">
+                                                    <span className="rounded-full border border-emerald-200 bg-emerald-50 px-2 py-0.5 text-[10px] font-extrabold tracking-wider text-emerald-800 uppercase">
                                                         {activeSource.code}
                                                     </span>
                                                     <div className="flex flex-col text-left">
@@ -441,11 +509,18 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                                         </span>
                                                         <div className="flex items-center gap-2 text-[11px]">
                                                             <span className="font-extrabold text-emerald-700">
-                                                                {activeSource.amount}
+                                                                {
+                                                                    activeSource.amount
+                                                                }
                                                             </span>
-                                                            <span className="text-gray-300">•</span>
+                                                            <span className="text-gray-300">
+                                                                •
+                                                            </span>
                                                             <span className="font-semibold text-gray-600">
-                                                                {activeSource.percentage}% Total
+                                                                {
+                                                                    activeSource.percentage
+                                                                }
+                                                                % Total
                                                             </span>
                                                         </div>
                                                     </div>
@@ -453,8 +528,11 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                             )}
 
                                             {/* Donut SVG */}
-                                            <div className="relative flex size-48 shrink-0 items-center justify-center sm:size-52 -mt-2 sm:-mt-3">
-                                                <svg className="size-full -rotate-90" viewBox="0 0 100 100">
+                                            <div className="relative -mt-2 flex size-48 shrink-0 items-center justify-center sm:-mt-3 sm:size-52">
+                                                <svg
+                                                    className="size-full -rotate-90"
+                                                    viewBox="0 0 100 100"
+                                                >
                                                     <circle
                                                         cx="50"
                                                         cy="50"
@@ -463,43 +541,84 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                                         stroke="#f3f4f6"
                                                         strokeWidth="12"
                                                     />
-                                                    {currentSummary.incomeSources?.map((source: ApbdesIncomeSource, index: number) => {
-                                                        const strokeDasharray = `${(source.percentage / 100) * circumference} ${circumference}`;
-                                                        const strokeDashoffset = -((accumulatedPercentage / 100) * circumference);
-                                                        accumulatedPercentage += source.percentage;
-                                                        const segmentColor = colors[index % colors.length];
-                                                        const isHovered = hoveredIncomeCode === source.code;
+                                                    {currentSummary.incomeSources?.map(
+                                                        (
+                                                            source: ApbdesIncomeSource,
+                                                            index: number,
+                                                        ) => {
+                                                            const strokeDasharray = `${(source.percentage / 100) * circumference} ${circumference}`;
+                                                            const strokeDashoffset =
+                                                                -(
+                                                                    (accumulatedPercentage /
+                                                                        100) *
+                                                                    circumference
+                                                                );
+                                                            accumulatedPercentage +=
+                                                                source.percentage;
+                                                            const segmentColor =
+                                                                colors[
+                                                                    index %
+                                                                        colors.length
+                                                                ];
+                                                            const isHovered =
+                                                                hoveredIncomeCode ===
+                                                                source.code;
 
-                                                        return (
-                                                            <circle
-                                                                key={source.code}
-                                                                cx="50"
-                                                                cy="50"
-                                                                r="40"
-                                                                fill="transparent"
-                                                                stroke={segmentColor}
-                                                                strokeWidth={isHovered ? 15 : 12}
-                                                                strokeDasharray={strokeDasharray}
-                                                                strokeDashoffset={strokeDashoffset}
-                                                                onMouseEnter={() => setHoveredIncomeCode(source.code)}
-                                                                onMouseLeave={() => setHoveredIncomeCode(null)}
-                                                                className={`cursor-pointer transition-all duration-300 ${
-                                                                    isHovered ? 'brightness-110 drop-shadow-md' : 'hover:opacity-90'
-                                                                }`}
-                                                            />
-                                                        );
-                                                    })}
+                                                            return (
+                                                                <circle
+                                                                    key={
+                                                                        source.code
+                                                                    }
+                                                                    cx="50"
+                                                                    cy="50"
+                                                                    r="40"
+                                                                    fill="transparent"
+                                                                    stroke={
+                                                                        segmentColor
+                                                                    }
+                                                                    strokeWidth={
+                                                                        isHovered
+                                                                            ? 15
+                                                                            : 12
+                                                                    }
+                                                                    strokeDasharray={
+                                                                        strokeDasharray
+                                                                    }
+                                                                    strokeDashoffset={
+                                                                        strokeDashoffset
+                                                                    }
+                                                                    onMouseEnter={() =>
+                                                                        setHoveredIncomeCode(
+                                                                            source.code,
+                                                                        )
+                                                                    }
+                                                                    onMouseLeave={() =>
+                                                                        setHoveredIncomeCode(
+                                                                            null,
+                                                                        )
+                                                                    }
+                                                                    className={`cursor-pointer transition-all duration-300 ${
+                                                                        isHovered
+                                                                            ? 'brightness-110 drop-shadow-md'
+                                                                            : 'hover:opacity-90'
+                                                                    }`}
+                                                                />
+                                                            );
+                                                        },
+                                                    )}
                                                 </svg>
 
                                                 {/* Center Text (Clean & Static) */}
-                                                <div className="pointer-events-none absolute text-center -mt-1">
-                                                    <span className="block text-[10px] font-bold uppercase tracking-wider text-gray-400">
+                                                <div className="pointer-events-none absolute -mt-1 text-center">
+                                                    <span className="block text-[10px] font-bold tracking-wider text-gray-400 uppercase">
                                                         Pendapatan
                                                     </span>
                                                     <span className="text-sm font-extrabold text-gray-900 sm:text-base">
-                                                        {currentSummary.incomeValue}
+                                                        {
+                                                            currentSummary.incomeValue
+                                                        }
                                                     </span>
-                                                    <span className="block text-[9px] font-medium text-gray-400 mt-0.5">
+                                                    <span className="mt-0.5 block text-[9px] font-medium text-gray-400">
                                                         TA {currentSummary.year}
                                                     </span>
                                                 </div>
@@ -507,38 +626,78 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
                                             {/* Synchronized Legend */}
                                             <div className="w-full space-y-2">
-                                                {currentSummary.incomeSources?.map((source: ApbdesIncomeSource, index: number) => {
-                                                    const segmentColor = colors[index % colors.length];
-                                                    const isHovered = hoveredIncomeCode === source.code;
+                                                {currentSummary.incomeSources?.map(
+                                                    (
+                                                        source: ApbdesIncomeSource,
+                                                        index: number,
+                                                    ) => {
+                                                        const segmentColor =
+                                                            colors[
+                                                                index %
+                                                                    colors.length
+                                                            ];
+                                                        const isHovered =
+                                                            hoveredIncomeCode ===
+                                                            source.code;
 
-                                                    return (
-                                                        <div
-                                                            key={source.code}
-                                                            onMouseEnter={() => setHoveredIncomeCode(source.code)}
-                                                            onMouseLeave={() => setHoveredIncomeCode(null)}
-                                                            className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs transition-all duration-200 ${
-                                                                isHovered
-                                                                    ? 'bg-emerald-50/90 text-emerald-950 font-bold shadow-2xs border border-emerald-200/80 -translate-x-0.5'
-                                                                    : 'hover:bg-gray-100/80 text-gray-700'
-                                                            }`}
-                                                        >
-                                                            <div className="flex items-center gap-2.5 max-w-[65%]">
-                                                                <span
-                                                                    className={`size-3 rounded-full shrink-0 transition-transform duration-200 ${
-                                                                        isHovered ? 'scale-125 ring-2 ring-emerald-300' : ''
-                                                                    }`}
-                                                                    style={{ backgroundColor: segmentColor }}
-                                                                />
-                                                                <span className="font-semibold truncate" title={source.label}>
-                                                                    {source.label}
+                                                        return (
+                                                            <div
+                                                                key={
+                                                                    source.code
+                                                                }
+                                                                onMouseEnter={() =>
+                                                                    setHoveredIncomeCode(
+                                                                        source.code,
+                                                                    )
+                                                                }
+                                                                onMouseLeave={() =>
+                                                                    setHoveredIncomeCode(
+                                                                        null,
+                                                                    )
+                                                                }
+                                                                className={`flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-xs transition-all duration-200 ${
+                                                                    isHovered
+                                                                        ? '-translate-x-0.5 border border-emerald-200/80 bg-emerald-50/90 font-bold text-emerald-950 shadow-2xs'
+                                                                        : 'text-gray-700 hover:bg-gray-100/80'
+                                                                }`}
+                                                            >
+                                                                <div className="flex max-w-[65%] items-center gap-2.5">
+                                                                    <span
+                                                                        className={`size-3 shrink-0 rounded-full transition-transform duration-200 ${
+                                                                            isHovered
+                                                                                ? 'scale-125 ring-2 ring-emerald-300'
+                                                                                : ''
+                                                                        }`}
+                                                                        style={{
+                                                                            backgroundColor:
+                                                                                segmentColor,
+                                                                        }}
+                                                                    />
+                                                                    <span
+                                                                        className="truncate font-semibold"
+                                                                        title={
+                                                                            source.label
+                                                                        }
+                                                                    >
+                                                                        {
+                                                                            source.label
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <span className="font-extrabold text-gray-900">
+                                                                    {
+                                                                        source.amount
+                                                                    }{' '}
+                                                                    (
+                                                                    {
+                                                                        source.percentage
+                                                                    }
+                                                                    %)
                                                                 </span>
                                                             </div>
-                                                            <span className="font-extrabold text-gray-900">
-                                                                {source.amount} ({source.percentage}%)
-                                                            </span>
-                                                        </div>
-                                                    );
-                                                })}
+                                                        );
+                                                    },
+                                                )}
                                             </div>
                                         </div>
                                     );
@@ -547,7 +706,11 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                         </FadeIn>
 
                         {/* Visualizer 2: Alokasi Belanja 5 Bidang Permendagri */}
-                        <FadeIn direction="left" duration={0.5} className="flex flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 sm:p-8 shadow-xs h-full">
+                        <FadeIn
+                            direction="left"
+                            duration={0.5}
+                            className="flex h-full flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 shadow-xs sm:p-8"
+                        >
                             <div className="flex items-center gap-3">
                                 <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50/80 p-2 shadow-2xs">
                                     <img
@@ -561,82 +724,112 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                         Alokasi Belanja 5 Bidang
                                     </h3>
                                     <p className="text-xs text-gray-500">
-                                        Distribusi pagu anggaran berdasarkan bidang resmi
+                                        Distribusi pagu anggaran berdasarkan
+                                        bidang resmi
                                     </p>
                                 </div>
                             </div>
 
-                            <div className="my-auto pt-6 space-y-3">
-                                {currentSummary.allocations.map((alloc: ApbdesAllocation) => {
-                                    const isHovered = hoveredAllocLabel === alloc.label;
-                                    const realPercent = Math.round(alloc.percentage * 0.88);
+                            <div className="my-auto space-y-3 pt-6">
+                                {currentSummary.allocations.map(
+                                    (alloc: ApbdesAllocation) => {
+                                        const isHovered =
+                                            hoveredAllocLabel === alloc.label;
+                                        const realPercent = Math.round(
+                                            alloc.percentage * 0.88,
+                                        );
 
-                                    return (
-                                        <div
-                                            key={alloc.label}
-                                            onMouseEnter={() => setHoveredAllocLabel(alloc.label)}
-                                            onMouseLeave={() => setHoveredAllocLabel(null)}
-                                            className={`group relative rounded-2xl p-3 transition-all duration-300 ${
-                                                isHovered
-                                                    ? 'bg-emerald-50/80 border border-emerald-200/80 shadow-2xs -translate-y-0.5'
-                                                    : 'hover:bg-gray-50 border border-transparent'
-                                            }`}
-                                        >
-                                            {/* Floating Tooltip Card on Hover (Light Theme) */}
-                                            {isHovered && (
-                                                <div className="absolute -top-12 right-3 z-30 flex items-center gap-2.5 rounded-xl bg-white px-3.5 py-1.5 text-gray-900 shadow-xl border border-gray-200/90 animate-in fade-in zoom-in-95 duration-150">
-                                                    <div className="flex flex-col text-left">
-                                                        <span className="text-[9px] font-medium text-gray-500 uppercase tracking-wider">
-                                                            Realisasi Serapan
-                                                        </span>
-                                                        <span className="text-xs font-bold text-emerald-700">
-                                                            {realPercent}% ({alloc.value})
-                                                        </span>
+                                        return (
+                                            <div
+                                                key={alloc.label}
+                                                onMouseEnter={() =>
+                                                    setHoveredAllocLabel(
+                                                        alloc.label,
+                                                    )
+                                                }
+                                                onMouseLeave={() =>
+                                                    setHoveredAllocLabel(null)
+                                                }
+                                                className={`group relative rounded-2xl p-3 transition-all duration-300 ${
+                                                    isHovered
+                                                        ? '-translate-y-0.5 border border-emerald-200/80 bg-emerald-50/80 shadow-2xs'
+                                                        : 'border border-transparent hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {/* Floating Tooltip Card on Hover (Light Theme) */}
+                                                {isHovered && (
+                                                    <div className="absolute -top-12 right-3 z-30 flex animate-in items-center gap-2.5 rounded-xl border border-gray-200/90 bg-white px-3.5 py-1.5 text-gray-900 shadow-xl duration-150 zoom-in-95 fade-in">
+                                                        <div className="flex flex-col text-left">
+                                                            <span className="text-[9px] font-medium tracking-wider text-gray-500 uppercase">
+                                                                Realisasi
+                                                                Serapan
+                                                            </span>
+                                                            <span className="text-xs font-bold text-emerald-700">
+                                                                {realPercent}% (
+                                                                {alloc.value})
+                                                            </span>
+                                                        </div>
+                                                        <span className="h-4 w-px bg-gray-200" />
+                                                        <div className="flex flex-col text-left">
+                                                            <span className="text-[9px] font-medium tracking-wider text-gray-500 uppercase">
+                                                                Pagu Anggaran
+                                                            </span>
+                                                            <span className="text-xs font-bold text-gray-900">
+                                                                {
+                                                                    alloc.percentage
+                                                                }
+                                                                % APBDes
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <span className="h-4 w-px bg-gray-200" />
-                                                    <div className="flex flex-col text-left">
-                                                        <span className="text-[9px] font-medium text-gray-500 uppercase tracking-wider">
-                                                            Pagu Anggaran
-                                                        </span>
-                                                        <span className="text-xs font-bold text-gray-900">
-                                                            {alloc.percentage}% APBDes
-                                                        </span>
-                                                    </div>
+                                                )}
+
+                                                {/* Header Strip */}
+                                                <div className="flex items-center justify-between text-xs font-semibold text-gray-800">
+                                                    <span className="max-w-[70%] truncate font-bold text-gray-900 transition-colors group-hover:text-village-primary">
+                                                        {alloc.label}
+                                                    </span>
+                                                    <span className="font-extrabold text-gray-900">
+                                                        {alloc.value} (
+                                                        {alloc.percentage}%)
+                                                    </span>
                                                 </div>
-                                            )}
 
-                                            {/* Header Strip */}
-                                            <div className="flex items-center justify-between text-xs font-semibold text-gray-800">
-                                                <span className="max-w-[70%] truncate font-bold text-gray-900 group-hover:text-village-primary transition-colors">
-                                                    {alloc.label}
-                                                </span>
-                                                <span className="font-extrabold text-gray-900">
-                                                    {alloc.value} ({alloc.percentage}%)
-                                                </span>
-                                            </div>
+                                                {/* Dual-Layer Progress Bar with Smooth Height Expansion */}
+                                                <div className="relative mt-2 h-2.5 overflow-hidden rounded-full bg-gray-100/90 transition-all duration-300 group-hover:h-3.5">
+                                                    {/* Layer 1: Pagu Allocation Target (Light Green) */}
+                                                    <div
+                                                        className="absolute inset-y-0 left-0 rounded-full bg-village-primary/30 transition-all duration-700 ease-out"
+                                                        style={{
+                                                            width: `${alloc.percentage}%`,
+                                                        }}
+                                                    />
+                                                    {/* Layer 2: Actual Realized Absorption (Solid Primary Green) */}
+                                                    <div
+                                                        className="absolute inset-y-0 left-0 rounded-full bg-village-primary transition-all duration-700 ease-out group-hover:bg-village-primary-dark"
+                                                        style={{
+                                                            width: `${realPercent}%`,
+                                                        }}
+                                                    />
+                                                </div>
 
-                                            {/* Dual-Layer Progress Bar with Smooth Height Expansion */}
-                                            <div className="relative mt-2 overflow-hidden rounded-full bg-gray-100/90 transition-all duration-300 h-2.5 group-hover:h-3.5">
-                                                {/* Layer 1: Pagu Allocation Target (Light Green) */}
-                                                <div
-                                                    className="absolute inset-y-0 left-0 rounded-full bg-village-primary/30 transition-all duration-700 ease-out"
-                                                    style={{ width: `${alloc.percentage}%` }}
-                                                />
-                                                {/* Layer 2: Actual Realized Absorption (Solid Primary Green) */}
-                                                <div
-                                                    className="absolute inset-y-0 left-0 rounded-full bg-village-primary transition-all duration-700 ease-out group-hover:bg-village-primary-dark"
-                                                    style={{ width: `${realPercent}%` }}
-                                                />
+                                                {/* Micro Subtitle on Hover */}
+                                                <div className="mt-1 flex items-center justify-between text-[11px] text-gray-500">
+                                                    <span>
+                                                        Pagu:{' '}
+                                                        <strong className="text-gray-700">
+                                                            {alloc.percentage}%
+                                                        </strong>
+                                                    </span>
+                                                    <span className="font-semibold text-emerald-700">
+                                                        Terserap: ~{realPercent}
+                                                        %
+                                                    </span>
+                                                </div>
                                             </div>
-
-                                            {/* Micro Subtitle on Hover */}
-                                            <div className="mt-1 flex items-center justify-between text-[11px] text-gray-500">
-                                                <span>Pagu: <strong className="text-gray-700">{alloc.percentage}%</strong></span>
-                                                <span className="font-semibold text-emerald-700">Terserap: ~{realPercent}%</span>
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    },
+                                )}
                             </div>
                         </FadeIn>
                     </div>
@@ -646,32 +839,39 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             {/* Interactive Activity Breakdown Table Section */}
             <section
                 id="rincian-kegiatan"
-                className="bg-[#f4f7f5] py-12 md:py-16 border-b border-slate-200/80"
+                className="border-b border-slate-200/80 bg-[#f4f7f5] py-12 md:py-16"
             >
-                <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12 2xl:max-w-[1536px]">
                     {/* Section Header */}
                     <FadeIn direction="up" duration={0.5}>
                         <span className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
                             Transparansi Program
                         </span>
                         <h2 className="mt-1 text-2xl font-extrabold tracking-tight text-gray-900 sm:text-3xl">
-                            Rincian Kegiatan & Program Fisik (TA {currentSummary.year})
+                            Rincian Kegiatan & Program Fisik (TA{' '}
+                            {currentSummary.year})
                         </h2>
-                        <p className="mt-1 text-xs sm:text-sm text-gray-600">
-                            Daftar kegiatan pembangunan, operasional pemerintahan, dan pemberdayaan per lokasi dusun.
+                        <p className="mt-1 text-xs text-gray-600 sm:text-sm">
+                            Daftar kegiatan pembangunan, operasional
+                            pemerintahan, dan pemberdayaan per lokasi dusun.
                         </p>
                     </FadeIn>
 
                     {/* Integrated Control Bar: Search Box & Category Filter Pills */}
-                    <FadeIn direction="up" delay={0.1} duration={0.5} className="mt-6 flex flex-col gap-3 rounded-[20px] border border-gray-200/90 bg-white p-3.5 shadow-2xs lg:flex-row lg:items-center lg:justify-between">
-                        <div className="relative w-full lg:w-72 shrink-0">
-                            <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
+                    <FadeIn
+                        direction="up"
+                        delay={0.1}
+                        duration={0.5}
+                        className="mt-6 flex flex-col gap-3 rounded-[20px] border border-gray-200/90 bg-white p-3.5 shadow-2xs lg:flex-row lg:items-center lg:justify-between"
+                    >
+                        <div className="relative w-full shrink-0 lg:w-72">
+                            <Search className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-gray-400" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari kegiatan, dusun, atau kode..."
-                                className="w-full rounded-full border border-gray-200 bg-gray-50/60 py-2 pl-9 pr-4 text-xs text-gray-900 shadow-2xs placeholder:text-gray-400 focus:border-village-primary focus:bg-white focus:outline-none focus:ring-1 focus:ring-village-primary"
+                                className="w-full rounded-full border border-gray-200 bg-gray-50/60 py-2 pr-4 pl-9 text-xs text-gray-900 shadow-2xs placeholder:text-gray-400 focus:border-village-primary focus:bg-white focus:ring-1 focus:ring-village-primary focus:outline-none"
                             />
                         </div>
 
@@ -691,7 +891,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                     className={`rounded-full px-3.5 py-1.5 text-xs font-semibold whitespace-nowrap transition-all duration-200 ${
                                         activeCategory === cat.id
                                             ? 'bg-village-primary text-white shadow-xs'
-                                            : 'bg-gray-50 text-gray-700 border border-gray-200/80 hover:bg-gray-100/80 hover:text-gray-900'
+                                            : 'border border-gray-200/80 bg-gray-50 text-gray-700 hover:bg-gray-100/80 hover:text-gray-900'
                                     }`}
                                 >
                                     {cat.label}
@@ -701,25 +901,42 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                     </FadeIn>
 
                     {/* Table View for Desktop */}
-                    <FadeIn direction="up" delay={0.15} duration={0.5} className="mt-8 overflow-hidden rounded-[20px] border border-gray-200 bg-white shadow-xs">
+                    <FadeIn
+                        direction="up"
+                        delay={0.15}
+                        duration={0.5}
+                        className="mt-8 overflow-hidden rounded-[20px] border border-gray-200 bg-white shadow-xs"
+                    >
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-xs">
-                                <thead className="border-b border-gray-200 bg-gray-50 font-bold text-gray-700 uppercase tracking-wider">
+                                <thead className="border-b border-gray-200 bg-gray-50 font-bold tracking-wider text-gray-700 uppercase">
                                     <tr>
                                         <th className="px-6 py-4">Kode</th>
-                                        <th className="px-6 py-4">Nama Kegiatan & Program</th>
+                                        <th className="px-6 py-4">
+                                            Nama Kegiatan & Program
+                                        </th>
                                         <th className="px-6 py-4">Bidang</th>
-                                        <th className="px-6 py-4">Lokasi Dusun</th>
-                                        <th className="px-6 py-4 text-right">Pagu Anggaran</th>
-                                        <th className="px-6 py-4 text-right">Realisasi</th>
-                                        <th className="px-6 py-4 text-center">Status Progres</th>
+                                        <th className="px-6 py-4">
+                                            Lokasi Dusun
+                                        </th>
+                                        <th className="px-6 py-4 text-right">
+                                            Pagu Anggaran
+                                        </th>
+                                        <th className="px-6 py-4 text-right">
+                                            Realisasi
+                                        </th>
+                                        <th className="px-6 py-4 text-center">
+                                            Status Progres
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-100">
                                     {filteredActivities.length > 0 ? (
                                         filteredActivities.map((act) => {
-                                            const catBadge = categoryBadges[act.category];
-                                            const stBadge = statusBadges[act.status];
+                                            const catBadge =
+                                                categoryBadges[act.category];
+                                            const stBadge =
+                                                statusBadges[act.status];
 
                                             return (
                                                 <tr
@@ -729,10 +946,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                                     <td className="px-6 py-4 font-mono font-bold text-gray-500">
                                                         {act.code}
                                                     </td>
-                                                    <td className="px-6 py-4 font-semibold text-gray-900 max-w-[280px]">
+                                                    <td className="max-w-[280px] px-6 py-4 font-semibold text-gray-900">
                                                         {act.name}
                                                     </td>
-                                                    <td className="px-6 py-4 font-bold text-gray-800 whitespace-nowrap">
+                                                    <td className="px-6 py-4 font-bold whitespace-nowrap text-gray-800">
                                                         {catBadge.label}
                                                     </td>
                                                     <td className="px-6 py-4 text-gray-600">
@@ -763,7 +980,8 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                                 colSpan={7}
                                                 className="px-6 py-12 text-center text-gray-500"
                                             >
-                                                Tidak ditemukan kegiatan yang sesuai pencarian.
+                                                Tidak ditemukan kegiatan yang
+                                                sesuai pencarian.
                                             </td>
                                         </tr>
                                     )}
@@ -780,8 +998,12 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                 aria-labelledby="public-documents-heading"
                 className="scroll-mt-24 bg-gradient-to-b from-white via-[#fafcfb] to-[#f4f7f5] py-12 md:py-16"
             >
-                <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
-                    <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12 2xl:max-w-[1536px]">
+                    <FadeIn
+                        direction="up"
+                        duration={0.5}
+                        className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"
+                    >
                         <div className="max-w-2xl">
                             <span className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
                                 Arsip Unduh Resmi
@@ -793,7 +1015,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 Dokumen APBDes & Perdes Publik
                             </h2>
                             <p className="mt-3 text-sm text-gray-600">
-                                Unduh berkas resmi APBDes Peraturan Desa, Laporan Pertanggungjawaban (LPJ), dan Baliho Transparansi Anggaran.
+                                Unduh berkas resmi APBDes Peraturan Desa,
+                                Laporan Pertanggungjawaban (LPJ), dan Baliho
+                                Transparansi Anggaran.
                             </p>
                         </div>
                         <span className="text-xs font-semibold text-gray-500">
@@ -801,7 +1025,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                         </span>
                     </FadeIn>
 
-                    <StaggerContainer staggerDelay={0.08} className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    <StaggerContainer
+                        staggerDelay={0.08}
+                        className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3"
+                    >
                         {publicDocs.map((document) => (
                             <StaggerItem
                                 key={document.id}
@@ -809,10 +1036,14 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             >
                                 <div>
                                     <div className="flex items-start justify-between gap-4">
-                                        <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 p-2.5">
-                                            <img src="/assets/dokumen.png" alt="Dokumen" className="size-full object-contain" />
+                                        <span className="flex size-11 shrink-0 items-center justify-center rounded-full border border-emerald-200 bg-emerald-50 p-2.5 text-emerald-700">
+                                            <img
+                                                src="/assets/dokumen.png"
+                                                alt="Dokumen"
+                                                className="size-full object-contain"
+                                            />
                                         </span>
-                                        <span className="rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-800 border border-emerald-200">
+                                        <span className="rounded-full border border-emerald-200 bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-800">
                                             Resmi
                                         </span>
                                     </div>
@@ -826,22 +1057,39 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
                                     <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-gray-200/80 pt-4 text-xs text-gray-600">
                                         <div>
-                                            <dt className="text-gray-400">Tahun</dt>
-                                            <dd className="font-semibold text-gray-900">{document.year}</dd>
+                                            <dt className="text-gray-400">
+                                                Tahun
+                                            </dt>
+                                            <dd className="font-semibold text-gray-900">
+                                                {document.year}
+                                            </dd>
                                         </div>
                                         <div>
-                                            <dt className="text-gray-400">Format</dt>
-                                            <dd className="font-semibold text-gray-900">{document.format} · {document.fileSize}</dd>
+                                            <dt className="text-gray-400">
+                                                Format
+                                            </dt>
+                                            <dd className="font-semibold text-gray-900">
+                                                {document.format} ·{' '}
+                                                {document.fileSize}
+                                            </dd>
                                         </div>
                                     </dl>
                                 </div>
 
                                 <a
-                                    href={'downloadUrl' in document && document.downloadUrl ? document.downloadUrl : '#'}
+                                    href={
+                                        'downloadUrl' in document &&
+                                        document.downloadUrl
+                                            ? document.downloadUrl
+                                            : '#'
+                                    }
                                     download
-                                    className="mt-6 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-full border border-village-primary/20 bg-village-primary px-4 py-2 text-xs font-semibold text-white shadow-xs transition-all duration-200 hover:bg-village-primary-hover hover:shadow-md"
+                                    className="hover:bg-village-primary-hover mt-6 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-full border border-village-primary/20 bg-village-primary px-4 py-2 text-xs font-semibold text-white shadow-xs transition-all duration-200 hover:shadow-md"
                                 >
-                                    <FileDown aria-hidden="true" className="size-3.5" />
+                                    <FileDown
+                                        aria-hidden="true"
+                                        className="size-3.5"
+                                    />
                                     <span>Unduh Dokumen (PDF)</span>
                                 </a>
                             </StaggerItem>
@@ -852,4 +1100,3 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
         </PublicPageShell>
     );
 }
-

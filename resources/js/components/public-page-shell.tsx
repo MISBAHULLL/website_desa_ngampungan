@@ -264,7 +264,7 @@ export function PublicPageShell({
                         animate={{ opacity: 1, scaleX: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.3 }}
-                        className="fixed top-0 left-0 right-0 z-[100] h-1 origin-left bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 shadow-md shadow-emerald-500/30"
+                        className="fixed top-0 right-0 left-0 z-[100] h-1 origin-left bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-600 shadow-md shadow-emerald-500/30"
                     />
                 )}
             </AnimatePresence>
@@ -277,7 +277,7 @@ export function PublicPageShell({
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 rounded-2xl border border-emerald-200 bg-white/95 px-4 py-2 text-xs font-extrabold text-emerald-950 shadow-2xl backdrop-blur-md"
+                        className="fixed top-4 left-1/2 z-[100] flex -translate-x-1/2 items-center gap-3 rounded-2xl border border-emerald-200 bg-white/95 px-4 py-2 text-xs font-extrabold text-emerald-950 shadow-2xl backdrop-blur-md"
                     >
                         <Loader2 className="size-4 animate-spin text-emerald-600" />
                         <span>Memuat data halaman...</span>
@@ -344,7 +344,9 @@ export function PublicPageShell({
                         aria-label="Navigasi halaman publik"
                         className="hidden items-center gap-2 lg:flex"
                     >
-                        <PublicProfileNavigation activeSection={activeSection} />
+                        <PublicProfileNavigation
+                            activeSection={activeSection}
+                        />
                         <Link
                             href={governmentIndex()}
                             className={
@@ -401,7 +403,9 @@ export function PublicPageShell({
                         <button
                             type="button"
                             onClick={() => setIsMobileMenuOpen((open) => !open)}
-                            aria-label={isMobileMenuOpen ? 'Tutup Menu' : 'Buka Menu'}
+                            aria-label={
+                                isMobileMenuOpen ? 'Tutup Menu' : 'Buka Menu'
+                            }
                             className="flex size-11 items-center justify-center rounded-xl border border-village-border text-village-ink transition hover:border-village-primary hover:bg-village-primary-light"
                         >
                             {isMobileMenuOpen ? (
@@ -518,15 +522,15 @@ export function PublicPageShell({
             </main>
 
             <footer className="bg-village-primary-dark text-white/80">
-                <div className="mx-auto flex max-w-[1440px] 2xl:max-w-[1536px] flex-col justify-between gap-6 px-5 py-8 text-xs sm:flex-row sm:items-center lg:px-12">
+                <div className="mx-auto flex max-w-[1440px] flex-col justify-between gap-6 px-5 py-8 text-xs sm:flex-row sm:items-center lg:px-12 2xl:max-w-[1536px]">
                     <div className="flex items-center gap-3">
                         <img
                             src="/assets/logo_kabupaten_jombang.png"
                             alt="Logo Kabupaten Jombang"
-                            className="h-9 w-7.5 object-contain shrink-0"
+                            className="h-9 w-7.5 shrink-0 object-contain"
                         />
                         <div>
-                            <p className="font-extrabold text-sm text-white">
+                            <p className="text-sm font-extrabold text-white">
                                 Pemerintah Desa Ngampungan
                             </p>
                             <p className="text-[11px] text-white/70">
@@ -536,29 +540,48 @@ export function PublicPageShell({
                     </div>
 
                     <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-semibold text-white/90">
-                        <Link href={villageProfileIndex()} className="hover:text-village-accent transition-colors">
+                        <Link
+                            href={villageProfileIndex()}
+                            className="transition-colors hover:text-village-accent"
+                        >
                             Profil
                         </Link>
-                        <Link href={governmentIndex()} className="hover:text-village-accent transition-colors">
+                        <Link
+                            href={governmentIndex()}
+                            className="transition-colors hover:text-village-accent"
+                        >
                             Pemerintahan
                         </Link>
-                        <Link href={servicesIndex()} className="hover:text-village-accent transition-colors">
+                        <Link
+                            href={servicesIndex()}
+                            className="transition-colors hover:text-village-accent"
+                        >
                             Layanan
                         </Link>
-                        <Link href={transparencyIndex()} className="hover:text-village-accent transition-colors">
+                        <Link
+                            href={transparencyIndex()}
+                            className="transition-colors hover:text-village-accent"
+                        >
                             Transparansi
                         </Link>
-                        <Link href={newsIndex()} className="hover:text-village-accent transition-colors">
+                        <Link
+                            href={newsIndex()}
+                            className="transition-colors hover:text-village-accent"
+                        >
                             Berita
                         </Link>
-                        <Link href={potentialsIndex()} className="hover:text-village-accent transition-colors">
+                        <Link
+                            href={potentialsIndex()}
+                            className="transition-colors hover:text-village-accent"
+                        >
                             Potensi Desa
                         </Link>
                     </div>
                 </div>
 
                 <div className="border-t border-white/10 py-3.5 text-center text-[11px] text-white/60">
-                    © 2026 Pemerintah Desa Ngampungan. Seluruh Hak Cipta Dilindungi.
+                    © 2026 Pemerintah Desa Ngampungan. Seluruh Hak Cipta
+                    Dilindungi.
                 </div>
             </footer>
         </div>

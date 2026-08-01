@@ -1,5 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Compass, ExternalLink, Download, MapPin, Building2, Home, Landmark, Sparkles, Layers, RotateCcw } from 'lucide-react';
+import {
+    Compass,
+    ExternalLink,
+    Download,
+    MapPin,
+    Building2,
+    Home,
+    Landmark,
+    Sparkles,
+    Layers,
+    RotateCcw,
+} from 'lucide-react';
 import 'leaflet/dist/leaflet.css';
 
 interface MapPOI {
@@ -35,7 +46,8 @@ const villagePOIs: MapPOI[] = [
         lat: -7.6749,
         lng: 112.3385,
         address: 'Jl. Raya Desa Ngampungan No. 01, Bareng, Jombang',
-        description: 'Pusat administrasi, pelayanan publik, dan aula musyawarah warga Desa Ngampungan.',
+        description:
+            'Pusat administrasi, pelayanan publik, dan aula musyawarah warga Desa Ngampungan.',
         color: '#1f7350', // village-primary
     },
     {
@@ -43,10 +55,11 @@ const villagePOIs: MapPOI[] = [
         title: 'Wilayah Dusun Ngampungan',
         category: 'dusun',
         categoryLabel: 'Dusun (4 RW · 12 RT)',
-        lat: -7.6730,
-        lng: 112.3350,
+        lat: -7.673,
+        lng: 112.335,
         address: 'Dusun Ngampungan, Desa Ngampungan',
-        description: 'Pusat pemukiman utama, pertanian produktif, dan layanan administratif terpadu.',
+        description:
+            'Pusat pemukiman utama, pertanian produktif, dan layanan administratif terpadu.',
         color: '#059669', // emerald
     },
     {
@@ -54,10 +67,11 @@ const villagePOIs: MapPOI[] = [
         title: 'Wilayah Dusun Sumberdadi',
         category: 'dusun',
         categoryLabel: 'Dusun (3 RW · 10 RT)',
-        lat: -7.6710,
-        lng: 112.3420,
+        lat: -7.671,
+        lng: 112.342,
         address: 'Dusun Sumberdadi, Desa Ngampungan',
-        description: 'Kawasan lahan pertanian hortikultura, perkebunan, dan peternakan warga.',
+        description:
+            'Kawasan lahan pertanian hortikultura, perkebunan, dan peternakan warga.',
         color: '#d97706', // amber
     },
     {
@@ -65,10 +79,11 @@ const villagePOIs: MapPOI[] = [
         title: 'Wilayah Dusun Wungurejo',
         category: 'dusun',
         categoryLabel: 'Dusun (3 RW · 8 RT)',
-        lat: -7.6780,
-        lng: 112.3410,
+        lat: -7.678,
+        lng: 112.341,
         address: 'Dusun Wungurejo, Desa Ngampungan',
-        description: 'Sentra UMKM lokal, perikanan darat, dan area hijau pemukiman.',
+        description:
+            'Sentra UMKM lokal, perikanan darat, dan area hijau pemukiman.',
         color: '#2563eb', // blue
     },
     {
@@ -79,7 +94,8 @@ const villagePOIs: MapPOI[] = [
         lat: -7.6742,
         lng: 112.3392,
         address: 'Kompleks Balai Desa Ngampungan',
-        description: 'Layanan kesehatan masyarakat dasar, Posyandu balita & lansia berkala.',
+        description:
+            'Layanan kesehatan masyarakat dasar, Posyandu balita & lansia berkala.',
         color: '#0d9488', // teal
     },
     {
@@ -90,7 +106,8 @@ const villagePOIs: MapPOI[] = [
         lat: -7.6765,
         lng: 112.3365,
         address: 'Dusun Ngampungan RT 04 / RW 02',
-        description: 'Pusat produksi dan galeri kerajinan serta produk olahan pangan lokal warga.',
+        description:
+            'Pusat produksi dan galeri kerajinan serta produk olahan pangan lokal warga.',
         color: '#7c3aed', // purple
     },
 ];
@@ -115,7 +132,8 @@ export function VillageGeospatialMap({
     const centerLat = latitude ?? DEFAULT_LAT;
     const centerLng = longitude ?? DEFAULT_LNG;
     const initialZoom = zoom ?? DEFAULT_ZOOM;
-    const directGoogleUrl = googleUrl || `https://maps.google.com/?q=${centerLat},${centerLng}`;
+    const directGoogleUrl =
+        googleUrl || `https://maps.google.com/?q=${centerLat},${centerLng}`;
 
     // Dynamic Leaflet Map Initialization
     useEffect(() => {
@@ -130,9 +148,12 @@ export function VillageGeospatialMap({
             // Fix default marker icon issues in Webpack/Vite
             delete (L.Icon.Default.prototype as any)._getIconUrl;
             L.Icon.Default.mergeOptions({
-                iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-                iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-                shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+                iconUrl:
+                    'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+                iconRetinaUrl:
+                    'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+                shadowUrl:
+                    'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
             });
 
             // Initialize Map Instance if not already created
@@ -145,10 +166,14 @@ export function VillageGeospatialMap({
                 });
 
                 // OpenStreetMap Tile Layer
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    maxZoom: 19,
-                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                }).addTo(map);
+                L.tileLayer(
+                    'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    {
+                        maxZoom: 19,
+                        attribution:
+                            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    },
+                ).addTo(map);
 
                 // Add zoom control to top right
                 L.control.zoom({ position: 'topright' }).addTo(map);
@@ -214,7 +239,9 @@ export function VillageGeospatialMap({
                     </div>
                 `;
 
-                const marker = L.marker([poi.lat, poi.lng], { icon: customIcon })
+                const marker = L.marker([poi.lat, poi.lng], {
+                    icon: customIcon,
+                })
                     .addTo(map)
                     .bindPopup(popupContent);
 
@@ -235,7 +262,9 @@ export function VillageGeospatialMap({
             });
             // Open popup for corresponding marker
             const targetMarker = markersRef.current.find(
-                (m) => m.getLatLng().lat === poi.lat && m.getLatLng().lng === poi.lng
+                (m) =>
+                    m.getLatLng().lat === poi.lat &&
+                    m.getLatLng().lng === poi.lng,
             );
             if (targetMarker) {
                 targetMarker.openPopup();
@@ -261,7 +290,7 @@ export function VillageGeospatialMap({
                     <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
                         <div>
                             <div className="flex items-center gap-2">
-                                <span className="flex size-2 rounded-full bg-emerald-500 animate-pulse" />
+                                <span className="flex size-2 animate-pulse rounded-full bg-emerald-500" />
                                 <p className="text-xs font-bold tracking-wider text-village-primary uppercase">
                                     Sistem Informasi Geospasial Live
                                 </p>
@@ -296,8 +325,9 @@ export function VillageGeospatialMap({
 
                     {/* Filter Category Chips */}
                     <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                        <span className="mr-1 text-xs font-bold text-village-muted flex items-center gap-1">
-                            <Layers className="size-3.5 text-village-primary" /> Filter:
+                        <span className="mr-1 flex items-center gap-1 text-xs font-bold text-village-muted">
+                            <Layers className="size-3.5 text-village-primary" />{' '}
+                            Filter:
                         </span>
                         {[
                             { key: 'all', label: 'Semua Titik' },
@@ -309,7 +339,11 @@ export function VillageGeospatialMap({
                             <button
                                 key={filter.key}
                                 type="button"
-                                onClick={() => setActiveFilter(filter.key as CategoryFilter)}
+                                onClick={() =>
+                                    setActiveFilter(
+                                        filter.key as CategoryFilter,
+                                    )
+                                }
                                 className={`rounded-xl px-3 py-1 text-xs font-bold transition-all ${
                                     activeFilter === filter.key
                                         ? 'bg-village-primary-dark text-white shadow-xs'
@@ -324,22 +358,26 @@ export function VillageGeospatialMap({
 
                 {/* Leaflet Map Canvas Container */}
                 <div className="relative mt-4 h-[420px] w-full overflow-hidden rounded-2xl border border-village-border/60 bg-slate-100 shadow-inner">
-                    <div ref={mapContainerRef} className="h-full w-full z-10" />
+                    <div ref={mapContainerRef} className="z-10 h-full w-full" />
 
                     {/* North Compass Badge Overlay */}
-                    <div className="pointer-events-none absolute bottom-4 right-4 z-20 flex flex-col items-center rounded-2xl bg-white/90 p-2.5 shadow-lg backdrop-blur-md ring-1 ring-black/5">
-                        <Compass className="size-6 text-village-primary animate-spin-slow" />
-                        <span className="mt-1 text-[10px] font-extrabold text-village-primary-dark uppercase">U</span>
+                    <div className="pointer-events-none absolute right-4 bottom-4 z-20 flex flex-col items-center rounded-2xl bg-white/90 p-2.5 shadow-lg ring-1 ring-black/5 backdrop-blur-md">
+                        <Compass className="animate-spin-slow size-6 text-village-primary" />
+                        <span className="mt-1 text-[10px] font-extrabold text-village-primary-dark uppercase">
+                            U
+                        </span>
                     </div>
 
                     {/* Active Selected POI Banner Overlay */}
                     {selectedPoi && (
-                        <div className="absolute top-4 left-4 right-14 z-20 rounded-2xl bg-white/95 p-3.5 shadow-xl backdrop-blur-md border border-village-border/80 animate-in fade-in slide-in-from-top-2">
+                        <div className="absolute top-4 right-14 left-4 z-20 animate-in rounded-2xl border border-village-border/80 bg-white/95 p-3.5 shadow-xl backdrop-blur-md fade-in slide-in-from-top-2">
                             <div className="flex items-start justify-between gap-3">
                                 <div>
                                     <span
-                                        className="inline-block rounded-md px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider"
-                                        style={{ backgroundColor: selectedPoi.color }}
+                                        className="inline-block rounded-md px-2 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase"
+                                        style={{
+                                            backgroundColor: selectedPoi.color,
+                                        }}
                                     >
                                         {selectedPoi.categoryLabel}
                                     </span>
@@ -365,7 +403,8 @@ export function VillageGeospatialMap({
                 {/* Bottom Helper Info & HD Download */}
                 <div className="mt-4 flex flex-col justify-between gap-3 border-t border-village-border/60 pt-4 sm:flex-row sm:items-center">
                     <p className="text-xs font-semibold text-village-muted">
-                        * Peta dapat digeser dan diperbesar untuk melihat detail fasilitas desa.
+                        * Peta dapat digeser dan diperbesar untuk melihat detail
+                        fasilitas desa.
                     </p>
 
                     {hdFileUrl ? (
@@ -398,14 +437,14 @@ export function VillageGeospatialMap({
                             <h4 className="text-lg font-extrabold text-emerald-950">
                                 Titik Lokasi
                             </h4>
-                            <p className="text-xs text-emerald-800/80 font-medium">
+                            <p className="text-xs font-medium text-emerald-800/80">
                                 Klik lokasi untuk melihat di peta
                             </p>
                         </div>
                     </div>
 
                     {/* POIs List with Ultra-Thin Soft Animated Scrollbar */}
-                    <div className="mt-5 space-y-2.5 max-h-[380px] overflow-y-auto pr-1.5 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-emerald-100/60 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400/50 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-emerald-600/70 transition-all duration-300">
+                    <div className="mt-5 max-h-[380px] space-y-2.5 overflow-y-auto pr-1.5 transition-all duration-300 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-emerald-400/50 hover:[&::-webkit-scrollbar-thumb]:bg-emerald-600/70 [&::-webkit-scrollbar-track]:rounded-full [&::-webkit-scrollbar-track]:bg-emerald-100/60">
                         {villagePOIs.map((poi) => {
                             const isSelected = selectedPoi?.id === poi.id;
 
@@ -414,17 +453,21 @@ export function VillageGeospatialMap({
                                     key={poi.id}
                                     type="button"
                                     onClick={() => handleFocusPoi(poi)}
-                                    className={`w-full text-left rounded-2xl px-4 py-3.5 transition-all duration-300 ${
+                                    className={`w-full rounded-2xl px-4 py-3.5 text-left transition-all duration-300 ${
                                         isSelected
-                                            ? 'bg-emerald-800 text-white shadow-md ring-2 ring-emerald-600/30 scale-[1.01]'
-                                            : 'bg-white/80 border border-emerald-100 text-slate-800 hover:bg-white hover:border-emerald-300 hover:shadow-xs'
+                                            ? 'scale-[1.01] bg-emerald-800 text-white shadow-md ring-2 ring-emerald-600/30'
+                                            : 'border border-emerald-100 bg-white/80 text-slate-800 hover:border-emerald-300 hover:bg-white hover:shadow-xs'
                                     }`}
                                 >
                                     <div>
-                                        <p className={`text-xs font-extrabold ${isSelected ? 'text-white' : 'text-emerald-950'}`}>
+                                        <p
+                                            className={`text-xs font-extrabold ${isSelected ? 'text-white' : 'text-emerald-950'}`}
+                                        >
                                             {poi.title}
                                         </p>
-                                        <p className={`mt-0.5 text-[11px] leading-relaxed ${isSelected ? 'text-emerald-100' : 'text-emerald-700/80 font-medium'}`}>
+                                        <p
+                                            className={`mt-0.5 text-[11px] leading-relaxed ${isSelected ? 'text-emerald-100' : 'font-medium text-emerald-700/80'}`}
+                                        >
                                             {poi.categoryLabel}
                                         </p>
                                     </div>
@@ -434,11 +477,13 @@ export function VillageGeospatialMap({
                     </div>
                 </div>
 
-                <div className="mt-6 border-t border-emerald-200/60 pt-4 text-xs leading-relaxed text-emerald-900/80 font-medium">
-                    <p className="font-extrabold text-emerald-950 mb-0.5">
+                <div className="mt-6 border-t border-emerald-200/60 pt-4 text-xs leading-relaxed font-medium text-emerald-900/80">
+                    <p className="mb-0.5 font-extrabold text-emerald-950">
                         Tips Navigasi
                     </p>
-                    Gunakan kursor atau sentuhan jari pada layar ponsel untuk menggeser wilayah dan melihat titik batas administratif Desa Ngampungan.
+                    Gunakan kursor atau sentuhan jari pada layar ponsel untuk
+                    menggeser wilayah dan melihat titik batas administratif Desa
+                    Ngampungan.
                 </div>
             </aside>
         </div>

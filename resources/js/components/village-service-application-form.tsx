@@ -369,11 +369,11 @@ export function VillageServiceApplicationForm({
                         <h3 className="mt-2 text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
                             Pengajuan {visibleSuccess.serviceTitle} Berhasil
                         </h3>
-                        
+
                         <div className="mt-4 rounded-2xl border border-emerald-200/90 bg-emerald-50/60 p-4 sm:p-5">
                             <div className="flex flex-wrap items-center justify-between gap-3">
                                 <div>
-                                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-emerald-800">
+                                    <span className="text-[11px] font-extrabold tracking-wider text-emerald-800 uppercase">
                                         Nomor Resi Referensi Anda
                                     </span>
                                     <div className="mt-1.5 flex flex-wrap items-center gap-2.5">
@@ -388,12 +388,14 @@ export function VillageServiceApplicationForm({
                                                 )
                                             }
                                             title="Salin Kode Resi"
-                                            className="inline-flex items-center gap-1.5 rounded-xl border border-emerald-300 bg-white px-3.5 py-1.5 text-xs font-extrabold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-100 hover:text-emerald-900 active:scale-95 cursor-pointer"
+                                            className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-emerald-300 bg-white px-3.5 py-1.5 text-xs font-extrabold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-100 hover:text-emerald-900 active:scale-95"
                                         >
                                             {copied ? (
                                                 <>
                                                     <Check className="size-4 text-emerald-600" />
-                                                    <span className="font-bold text-emerald-700">Resi Tersalin!</span>
+                                                    <span className="font-bold text-emerald-700">
+                                                        Resi Tersalin!
+                                                    </span>
                                                 </>
                                             ) : (
                                                 <>
@@ -406,7 +408,12 @@ export function VillageServiceApplicationForm({
                                 </div>
                             </div>
                             <p className="mt-3 text-xs leading-relaxed text-emerald-900/80">
-                                📌 <strong>Penting:</strong> Silakan salin atau simpan nomor resi di atas. Nomor resi ini digunakan untuk memantau perkembangan pengajuan layanan Anda secara mandiri di menu <strong>Lacak Pengajuan</strong> tanpa harus datang langsung ke balai desa.
+                                📌 <strong>Penting:</strong> Silakan salin atau
+                                simpan nomor resi di atas. Nomor resi ini
+                                digunakan untuk memantau perkembangan pengajuan
+                                layanan Anda secara mandiri di menu{' '}
+                                <strong>Lacak Pengajuan</strong> tanpa harus
+                                datang langsung ke balai desa.
                             </p>
                         </div>
                     </div>
@@ -418,8 +425,11 @@ export function VillageServiceApplicationForm({
                             rel="noopener noreferrer"
                             className="inline-flex min-h-11 items-center justify-center gap-2.5 rounded-xl bg-emerald-600 px-5 py-3 text-xs font-extrabold text-white shadow-md shadow-emerald-600/20 transition-all hover:bg-emerald-700 active:scale-[0.98]"
                         >
-                            <svg className="size-4 fill-current" viewBox="0 0 24 24">
-                                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.764.459 3.486 1.332 5.006L2 22l5.127-1.341c1.465.8 3.118 1.222 4.88 1.223h.005c5.507 0 9.991-4.478 9.992-9.985.001-2.666-1.033-5.172-2.918-7.058C17.199 3.033 14.685 2 12.012 2zm5.836 14.195c-.244.688-1.427 1.314-1.968 1.397-.541.082-1.227.118-3.522-.81-2.73-1.107-4.484-3.87-4.62-4.053-.135-.183-1.11-1.477-1.11-2.817 0-1.34.704-1.996.955-2.261.25-.265.545-.331.727-.331.183 0 .365.002.523.01.168.007.395-.064.618.472.228.548.775 1.892.842 2.03.068.138.114.301.023.485-.092.184-.138.3-.274.458-.137.158-.288.353-.412.474-.137.135-.28.283-.12.557.16.273.71 1.173 1.526 1.9 1.05.937 1.936 1.227 2.21 1.363.273.136.434.114.594-.069.16-.183.684-.798.867-1.072.183-.273.365-.228.616-.136.251.092 1.597.753 1.871.89.274.137.456.205.524.319.068.114.068.664-.176 1.352z"/>
+                            <svg
+                                className="size-4 fill-current"
+                                viewBox="0 0 24 24"
+                            >
+                                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984 0 1.764.459 3.486 1.332 5.006L2 22l5.127-1.341c1.465.8 3.118 1.222 4.88 1.223h.005c5.507 0 9.991-4.478 9.992-9.985.001-2.666-1.033-5.172-2.918-7.058C17.199 3.033 14.685 2 12.012 2zm5.836 14.195c-.244.688-1.427 1.314-1.968 1.397-.541.082-1.227.118-3.522-.81-2.73-1.107-4.484-3.87-4.62-4.053-.135-.183-1.11-1.477-1.11-2.817 0-1.34.704-1.996.955-2.261.25-.265.545-.331.727-.331.183 0 .365.002.523.01.168.007.395-.064.618.472.228.548.775 1.892.842 2.03.068.138.114.301.023.485-.092.184-.138.3-.274.458-.137.158-.288.353-.412.474-.137.135-.28.283-.12.557.16.273.71 1.173 1.526 1.9 1.05.937 1.936 1.227 2.21 1.363.273.136.434.114.594-.069.16-.183.684-.798.867-1.072.183-.273.365-.228.616-.136.251.092 1.597.753 1.871.89.274.137.456.205.524.319.068.114.068.664-.176 1.352z" />
                             </svg>
                             Konfirmasi via WA Desa
                         </a>
@@ -461,7 +471,7 @@ export function VillageServiceApplicationForm({
             {/* Modernized Stepper Header */}
             <ol
                 aria-label="Tahapan formulir pengajuan"
-                className="grid grid-cols-1 gap-2.5 rounded-2xl bg-slate-100/80 p-2 md:grid-cols-3 border border-slate-200/60"
+                className="grid grid-cols-1 gap-2.5 rounded-2xl border border-slate-200/60 bg-slate-100/80 p-2 md:grid-cols-3"
             >
                 {formSteps.map((step) => {
                     const StepIcon = step.icon;
@@ -476,8 +486,8 @@ export function VillageServiceApplicationForm({
                                 isActive
                                     ? 'bg-white shadow-xs ring-1 ring-slate-900/5'
                                     : isComplete
-                                    ? 'bg-white/60 text-slate-700'
-                                    : 'text-slate-500'
+                                      ? 'bg-white/60 text-slate-700'
+                                      : 'text-slate-500'
                             }`}
                         >
                             <span
@@ -485,8 +495,8 @@ export function VillageServiceApplicationForm({
                                     isComplete
                                         ? 'bg-emerald-700 text-white shadow-xs'
                                         : isActive
-                                        ? 'bg-emerald-700 text-white shadow-xs'
-                                        : 'bg-slate-200/70 text-slate-600'
+                                          ? 'bg-emerald-700 text-white shadow-xs'
+                                          : 'bg-slate-200/70 text-slate-600'
                                 }`}
                             >
                                 {isComplete ? (
@@ -506,7 +516,7 @@ export function VillageServiceApplicationForm({
                                     Tahap {step.number}
                                 </span>
                                 <span
-                                    className={`block text-xs font-bold leading-tight ${
+                                    className={`block text-xs leading-tight font-bold ${
                                         isActive
                                             ? 'text-slate-900'
                                             : 'text-slate-700'
@@ -528,7 +538,8 @@ export function VillageServiceApplicationForm({
                         role="alert"
                         className="mb-6 rounded-2xl border-l-4 border-rose-500 bg-rose-50/80 p-4 text-xs font-semibold text-rose-800 shadow-2xs"
                     >
-                        Pengajuan belum dapat dikirim. Periksa kembali bagian yang ditandai.
+                        Pengajuan belum dapat dikirim. Periksa kembali bagian
+                        yang ditandai.
                     </div>
                 )}
 
@@ -554,7 +565,8 @@ export function VillageServiceApplicationForm({
                             Data pemohon
                         </legend>
                         <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
-                            Data ini digunakan petugas untuk memverifikasi dan menghubungi pemohon.
+                            Data ini digunakan petugas untuk memverifikasi dan
+                            menghubungi pemohon.
                         </p>
 
                         <div className="mt-6 grid gap-5 md:grid-cols-2">
@@ -581,7 +593,7 @@ export function VillageServiceApplicationForm({
                                     )}
                                     aria-describedby="applicant-name-error"
                                     autoComplete="name"
-                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
+                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:shadow-xs focus:ring-4 focus:ring-emerald-600/10"
                                 />
                                 <InputError
                                     id="applicant-name-error"
@@ -595,8 +607,7 @@ export function VillageServiceApplicationForm({
                                     htmlFor="applicant-national-id"
                                     className="text-xs font-bold text-slate-800"
                                 >
-                                    NIK{' '}
-                                    <span className="text-rose-500">*</span>
+                                    NIK <span className="text-rose-500">*</span>
                                 </label>
                                 <input
                                     id="applicant-national-id"
@@ -618,7 +629,7 @@ export function VillageServiceApplicationForm({
                                     )}
                                     aria-describedby="applicant-national-id-error"
                                     autoComplete="off"
-                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
+                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:shadow-xs focus:ring-4 focus:ring-emerald-600/10"
                                 />
                                 <InputError
                                     id="applicant-national-id-error"
@@ -652,7 +663,7 @@ export function VillageServiceApplicationForm({
                                     aria-invalid={Boolean(fieldError('phone'))}
                                     aria-describedby="applicant-phone-error"
                                     autoComplete="tel"
-                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
+                                    className="mt-2 min-h-11 w-full rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:shadow-xs focus:ring-4 focus:ring-emerald-600/10"
                                 />
                                 <InputError
                                     id="applicant-phone-error"
@@ -685,7 +696,7 @@ export function VillageServiceApplicationForm({
                                     )}
                                     aria-describedby="applicant-address-error"
                                     autoComplete="street-address"
-                                    className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
+                                    className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:shadow-xs focus:ring-4 focus:ring-emerald-600/10"
                                 />
                                 <InputError
                                     id="applicant-address-error"
@@ -717,7 +728,7 @@ export function VillageServiceApplicationForm({
                                         fieldError('purpose'),
                                     )}
                                     aria-describedby="application-purpose-error"
-                                    className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:ring-4 focus:ring-emerald-600/10 focus:shadow-xs"
+                                    className="mt-2 w-full resize-y rounded-xl border border-slate-200 bg-slate-50/50 px-4 py-3 text-xs font-medium text-slate-800 outline-hidden transition-all placeholder:text-slate-400 hover:border-slate-300 hover:bg-slate-50 focus:border-emerald-600 focus:bg-white focus:shadow-xs focus:ring-4 focus:ring-emerald-600/10"
                                 />
                                 <InputError
                                     id="application-purpose-error"
@@ -735,21 +746,23 @@ export function VillageServiceApplicationForm({
                             Dokumen persyaratan
                         </legend>
                         <p className="mt-1.5 text-xs leading-relaxed text-slate-600 sm:text-sm">
-                            Format yang diizinkan: PDF, JPG, JPEG, atau PNG. Maksimal 10 MB per berkas.
+                            Format yang diizinkan: PDF, JPG, JPEG, atau PNG.
+                            Maksimal 10 MB per berkas.
                         </p>
 
                         <div className="mt-6 grid gap-4">
                             {detail.requiredDocuments.map((docItem) => {
                                 const clientErrorKey = `document-${docItem.key}`;
                                 const serverErrorKey = `documents.${docItem.key}`;
-                                const selectedFile = form.data.documents[docItem.key];
+                                const selectedFile =
+                                    form.data.documents[docItem.key];
                                 const hasError = Boolean(
                                     fieldError(clientErrorKey, serverErrorKey),
                                 );
                                 const isSelected = Boolean(
                                     selectedFile &&
-                                        (selectedFile instanceof File ||
-                                            selectedFile instanceof Blob),
+                                    (selectedFile instanceof File ||
+                                        selectedFile instanceof Blob),
                                 );
 
                                 return (
@@ -759,8 +772,8 @@ export function VillageServiceApplicationForm({
                                             hasError
                                                 ? 'border-rose-300 bg-rose-50/40 ring-1 ring-rose-500/20'
                                                 : isSelected
-                                                ? 'border-emerald-300/80 bg-emerald-50/40 ring-1 ring-emerald-500/20'
-                                                : 'border-slate-200/80 bg-slate-50/60 hover:border-emerald-200 hover:bg-emerald-50/20'
+                                                  ? 'border-emerald-300/80 bg-emerald-50/40 ring-1 ring-emerald-500/20'
+                                                  : 'border-slate-200/80 bg-slate-50/60 hover:border-emerald-200 hover:bg-emerald-50/20'
                                         }`}
                                     >
                                         <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
@@ -777,7 +790,7 @@ export function VillageServiceApplicationForm({
                                                                 *
                                                             </span>
                                                         ) : (
-                                                            <span className="ml-2 rounded-md bg-slate-200/70 px-2 py-0.5 text-[10px] font-extrabold uppercase text-slate-600">
+                                                            <span className="ml-2 rounded-md bg-slate-200/70 px-2 py-0.5 text-[10px] font-extrabold text-slate-600 uppercase">
                                                                 Opsional
                                                             </span>
                                                         )}
@@ -797,7 +810,7 @@ export function VillageServiceApplicationForm({
                                             {!isSelected && (
                                                 <label
                                                     htmlFor={`document-${docItem.key}`}
-                                                    className="inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:bg-emerald-50 hover:border-emerald-300 active:scale-[0.98]"
+                                                    className="inline-flex min-h-10 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-xl border border-emerald-200 bg-white px-4 py-2.5 text-xs font-bold text-emerald-800 shadow-2xs transition-all hover:border-emerald-300 hover:bg-emerald-50 active:scale-[0.98]"
                                                 >
                                                     <Upload
                                                         aria-hidden="true"
@@ -832,10 +845,10 @@ export function VillageServiceApplicationForm({
                                                             selectedFile,
                                                         )
                                                     }
-                                                    className="group flex items-center gap-3 min-w-0 text-left transition-all hover:opacity-95 cursor-pointer"
+                                                    className="group flex min-w-0 cursor-pointer items-center gap-3 text-left transition-all hover:opacity-95"
                                                     title="Klik untuk membuka & melihat pratinjau berkas"
                                                 >
-                                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100/70 text-emerald-700 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                                                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100/70 text-emerald-700 transition-colors group-hover:bg-emerald-600 group-hover:text-white">
                                                         {selectedFile.type.includes(
                                                             'image',
                                                         ) ? (
@@ -868,7 +881,7 @@ export function VillageServiceApplicationForm({
                                                             docItem.key,
                                                         )
                                                     }
-                                                    className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition-all hover:bg-rose-100 hover:border-rose-300 active:scale-[0.98]"
+                                                    className="inline-flex shrink-0 items-center justify-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3 py-1.5 text-xs font-bold text-rose-700 transition-all hover:border-rose-300 hover:bg-rose-100 active:scale-[0.98]"
                                                 >
                                                     <Trash2
                                                         aria-hidden="true"
@@ -917,7 +930,7 @@ export function VillageServiceApplicationForm({
                             >
                                 <h4
                                     id="applicant-review-heading"
-                                    className="text-xs font-bold text-slate-900 uppercase tracking-wider"
+                                    className="text-xs font-bold tracking-wider text-slate-900 uppercase"
                                 >
                                     Data pemohon
                                 </h4>
@@ -941,7 +954,7 @@ export function VillageServiceApplicationForm({
                                             <dt className="text-[11px] font-semibold text-slate-500">
                                                 {label}
                                             </dt>
-                                            <dd className="mt-0.5 font-bold text-slate-800 break-words">
+                                            <dd className="mt-0.5 font-bold break-words text-slate-800">
                                                 {value}
                                             </dd>
                                         </div>
@@ -955,7 +968,7 @@ export function VillageServiceApplicationForm({
                             >
                                 <h4
                                     id="document-review-heading"
-                                    className="text-xs font-bold text-slate-900 uppercase tracking-wider"
+                                    className="text-xs font-bold tracking-wider text-slate-900 uppercase"
                                 >
                                     Dokumen dipilih
                                 </h4>
@@ -1026,9 +1039,12 @@ export function VillageServiceApplicationForm({
                             type="button"
                             onClick={returnToPreviousStep}
                             disabled={form.processing}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 shadow-2xs transition-all hover:bg-slate-50 hover:border-slate-300 disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-xs font-bold text-slate-700 shadow-2xs transition-all hover:border-slate-300 hover:bg-slate-50 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            <ArrowLeft aria-hidden="true" className="size-4 text-emerald-700" />
+                            <ArrowLeft
+                                aria-hidden="true"
+                                className="size-4 text-emerald-700"
+                            />
                             Kembali
                         </button>
                     ) : (
@@ -1049,7 +1065,7 @@ export function VillageServiceApplicationForm({
                             type="submit"
                             onClick={submitApplication}
                             disabled={form.processing}
-                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-emerald-800/15 transition-all hover:bg-emerald-800 hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60 active:scale-[0.98]"
+                            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 py-3 text-xs font-bold text-white shadow-md shadow-emerald-800/15 transition-all hover:bg-emerald-800 hover:shadow-lg active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60"
                         >
                             {form.processing ? (
                                 <LoaderCircle
@@ -1075,9 +1091,9 @@ export function VillageServiceApplicationForm({
                     role="dialog"
                     aria-modal="true"
                     aria-labelledby="delete-modal-title"
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs animate-in fade-in duration-200"
+                    className="fixed inset-0 z-50 flex animate-in items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs duration-200 fade-in"
                 >
-                    <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+                    <div className="w-full max-w-md animate-in rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl duration-200 zoom-in-95">
                         <div className="flex size-12 items-center justify-center rounded-2xl bg-rose-100 text-rose-600">
                             <Trash2 className="size-6" />
                         </div>
