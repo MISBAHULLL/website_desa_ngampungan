@@ -6,6 +6,8 @@ import {
     LocateFixed,
     MapPin,
 } from 'lucide-react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageAdministrativeMap } from '@/components/village-administrative-map';
 import { VillageDemographicExplorer } from '@/components/village-demographic-explorer';
@@ -357,7 +359,7 @@ export default function VillageProfileIndex({
 
             {/* Clean Modern Hero Header */}
             <section className="bg-village-primary-dark text-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <p className="text-xs font-bold tracking-widest text-village-accent uppercase">
@@ -392,7 +394,7 @@ export default function VillageProfileIndex({
                             </div>
                         </dl>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             {/* Section 1: Redesigned Selayang Pandang */}
@@ -404,7 +406,7 @@ export default function VillageProfileIndex({
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     <div className="grid gap-10 lg:grid-cols-12 lg:items-start">
                         {/* Left Column: Heading & Enhanced Identity Card */}
-                        <div className="lg:col-span-5">
+                        <FadeIn direction="right" duration={0.5} className="lg:col-span-5">
                             <h2
                                 id="selayang-pandang-heading"
                                 className="text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
@@ -456,10 +458,10 @@ export default function VillageProfileIndex({
                                     ))}
                                 </dl>
                             </div>
-                        </div>
+                        </FadeIn>
 
                         {/* Right Column: Clean Text Narrative Card & Interactive Characteristics */}
-                        <div className="space-y-6 lg:col-span-7">
+                        <FadeIn direction="left" duration={0.5} className="space-y-6 lg:col-span-7">
                             {/* Main Narrative Card (Clean Text Only) */}
                             <article className="group relative overflow-hidden rounded-3xl border border-village-border/80 bg-white p-7 shadow-md transition-all duration-300 hover:border-village-primary/30 hover:shadow-xl sm:p-9">
                                 <div
@@ -500,7 +502,7 @@ export default function VillageProfileIndex({
                                     </article>
                                 ))}
                             </div>
-                        </div>
+                        </FadeIn>
                     </div>
                 </div>
             </section>
@@ -512,7 +514,7 @@ export default function VillageProfileIndex({
                 className="scroll-mt-24 border-t border-village-border bg-white py-14 md:py-20"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <div className="max-w-2xl mb-10">
+                    <FadeIn direction="up" duration={0.5} className="max-w-2xl mb-10">
                         <h2
                             id="visi-misi-heading"
                             className="text-3xl font-bold tracking-tight text-village-ink md:text-4xl"
@@ -522,11 +524,11 @@ export default function VillageProfileIndex({
                         <p className="mt-3 text-base leading-7 text-village-muted">
                             Arah kebijakan strategis dan komitmen Pemerintah Desa Ngampungan dalam mewujudkan kesejahteraan warga.
                         </p>
-                    </div>
+                    </FadeIn>
 
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch">
                         {/* Variant B: Dark Glassmorphic Card (Visi Utama) */}
-                        <article className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/15 bg-village-primary-dark p-7 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_32px_rgba(26,77,46,0.45)] sm:p-9 lg:col-span-5">
+                        <FadeIn direction="up" delay={0.1} duration={0.5} className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/15 bg-village-primary-dark p-7 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[12px_12px_32px_rgba(26,77,46,0.45)] sm:p-9 lg:col-span-5">
                             <div className="relative">
                                 {/* Header Badge */}
                                 <div className="flex items-center gap-2">
@@ -577,10 +579,10 @@ export default function VillageProfileIndex({
                                     </div>
                                 </div>
                             </div>
-                        </article>
+                        </FadeIn>
 
                         {/* Variant A: Light Surface Card (5 Misi Pembangunan) */}
-                        <article className="group flex flex-col justify-between rounded-3xl border border-village-border bg-white p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-xl sm:p-9 lg:col-span-7">
+                        <FadeIn direction="up" delay={0.2} duration={0.5} className="group flex flex-col justify-between rounded-3xl border border-village-border bg-white p-7 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-xl sm:p-9 lg:col-span-7">
                             <div>
                                 <div className="border-b border-village-border pb-4">
                                     <span className="text-xs font-extrabold uppercase tracking-wider text-village-primary">
@@ -621,7 +623,7 @@ export default function VillageProfileIndex({
                                     </span>
                                 </div>
                             </div>
-                        </article>
+                        </FadeIn>
                     </div>
                 </div>
             </section>
@@ -643,7 +645,7 @@ export default function VillageProfileIndex({
                 />
 
                 <div className="relative mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <div className="mx-auto max-w-2xl text-center">
+                    <FadeIn direction="up" duration={0.5} className="mx-auto max-w-2xl text-center">
                         <h2
                             id="sejarah-desa-heading"
                             className="text-3xl font-bold tracking-tight text-village-ink sm:text-4xl md:text-5xl"
@@ -653,7 +655,7 @@ export default function VillageProfileIndex({
                         <p className="mt-4 text-base leading-relaxed text-village-muted">
                             Alur perkembangan Desa Ngampungan dari masa awal perintisan pemukiman hingga era transformasi pelayanan publik modern.
                         </p>
-                    </div>
+                    </FadeIn>
 
                     {/* Vertical Timeline Container */}
                     <div className="relative mt-16 mx-auto max-w-4xl">
@@ -670,12 +672,12 @@ export default function VillageProfileIndex({
                         />
 
                         {/* 5 Timeline Stages */}
-                        <div className="space-y-10 md:space-y-16">
+                        <StaggerContainer staggerDelay={0.12} className="space-y-10 md:space-y-16">
                             {historyStages.map((item, index) => {
                                 const isEven = index % 2 === 0;
 
                                 return (
-                                    <div
+                                    <StaggerItem
                                         key={item.title}
                                         className={`group relative flex items-start md:items-center ${
                                             isEven ? 'md:flex-row' : 'md:flex-row-reverse'
@@ -711,10 +713,10 @@ export default function VillageProfileIndex({
 
                                         {/* Spacer for desktop grid symmetry */}
                                         <div className="hidden md:block md:w-[calc(50%-2.5rem)]" />
-                                    </div>
+                                    </StaggerItem>
                                 );
                             })}
-                        </div>
+                        </StaggerContainer>
                     </div>
                 </div>
             </section>

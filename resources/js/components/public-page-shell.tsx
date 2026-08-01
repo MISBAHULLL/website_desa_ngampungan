@@ -19,6 +19,7 @@ import { index as villageProfileIndex } from '@/routes/profile';
 import { track as trackServiceApplication } from '@/routes/service-applications';
 import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
+import { PageTransition } from '@/components/animations/page-transition';
 
 type PublicSection =
     | 'government'
@@ -356,7 +357,9 @@ export function PublicPageShell({
                 </div>
             </header>
 
-            <main id="main-content">{children}</main>
+            <main id="main-content">
+                <PageTransition>{children}</PageTransition>
+            </main>
 
             <footer className="bg-village-primary-dark text-white/80">
                 <div className="mx-auto flex max-w-[1440px] 2xl:max-w-[1536px] flex-col justify-between gap-6 px-5 py-8 text-xs sm:flex-row sm:items-center lg:px-12">

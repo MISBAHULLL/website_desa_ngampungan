@@ -13,6 +13,8 @@ import {
     Users,
 } from 'lucide-react';
 import { useState } from 'react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageOfficialCard } from '@/components/village-official-card';
 import { VillageOfficialData, VillageOfficialDetailModal } from '@/components/village-official-detail-modal';
@@ -150,7 +152,7 @@ export default function VillageGovernmentIndex({
 
             {/* HERO SECTION */}
             <section className="bg-village-primary-dark text-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <nav
@@ -201,7 +203,7 @@ export default function VillageGovernmentIndex({
                             })}
                         </div>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             <main className="bg-slate-50/60 pb-20">
@@ -209,18 +211,18 @@ export default function VillageGovernmentIndex({
                     {/* SECTION 1: PROFIL & CARD KEPALA DESA */}
                     {villageHead && (
                         <section id="kepala-desa" className="scroll-mt-24">
-                            <div className="mb-6 flex flex-col gap-1">
+                            <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-1">
                                 <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                     Kepala Desa Ngampungan
                                 </h2>
                                 <p className="text-xs text-slate-500 font-medium">
                                     Pemimpin penyelenggaraan pemerintahan, pembangunan, dan pembinaan kemasyarakatan Desa Ngampungan.
                                 </p>
-                            </div>
+                            </FadeIn>
 
                             <div className="grid gap-8 lg:grid-cols-12 lg:items-stretch">
                                 {/* Left Column: Sambutan Photo Card */}
-                                <div className="lg:col-span-5 flex justify-center">
+                                <FadeIn direction="right" duration={0.5} className="lg:col-span-5 flex justify-center">
                                     <div className="group relative h-[480px] sm:h-[500px] w-full max-w-[380px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl shrink-0 flex flex-col justify-end">
                                         <img
                                             src={villageHead.photo_url || '/assets/simulasi_profl.png'}
@@ -260,10 +262,10 @@ export default function VillageGovernmentIndex({
                                             </button>
                                         </div>
                                     </div>
-                                </div>
+                                </FadeIn>
 
                                 {/* Right Column: Detailed Visi & Komitmen Card */}
-                                <div className="lg:col-span-7 flex flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 sm:p-8 shadow-xl shadow-gray-200/40">
+                                <FadeIn direction="left" duration={0.5} className="lg:col-span-7 flex flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 sm:p-8 shadow-xl shadow-gray-200/40">
                                     <div className="space-y-6">
                                         <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
                                             <span className="flex size-10 items-center justify-center rounded-xl bg-slate-100 text-slate-800">
@@ -314,31 +316,33 @@ export default function VillageGovernmentIndex({
                                         </span>
                                         <span className="font-bold text-emerald-800">Periode Jabatan Aktif</span>
                                     </div>
-                                </div>
+                                </FadeIn>
                             </div>
                         </section>
                     )}
 
                     {/* SECTION 2: STRUKTUR ORGANISASI */}
                     <section id="struktur-organisasi" className="scroll-mt-24">
-                        <div className="mb-6 flex flex-col gap-1">
+                        <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-1">
                             <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                 Struktur Hirarki Organisasi Desa Ngampungan
                             </h2>
                             <p className="max-w-2xl text-xs text-gray-600">
                                 Visualisasi bagan kerja dan koordinasi internal antar aparatur pemerintah desa.
                             </p>
-                        </div>
+                        </FadeIn>
 
-                        <VillageOrganizationChart
-                            allOfficials={officials.all}
-                            onOpenDetail={(official) => setSelectedOfficial(official as any)}
-                        />
+                        <FadeIn direction="up" delay={0.1} duration={0.5}>
+                            <VillageOrganizationChart
+                                allOfficials={officials.all}
+                                onOpenDetail={(official) => setSelectedOfficial(official as any)}
+                            />
+                        </FadeIn>
                     </section>
 
                     {/* SECTION 3: PERANGKAT DESA */}
                     <section id="perangkat-desa" className="scroll-mt-24">
-                        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                        <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                             <div>
                                 <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                     Direktori Perangkat Desa Ngampungan
@@ -362,33 +366,34 @@ export default function VillageGovernmentIndex({
                                     </button>
                                 ))}
                             </div>
-                        </div>
+                        </FadeIn>
 
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <StaggerContainer staggerDelay={0.08} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {visibleOfficials.map((official) => (
-                                <VillageOfficialCard
-                                    key={official.slug}
-                                    official={official as any}
-                                    onOpenDetail={(off) => setSelectedOfficial(off as any)}
-                                />
+                                <StaggerItem key={official.slug}>
+                                    <VillageOfficialCard
+                                        official={official as any}
+                                        onOpenDetail={(off) => setSelectedOfficial(off as any)}
+                                    />
+                                </StaggerItem>
                             ))}
-                        </div>
+                        </StaggerContainer>
                     </section>
 
                     {/* SECTION 4: LEMBAGA DESA */}
                     <section id="lembaga-desa" className="scroll-mt-24">
-                        <div className="mb-6 flex flex-col gap-1">
+                        <FadeIn direction="up" duration={0.5} className="mb-6 flex flex-col gap-1">
                             <h2 className="text-2xl font-black tracking-tight text-gray-900 sm:text-3xl">
                                 Lembaga Kemasyarakatan Desa (LKD)
                             </h2>
                             <p className="max-w-2xl text-xs text-gray-600">
                                 Wadah partisipasi warga dalam pembangunan, pemberdayaan, dan pengawasan tata kelola desa. Klik kartu untuk melihat susunan pengurus & anggota.
                             </p>
-                        </div>
+                        </FadeIn>
 
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
+                        <StaggerContainer staggerDelay={0.1} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-2">
                             {institutions.map((institution) => (
-                                <div
+                                <StaggerItem
                                     key={institution.id}
                                     onClick={() => setSelectedInstitution(institution as any)}
                                     className="group flex flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-950/5 cursor-pointer"
@@ -469,9 +474,9 @@ export default function VillageGovernmentIndex({
                                             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
                                         </button>
                                     </div>
-                                </div>
+                                </StaggerItem>
                             ))}
-                        </div>
+                        </StaggerContainer>
                     </section>
                 </div>
             </main>

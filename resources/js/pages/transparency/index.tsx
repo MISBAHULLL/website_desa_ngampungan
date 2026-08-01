@@ -9,6 +9,8 @@ import {
     Search,
 } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
 import {
     dummyPublicDocuments,
@@ -160,7 +162,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
 
             {/* Page Header */}
             <section className="bg-village-primary-dark text-white pb-16 md:pb-20 pt-12 md:pt-16">
-                <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
+                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     <div className="flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                         {/* Title & Description Block */}
                         <div className="max-w-2xl">
@@ -254,7 +256,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                             </div>
                         </div>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             {/* Main Overview Section */}
@@ -265,7 +267,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             >
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     {/* Header Strip */}
-                    <div className="flex flex-col justify-between gap-4 border-b border-gray-200 pb-6 sm:flex-row sm:items-center">
+                    <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-4 border-b border-gray-200 pb-6 sm:flex-row sm:items-center">
                         <div>
                             <span className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
                                 Ringkasan Keuangan
@@ -283,15 +285,15 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 Diperbarui: <strong className="text-gray-900">{currentSummary.updatedLabel}</strong>
                             </span>
                         </div>
-                    </div>
+                    </FadeIn>
 
                     {/* 4 Executive Metric Cards Grid */}
-                    <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                    <StaggerContainer staggerDelay={0.08} className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                         {currentSummary.metrics.map((metric: ApbdesMetric) => {
                             const presentation = metricPresentation[metric.key];
 
                             return (
-                                <div
+                                <StaggerItem
                                     key={metric.key}
                                     className="group flex flex-col justify-between rounded-[20px] border border-gray-200/90 bg-white p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/40 hover:shadow-lg"
                                 >
@@ -320,10 +322,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                     <div className="mt-4 border-t border-gray-100 pt-3 text-[11px] font-semibold text-village-primary">
                                         TA {currentSummary.year} · Resmi
                                     </div>
-                                </div>
+                                </StaggerItem>
                             );
                         })}
-                    </div>
+                    </StaggerContainer>
 
                     {/* Serapan Realisasi Progress Banner Interaktif */}
                     <div className="group relative mt-6 rounded-[22px] border border-emerald-200/90 bg-gradient-to-r from-emerald-50/90 via-emerald-50/50 to-teal-50/60 p-6 shadow-xs transition-all duration-300 hover:border-emerald-300 hover:shadow-md">
@@ -396,7 +398,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     <div className="grid gap-10 lg:grid-cols-2 items-stretch">
                         {/* Visualizer 1: Donut Chart Sumber Pendapatan Desa */}
-                        <div className="flex flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 sm:p-8 shadow-xs h-full">
+                        <FadeIn direction="right" duration={0.5} className="flex flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 sm:p-8 shadow-xs h-full">
                             <div className="flex items-center gap-3">
                                 <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50/80 p-2 shadow-2xs">
                                     <img
@@ -542,10 +544,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                     );
                                 })()}
                             </div>
-                        </div>
+                        </FadeIn>
 
                         {/* Visualizer 2: Alokasi Belanja 5 Bidang Permendagri */}
-                        <div className="flex flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 sm:p-8 shadow-xs h-full">
+                        <FadeIn direction="left" duration={0.5} className="flex flex-col justify-between rounded-[24px] border border-gray-200/90 bg-[#fbfcfb] p-6 sm:p-8 shadow-xs h-full">
                             <div className="flex items-center gap-3">
                                 <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-gray-100 bg-gray-50/80 p-2 shadow-2xs">
                                     <img
@@ -636,7 +638,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                     );
                                 })}
                             </div>
-                        </div>
+                        </FadeIn>
                     </div>
                 </div>
             </section>
@@ -648,7 +650,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
             >
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
                     {/* Section Header */}
-                    <div>
+                    <FadeIn direction="up" duration={0.5}>
                         <span className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
                             Transparansi Program
                         </span>
@@ -658,10 +660,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                         <p className="mt-1 text-xs sm:text-sm text-gray-600">
                             Daftar kegiatan pembangunan, operasional pemerintahan, dan pemberdayaan per lokasi dusun.
                         </p>
-                    </div>
+                    </FadeIn>
 
                     {/* Integrated Control Bar: Search Box & Category Filter Pills */}
-                    <div className="mt-6 flex flex-col gap-3 rounded-[20px] border border-gray-200/90 bg-white p-3.5 shadow-2xs lg:flex-row lg:items-center lg:justify-between">
+                    <FadeIn direction="up" delay={0.1} duration={0.5} className="mt-6 flex flex-col gap-3 rounded-[20px] border border-gray-200/90 bg-white p-3.5 shadow-2xs lg:flex-row lg:items-center lg:justify-between">
                         <div className="relative w-full lg:w-72 shrink-0">
                             <Search className="absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-gray-400" />
                             <input
@@ -696,10 +698,10 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </FadeIn>
 
                     {/* Table View for Desktop */}
-                    <div className="mt-8 overflow-hidden rounded-[20px] border border-gray-200 bg-white shadow-xs">
+                    <FadeIn direction="up" delay={0.15} duration={0.5} className="mt-8 overflow-hidden rounded-[20px] border border-gray-200 bg-white shadow-xs">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left text-xs">
                                 <thead className="border-b border-gray-200 bg-gray-50 font-bold text-gray-700 uppercase tracking-wider">
@@ -768,7 +770,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </FadeIn>
                 </div>
             </section>
 
@@ -779,7 +781,7 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                 className="scroll-mt-24 bg-gradient-to-b from-white via-[#fafcfb] to-[#f4f7f5] py-12 md:py-16"
             >
                 <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-5 lg:px-12">
-                    <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                    <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
                         <div className="max-w-2xl">
                             <span className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
                                 Arsip Unduh Resmi
@@ -797,11 +799,11 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                         <span className="text-xs font-semibold text-gray-500">
                             {publicDocs.length} Dokumen Tersedia
                         </span>
-                    </div>
+                    </FadeIn>
 
-                    <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                    <StaggerContainer staggerDelay={0.08} className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                         {publicDocs.map((document) => (
-                            <article
+                            <StaggerItem
                                 key={document.id}
                                 className="group flex h-full flex-col justify-between rounded-[20px] border border-gray-200 bg-[#fbfcfb] p-6 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-village-primary/40 hover:shadow-lg"
                             >
@@ -842,9 +844,9 @@ export default function TransparencyIndex({ dbSummaries, dbPublicDocuments }: Tr
                                     <FileDown aria-hidden="true" className="size-3.5" />
                                     <span>Unduh Dokumen (PDF)</span>
                                 </a>
-                            </article>
+                            </StaggerItem>
                         ))}
-                    </div>
+                    </StaggerContainer>
                 </div>
             </section>
         </PublicPageShell>

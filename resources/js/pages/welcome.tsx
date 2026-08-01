@@ -32,7 +32,10 @@ import {
     Youtube,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
 import InputError from '@/components/input-error';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
@@ -414,43 +417,49 @@ function DesktopNavigation() {
                                     />
                                 </button>
 
-                                {openMenu === item.label && (
-                                    <div
-                                        id={`desktop-submenu-${index}`}
-                                        aria-label={`Submenu ${item.label}`}
-                                        onMouseEnter={() =>
-                                            setOpenMenu(item.label)
-                                        }
-                                        className={`absolute top-full z-50 w-80 rounded-2xl border border-village-border bg-white p-2 text-village-ink shadow-village-floating ${
-                                            index >= navigationItems.length - 3
-                                                ? 'right-0'
-                                                : 'left-0'
-                                        }`}
-                                    >
-                                        <ul className="grid gap-1">
-                                            {item.children.map((child) => (
-                                                <li key={child.label}>
-                                                    <a
-                                                        href={child.href}
-                                                        onClick={() =>
-                                                            setOpenMenu(null)
-                                                        }
-                                                        className="group/link block rounded-xl p-3 transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:bg-village-primary-light focus-visible:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
-                                                    >
-                                                        <span className="block font-semibold">
-                                                            {child.label}
-                                                        </span>
-                                                        <span className="mt-0.5 block text-xs leading-relaxed text-village-muted">
-                                                            {
-                                                                child.description
+                                <AnimatePresence>
+                                    {openMenu === item.label && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                                            transition={{ duration: 0.18, ease: "easeOut" }}
+                                            id={`desktop-submenu-${index}`}
+                                            aria-label={`Submenu ${item.label}`}
+                                            onMouseEnter={() =>
+                                                setOpenMenu(item.label)
+                                            }
+                                            className={`absolute top-full z-50 w-80 rounded-2xl border border-village-border bg-white p-2 text-village-ink shadow-village-floating ${
+                                                index >= navigationItems.length - 3
+                                                    ? 'right-0'
+                                                    : 'left-0'
+                                            }`}
+                                        >
+                                            <ul className="grid gap-1">
+                                                {item.children.map((child) => (
+                                                    <li key={child.label}>
+                                                        <a
+                                                            href={child.href}
+                                                            onClick={() =>
+                                                                setOpenMenu(null)
                                                             }
-                                                        </span>
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
+                                                            className="group/link block rounded-xl p-3 transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:bg-village-primary-light focus-visible:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                                                        >
+                                                            <span className="block font-semibold">
+                                                                {child.label}
+                                                            </span>
+                                                            <span className="mt-0.5 block text-xs leading-relaxed text-village-muted">
+                                                                {
+                                                                    child.description
+                                                                }
+                                                            </span>
+                                                        </a>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </>
                         )}
                     </li>
@@ -505,25 +514,31 @@ function MobileNavigationItem({
                 />
             </button>
 
-            {isExpanded && (
-                <div
-                    id={panelId}
-                    role="region"
-                    aria-label={`Submenu ${item.label}`}
-                    className="grid gap-1 pb-3"
-                >
-                    {item.children.map((child) => (
-                        <a
-                            key={child.label}
-                            href={child.href}
-                            onClick={onNavigate}
-                            className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm font-medium text-village-muted transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
-                        >
-                            {child.label}
-                        </a>
-                    ))}
-                </div>
-            )}
+            <AnimatePresence>
+                {isExpanded && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        transition={{ duration: 0.22, ease: 'easeInOut' }}
+                        id={panelId}
+                        role="region"
+                        aria-label={`Submenu ${item.label}`}
+                        className="grid gap-1 pb-3 overflow-hidden"
+                    >
+                        {item.children.map((child) => (
+                            <a
+                                key={child.label}
+                                href={child.href}
+                                onClick={onNavigate}
+                                className="flex min-h-11 items-center rounded-xl px-3 py-2 text-sm font-medium text-village-muted transition-colors hover:bg-village-primary-light hover:text-village-primary-dark focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
+                            >
+                                {child.label}
+                            </a>
+                        ))}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
@@ -598,7 +613,7 @@ function TransparansiSummarySection() {
         >
             <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                 {/* Section Header */}
-                <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
                     <div className="max-w-2xl">
                         <div className="flex flex-wrap items-center gap-3">
                             <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
@@ -660,7 +675,7 @@ function TransparansiSummarySection() {
                             />
                         </Link>
                     </div>
-                </div>
+                </FadeIn>
 
                 {/* 3 Clean Modern Cards Grid */}
                 <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -849,7 +864,7 @@ function TransparansiSummarySection() {
                 </div>
 
                 {/* Verification Strip */}
-                <div className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[24px] border border-gray-200/80 bg-white p-5 shadow-xs md:flex-row md:px-7">
+                <FadeIn direction="up" delay={0.2} duration={0.5} className="mt-8 flex flex-col items-center justify-between gap-4 rounded-[24px] border border-gray-200/80 bg-white p-5 shadow-xs md:flex-row md:px-7">
                     <div className="flex items-center gap-3.5 text-sm text-gray-600">
                         <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-700 border border-gray-200">
                             <ShieldCheck
@@ -872,7 +887,7 @@ function TransparansiSummarySection() {
                         <span>Lihat Transparansi Lengkap</span>
                         <ArrowRight aria-hidden="true" className="size-3.5" />
                     </Link>
-                </div>
+                </FadeIn>
             </div>
         </section>
     );
@@ -1135,57 +1150,67 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                     </nav>
                 </div>
 
-                {isMobileMenuOpen && (
-                    <div
-                        id="mobile-navigation"
-                        className="fixed inset-0 z-40 xl:hidden"
-                    >
-                        <button
-                            type="button"
-                            aria-label="Tutup menu navigasi"
-                            className="absolute inset-0 bg-village-primary-dark/35 backdrop-blur-sm"
-                            onClick={closeMobileNavigation}
-                        />
+                <AnimatePresence>
+                    {isMobileMenuOpen && (
                         <div
-                            role="dialog"
-                            aria-modal="true"
-                            aria-label="Menu navigasi"
-                            className="relative ml-auto flex h-full w-[min(90%,26rem)] flex-col gap-6 overflow-y-auto bg-white px-6 pt-40 pb-8 shadow-2xl sm:pt-36"
+                            id="mobile-navigation"
+                            className="fixed inset-0 z-40 xl:hidden"
                         >
-                            <div className="flex flex-col gap-1 text-lg font-semibold text-village-ink">
-                                {navigationItems.map((item) => (
-                                    <MobileNavigationItem
-                                        key={item.label}
-                                        item={item}
-                                        isExpanded={
-                                            expandedMobileMenu === item.label
-                                        }
-                                        onToggle={() =>
-                                            setExpandedMobileMenu(
-                                                expandedMobileMenu ===
-                                                    item.label
-                                                    ? null
-                                                    : item.label,
-                                            )
-                                        }
-                                        onNavigate={closeMobileNavigation}
-                                    />
-                                ))}
-                            </div>
-                            <a
-                                href={servicesIndex.url()}
+                            <motion.button
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                type="button"
+                                aria-label="Tutup menu navigasi"
+                                className="absolute inset-0 bg-village-primary-dark/35 backdrop-blur-sm"
                                 onClick={closeMobileNavigation}
-                                className={`${primaryButtonClassName} mt-auto w-full`}
+                            />
+                            <motion.div
+                                initial={{ x: '100%' }}
+                                animate={{ x: 0 }}
+                                exit={{ x: '100%' }}
+                                transition={{ type: 'spring', damping: 28, stiffness: 300 }}
+                                role="dialog"
+                                aria-modal="true"
+                                aria-label="Menu navigasi"
+                                className="relative ml-auto flex h-full w-[min(90%,26rem)] flex-col gap-6 overflow-y-auto bg-white px-6 pt-40 pb-8 shadow-2xl sm:pt-36"
                             >
-                                Akses Layanan
-                                <ArrowRight
-                                    aria-hidden="true"
-                                    className="size-4"
-                                />
-                            </a>
+                                <div className="flex flex-col gap-1 text-lg font-semibold text-village-ink">
+                                    {navigationItems.map((item) => (
+                                        <MobileNavigationItem
+                                            key={item.label}
+                                            item={item}
+                                            isExpanded={
+                                                expandedMobileMenu === item.label
+                                            }
+                                            onToggle={() =>
+                                                setExpandedMobileMenu(
+                                                    expandedMobileMenu ===
+                                                        item.label
+                                                        ? null
+                                                        : item.label,
+                                                )
+                                            }
+                                            onNavigate={closeMobileNavigation}
+                                        />
+                                    ))}
+                                </div>
+                                <a
+                                    href={servicesIndex.url()}
+                                    onClick={closeMobileNavigation}
+                                    className={`${primaryButtonClassName} mt-auto w-full`}
+                                >
+                                    Akses Layanan
+                                    <ArrowRight
+                                        aria-hidden="true"
+                                        className="size-4"
+                                    />
+                                </a>
+                            </motion.div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </AnimatePresence>
 
                 <main id="main-content">
                     <header
@@ -1202,7 +1227,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             <div className="absolute bottom-0 right-0 w-80 h-80 bg-emerald-950/40 rounded-full blur-[80px] pointer-events-none" />
 
                             {/* Hero Main Grid */}
-                            <div className="relative z-10 pt-6 sm:pt-10 lg:pt-12 max-w-3xl">
+                            <FadeIn direction="up" delay={0.1} duration={0.6} className="relative z-10 pt-6 sm:pt-10 lg:pt-12 max-w-3xl">
                                 <div className="space-y-6 sm:space-y-8 text-left">
                                     {/* Main Headline */}
                                     <h1 className="text-3xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.08] text-balance">
@@ -1215,10 +1240,12 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         Website resmi Desa Ngampungan. Melayani kebutuhan administrasi warga dan menyajikan informasi terkini seputar potensi, budaya, dan pembangunan desa.
                                     </p>
 
-                                    {/* Dual Action Buttons (Diposisikan agak lebih ke bawah agar proporsi hero seimbang) */}
+                                    {/* Dual Action Buttons */}
                                     <div className="pt-6 sm:pt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
                                         {/* Primary Button: White Pill + Green Arrow Circle Icon */}
-                                        <a
+                                        <motion.a
+                                            whileHover={{ scale: 1.03, y: -2 }}
+                                            whileTap={{ scale: 0.98 }}
                                             href="#profil"
                                             className="bg-white hover:bg-gray-100 text-gray-900 font-semibold pl-6 pr-2 py-2 rounded-full transition-all duration-200 flex items-center justify-center gap-3 shadow-lg group focus:ring-2 focus:ring-[#39d353]"
                                         >
@@ -1226,22 +1253,24 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                             <div className="w-8 h-8 rounded-full bg-village-primary group-hover:bg-village-primary-dark flex items-center justify-center text-white group-hover:scale-105 transition-transform">
                                                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
                                             </div>
-                                        </a>
+                                        </motion.a>
 
                                         {/* Secondary Glass Button */}
-                                        <a
+                                        <motion.a
+                                            whileHover={{ scale: 1.03, y: -2 }}
+                                            whileTap={{ scale: 0.98 }}
                                             href={servicesIndex.url()}
                                             className="bg-white/15 hover:bg-white/25 border border-white/20 hover:border-white/35 backdrop-blur-md text-white text-sm font-medium px-6 py-3 rounded-full transition-all duration-200 flex items-center justify-center gap-2"
                                         >
                                             <ChevronDown className="w-4 h-4 text-[#39d353]" />
                                             <span>Lihat Layanan</span>
-                                        </a>
+                                        </motion.a>
                                     </div>
                                 </div>
-                            </div>
+                            </FadeIn>
 
                             {/* HERO BOTTOM: Quick Highlights Banner */}
-                            <div className="relative z-10 pt-8 sm:pt-10 border-t border-white/10 mt-10 sm:mt-14">
+                            <FadeIn direction="up" delay={0.3} duration={0.6} className="relative z-10 pt-8 sm:pt-10 border-t border-white/10 mt-10 sm:mt-14">
                                 {/* Centered Hero Carousel Controls */}
                                 <div className="mb-4 flex justify-center">
                                     <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md">
@@ -1310,7 +1339,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         <span>Layanan 24/7</span>
                                     </div>
                                 </div>
-                            </div>
+                            </FadeIn>
                         </div>
                     </header>
 
@@ -1324,7 +1353,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
                                 
                                 {/* Left Column: Heading */}
-                                <div className="lg:col-span-5 space-y-4">
+                                <FadeIn direction="right" duration={0.5} className="lg:col-span-5 space-y-4">
                                     <h2
                                         id="profil-heading"
                                         className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight leading-[1.12]"
@@ -1335,29 +1364,31 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     <p className="mt-4 text-gray-600 text-sm sm:text-base leading-relaxed">
                                         Data kependudukan, wilayah, dan tata kelola Desa Ngampungan disajikan secara transparan, akurat, dan terus diperbarui untuk melayani seluruh warga.
                                     </p>
-                                </div>
+                                </FadeIn>
 
-                                {/* Right Column: KPI Metrics Grid with Vertical Dividers (Gambar Ke-2 Design) */}
-                                <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x divide-gray-200 bg-white sm:bg-transparent p-6 sm:p-0 rounded-2xl border sm:border-0 border-gray-200">
+                                {/* Right Column: KPI Metrics Grid with Vertical Dividers */}
+                                <StaggerContainer staggerDelay={0.12} className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-4 gap-6 sm:gap-0 sm:divide-x divide-gray-200 bg-white sm:bg-transparent p-6 sm:p-0 rounded-2xl border sm:border-0 border-gray-200">
                                     {dummyVillageStatistics.map((statistic) => (
-                                        <a
-                                            key={statistic.label}
-                                            href={statistic.href}
-                                            className="sm:px-5 first:pl-0 space-y-2 group cursor-pointer transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-2 sm:p-0"
-                                        >
-                                            <span className="text-xs font-medium text-gray-500 block transition-colors group-hover:text-emerald-600">
-                                                {statistic.label}
-                                            </span>
-                                            <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight font-sans transition-colors group-hover:text-emerald-600">
-                                                {statistic.value}
-                                            </div>
-                                            <p className="text-xs text-gray-400 flex items-center gap-1 group-hover:text-emerald-700 transition-colors">
-                                                <span>{statistic.suffix} terdaftar</span>
-                                                <ChevronRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" />
-                                            </p>
-                                        </a>
+                                        <StaggerItem key={statistic.label}>
+                                            <motion.a
+                                                whileHover={{ y: -3 }}
+                                                href={statistic.href}
+                                                className="block sm:px-5 first:pl-0 space-y-2 group cursor-pointer transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg p-2 sm:p-0"
+                                            >
+                                                <span className="text-xs font-medium text-gray-500 block transition-colors group-hover:text-emerald-600">
+                                                    {statistic.label}
+                                                </span>
+                                                <div className="text-3xl sm:text-4xl lg:text-5xl font-medium text-gray-900 tracking-tight font-sans transition-colors group-hover:text-emerald-600">
+                                                    {statistic.value}
+                                                </div>
+                                                <p className="text-xs text-gray-400 flex items-center gap-1 group-hover:text-emerald-700 transition-colors">
+                                                    <span>{statistic.suffix} terdaftar</span>
+                                                    <ChevronRight className="w-3 h-3 transition-transform duration-200 group-hover:translate-x-1" />
+                                                </p>
+                                            </motion.a>
+                                        </StaggerItem>
                                     ))}
-                                </div>
+                                </StaggerContainer>
 
                             </div>
                         </div>
@@ -1369,8 +1400,8 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         className="scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
                         <div className="mx-auto grid max-w-[1440px] 2xl:max-w-[1536px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-10">
-                            <div className="lg:col-span-5 flex justify-center lg:justify-start">
-                                {/* Profile Card Container (Exact replication of requested design) */}
+                            <FadeIn direction="left" duration={0.6} className="lg:col-span-5 flex justify-center lg:justify-start">
+                                {/* Profile Card Container */}
                                 <div className="group relative h-[550px] sm:h-[560px] w-full max-w-[390px] sm:max-w-[420px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl">
                                     {/* Background Image */}
                                     <img
@@ -1405,9 +1436,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </FadeIn>
 
-                            <div className="lg:col-span-7">
+                            <FadeIn direction="right" duration={0.6} delay={0.15} className="lg:col-span-7">
                                 <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                                     Sambutan Kepala Desa
                                 </p>
@@ -1448,7 +1479,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         Kepala Desa Ngampungan
                                     </p>
                                 </div>
-                            </div>
+                            </FadeIn>
                         </div>
                     </section>
 
@@ -1462,7 +1493,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                     >
                         <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                             {/* Unified Header & Description */}
-                            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                            <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
                                 <div className="max-w-3xl">
                                     <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                                         Direktori Potensi Desa
@@ -1493,7 +1524,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         className="size-4"
                                     />
                                 </Link>
-                            </div>
+                            </FadeIn>
 
                             {/* Clean Category Pill Filter Strip */}
                             <div className="mt-8 flex flex-col justify-between gap-4 border-b border-gray-100 pb-4 sm:flex-row sm:items-center">
@@ -1564,7 +1595,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         className="scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
                     >
                         <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
+                            <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 border-b border-village-border pb-8 md:flex-row md:items-end">
                                 <div className="max-w-2xl">
                                     <h2
                                         id="berita-heading"
@@ -1588,9 +1619,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         className="size-4"
                                     />
                                 </Link>
-                            </div>
+                            </FadeIn>
 
-                            <div className="mt-10">
+                            <FadeIn direction="up" delay={0.15} duration={0.5} className="mt-10">
                                 <article className="group grid overflow-hidden rounded-3xl border border-village-border bg-white shadow-village-soft lg:grid-cols-12">
                                     <Link
                                         href={newsShow(
@@ -1669,6 +1700,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         </Link>
                                     </div>
                                 </article>
+                            </FadeIn>
 
                                 <div className="mt-10 flex items-end justify-between gap-5">
                                     <div>
@@ -1817,8 +1849,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                     </nav>
                                 )}
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
                     <section
                         id="pengumuman"
@@ -1866,7 +1897,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                         </svg>
 
                         <div className="relative mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
-                            <div className="flex flex-col justify-between gap-6 border-b border-village-border/80 pb-8 md:flex-row md:items-end">
+                            <FadeIn direction="up" duration={0.5} className="flex flex-col justify-between gap-6 border-b border-village-border/80 pb-8 md:flex-row md:items-end">
                                 <div className="max-w-2xl">
                                     <h2
                                         id="pengumuman-heading"
@@ -1891,9 +1922,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                         className="size-4"
                                     />
                                 </Link>
-                            </div>
+                            </FadeIn>
 
-                            <div className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
+                            <FadeIn direction="up" delay={0.1} duration={0.5} className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                                 <div>
                                     <p className="text-xs font-extrabold tracking-[0.16em] text-village-primary uppercase">
                                         Masih berlaku
@@ -1905,9 +1936,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 <p className="text-sm font-medium text-village-muted">
                                     Informasi kedaluwarsa dipindahkan ke arsip.
                                 </p>
-                            </div>
+                            </FadeIn>
 
-                            <div className="mt-6 grid gap-6 lg:grid-cols-3">
+                            <StaggerContainer staggerDelay={0.12} className="mt-6 grid gap-6 lg:grid-cols-3">
                                 {((usePage().props as any).dbAnnouncements?.length > 0
                                     ? (usePage().props as any).dbAnnouncements
                                     : [...activeDummyAnnouncements].sort(
@@ -1918,13 +1949,14 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 )
                                     .slice(0, 3)
                                     .map((announcement: any) => (
-                                        <PublicAnnouncementCard
-                                            key={announcement.id}
-                                            announcement={announcement}
-                                            compact
-                                        />
+                                        <StaggerItem key={announcement.id}>
+                                            <PublicAnnouncementCard
+                                                announcement={announcement}
+                                                compact
+                                            />
+                                        </StaggerItem>
                                     ))}
-                            </div>
+                            </StaggerContainer>
                         </div>
                     </section>
 
@@ -1978,7 +2010,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                             </div>
 
                             <div className="mt-9 grid items-start gap-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
-                                <div className="overflow-hidden border border-village-border bg-white shadow-village-soft">
+                                <FadeIn direction="right" duration={0.5} className="overflow-hidden border border-village-border bg-white shadow-village-soft">
                                     <div className="relative aspect-[4/3] min-h-[330px] bg-village-primary-light">
                                         <iframe
                                             title="Peta lokasi Kantor Desa Ngampungan"
@@ -2020,9 +2052,9 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                             />
                                         </a>
                                     </div>
-                                </div>
+                                </FadeIn>
 
-                                <div className="border border-village-border bg-white p-6 shadow-village-soft md:p-8">
+                                <FadeIn direction="left" duration={0.5} className="border border-village-border bg-white p-6 shadow-village-soft md:p-8">
                                     <div className="flex items-start gap-4 border-b border-village-border pb-6">
                                         <span className="flex size-11 shrink-0 items-center justify-center bg-village-primary-light text-village-primary">
                                             <MailOpen
@@ -2261,14 +2293,14 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                             </>
                                         )}
                                     </Form>
-                                </div>
+                                </FadeIn>
                             </div>
                         </div>
                     </section>
                 </main>
 
                 <footer className="bg-village-primary-dark pt-16 pb-8 text-white/80">
-                    <div className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
+                    <FadeIn direction="up" duration={0.6} className="mx-auto max-w-[1440px] 2xl:max-w-[1536px] px-4 sm:px-6 lg:px-10">
                         <div className="grid grid-cols-1 gap-10 md:grid-cols-2 lg:grid-cols-4">
                             <div className="flex flex-col gap-4">
                                 <div className="text-white">
@@ -2361,7 +2393,7 @@ export default function Welcome({ dbArticles }: { dbArticles?: NewsArticle[] }) 
                                 </a>
                             </div>
                         </div>
-                    </div>
+                    </FadeIn>
                 </footer>
 
                 <VillagePotentialDetailModal

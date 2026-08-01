@@ -1,6 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, ChevronLeft, ChevronRight, Search, Store } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillagePotentialCard } from '@/components/village-potential-card';
@@ -112,7 +114,7 @@ export default function PotentialIndex({
             </Head>
 
             <section className="bg-village-primary-dark text-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <p className="text-xs font-bold tracking-widest text-village-accent uppercase">
@@ -137,7 +139,7 @@ export default function PotentialIndex({
                             </p>
                         </div>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             <section
@@ -146,7 +148,7 @@ export default function PotentialIndex({
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                     {/* Integrated Search and Category Header */}
-                    <div className="flex flex-col gap-6 border-b border-gray-200/80 pb-6 lg:flex-row lg:items-center lg:justify-between">
+                    <FadeIn direction="up" duration={0.5} className="flex flex-col gap-6 border-b border-gray-200/80 pb-6 lg:flex-row lg:items-center lg:justify-between">
                         <div>
                             <h2
                                 id="potential-directory-heading"
@@ -175,53 +177,55 @@ export default function PotentialIndex({
                                 className="h-11 w-full rounded-xl border border-gray-200 bg-white py-2 pr-4 pl-10 text-xs text-gray-900 transition-all outline-none placeholder:text-gray-400 focus:border-village-primary focus:ring-2 focus:ring-village-primary/15 shadow-2xs"
                             />
                         </div>
-                    </div>
+                    </FadeIn>
 
                     {/* Clean Category Pill Filter Strip */}
-                    <nav
-                        aria-label="Filter kategori potensi desa"
-                        className="mt-6 flex flex-wrap gap-2 py-1"
-                    >
-                        <Link
-                            href={potentialsIndex()}
-                            preserveScroll
-                            className={`flex items-center rounded-full px-4 py-2 text-xs font-bold transition-all ${
-                                initialCategory === 'all'
-                                    ? 'bg-village-primary text-white shadow-xs font-extrabold'
-                                    : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
-                            }`}
-                            aria-current={
-                                initialCategory === 'all' ? 'page' : undefined
-                            }
+                    <FadeIn direction="up" delay={0.1} duration={0.5}>
+                        <nav
+                            aria-label="Filter kategori potensi desa"
+                            className="mt-6 flex flex-wrap gap-2 py-1"
                         >
-                            Semua
-                        </Link>
-                        {villagePotentialCategories.map((category) => (
                             <Link
-                                key={category.key}
-                                href={potentialsIndex({
-                                    query: { category: category.key },
-                                })}
+                                href={potentialsIndex()}
                                 preserveScroll
-                                className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
-                                    initialCategory === category.key
+                                className={`flex items-center rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                                    initialCategory === 'all'
                                         ? 'bg-village-primary text-white shadow-xs font-extrabold'
                                         : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
                                 }`}
                                 aria-current={
-                                    initialCategory === category.key
-                                        ? 'page'
-                                        : undefined
+                                    initialCategory === 'all' ? 'page' : undefined
                                 }
                             >
-                                <PotentialCategoryIcon
-                                    category={category.key}
-                                    className="size-4 shrink-0 object-contain"
-                                />
-                                {category.label}
+                                Semua
                             </Link>
-                        ))}
-                    </nav>
+                            {villagePotentialCategories.map((category) => (
+                                <Link
+                                    key={category.key}
+                                    href={potentialsIndex({
+                                        query: { category: category.key },
+                                    })}
+                                    preserveScroll
+                                    className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold transition-all ${
+                                        initialCategory === category.key
+                                            ? 'bg-village-primary text-white shadow-xs font-extrabold'
+                                            : 'border border-gray-200 bg-white text-gray-700 hover:border-village-primary/40 hover:bg-gray-50'
+                                    }`}
+                                    aria-current={
+                                        initialCategory === category.key
+                                            ? 'page'
+                                            : undefined
+                                    }
+                                >
+                                    <PotentialCategoryIcon
+                                        category={category.key}
+                                        className="size-4 shrink-0 object-contain"
+                                    />
+                                    {category.label}
+                                </Link>
+                            ))}
+                        </nav>
+                    </FadeIn>
 
                     <div className="mt-6 flex items-center justify-between gap-5">
                         <p
@@ -243,19 +247,19 @@ export default function PotentialIndex({
 
                     {paginatedEntries.length > 0 ? (
                         <>
-                            <div
+                            <StaggerContainer
                                 key={currentPage}
+                                staggerDelay={0.06}
                                 className={`mt-6 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
                                     isPageTransitioning
                                         ? 'opacity-0 scale-[0.985]'
                                         : 'opacity-100 scale-100'
                                 }`}
                             >
-                                {paginatedEntries.map((entry, idx) => (
-                                    <div
+                                {paginatedEntries.map((entry) => (
+                                    <StaggerItem
                                         key={entry.slug}
-                                        className="animate-page-fade-in flex h-full flex-col"
-                                        style={{ animationDelay: `${idx * 40}ms` }}
+                                        className="flex h-full flex-col"
                                     >
                                         <VillagePotentialCard
                                             entry={entry}
@@ -263,16 +267,11 @@ export default function PotentialIndex({
                                                 setSelectedDetailEntry(selected)
                                             }
                                         />
-                                    </div>
+                                    </StaggerItem>
                                 ))}
 
                                 {paginatedEntries.length < ITEMS_PER_PAGE && (
-                                    <div
-                                        className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-gray-200 bg-gradient-to-br from-gray-50/80 via-white to-emerald-50/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
-                                        style={{
-                                            animationDelay: `${paginatedEntries.length * 40}ms`,
-                                        }}
-                                    >
+                                    <StaggerItem className="flex flex-col justify-between rounded-3xl border border-dashed border-gray-200 bg-gradient-to-br from-gray-50/80 via-white to-emerald-50/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs">
                                         <div className="space-y-3">
                                             <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
                                                 <Store className="size-5" />
@@ -296,9 +295,9 @@ export default function PotentialIndex({
                                                 <ArrowRight className="size-3.5" />
                                             </a>
                                         </div>
-                                    </div>
+                                    </StaggerItem>
                                 )}
-                            </div>
+                            </StaggerContainer>
 
                             {/* Clean Pagination Controls */}
                             {totalPages > 1 && (

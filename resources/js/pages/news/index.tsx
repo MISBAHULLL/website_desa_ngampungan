@@ -1,6 +1,8 @@
 import { Head, Link } from '@inertiajs/react';
 import { ArrowRight, FileText, Newspaper, Search, SlidersHorizontal } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { PublicPageShell } from '@/components/public-page-shell';
 import type { NewsArticle } from '@/lib/dummy-public-content';
@@ -81,7 +83,7 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
             <Head title="Berita Desa" />
 
             <section className="border-b border-village-border bg-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-14 md:py-20 lg:px-12">
+                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-14 md:py-20 lg:px-12">
                     <div className="max-w-3xl">
                         <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
                             Pusat Informasi Desa
@@ -94,7 +96,7 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                             terbaru dari warga Desa Ngampungan.
                         </p>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             <section
@@ -102,7 +104,7 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                 className="py-12 md:py-16"
             >
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
-                    <div className="rounded-3xl border border-village-border bg-white p-5 shadow-village-soft md:p-6">
+                    <FadeIn direction="up" duration={0.5} className="rounded-3xl border border-village-border bg-white p-5 shadow-village-soft md:p-6">
                         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
                             <div>
                                 <label
@@ -166,7 +168,7 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </FadeIn>
 
                     <div className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                         <div>
@@ -189,31 +191,26 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                     </div>
 
                     {visibleArticles.length > 0 ? (
-                        <div
+                        <StaggerContainer
                             key={currentPage}
+                            staggerDelay={0.06}
                             className={`mt-7 grid min-h-[440px] gap-6 md:grid-cols-2 lg:grid-cols-3 transition-all duration-300 ease-out ${
                                 isPageTransitioning
                                     ? 'opacity-0 scale-[0.985]'
                                     : 'opacity-100 scale-100'
                             }`}
                         >
-                            {visibleArticles.map((article, idx) => (
-                                <div
+                            {visibleArticles.map((article) => (
+                                <StaggerItem
                                     key={article.slug}
-                                    className="animate-page-fade-in flex h-full flex-col"
-                                    style={{ animationDelay: `${idx * 40}ms` }}
+                                    className="flex h-full flex-col"
                                 >
                                     <PublicNewsCard article={article} />
-                                </div>
+                                </StaggerItem>
                             ))}
 
                             {visibleArticles.length < articlesPerPage && (
-                                <div
-                                    className="animate-page-fade-in flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs"
-                                    style={{
-                                        animationDelay: `${visibleArticles.length * 40}ms`,
-                                    }}
-                                >
+                                <StaggerItem className="flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs">
                                     <div className="space-y-3">
                                         <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light text-village-primary font-bold shadow-2xs">
                                             <FileText className="size-5" />
@@ -237,9 +234,9 @@ export default function NewsIndex({ dbArticles }: { dbArticles?: NewsArticle[] }
                                             <ArrowRight className="size-3.5" />
                                         </a>
                                     </div>
-                                </div>
+                                </StaggerItem>
                             )}
-                        </div>
+                        </StaggerContainer>
                     ) : (
                         <div className="mt-7 rounded-3xl border border-dashed border-village-border bg-white px-6 py-16 text-center">
                             <Newspaper

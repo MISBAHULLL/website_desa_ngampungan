@@ -9,6 +9,8 @@ import {
     X,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { FadeIn } from '@/components/animations/fade-in';
+import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
 import {
     dummyVillageServices,
@@ -124,7 +126,7 @@ export default function ServiceIndex({
 
             {/* HERO HEADER SECTION */}
             <section className="bg-village-primary-dark text-white">
-                <div className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
+                <FadeIn direction="up" duration={0.5} className="mx-auto max-w-[1280px] px-5 py-12 md:py-16 lg:px-12">
                     <div className="grid gap-8 lg:grid-cols-12 lg:items-center">
                         <div className="max-w-3xl lg:col-span-8">
                             <nav
@@ -163,7 +165,7 @@ export default function ServiceIndex({
                             </div>
                         </div>
                     </div>
-                </div>
+                </FadeIn>
             </section>
 
             {/* MAIN DIRECTORY CONTENT */}
@@ -174,7 +176,7 @@ export default function ServiceIndex({
                 <div className="mx-auto max-w-[1280px] px-5 lg:px-12 space-y-6">
                     
                     {/* HORIZONTAL CATEGORY FILTER BAR */}
-                    <div className="rounded-3xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs">
+                    <FadeIn direction="up" duration={0.5} className="rounded-3xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs">
                         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
                             <div className="flex items-center gap-2.5 shrink-0">
                                 <div className="flex size-8 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
@@ -241,10 +243,10 @@ export default function ServiceIndex({
                                 })}
                             </nav>
                         </div>
-                    </div>
+                    </FadeIn>
 
                     {/* DIRECTORY HEADER & SEARCH CONTROL */}
-                    <div className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
+                    <FadeIn direction="up" delay={0.1} duration={0.5} className="rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs space-y-5">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                             <div>
                                 
@@ -307,11 +309,11 @@ export default function ServiceIndex({
                                 <span className="text-emerald-700">Filter pencarian aktif: "{searchQuery}"</span>
                             )}
                         </div>
-                    </div>
+                    </FadeIn>
 
                     {/* SERVICE CARDS GRID */}
                     {visibleServices.length > 0 ? (
-                        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                        <StaggerContainer staggerDelay={0.08} className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                             {visibleServices.map((service, index) => {
                                 const category =
                                     findVillageServiceCategory(
@@ -322,7 +324,7 @@ export default function ServiceIndex({
                                         service.category
                                     ];
                                         return (
-                                            <article
+                                            <StaggerItem
                                                 key={service.slug}
                                                 className="group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/90 bg-white p-6 shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-950/5"
                                             >
@@ -403,10 +405,10 @@ export default function ServiceIndex({
                                                 />
                                             </Link>
                                         </div>
-                                    </article>
+                                    </StaggerItem>
                                 );
                             })}
-                        </div>
+                        </StaggerContainer>
                     ) : (
                         <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
                             <div className="mx-auto flex size-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-400">
@@ -429,7 +431,7 @@ export default function ServiceIndex({
                     )}
 
                     {/* Informational Banner Footer */}
-                    <div className="mt-10 rounded-3xl border border-emerald-200/80 bg-emerald-50/60 p-6 shadow-xs">
+                    <FadeIn direction="up" duration={0.5} className="mt-10 rounded-3xl border border-emerald-200/80 bg-emerald-50/60 p-6 shadow-xs">
                         <div className="flex items-start gap-4">
                             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm">
                                 <FileCheck2 className="size-5" />
@@ -443,7 +445,7 @@ export default function ServiceIndex({
                                 </p>
                             </div>
                         </div>
-                    </div>
+                    </FadeIn>
                 </div>
             </section>
         </PublicPageShell>
