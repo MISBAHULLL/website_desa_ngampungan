@@ -23,9 +23,11 @@ use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
 use App\Models\Announcement;
 use App\Models\News;
+use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
+    $villageProfile = VillageProfile::query()->first();
     $dbArticles = News::latestPublished()->get()->map(function ($article) {
         return [
             'id' => $article->id,
@@ -66,6 +68,12 @@ Route::get('/', function () {
     return Inertia\Inertia::render('welcome', [
         'dbArticles' => $dbArticles,
         'dbAnnouncements' => $dbAnnouncements,
+        'villageProfile' => $villageProfile ? [
+            'totalPopulation' => $villageProfile->total_population,
+            'totalFamilies' => $villageProfile->total_families,
+            'totalHamlets' => $villageProfile->total_hamlets,
+            'totalAreaHectares' => $villageProfile->total_area_hectares,
+        ] : null,
     ]);
 })->name('home');
 

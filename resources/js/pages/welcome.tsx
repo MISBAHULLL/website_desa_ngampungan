@@ -1,7 +1,7 @@
 import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     ArrowRight,
-    BellRing,
     CalendarDays,
     ChevronDown,
     ChevronLeft,
@@ -12,7 +12,6 @@ import {
     Facebook,
     FileText,
     House,
-    Info,
     Instagram,
     Landmark,
     LogIn,
@@ -32,11 +31,10 @@ import {
     Youtube,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
-import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
 import InputError from '@/components/input-error';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
 import { PublicAnnouncementCard } from '@/components/public-announcement-card';
@@ -49,7 +47,7 @@ import {
     featuredDummyNewsArticle,
     latestDummyNewsArticles,
 } from '@/lib/dummy-public-content';
-import type { NewsArticle } from '@/lib/dummy-public-content';
+import type { Announcement, NewsArticle } from '@/lib/dummy-public-content';
 import { dummyApbdesSummaries } from '@/lib/dummy-transparency';
 import {
     findVillagePotentialCategory,
@@ -89,6 +87,13 @@ type NavigationItem =
           label: string;
           children: NavigationChild[];
       };
+
+type VillageProfileSummary = {
+    totalPopulation: number | null;
+    totalFamilies: number | null;
+    totalHamlets: number | null;
+    totalAreaHectares: number | null;
+};
 
 const navigationItems: NavigationItem[] = [
     { type: 'link', label: 'Beranda', href: '#beranda' },
@@ -268,7 +273,7 @@ const navigationItems: NavigationItem[] = [
     { type: 'link', label: 'Kontak', href: '#kontak' },
 ];
 
-const dummyVillageStatistics = [
+const villageStatisticDefinitions = [
     {
         label: 'Total Penduduk',
         value: '3.420',
@@ -575,7 +580,9 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
                         aria-hidden="true"
                         className="mt-0.5 size-3.5 shrink-0 text-village-accent lg:mt-0"
                     />
-                    <span>JL. JOBRANTI NO.01 DESA NGAMPUNGAN, BARENG, JOMBANG</span>
+                    <span>
+                        JL. JOBRANTI NO.01 DESA NGAMPUNGAN, BARENG, JOMBANG
+                    </span>
                 </div>
 
                 <div className="col-start-1 row-start-2 flex items-center gap-1.5 whitespace-nowrap lg:col-auto lg:row-auto lg:border-l lg:border-white/15 lg:pl-5">
@@ -1000,8 +1007,12 @@ function HeroBackgroundCarousel({ currentIndex }: { currentIndex: number }) {
 
 export default function Welcome({
     dbArticles,
+    dbAnnouncements,
+    villageProfile,
 }: {
     dbArticles?: NewsArticle[];
+    dbAnnouncements?: Announcement[];
+    villageProfile?: VillageProfileSummary | null;
 }) {
     const { auth } = usePage().props;
     const [isScrolled, setIsScrolled] = useState(false);
@@ -1023,17 +1034,46 @@ export default function Welcome({
     const activePotentialEntries = getDummyVillagePotentialEntries(
         activePotentialCategory,
     ).slice(0, 3);
+    const villageStatistics = useMemo(() => {
+        const numberFormatter = new Intl.NumberFormat('id-ID', {
+            maximumFractionDigits: 2,
+        });
+        const values = [
+            villageProfile?.totalPopulation ?? 3420,
+            villageProfile?.totalFamilies ?? 1120,
+            villageProfile?.totalHamlets ?? 4,
+            villageProfile?.totalAreaHectares ?? 450,
+        ];
+
+        return villageStatisticDefinitions.map((statistic, index) => ({
+            ...statistic,
+            value: numberFormatter.format(values[index]),
+        }));
+    }, [villageProfile]);
+    const homepageAnnouncements = useMemo(() => {
+        if (dbAnnouncements && dbAnnouncements.length > 0) {
+            return dbAnnouncements;
+        }
+
+        return [...activeDummyAnnouncements].sort(
+            (a, b) =>
+                new Date(b.startsAt).getTime() -
+                new Date(a.startsAt).getTime(),
+        );
+    }, [dbAnnouncements]);
 
     const { featuredNewsArticle, latestNewsArticles } = useMemo(() => {
         if (dbArticles && dbArticles.length > 0) {
             const featured =
                 dbArticles.find((a) => a.featured) || dbArticles[0];
             const latest = dbArticles.filter((a) => a.slug !== featured.slug);
+
             return {
                 featuredNewsArticle: featured,
                 latestNewsArticles: latest.length > 0 ? latest : [featured],
             };
         }
+
         return {
             featuredNewsArticle: featuredDummyNewsArticle,
             latestNewsArticles: latestDummyNewsArticles,
@@ -1047,11 +1087,15 @@ export default function Welcome({
     const totalNewsPages = Math.ceil(latestNewsArticles.length / NEWS_PER_PAGE);
     const paginatedNewsArticles = useMemo(() => {
         const start = (newsCurrentPage - 1) * NEWS_PER_PAGE;
+
         return latestNewsArticles.slice(start, start + NEWS_PER_PAGE);
     }, [latestNewsArticles, newsCurrentPage]);
 
     const handleNewsPageChange = (page: number) => {
-        if (page === newsCurrentPage || isNewsPageTransitioning) return;
+        if (page === newsCurrentPage || isNewsPageTransitioning) {
+return;
+}
+
         setIsNewsPageTransitioning(true);
         setTimeout(() => {
             setNewsCurrentPage(page);
@@ -1061,6 +1105,7 @@ export default function Welcome({
         const headingElement = document.getElementById(
             'berita-lainnya-heading',
         );
+
         if (headingElement) {
             headingElement.scrollIntoView({
                 behavior: 'smooth',
@@ -1494,7 +1539,7 @@ export default function Welcome({
                                     staggerDelay={0.12}
                                     className="grid grid-cols-1 gap-6 divide-gray-200 rounded-2xl border border-gray-200 bg-white p-6 sm:grid-cols-4 sm:gap-0 sm:divide-x sm:border-0 sm:bg-transparent sm:p-0 lg:col-span-7"
                                 >
-                                    {dummyVillageStatistics.map((statistic) => (
+                                    {villageStatistics.map((statistic) => (
                                         <StaggerItem key={statistic.label}>
                                             <motion.a
                                                 whileHover={{ y: -3 }}
@@ -1971,6 +2016,7 @@ export default function Welcome({
                                             const pageNumber = index + 1;
                                             const isActive =
                                                 pageNumber === newsCurrentPage;
+
                                             return (
                                                 <button
                                                     key={pageNumber}
@@ -2118,17 +2164,9 @@ export default function Welcome({
                                 staggerDelay={0.12}
                                 className="mt-6 grid gap-6 lg:grid-cols-3"
                             >
-                                {((usePage().props as any).dbAnnouncements
-                                    ?.length > 0
-                                    ? (usePage().props as any).dbAnnouncements
-                                    : [...activeDummyAnnouncements].sort(
-                                          (a, b) =>
-                                              new Date(b.startsAt).getTime() -
-                                              new Date(a.startsAt).getTime(),
-                                      )
-                                )
+                                {homepageAnnouncements
                                     .slice(0, 3)
-                                    .map((announcement: any) => (
+                                    .map((announcement) => (
                                         <StaggerItem key={announcement.id}>
                                             <PublicAnnouncementCard
                                                 announcement={announcement}
@@ -2535,9 +2573,8 @@ export default function Welcome({
                                             className="mt-0.5 size-4 shrink-0 text-village-accent"
                                         />
                                         <span>
-                                            Jl. Jobranti No. 1, Kec.
-                                            Bareng, Kab. Jombang, Jawa Timur
-                                            61474
+                                            Jl. Jobranti No. 1, Kec. Bareng,
+                                            Kab. Jombang, Jawa Timur 61474
                                         </span>
                                     </li>
                                     <li className="flex items-center gap-2">

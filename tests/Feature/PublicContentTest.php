@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\VillageOfficial;
+use App\Models\VillageProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -12,6 +13,34 @@ test('the public village profile renders its Inertia page with a canonical URL',
         ->assertInertia(fn (Assert $page) => $page
             ->component('profile/index')
             ->where('canonicalUrl', route('profile.index')));
+});
+
+test('homepage and public profile use the same village profile record', function () {
+    $profile = VillageProfile::factory()->create([
+        'total_population' => 3812,
+        'total_families' => 1240,
+        'total_hamlets' => 5,
+        'total_area_hectares' => 475,
+    ]);
+
+    $this->get(route('home'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('welcome')
+            ->where('villageProfile.totalPopulation', 3812)
+            ->where('villageProfile.totalFamilies', 1240)
+            ->where('villageProfile.totalHamlets', 5)
+            ->where('villageProfile.totalAreaHectares', 475));
+
+    $this->get(route('profile.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('profile/index')
+            ->where('villageProfile.id', $profile->id)
+            ->where('villageProfile.total_population', 3812)
+            ->where('villageProfile.total_families', 1240)
+            ->where('villageProfile.total_hamlets', 5)
+            ->where('villageProfile.total_area_hectares', 475));
 });
 
 test('the village profile page exposes profile sections, breadcrumb, and SEO metadata', function () {

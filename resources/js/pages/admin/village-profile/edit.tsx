@@ -47,7 +47,7 @@ type Props = {
 };
 
 export default function AdminVillageProfileEdit({ profile }: Props) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, patch, processing, errors } = useForm({
         totalPopulation: profile.totalPopulation || 0,
         totalFamilies: profile.totalFamilies || 0,
         totalHamlets: profile.totalHamlets || 0,
@@ -139,7 +139,7 @@ export default function AdminVillageProfileEdit({ profile }: Props) {
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        put(villageProfileUpdate.url());
+        patch(villageProfileUpdate.url());
     }
 
     return (
@@ -263,13 +263,13 @@ export default function AdminVillageProfileEdit({ profile }: Props) {
                                 <input
                                     id="totalAreaHectares"
                                     type="number"
-                                    step="0.01"
+                                    step="1"
                                     min={0}
                                     value={data.totalAreaHectares}
                                     onChange={(e) =>
                                         setData(
                                             'totalAreaHectares',
-                                            parseFloat(e.target.value) || 0,
+                                            parseInt(e.target.value) || 0,
                                         )
                                     }
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"

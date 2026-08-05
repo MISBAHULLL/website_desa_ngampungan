@@ -70,24 +70,28 @@ class VillageProfileController extends Controller
     {
         $profile = VillageProfile::firstOrNew();
 
-        $data = $request->safe()->only([
-            'total_population',
-            'total_families',
-            'total_hamlets',
-            'total_area_hectares',
-            'boundary_north',
-            'boundary_east',
-            'boundary_south',
-            'boundary_west',
-            'hamlets',
-            'land_use',
-            'demographics',
-            'map_latitude',
-            'map_longitude',
-            'map_zoom',
-            'map_google_url',
-            'map_hd_file_url',
-        ]);
+        $validated = $request->validated();
+        $data = [
+            'total_population' => $validated['totalPopulation'],
+            'total_families' => $validated['totalFamilies'],
+            'total_hamlets' => $validated['totalHamlets'],
+            'total_area_hectares' => $validated['totalAreaHectares'],
+            'boundary_north' => $validated['boundaryNorth'],
+            'boundary_east' => $validated['boundaryEast'],
+            'boundary_south' => $validated['boundarySouth'],
+            'boundary_west' => $validated['boundaryWest'],
+            'hamlets' => $validated['hamlets'] ?? [],
+            'land_use' => $validated['landUse'] ?? [],
+            'map_latitude' => $validated['mapLatitude'] ?? null,
+            'map_longitude' => $validated['mapLongitude'] ?? null,
+            'map_zoom' => $validated['mapZoom'] ?? null,
+            'map_google_url' => $validated['mapGoogleUrl'] ?? null,
+            'map_hd_file_url' => $validated['mapHdFileUrl'] ?? null,
+        ];
+
+        if (array_key_exists('demographics', $validated)) {
+            $data['demographics'] = $validated['demographics'];
+        }
 
         if ($profile->exists) {
             $profile->update($data);
