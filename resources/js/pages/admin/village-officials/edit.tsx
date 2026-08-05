@@ -1,6 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Edit, Plus, Trash2, Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     index as officialIndex,
     update as officialUpdate,
@@ -45,7 +45,7 @@ export default function AdminVillageOfficialEdit({
     official,
     parentOptions,
 }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors, progress } = useForm({
         _method: 'PUT',
         name: official.name || '',
         initials: official.initials || '',
@@ -78,8 +78,17 @@ export default function AdminVillageOfficialEdit({
         official.photo_url || null,
     );
 
+    useEffect(() => {
+        return () => {
+            if (photoPreview?.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview);
+            }
+        };
+    }, [photoPreview]);
+
     function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
+
         if (file) {
             setData('photo', file);
             setData('remove_photo', false);
@@ -114,7 +123,10 @@ export default function AdminVillageOfficialEdit({
         field: 'responsibilities' | 'service_focus' | 'education',
         index: number,
     ) {
-        if (data[field].length === 1) return;
+        if (data[field].length === 1) {
+            return;
+        }
+
         const updated = data[field].filter((_, i) => i !== index);
         setData(field, updated);
     }
@@ -135,14 +147,17 @@ export default function AdminVillageOfficialEdit({
     }
 
     function removeCareerField(index: number) {
-        if (data.career.length === 1) return;
+        if (data.career.length === 1) {
+            return;
+        }
+
         const updated = data.career.filter((_, i) => i !== index);
         setData('career', updated);
     }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        post(officialUpdate.url(official.id));
+        post(officialUpdate.url(official.id), { forceFormData: true });
     }
 
     return (
@@ -206,7 +221,7 @@ export default function AdminVillageOfficialEdit({
                                 <div className="space-y-1">
                                     <input
                                         type="file"
-                                        accept="image/*"
+                                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                                         onChange={handlePhotoChange}
                                         className="text-xs text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-700 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-emerald-800"
                                     />
@@ -217,6 +232,21 @@ export default function AdminVillageOfficialEdit({
                                         <p className="text-xs text-red-600">
                                             {errors.photo}
                                         </p>
+                                    )}
+                                    {progress && (
+                                        <div className="space-y-1 pt-1">
+                                            <div className="flex justify-between text-[11px] font-semibold text-muted-foreground">
+                                                <span>Mengunggah foto</span>
+                                                <span>
+                                                    {progress.percentage}%
+                                                </span>
+                                            </div>
+                                            <progress
+                                                value={progress.percentage}
+                                                max="100"
+                                                className="h-1.5 w-full overflow-hidden rounded-full accent-emerald-700"
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>

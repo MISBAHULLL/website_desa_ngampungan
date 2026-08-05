@@ -164,6 +164,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('dashboard/perangkat-desa', VillageOfficialController::class)
         ->parameters(['perangkat-desa' => 'villageOfficial'])
+        ->except(['show'])
         ->names('admin.village-officials');
 
     Route::resource('dashboard/lembaga-desa', VillageInstitutionController::class)

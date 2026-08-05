@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\VillageOfficialFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 /**
@@ -30,10 +32,15 @@ use Illuminate\Support\Str;
  * @property int $sort_order
  * @property int|null $parent_id
  * @property bool $is_active
+ * @property-read string|null $photo_url
  */
 class VillageOfficial extends Model
 {
+    /** @use HasFactory<VillageOfficialFactory> */
     use HasFactory;
+
+    /** @var list<string> */
+    protected $appends = ['photo_url'];
 
     protected $fillable = [
         'slug',
@@ -122,7 +129,7 @@ class VillageOfficial extends Model
             return null;
         }
 
-        return asset('storage/'.$this->photo_path);
+        return Storage::disk('public')->url($this->photo_path);
     }
 
     // ── Static Helpers ──

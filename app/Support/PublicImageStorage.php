@@ -11,13 +11,20 @@ class PublicImageStorage
 {
     public function store(UploadedFile $image, string $directory): string
     {
+        $storedPath = $this->storePath($image, $directory);
+
+        return Storage::disk('public')->url($storedPath);
+    }
+
+    public function storePath(UploadedFile $image, string $directory): string
+    {
         $storedPath = $image->store($directory, 'public');
 
         if ($storedPath === false) {
             throw new RuntimeException('Gambar gagal disimpan ke penyimpanan publik.');
         }
 
-        return Storage::disk('public')->url($storedPath);
+        return $storedPath;
     }
 
     public function delete(?string $publicUrl): void
@@ -32,6 +39,15 @@ class PublicImageStorage
             return;
         }
 
-        Storage::disk('public')->delete(Str::after($urlPath, '/storage/'));
+        $this->deletePath(Str::after($urlPath, '/storage/'));
+    }
+
+    public function deletePath(?string $storedPath): void
+    {
+        if (! $storedPath) {
+            return;
+        }
+
+        Storage::disk('public')->delete($storedPath);
     }
 }

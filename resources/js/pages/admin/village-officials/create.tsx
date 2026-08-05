@@ -1,6 +1,6 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Trash2, UserPlus, Upload, X } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     index as officialIndex,
     store as officialStore,
@@ -18,7 +18,7 @@ type Props = {
 };
 
 export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, submit, processing, errors, progress } = useForm({
         name: '',
         initials: '',
         position: '',
@@ -40,15 +40,25 @@ export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
 
     const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
+    useEffect(() => {
+        return () => {
+            if (photoPreview?.startsWith('blob:')) {
+                URL.revokeObjectURL(photoPreview);
+            }
+        };
+    }, [photoPreview]);
+
     function handleNameChange(name: string) {
         setData((prev) => {
             const parts = name.trim().split(' ');
             let initials = '';
+
             if (parts.length >= 2) {
                 initials = (parts[0][0] + parts[1][0]).toUpperCase();
             } else if (parts.length === 1 && parts[0].length > 0) {
                 initials = parts[0].substring(0, 2).toUpperCase();
             }
+
             return {
                 ...prev,
                 name,
@@ -59,6 +69,7 @@ export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
 
     function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
+
         if (file) {
             setData('photo', file);
             setPhotoPreview(URL.createObjectURL(file));
@@ -91,7 +102,10 @@ export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
         field: 'responsibilities' | 'service_focus' | 'education',
         index: number,
     ) {
-        if (data[field].length === 1) return;
+        if (data[field].length === 1) {
+            return;
+        }
+
         const updated = data[field].filter((_, i) => i !== index);
         setData(field, updated);
     }
@@ -112,14 +126,17 @@ export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
     }
 
     function removeCareerField(index: number) {
-        if (data.career.length === 1) return;
+        if (data.career.length === 1) {
+            return;
+        }
+
         const updated = data.career.filter((_, i) => i !== index);
         setData('career', updated);
     }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        post(officialStore.url());
+        submit(officialStore(), { forceFormData: true });
     }
 
     return (
@@ -180,7 +197,7 @@ export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
                                 <div className="space-y-1">
                                     <input
                                         type="file"
-                                        accept="image/*"
+                                        accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
                                         onChange={handlePhotoChange}
                                         className="text-xs text-muted-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-700 file:px-3 file:py-1.5 file:text-xs file:font-bold file:text-white hover:file:bg-emerald-800"
                                     />
@@ -191,6 +208,21 @@ export default function AdminVillageOfficialCreate({ parentOptions }: Props) {
                                         <p className="text-xs text-red-600">
                                             {errors.photo}
                                         </p>
+                                    )}
+                                    {progress && (
+                                        <div className="space-y-1 pt-1">
+                                            <div className="flex justify-between text-[11px] font-semibold text-muted-foreground">
+                                                <span>Mengunggah foto</span>
+                                                <span>
+                                                    {progress.percentage}%
+                                                </span>
+                                            </div>
+                                            <progress
+                                                value={progress.percentage}
+                                                max="100"
+                                                className="h-1.5 w-full overflow-hidden rounded-full accent-emerald-700"
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>

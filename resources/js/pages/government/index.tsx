@@ -1,7 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
-    Award,
     CheckCircle2,
     ChevronRight,
     CircleUserRound,
@@ -16,20 +15,16 @@ import { useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
-import { VillageOfficialCard } from '@/components/village-official-card';
-import {
-    VillageOfficialData,
-    VillageOfficialDetailModal,
-} from '@/components/village-official-detail-modal';
-import {
+import type {
     InstitutionMember,
     VillageInstitutionData,
-    VillageInstitutionDetailModal,
 } from '@/components/village-institution-detail-modal';
-import {
-    OfficialProp,
-    VillageOrganizationChart,
-} from '@/components/village-organization-chart';
+import { VillageInstitutionDetailModal } from '@/components/village-institution-detail-modal';
+import { VillageOfficialCard } from '@/components/village-official-card';
+import type { VillageOfficialData } from '@/components/village-official-detail-modal';
+import { VillageOfficialDetailModal } from '@/components/village-official-detail-modal';
+import type { OfficialProp } from '@/components/village-organization-chart';
+import { VillageOrganizationChart } from '@/components/village-organization-chart';
 import { home } from '@/routes';
 
 type InstitutionProp = {
@@ -208,6 +203,7 @@ export default function VillageGovernmentIndex({
                         <div className="grid grid-cols-2 gap-3 lg:col-span-4">
                             {governmentSectionLinks.map((section) => {
                                 const IconComponent = section.icon;
+
                                 return (
                                     <a
                                         key={section.href}

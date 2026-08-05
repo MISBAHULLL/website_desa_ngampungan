@@ -12,10 +12,7 @@ import {
     UserRound,
 } from 'lucide-react';
 import { PublicPageShell } from '@/components/public-page-shell';
-import {
-    dummyVillageOfficials,
-    findDummyVillageOfficial,
-} from '@/lib/dummy-village-government';
+import { findDummyVillageOfficial } from '@/lib/dummy-village-government';
 import { home } from '@/routes';
 import { index as governmentIndex } from '@/routes/government';
 
@@ -102,13 +99,6 @@ export default function VillageOfficialShow({
             .toUpperCase();
 
     const pageDescription = `${official.name}, ${official.position} Pemerintah Desa Ngampungan. Profil resmi aparatur desa Ngampungan.`;
-    const relatedOfficials = dummyVillageOfficials
-        .filter(
-            (candidate) =>
-                candidate.slug !== official.slug &&
-                candidate.group === official.group,
-        )
-        .slice(0, 3);
 
     return (
         <PublicPageShell activeSection="government">

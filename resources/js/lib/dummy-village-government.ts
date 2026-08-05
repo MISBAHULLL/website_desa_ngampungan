@@ -2,6 +2,7 @@ export type VillageOfficialGroup =
     'leadership' | 'secretariat' | 'technical' | 'territorial';
 
 export type VillageOfficial = {
+    id?: number;
     slug: string;
     name: string;
     initials: string;
@@ -9,18 +10,23 @@ export type VillageOfficial = {
     unit: string;
     group: VillageOfficialGroup;
     photo: string | null;
+    photo_path?: string | null;
+    photo_url?: string | null;
     term: string;
     employeeId: string;
+    employee_id?: string | null;
     summary: string;
     about: string;
     responsibilities: string[];
     serviceFocus: string[];
+    service_focus?: string[];
     education: string[];
     career: {
         period: string;
         role: string;
     }[];
     isPlaceholder: boolean;
+    is_active?: boolean;
 };
 
 export type VillageInstitution = {

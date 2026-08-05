@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreVillageOfficialRequest;
+use App\Http\Requests\Admin\UpdateVillageOfficialRequest;
 use App\Models\VillageOfficial;
+use App\Support\PublicImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class VillageOfficialController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $imageStorage) {}
+
     public function index(Request $request): Response
     {
         $search = $request->input('search');
@@ -35,14 +39,6 @@ class VillageOfficialController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        // Transform photo_path to photo_url for each official
-        $officials->through(function (VillageOfficial $official) {
-            $official->setAttribute('photo_url', $official->photo_url);
-
-            return $official;
-        });
-
-        // Get all officials for parent dropdown
         $parentOptions = VillageOfficial::active()
             ->orderBy('sort_order')
             ->get(['id', 'name', 'position']);
@@ -68,38 +64,18 @@ class VillageOfficialController extends Controller
         ]);
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreVillageOfficialRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'initials' => ['required', 'string', 'max:5'],
-            'position' => ['required', 'string', 'max:255'],
-            'unit' => ['required', 'string', 'max:255'],
-            'group' => ['required', 'string', 'in:leadership,secretariat,technical,territorial'],
-            'photo' => ['nullable', 'image', 'max:2048'],
-            'term' => ['nullable', 'string', 'max:100'],
-            'employee_id' => ['nullable', 'string', 'max:50'],
-            'summary' => ['required', 'string', 'max:1000'],
-            'about' => ['nullable', 'string', 'max:2000'],
-            'responsibilities' => ['nullable', 'array'],
-            'responsibilities.*' => ['nullable', 'string', 'max:500'],
-            'service_focus' => ['nullable', 'array'],
-            'service_focus.*' => ['nullable', 'string', 'max:100'],
-            'education' => ['nullable', 'array'],
-            'education.*' => ['nullable', 'string', 'max:300'],
-            'career' => ['nullable', 'array'],
-            'career.*.period' => ['nullable', 'string', 'max:100'],
-            'career.*.role' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'parent_id' => ['nullable', 'integer', 'exists:village_officials,id'],
-            'is_active' => ['boolean'],
-        ]);
+        $validated = $request->validated();
 
         $slug = VillageOfficial::generateUniqueSlug($validated['name']);
 
         $photoPath = null;
         if ($request->hasFile('photo')) {
-            $photoPath = $request->file('photo')->store('village-officials', 'public');
+            $photoPath = $this->imageStorage->storePath(
+                $request->file('photo'),
+                'village-officials',
+            );
         }
 
         VillageOfficial::create([
@@ -129,8 +105,6 @@ class VillageOfficialController extends Controller
 
     public function edit(VillageOfficial $villageOfficial): Response
     {
-        $villageOfficial->setAttribute('photo_url', $villageOfficial->photo_url);
-
         $parentOptions = VillageOfficial::active()
             ->where('id', '!=', $villageOfficial->id)
             ->orderBy('sort_order')
@@ -142,51 +116,22 @@ class VillageOfficialController extends Controller
         ]);
     }
 
-    public function update(Request $request, VillageOfficial $villageOfficial): RedirectResponse
+    public function update(UpdateVillageOfficialRequest $request, VillageOfficial $villageOfficial): RedirectResponse
     {
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'initials' => ['required', 'string', 'max:5'],
-            'position' => ['required', 'string', 'max:255'],
-            'unit' => ['required', 'string', 'max:255'],
-            'group' => ['required', 'string', 'in:leadership,secretariat,technical,territorial'],
-            'photo' => ['nullable', 'image', 'max:2048'],
-            'remove_photo' => ['nullable', 'boolean'],
-            'term' => ['nullable', 'string', 'max:100'],
-            'employee_id' => ['nullable', 'string', 'max:50'],
-            'summary' => ['required', 'string', 'max:1000'],
-            'about' => ['nullable', 'string', 'max:2000'],
-            'responsibilities' => ['nullable', 'array'],
-            'responsibilities.*' => ['nullable', 'string', 'max:500'],
-            'service_focus' => ['nullable', 'array'],
-            'service_focus.*' => ['nullable', 'string', 'max:100'],
-            'education' => ['nullable', 'array'],
-            'education.*' => ['nullable', 'string', 'max:300'],
-            'career' => ['nullable', 'array'],
-            'career.*.period' => ['nullable', 'string', 'max:100'],
-            'career.*.role' => ['nullable', 'string', 'max:255'],
-            'sort_order' => ['nullable', 'integer', 'min:0'],
-            'parent_id' => ['nullable', 'integer', 'exists:village_officials,id'],
-            'is_active' => ['boolean'],
-        ]);
+        $validated = $request->validated();
 
         $slug = $villageOfficial->name !== $validated['name']
             ? VillageOfficial::generateUniqueSlug($validated['name'], $villageOfficial->id)
             : $villageOfficial->slug;
 
-        // Handle photo
-        $photoPath = $villageOfficial->photo_path;
-
-        if (! empty($validated['remove_photo']) && $photoPath) {
-            Storage::disk('public')->delete($photoPath);
-            $photoPath = null;
-        }
+        $previousPhotoPath = $villageOfficial->photo_path;
+        $photoPath = ! empty($validated['remove_photo']) ? null : $previousPhotoPath;
 
         if ($request->hasFile('photo')) {
-            if ($villageOfficial->photo_path) {
-                Storage::disk('public')->delete($villageOfficial->photo_path);
-            }
-            $photoPath = $request->file('photo')->store('village-officials', 'public');
+            $photoPath = $this->imageStorage->storePath(
+                $request->file('photo'),
+                'village-officials',
+            );
         }
 
         $villageOfficial->update([
@@ -210,6 +155,10 @@ class VillageOfficialController extends Controller
             'is_active' => $validated['is_active'] ?? true,
         ]);
 
+        if ($previousPhotoPath !== $photoPath) {
+            $this->imageStorage->deletePath($previousPhotoPath);
+        }
+
         return redirect()->route('admin.village-officials.index')
             ->with('success', 'Data perangkat desa berhasil diperbarui.');
     }
@@ -217,7 +166,7 @@ class VillageOfficialController extends Controller
     public function destroy(VillageOfficial $villageOfficial): RedirectResponse
     {
         if ($villageOfficial->photo_path) {
-            Storage::disk('public')->delete($villageOfficial->photo_path);
+            $this->imageStorage->deletePath($villageOfficial->photo_path);
         }
 
         $villageOfficial->delete();
