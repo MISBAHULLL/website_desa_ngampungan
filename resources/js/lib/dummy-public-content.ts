@@ -23,7 +23,7 @@ export type Announcement = {
     status: AnnouncementStatus;
     pinned: boolean;
     startsAt: string;
-    endsAt: string;
+    endsAt?: string | null;
     periodLabel: string;
 };
 

@@ -16,7 +16,7 @@ class AnnouncementController extends Controller
     {
         $dbAnnouncements = Announcement::latestFirst()
             ->get()
-            ->map(function ($announcement) {
+            ->map(function (Announcement $announcement): array {
                 $startsAtLabel = $announcement->starts_at->translatedFormat('j F Y');
                 $endsAtLabel = $announcement->ends_at ? $announcement->ends_at->translatedFormat('j F Y') : null;
                 $periodLabel = $endsAtLabel ? "{$startsAtLabel}–{$endsAtLabel}" : "Mulai {$startsAtLabel}";
@@ -28,7 +28,7 @@ class AnnouncementController extends Controller
                     'summary' => $announcement->summary,
                     'content' => $announcement->content,
                     'priority' => $announcement->priority,
-                    'status' => $announcement->status,
+                    'status' => $announcement->effectiveStatus(),
                     'pinned' => (bool) $announcement->is_pinned,
                     'startsAt' => $announcement->starts_at->format('Y-m-d'),
                     'endsAt' => $announcement->ends_at?->format('Y-m-d'),

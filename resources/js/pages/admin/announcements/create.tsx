@@ -3,19 +3,22 @@ import {
     AlertTriangle,
     ArrowLeft,
     Bell,
-    Calendar,
     Megaphone,
     Pin,
     Plus,
     ShieldAlert,
-    Trash2,
 } from 'lucide-react';
+import {
+    create as announcementCreate,
+    index as announcementIndex,
+    store as announcementStore,
+} from '@/actions/App/Http/Controllers/Admin/AnnouncementController';
 import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes';
 
 export default function AdminAnnouncementCreate() {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, submit, processing, errors } = useForm({
         title: '',
         summary: '',
         content: [''] as string[],
@@ -37,14 +40,18 @@ export default function AdminAnnouncementCreate() {
     }
 
     function removeParagraph(index: number) {
-        if (data.content.length <= 1) return;
+        if (data.content.length <= 1) {
+            return;
+        }
+
         const next = data.content.filter((_, i) => i !== index);
+
         setData('content', next);
     }
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        post('/dashboard/pengumuman');
+        submit(announcementStore());
     }
 
     return (
@@ -55,7 +62,7 @@ export default function AdminAnnouncementCreate() {
                 <header className="flex flex-col justify-between gap-4 border-b border-sidebar-border/70 pb-6 md:flex-row md:items-center">
                     <div>
                         <Link
-                            href="/dashboard/pengumuman"
+                            href={announcementIndex()}
                             className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 hover:underline dark:text-emerald-400"
                         >
                             <ArrowLeft className="size-3.5" />
@@ -438,11 +445,11 @@ AdminAnnouncementCreate.layout = {
         },
         {
             title: 'Kelola Pengumuman',
-            href: '/dashboard/pengumuman',
+            href: announcementIndex(),
         },
         {
             title: 'Buat Pengumuman Baru',
-            href: '/dashboard/pengumuman/create',
+            href: announcementCreate(),
         },
     ],
 };

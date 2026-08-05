@@ -1,4 +1,4 @@
-import { Head, usePage } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import { Archive, BellRing } from 'lucide-react';
 import { useState } from 'react';
 import { PublicAnnouncementCard } from '@/components/public-announcement-card';

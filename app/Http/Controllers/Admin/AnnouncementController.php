@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreAnnouncementRequest;
+use App\Http\Requests\Admin\UpdateAnnouncementRequest;
 use App\Models\Announcement;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,12 +29,20 @@ class AnnouncementController extends Controller
             $query->where('priority', $priority);
         }
 
-        if ($status && $status !== 'Semua') {
-            $query->where('status', $status);
+        if ($status === 'active') {
+            $query->active();
+        }
+
+        if ($status === 'archived') {
+            $query->archived();
         }
 
         $announcements = $query->latestFirst()
             ->paginate(10)
+            ->through(fn (Announcement $announcement): array => array_replace(
+                $announcement->toArray(),
+                ['status' => $announcement->effectiveStatus()],
+            ))
             ->withQueryString();
 
         return Inertia::render('admin/announcements/index', [
@@ -50,19 +60,9 @@ class AnnouncementController extends Controller
         return Inertia::render('admin/announcements/create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreAnnouncementRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'summary' => ['required', 'string', 'max:300'],
-            'content' => ['nullable', 'array'],
-            'content.*' => ['nullable', 'string', 'max:10000'],
-            'priority' => ['required', 'in:normal,important,emergency'],
-            'status' => ['required', 'in:active,archived'],
-            'is_pinned' => ['boolean'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-        ]);
+        $validated = $request->validated();
 
         $slug = Announcement::generateUniqueSlug($validated['title']);
 
@@ -72,7 +72,10 @@ class AnnouncementController extends Controller
             'summary' => $validated['summary'],
             'content' => ! empty($validated['content']) ? array_values(array_filter($validated['content'])) : null,
             'priority' => $validated['priority'],
-            'status' => $validated['status'],
+            'status' => Announcement::resolveStatusForPeriod(
+                $validated['status'],
+                $validated['ends_at'] ?? null,
+            ),
             'is_pinned' => $validated['is_pinned'] ?? false,
             'starts_at' => $validated['starts_at'],
             'ends_at' => $validated['ends_at'] ?? null,
@@ -89,19 +92,9 @@ class AnnouncementController extends Controller
         ]);
     }
 
-    public function update(Request $request, Announcement $announcement): RedirectResponse
+    public function update(UpdateAnnouncementRequest $request, Announcement $announcement): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'summary' => ['required', 'string', 'max:300'],
-            'content' => ['nullable', 'array'],
-            'content.*' => ['nullable', 'string', 'max:10000'],
-            'priority' => ['required', 'in:normal,important,emergency'],
-            'status' => ['required', 'in:active,archived'],
-            'is_pinned' => ['boolean'],
-            'starts_at' => ['required', 'date'],
-            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
-        ]);
+        $validated = $request->validated();
 
         $slug = $announcement->title !== $validated['title']
             ? Announcement::generateUniqueSlug($validated['title'], $announcement->id)
@@ -113,7 +106,10 @@ class AnnouncementController extends Controller
             'summary' => $validated['summary'],
             'content' => ! empty($validated['content']) ? array_values(array_filter($validated['content'])) : null,
             'priority' => $validated['priority'],
-            'status' => $validated['status'],
+            'status' => Announcement::resolveStatusForPeriod(
+                $validated['status'],
+                $validated['ends_at'] ?? null,
+            ),
             'is_pinned' => $validated['is_pinned'] ?? false,
             'starts_at' => $validated['starts_at'],
             'ends_at' => $validated['ends_at'] ?? null,

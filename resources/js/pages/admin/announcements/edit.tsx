@@ -7,7 +7,6 @@ import {
     Pin,
     Plus,
     ShieldAlert,
-    Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -36,9 +35,13 @@ type AdminAnnouncementEditProps = {
 };
 
 function formatDatetimeLocal(isoString: string): string {
-    if (!isoString) return '';
+    if (!isoString) {
+        return '';
+    }
+
     const date = new Date(isoString);
     const tzOffset = date.getTimezoneOffset() * 60000;
+
     return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
 }
 
@@ -77,8 +80,12 @@ export default function AdminAnnouncementEdit({
     }
 
     function removeParagraph(index: number) {
-        if (contentParagraphs.length <= 1) return;
+        if (contentParagraphs.length <= 1) {
+            return;
+        }
+
         const next = contentParagraphs.filter((_, i) => i !== index);
+
         setContentParagraphs(next);
     }
 
@@ -107,11 +114,12 @@ export default function AdminAnnouncementEdit({
                 </header>
 
                 <Form
-                    {...announcementUpdate.form(announcement.id, {
+                    action={announcementUpdate(announcement.id)}
+                    transform={() => ({
                         title,
                         summary,
                         content: contentParagraphs.filter(
-                            (p) => p.trim() !== '',
+                            (paragraph) => paragraph.trim() !== '',
                         ),
                         priority,
                         status,
