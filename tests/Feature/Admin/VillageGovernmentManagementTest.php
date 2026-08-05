@@ -203,3 +203,199 @@ test('admin can update organization hierarchy', function () {
     $response->assertStatus(302);
     expect($sekdes->fresh()->parent_id)->toBe($kades->id);
 });
+
+test('admin can add multiple branches under the same direct superior', function () {
+    $villageHead = VillageOfficial::factory()->create([
+        'name' => 'Rohan',
+        'position' => 'Kepala Desa',
+        'parent_id' => null,
+    ]);
+    $secretary = VillageOfficial::factory()->create([
+        'name' => 'Rina',
+        'position' => 'Sekretaris Desa',
+        'parent_id' => null,
+    ]);
+    $treasurer = VillageOfficial::factory()->create([
+        'name' => 'Bambang',
+        'position' => 'Bendahara Desa',
+        'parent_id' => null,
+    ]);
+
+    $this->actingAs($this->user)
+        ->post(route('admin.organization-structure.branches.store'), [
+            'parent_id' => $villageHead->id,
+            'member_id' => $secretary->id,
+        ])
+        ->assertSessionHasNoErrors();
+
+    $this->actingAs($this->user)
+        ->post(route('admin.organization-structure.branches.store'), [
+            'parent_id' => $villageHead->id,
+            'member_id' => $treasurer->id,
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($secretary->fresh()->parent_id)->toBe($villageHead->id)
+        ->and($treasurer->fresh()->parent_id)->toBe($villageHead->id);
+
+    $this->get(route('government.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->has('officials.orgTree', 1)
+            ->where('officials.orgTree.0.name', 'Rohan')
+            ->has('officials.orgTree.0.children', 2));
+});
+
+test('admin can move a kasi branch from village secretary directly to village head', function () {
+    $villageHead = VillageOfficial::factory()->create([
+        'name' => 'Rohan',
+        'position' => 'Kepala Desa',
+        'parent_id' => null,
+        'sort_order' => 0,
+    ]);
+    $secretary = VillageOfficial::factory()->create([
+        'name' => 'Rina',
+        'position' => 'Sekretaris Desa',
+        'parent_id' => $villageHead->id,
+        'sort_order' => 1,
+    ]);
+    $sectionHead = VillageOfficial::factory()->create([
+        'name' => 'Imam',
+        'position' => 'Kasi Pelayanan',
+        'parent_id' => $secretary->id,
+        'sort_order' => 1,
+    ]);
+
+    $this->actingAs($this->user)
+        ->post(route('admin.organization-structure.branches.store'), [
+            'parent_id' => $villageHead->id,
+            'member_id' => $sectionHead->id,
+        ])
+        ->assertSessionHasNoErrors();
+
+    expect($sectionHead->fresh()->parent_id)->toBe($villageHead->id);
+
+    $this->get(route('government.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('officials.orgTree.0.name', 'Rohan')
+            ->has('officials.orgTree.0.children', 2)
+            ->where('officials.orgTree.0.children.1.name', 'Imam')
+            ->has('officials.orgTree.0.children.0.children', 0));
+});
+
+test('public organization tree places secretary kasi and village head assistants at the requested levels', function () {
+    $villageHead = VillageOfficial::factory()->create([
+        'name' => 'Rohan',
+        'position' => 'Kepala Desa',
+        'group' => 'leadership',
+        'parent_id' => null,
+        'sort_order' => 0,
+    ]);
+    $secretary = VillageOfficial::factory()->create([
+        'name' => 'Rina',
+        'position' => 'Sekretaris Desa',
+        'group' => 'secretariat',
+        'parent_id' => $villageHead->id,
+        'sort_order' => 1,
+    ]);
+    VillageOfficial::factory()->create([
+        'name' => 'Bagas',
+        'position' => 'Kaur Keuangan',
+        'group' => 'secretariat',
+        'parent_id' => $secretary->id,
+        'sort_order' => 1,
+    ]);
+    VillageOfficial::factory()->create([
+        'name' => 'Imam',
+        'position' => 'Kasi Pelayanan',
+        'group' => 'technical',
+        'parent_id' => $villageHead->id,
+        'sort_order' => 2,
+    ]);
+    VillageOfficial::factory()->create([
+        'name' => 'Suparmo',
+        'position' => 'Kepala Dusun Ngampungan',
+        'group' => 'territorial',
+        'parent_id' => $villageHead->id,
+        'sort_order' => 3,
+    ]);
+
+    $this->get(route('government.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('officials.orgTree.0.name', 'Rohan')
+            ->has('officials.orgTree.0.children', 3)
+            ->where('officials.orgTree.0.children.0.name', 'Rina')
+            ->where('officials.orgTree.0.children.0.children.0.name', 'Bagas')
+            ->where('officials.orgTree.0.children.1.name', 'Imam')
+            ->where('officials.orgTree.0.children.2.name', 'Suparmo'));
+});
+
+test('admin can detach a branch without deleting officials or their subtree', function () {
+    $villageHead = VillageOfficial::factory()->create([
+        'position' => 'Kepala Desa',
+        'parent_id' => null,
+    ]);
+    $secretary = VillageOfficial::factory()->create([
+        'position' => 'Sekretaris Desa',
+        'parent_id' => $villageHead->id,
+    ]);
+    $administrationHead = VillageOfficial::factory()->create([
+        'position' => 'Kaur Tata Usaha',
+        'parent_id' => $secretary->id,
+    ]);
+
+    $this->actingAs($this->user)
+        ->delete(route('admin.organization-structure.branches.destroy', $secretary))
+        ->assertSessionHasNoErrors();
+
+    $secretary->refresh();
+    $administrationHead->refresh();
+
+    $this->assertModelExists($secretary);
+    $this->assertModelExists($administrationHead);
+    expect($secretary->parent_id)->toBeNull()
+        ->and($administrationHead->parent_id)->toBe($secretary->id);
+});
+
+test('organization branch validation rejects self references and circular hierarchies', function () {
+    $villageHead = VillageOfficial::factory()->create(['parent_id' => null]);
+    $secretary = VillageOfficial::factory()->create(['parent_id' => $villageHead->id]);
+    $administrationHead = VillageOfficial::factory()->create(['parent_id' => $secretary->id]);
+
+    $this->actingAs($this->user)
+        ->post(route('admin.organization-structure.branches.store'), [
+            'parent_id' => $villageHead->id,
+            'member_id' => $villageHead->id,
+        ])
+        ->assertSessionHasErrors('member_id');
+
+    $this->actingAs($this->user)
+        ->post(route('admin.organization-structure.branches.store'), [
+            'parent_id' => $administrationHead->id,
+            'member_id' => $villageHead->id,
+        ])
+        ->assertSessionHasErrors('parent_id');
+
+    expect($villageHead->fresh()->parent_id)->toBeNull();
+});
+
+test('bulk hierarchy update rejects a circular relationship', function () {
+    $villageHead = VillageOfficial::factory()->create(['parent_id' => null]);
+    $secretary = VillageOfficial::factory()->create(['parent_id' => $villageHead->id]);
+
+    $this->actingAs($this->user)
+        ->patch(route('admin.organization-structure.update'), [
+            'updates' => [
+                [
+                    'id' => $villageHead->id,
+                    'parent_id' => $secretary->id,
+                    'sort_order' => 0,
+                ],
+            ],
+        ])
+        ->assertSessionHasErrors('updates');
+
+    expect($villageHead->fresh()->parent_id)->toBeNull();
+});

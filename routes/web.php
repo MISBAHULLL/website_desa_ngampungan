@@ -173,6 +173,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('dashboard/struktur-organisasi', [OrganizationStructureController::class, 'index'])
         ->name('admin.organization-structure.index');
+    Route::post('dashboard/struktur-organisasi/cabang', [OrganizationStructureController::class, 'storeBranch'])
+        ->name('admin.organization-structure.branches.store');
+    Route::delete('dashboard/struktur-organisasi/cabang/{villageOfficial}', [OrganizationStructureController::class, 'destroyBranch'])
+        ->name('admin.organization-structure.branches.destroy');
     Route::patch('dashboard/struktur-organisasi', [OrganizationStructureController::class, 'updateStructure'])
         ->name('admin.organization-structure.update');
 

@@ -23,7 +23,10 @@ import { VillageInstitutionDetailModal } from '@/components/village-institution-
 import { VillageOfficialCard } from '@/components/village-official-card';
 import type { VillageOfficialData } from '@/components/village-official-detail-modal';
 import { VillageOfficialDetailModal } from '@/components/village-official-detail-modal';
-import type { OfficialProp } from '@/components/village-organization-chart';
+import type {
+    OfficialProp,
+    OrganizationTreeNode,
+} from '@/components/village-organization-chart';
 import { VillageOrganizationChart } from '@/components/village-organization-chart';
 import { home } from '@/routes';
 
@@ -49,7 +52,7 @@ type VillageGovernmentPageProps = {
         secretariat: OfficialProp[];
         technical: OfficialProp[];
         territorial: OfficialProp[];
-        orgTree: any[];
+        orgTree: OrganizationTreeNode[];
     };
     institutions: InstitutionProp[];
 };
@@ -428,6 +431,7 @@ export default function VillageGovernmentIndex({
                         <FadeIn direction="up" delay={0.1} duration={0.5}>
                             <VillageOrganizationChart
                                 allOfficials={officials.all}
+                                tree={officials.orgTree}
                                 onOpenDetail={(official) =>
                                     setSelectedOfficial(official as any)
                                 }

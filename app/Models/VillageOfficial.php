@@ -153,6 +153,34 @@ class VillageOfficial extends Model
     }
 
     /**
+     * @param  array<int, int|null>  $parentIds
+     */
+    public static function hierarchyContainsCycle(array $parentIds): bool
+    {
+        foreach (array_keys($parentIds) as $officialId) {
+            $visitedIds = [];
+            $currentId = $officialId;
+
+            while (true) {
+                if (isset($visitedIds[$currentId])) {
+                    return true;
+                }
+
+                $visitedIds[$currentId] = true;
+                $parentId = $parentIds[$currentId] ?? null;
+
+                if ($parentId === null) {
+                    break;
+                }
+
+                $currentId = $parentId;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Build a nested tree from a flat collection of officials.
      *
      * @param  Collection<int, self>  $officials
