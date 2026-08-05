@@ -3,94 +3,98 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\FilterNewsRequest;
+use App\Http\Requests\Admin\StoreNewsRequest;
+use App\Http\Requests\Admin\UpdateNewsRequest;
 use App\Models\News;
+use App\Support\PublicImageStorage;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class NewsController extends Controller
 {
-    public function index(Request $request): Response
+    public function __construct(private readonly PublicImageStorage $imageStorage) {}
+
+    public function index(FilterNewsRequest $request): Response
     {
-        $search = $request->input('search');
-        $category = $request->input('category');
+        $validated = $request->validated();
+        $search = trim((string) ($validated['search'] ?? ''));
+        $category = (string) ($validated['category'] ?? 'Semua');
+        $standardCategories = $this->standardCategories();
+        $otherCategoryLabel = $this->otherCategoryLabel();
 
-        $query = News::query();
+        $news = News::query()
+            ->when($search !== '', function ($query) use ($search): void {
+                $escapedSearch = addcslashes($search, '%_\\');
+                $query->where('title', 'like', "%{$escapedSearch}%");
+            })
+            ->when($category !== '' && $category !== 'Semua', function ($query) use ($category, $otherCategoryLabel, $standardCategories): void {
+                if ($category === $otherCategoryLabel) {
+                    $query->whereNotIn('category', $standardCategories);
 
-        if ($search) {
-            $query->where('title', 'like', "%{$search}%");
-        }
+                    return;
+                }
 
-        if ($category && $category !== 'Semua') {
-            $query->where('category', $category);
-        }
-
-        $news = $query->latestPublished()
+                $query->where('category', $category);
+            })
+            ->latestPublished()
             ->paginate(10)
             ->withQueryString();
 
-        $categories = News::select('category')->distinct()->pluck('category');
+        $storedCategories = News::query()
+            ->distinct()
+            ->pluck('category')
+            ->all();
+        $categories = array_values(array_filter(
+            $standardCategories,
+            fn (string $item): bool => in_array($item, $storedCategories, true),
+        ));
+
+        if (array_diff($storedCategories, $standardCategories) !== []) {
+            $categories[] = $otherCategoryLabel;
+        }
 
         return Inertia::render('admin/news/index', [
             'news' => $news,
             'categories' => $categories,
             'filters' => [
-                'search' => $search ?? '',
-                'category' => $category ?? 'Semua',
+                'search' => $search,
+                'category' => $category,
             ],
         ]);
     }
 
     public function create(): Response
     {
-        return Inertia::render('admin/news/create');
+        return Inertia::render('admin/news/create', $this->categoryProps());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreNewsRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'max:100'],
-            'excerpt' => ['required', 'string', 'max:500'],
-            'content' => ['required', 'array', 'min:1'],
-            'content.*' => ['required', 'string', 'max:10000'],
-            'author' => ['nullable', 'string', 'max:100'],
-            'image' => ['nullable', 'image', 'max:3072'], // Max 3MB
-            'image_url' => ['nullable', 'url', 'max:500'],
-            'image_alt' => ['nullable', 'string', 'max:255'],
-            'is_featured' => ['boolean'],
-            'published_at' => ['nullable', 'date'],
-        ]);
+        $validated = $request->validated();
+        $imagePath = $this->resolveImagePath($request, $validated['image_url'] ?? null);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('news', 'public');
-            $imagePath = Storage::url($path);
-        } elseif (! empty($validated['image_url'])) {
-            $imagePath = $validated['image_url'];
-        }
+        DB::transaction(function () use ($validated, $imagePath): void {
+            if (! empty($validated['is_featured'])) {
+                News::query()->where('is_featured', true)->update(['is_featured' => false]);
+            }
 
-        if (! empty($validated['is_featured'])) {
-            // Un-feature existing featured articles if desired
-            News::where('is_featured', true)->update(['is_featured' => false]);
-        }
-
-        $slug = News::generateUniqueSlug($validated['title']);
-
-        News::create([
-            'title' => $validated['title'],
-            'slug' => $slug,
-            'category' => $validated['category'],
-            'excerpt' => $validated['excerpt'],
-            'content' => array_values(array_filter($validated['content'])),
-            'author' => $validated['author'] ?: 'Admin Desa',
-            'image_path' => $imagePath,
-            'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
-            'is_featured' => $validated['is_featured'] ?? false,
-            'published_at' => $validated['published_at'] ?? now(),
-        ]);
+            News::query()->create([
+                'title' => $validated['title'],
+                'slug' => News::generateUniqueSlug($validated['title']),
+                'category' => $validated['category'],
+                'excerpt' => $validated['excerpt'],
+                'content' => array_values(array_filter($validated['content'])),
+                'author' => $validated['author'] ?: 'Admin Desa',
+                'image_path' => $imagePath,
+                'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+                'is_featured' => $validated['is_featured'] ?? false,
+                'published_at' => $validated['published_at'] ?? now(),
+            ]);
+        });
 
         return redirect()->route('admin.news.index')
             ->with('success', 'Berita berhasil diterbitkan.');
@@ -100,53 +104,46 @@ class NewsController extends Controller
     {
         return Inertia::render('admin/news/edit', [
             'newsItem' => $news,
+            ...$this->categoryProps(),
         ]);
     }
 
-    public function update(Request $request, News $news): RedirectResponse
+    public function update(UpdateNewsRequest $request, News $news): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'max:100'],
-            'excerpt' => ['required', 'string', 'max:500'],
-            'content' => ['required', 'array', 'min:1'],
-            'content.*' => ['required', 'string', 'max:10000'],
-            'author' => ['nullable', 'string', 'max:100'],
-            'image' => ['nullable', 'image', 'max:3072'],
-            'image_url' => ['nullable', 'url', 'max:500'],
-            'image_alt' => ['nullable', 'string', 'max:255'],
-            'is_featured' => ['boolean'],
-            'published_at' => ['nullable', 'date'],
-        ]);
+        $validated = $request->validated();
+        $previousImagePath = $news->image_path;
+        $imagePath = $this->resolveImagePath(
+            $request,
+            $validated['image_url'] ?? null,
+            $previousImagePath,
+        );
 
-        $imagePath = $news->image_path;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('news', 'public');
-            $imagePath = Storage::url($path);
-        } elseif (! empty($validated['image_url'])) {
-            $imagePath = $validated['image_url'];
+        DB::transaction(function () use ($validated, $imagePath, $news): void {
+            if (! empty($validated['is_featured']) && ! $news->is_featured) {
+                News::query()->where('is_featured', true)->update(['is_featured' => false]);
+            }
+
+            $slug = $news->title !== $validated['title']
+                ? News::generateUniqueSlug($validated['title'], $news->id)
+                : $news->slug;
+
+            $news->update([
+                'title' => $validated['title'],
+                'slug' => $slug,
+                'category' => $validated['category'],
+                'excerpt' => $validated['excerpt'],
+                'content' => array_values(array_filter($validated['content'])),
+                'author' => $validated['author'] ?: 'Admin Desa',
+                'image_path' => $imagePath,
+                'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+                'is_featured' => $validated['is_featured'] ?? false,
+                'published_at' => $validated['published_at'] ?? $news->published_at,
+            ]);
+        });
+
+        if ($previousImagePath !== $imagePath) {
+            $this->imageStorage->delete($previousImagePath);
         }
-
-        if (! empty($validated['is_featured']) && ! $news->is_featured) {
-            News::where('is_featured', true)->update(['is_featured' => false]);
-        }
-
-        $slug = $news->title !== $validated['title']
-            ? News::generateUniqueSlug($validated['title'], $news->id)
-            : $news->slug;
-
-        $news->update([
-            'title' => $validated['title'],
-            'slug' => $slug,
-            'category' => $validated['category'],
-            'excerpt' => $validated['excerpt'],
-            'content' => array_values(array_filter($validated['content'])),
-            'author' => $validated['author'] ?: 'Admin Desa',
-            'image_path' => $imagePath,
-            'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
-            'is_featured' => $validated['is_featured'] ?? false,
-            'published_at' => $validated['published_at'] ?? $news->published_at,
-        ]);
 
         return redirect()->route('admin.news.index')
             ->with('success', 'Berita berhasil diperbarui.');
@@ -156,11 +153,13 @@ class NewsController extends Controller
     {
         $newStatus = ! $news->is_featured;
 
-        if ($newStatus) {
-            News::where('is_featured', true)->update(['is_featured' => false]);
-        }
+        DB::transaction(function () use ($newStatus, $news): void {
+            if ($newStatus) {
+                News::query()->where('is_featured', true)->update(['is_featured' => false]);
+            }
 
-        $news->update(['is_featured' => $newStatus]);
+            $news->update(['is_featured' => $newStatus]);
+        });
 
         return redirect()->back()
             ->with('success', $newStatus ? 'Berita dijadikan Berita Utama.' : 'Berita diubah menjadi berita biasa.');
@@ -168,9 +167,48 @@ class NewsController extends Controller
 
     public function destroy(News $news): RedirectResponse
     {
+        $imagePath = $news->image_path;
         $news->delete();
+        $this->imageStorage->delete($imagePath);
 
         return redirect()->route('admin.news.index')
             ->with('success', 'Berita berhasil dihapus.');
+    }
+
+    /** @return array{categoryOptions: list<string>, otherCategoryLabel: string} */
+    private function categoryProps(): array
+    {
+        return [
+            'categoryOptions' => $this->standardCategories(),
+            'otherCategoryLabel' => $this->otherCategoryLabel(),
+        ];
+    }
+
+    /** @return list<string> */
+    private function standardCategories(): array
+    {
+        /** @var list<string> $categories */
+        $categories = config('village_news.categories', []);
+
+        return $categories;
+    }
+
+    private function otherCategoryLabel(): string
+    {
+        return (string) config('village_news.other_category_label', 'Lainnya');
+    }
+
+    private function resolveImagePath(
+        StoreNewsRequest $request,
+        ?string $imageUrl,
+        ?string $fallback = null,
+    ): ?string {
+        $image = $request->file('image');
+
+        if ($image instanceof UploadedFile) {
+            return $this->imageStorage->store($image, 'news');
+        }
+
+        return $imageUrl ?: $fallback;
     }
 }

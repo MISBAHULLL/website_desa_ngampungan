@@ -1,17 +1,11 @@
 import { Form, Head, Link } from '@inertiajs/react';
-import {
-    ArrowLeft,
-    FileText,
-    Image as ImageIcon,
-    Plus,
-    Star,
-    Trash2,
-} from 'lucide-react';
+import { ArrowLeft, FileText, Plus, Star } from 'lucide-react';
 import { useState } from 'react';
 import {
     index as newsIndex,
     update as newsUpdate,
 } from '@/actions/App/Http/Controllers/Admin/NewsController';
+import { AdminNewsImageField } from '@/components/admin-news-image-field';
 import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes';
@@ -30,18 +24,25 @@ type NewsItem = {
     published_at: string;
 };
 
-const categories = [
-    'Pertanian',
-    'Kesehatan',
-    'UMKM & Budaya',
-    'Pembangunan',
-    'Pemerintahan',
-    'Pelayanan',
-];
+type AdminNewsEditProps = {
+    newsItem: NewsItem;
+    categoryOptions: string[];
+    otherCategoryLabel: string;
+};
 
-export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
+export default function AdminNewsEdit({
+    newsItem,
+    categoryOptions,
+    otherCategoryLabel,
+}: AdminNewsEditProps) {
     const [title, setTitle] = useState(newsItem.title || '');
-    const [category, setCategory] = useState(newsItem.category || 'Pertanian');
+    const isStandardCategory = categoryOptions.includes(newsItem.category);
+    const [category, setCategory] = useState(
+        isStandardCategory ? newsItem.category : otherCategoryLabel,
+    );
+    const [customCategory, setCustomCategory] = useState(
+        isStandardCategory ? '' : newsItem.category,
+    );
     const [excerpt, setExcerpt] = useState(newsItem.excerpt || '');
     const [contentParagraphs, setContentParagraphs] = useState<string[]>(
         Array.isArray(newsItem.content) && newsItem.content.length > 0
@@ -49,7 +50,9 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
             : [''],
     );
     const [author, setAuthor] = useState(newsItem.author || 'Admin Desa');
-    const [imageUrl, setImageUrl] = useState(newsItem.image_path || '');
+    const [imageUrl, setImageUrl] = useState(
+        newsItem.image_path?.startsWith('http') ? newsItem.image_path : '',
+    );
     const [imageAlt, setImageAlt] = useState(newsItem.image_alt || '');
     const [isFeatured, setIsFeatured] = useState(newsItem.is_featured || false);
     const [publishedAt, setPublishedAt] = useState(
@@ -69,7 +72,10 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
     }
 
     function removeParagraph(index: number) {
-        if (contentParagraphs.length <= 1) return;
+        if (contentParagraphs.length <= 1) {
+            return;
+        }
+
         const next = contentParagraphs.filter((_, i) => i !== index);
         setContentParagraphs(next);
     }
@@ -317,19 +323,61 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
                                         </label>
                                         <select
                                             id="category"
-                                            name="category"
                                             value={category}
                                             onChange={(e) =>
                                                 setCategory(e.target.value)
                                             }
                                             className="mt-1.5 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-semibold outline-none focus:border-emerald-600"
                                         >
-                                            {categories.map((cat) => (
+                                            {categoryOptions.map((cat) => (
                                                 <option key={cat} value={cat}>
                                                     {cat}
                                                 </option>
                                             ))}
+                                            <option value={otherCategoryLabel}>
+                                                {otherCategoryLabel}
+                                            </option>
                                         </select>
+                                        <input
+                                            type="hidden"
+                                            name="category"
+                                            value={
+                                                category === otherCategoryLabel
+                                                    ? customCategory
+                                                    : category
+                                            }
+                                        />
+                                        {category === otherCategoryLabel && (
+                                            <div className="mt-3">
+                                                <label
+                                                    htmlFor="custom_category"
+                                                    className="block text-xs font-semibold text-muted-foreground"
+                                                >
+                                                    Nama kategori lainnya
+                                                </label>
+                                                <input
+                                                    id="custom_category"
+                                                    type="text"
+                                                    required
+                                                    maxLength={100}
+                                                    value={customCategory}
+                                                    onChange={(event) =>
+                                                        setCustomCategory(
+                                                            event.target.value,
+                                                        )
+                                                    }
+                                                    className="mt-1 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
+                                                />
+                                                <p className="mt-1 text-xs text-muted-foreground">
+                                                    Kategori ini otomatis masuk
+                                                    filter “Lainnya” di website.
+                                                </p>
+                                            </div>
+                                        )}
+                                        <InputError
+                                            message={errors.category}
+                                            className="mt-1"
+                                        />
                                     </div>
 
                                     <div>
@@ -371,53 +419,16 @@ export default function AdminNewsEdit({ newsItem }: { newsItem: NewsItem }) {
                                     </div>
                                 </div>
 
-                                {/* Image URL / Upload */}
-                                <div className="space-y-4 rounded-xl border border-sidebar-border/70 bg-background p-5">
-                                    <div className="flex items-center gap-2">
-                                        <ImageIcon className="size-4 text-emerald-600" />
-                                        <h3 className="text-sm font-bold text-foreground">
-                                            Foto / Dokumentasi Berita
-                                        </h3>
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            htmlFor="image_url"
-                                            className="block text-xs font-semibold text-muted-foreground"
-                                        >
-                                            URL Gambar (Unsplash/Hosting)
-                                        </label>
-                                        <input
-                                            id="image_url"
-                                            name="image_url"
-                                            type="url"
-                                            value={imageUrl}
-                                            onChange={(e) =>
-                                                setImageUrl(e.target.value)
-                                            }
-                                            className="mt-1 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-xs outline-none focus:border-emerald-600"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label
-                                            htmlFor="image_alt"
-                                            className="block text-xs font-semibold text-muted-foreground"
-                                        >
-                                            Deskripsi Foto (Alt Text)
-                                        </label>
-                                        <input
-                                            id="image_alt"
-                                            name="image_alt"
-                                            type="text"
-                                            value={imageAlt}
-                                            onChange={(e) =>
-                                                setImageAlt(e.target.value)
-                                            }
-                                            className="mt-1 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-xs outline-none focus:border-emerald-600"
-                                        />
-                                    </div>
-                                </div>
+                                <AdminNewsImageField
+                                    currentImage={newsItem.image_path}
+                                    imageUrl={imageUrl}
+                                    imageAlt={imageAlt}
+                                    imageError={errors.image}
+                                    imageUrlError={errors.image_url}
+                                    imageAltError={errors.image_alt}
+                                    onImageUrlChange={setImageUrl}
+                                    onImageAltChange={setImageAlt}
+                                />
 
                                 {/* Submit Action Button */}
                                 <div className="rounded-xl border border-sidebar-border/70 bg-background p-5">

@@ -4,8 +4,11 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Inertia\Inertia;
 use Inertia\Response;
+use UnexpectedValueException;
 
 class NewsController extends Controller
 {
@@ -14,7 +17,9 @@ class NewsController extends Controller
      */
     public function index(): Response
     {
-        $dbArticles = News::latestPublished()->get()->map(function ($article) {
+        $dbArticles = News::latestPublished()->get()->map(function (News $article): array {
+            $publishedAt = $this->publishedAt($article);
+
             return [
                 'id' => $article->id,
                 'slug' => $article->slug,
@@ -23,8 +28,8 @@ class NewsController extends Controller
                 'content' => $article->content,
                 'category' => $article->category,
                 'author' => $article->author,
-                'publishedAt' => $article->published_at->format('Y-m-d'),
-                'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
+                'publishedAt' => $publishedAt->format('Y-m-d'),
+                'publishedLabel' => $publishedAt->translatedFormat('d F Y'),
                 'image' => $article->image_path ?: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1400&auto=format&fit=crop',
                 'alt' => $article->image_alt ?: $article->title,
                 'featured' => (bool) $article->is_featured,
@@ -33,6 +38,8 @@ class NewsController extends Controller
 
         return Inertia::render('news/index', [
             'dbArticles' => $dbArticles,
+            'categoryOptions' => config('village_news.categories', []),
+            'otherCategoryLabel' => config('village_news.other_category_label', 'Lainnya'),
         ]);
     }
 
@@ -43,7 +50,8 @@ class NewsController extends Controller
     {
         $article = News::where('slug', $slug)->first();
 
-        $articleData = $article ? [
+        $articlePublishedAt = $article ? $this->publishedAt($article) : null;
+        $articleData = $article && $articlePublishedAt ? [
             'id' => $article->id,
             'slug' => $article->slug,
             'title' => $article->title,
@@ -51,8 +59,8 @@ class NewsController extends Controller
             'content' => $article->content,
             'category' => $article->category,
             'author' => $article->author,
-            'publishedAt' => $article->published_at->format('Y-m-d'),
-            'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
+            'publishedAt' => $articlePublishedAt->format('Y-m-d'),
+            'publishedLabel' => $articlePublishedAt->translatedFormat('d F Y'),
             'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
             'alt' => $article->image_alt ?: $article->title,
             'featured' => (bool) $article->is_featured,
@@ -63,25 +71,44 @@ class NewsController extends Controller
             ->latestPublished()
             ->take(3)
             ->get()
-            ->map(fn ($item) => [
-                'id' => $item->id,
-                'slug' => $item->slug,
-                'title' => $item->title,
-                'excerpt' => $item->excerpt,
-                'content' => $item->content,
-                'category' => $item->category,
-                'author' => $item->author,
-                'publishedAt' => $item->published_at->format('Y-m-d'),
-                'publishedLabel' => $item->published_at->translatedFormat('d F Y'),
-                'image' => $item->image_path ?: ($item->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
-                'alt' => $item->image_alt ?: $item->title,
-                'featured' => (bool) $item->is_featured,
-            ]);
+            ->map(function (News $item): array {
+                $publishedAt = $this->publishedAt($item);
+
+                return [
+                    'id' => $item->id,
+                    'slug' => $item->slug,
+                    'title' => $item->title,
+                    'excerpt' => $item->excerpt,
+                    'content' => $item->content,
+                    'category' => $item->category,
+                    'author' => $item->author,
+                    'publishedAt' => $publishedAt->format('Y-m-d'),
+                    'publishedLabel' => $publishedAt->translatedFormat('d F Y'),
+                    'image' => $item->image_path ?: ($item->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
+                    'alt' => $item->image_alt ?: $item->title,
+                    'featured' => (bool) $item->is_featured,
+                ];
+            });
 
         return Inertia::render('news/show', [
             'slug' => $slug,
             'dbArticle' => $articleData,
             'relatedArticles' => $relatedArticles,
         ]);
+    }
+
+    private function publishedAt(News $article): CarbonInterface
+    {
+        $publishedAt = $article->getAttribute('published_at');
+
+        if ($publishedAt instanceof CarbonInterface) {
+            return $publishedAt;
+        }
+
+        if (is_string($publishedAt)) {
+            return CarbonImmutable::parse($publishedAt);
+        }
+
+        throw new UnexpectedValueException('Tanggal terbit berita tidak valid.');
     }
 }

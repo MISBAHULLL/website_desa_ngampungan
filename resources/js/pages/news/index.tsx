@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 import {
     ArrowRight,
     FileText,
@@ -8,7 +8,6 @@ import {
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
-import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { PublicPageShell } from '@/components/public-page-shell';
 import type { NewsArticle } from '@/lib/dummy-public-content';
@@ -18,8 +17,12 @@ const articlesPerPage = 6;
 
 export default function NewsIndex({
     dbArticles,
+    categoryOptions = [],
+    otherCategoryLabel = 'Lainnya',
 }: {
     dbArticles?: NewsArticle[];
+    categoryOptions?: string[];
+    otherCategoryLabel?: string;
 }) {
     const articles = useMemo(() => {
         return dbArticles && dbArticles.length > 0
@@ -27,13 +30,23 @@ export default function NewsIndex({
             : dummyNewsArticles;
     }, [dbArticles]);
 
-    const newsCategories = useMemo(
-        () => [
+    const newsCategories = useMemo(() => {
+        const articleCategories = new Set(
+            articles.map((article) => article.category),
+        );
+        const visibleStandardCategories = categoryOptions.filter((category) =>
+            articleCategories.has(category),
+        );
+        const hasOtherCategories = articles.some(
+            (article) => !categoryOptions.includes(article.category),
+        );
+
+        return [
             'Semua',
-            ...new Set(articles.map((article) => article.category)),
-        ],
-        [articles],
-    );
+            ...visibleStandardCategories,
+            ...(hasOtherCategories ? [otherCategoryLabel] : []),
+        ];
+    }, [articles, categoryOptions, otherCategoryLabel]);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('Semua');
@@ -41,7 +54,10 @@ export default function NewsIndex({
     const [isPageTransitioning, setIsPageTransitioning] = useState(false);
 
     const handlePageChange = (page: number) => {
-        if (page === currentPage || isPageTransitioning) return;
+        if (page === currentPage || isPageTransitioning) {
+            return;
+        }
+
         setIsPageTransitioning(true);
         setTimeout(() => {
             setCurrentPage(page);
@@ -49,6 +65,7 @@ export default function NewsIndex({
         }, 140);
 
         const headingElement = document.getElementById('daftar-berita-heading');
+
         if (headingElement) {
             headingElement.scrollIntoView({
                 behavior: 'smooth',
@@ -63,7 +80,9 @@ export default function NewsIndex({
         return articles.filter((article) => {
             const matchesCategory =
                 selectedCategory === 'Semua' ||
-                article.category === selectedCategory;
+                (selectedCategory === otherCategoryLabel
+                    ? !categoryOptions.includes(article.category)
+                    : article.category === selectedCategory);
             const matchesSearch =
                 normalizedQuery === '' ||
                 article.title
@@ -72,7 +91,13 @@ export default function NewsIndex({
 
             return matchesCategory && matchesSearch;
         });
-    }, [articles, searchQuery, selectedCategory]);
+    }, [
+        articles,
+        categoryOptions,
+        otherCategoryLabel,
+        searchQuery,
+        selectedCategory,
+    ]);
 
     const totalPages = Math.max(
         1,
@@ -196,7 +221,7 @@ export default function NewsIndex({
                     <div className="mt-10 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
                         <div>
                             <p className="text-xs font-bold tracking-[0.18em] text-village-primary uppercase">
-                                Data dummy frontend
+                                Publikasi resmi desa
                             </p>
                             <h2
                                 id="daftar-berita-heading"
@@ -214,26 +239,24 @@ export default function NewsIndex({
                     </div>
 
                     {visibleArticles.length > 0 ? (
-                        <StaggerContainer
-                            key={currentPage}
-                            staggerDelay={0.06}
-                            className={`mt-7 grid min-h-[440px] gap-6 transition-all duration-300 ease-out md:grid-cols-2 lg:grid-cols-3 ${
+                        <div
+                            className={`mt-7 grid gap-6 transition-[transform,opacity] duration-200 ease-out md:grid-cols-2 lg:grid-cols-3 ${
                                 isPageTransitioning
-                                    ? 'scale-[0.985] opacity-0'
+                                    ? 'scale-[0.99] opacity-60'
                                     : 'scale-100 opacity-100'
                             }`}
                         >
                             {visibleArticles.map((article) => (
-                                <StaggerItem
+                                <div
                                     key={article.slug}
                                     className="flex h-full flex-col"
                                 >
                                     <PublicNewsCard article={article} />
-                                </StaggerItem>
+                                </div>
                             ))}
 
                             {visibleArticles.length < articlesPerPage && (
-                                <StaggerItem className="flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-gradient-to-br from-village-surface-muted/60 via-white to-village-primary-light/20 p-6 shadow-2xs transition-all duration-300 hover:border-village-primary/40 hover:shadow-xs">
+                                <div className="flex flex-col justify-between rounded-3xl border border-dashed border-village-border bg-village-surface-muted/40 p-6 transition-colors duration-200 hover:border-village-primary/40">
                                     <div className="space-y-3">
                                         <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-village-primary-light font-bold text-village-primary shadow-2xs">
                                             <FileText className="size-5" />
@@ -261,9 +284,9 @@ export default function NewsIndex({
                                             <ArrowRight className="size-3.5" />
                                         </a>
                                     </div>
-                                </StaggerItem>
+                                </div>
                             )}
-                        </StaggerContainer>
+                        </div>
                     ) : (
                         <div className="mt-7 rounded-3xl border border-dashed border-village-border bg-white px-6 py-16 text-center">
                             <Newspaper
