@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\AgendaFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class Agenda extends Model
 {
+    /** @use HasFactory<AgendaFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -15,6 +17,8 @@ class Agenda extends Model
         'slug',
         'category',
         'summary',
+        'image_path',
+        'image_alt',
         'details',
         'event_date',
         'day_label',

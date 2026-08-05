@@ -222,6 +222,8 @@ test('the agenda and gallery modules expose filters, inline details, and an acce
         ->toContain('aria-label="Breadcrumb"')
         ->toContain('role="tablist"')
         ->toContain('categoriesList.map')
+        ->toContain('selectedCategory === otherCategoryLabel')
+        ->toContain('!categoryOptions.includes(agenda.category)')
         ->toContain('VillageAgendaCard');
 
     expect($agendaDataSource)

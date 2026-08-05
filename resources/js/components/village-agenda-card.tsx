@@ -12,12 +12,20 @@ import type { VillageAgenda } from '@/lib/dummy-village-agendas';
 
 export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
     const [isExpanded, setIsExpanded] = useState(false);
+    const [hasImageError, setHasImageError] = useState(false);
     const detailsId = `agenda-details-${agenda.slug}`;
     const isCompleted = agenda.status === 'completed';
+    const hasVisibleImage = Boolean(agenda.image && !hasImageError);
 
     return (
         <article className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-950/5">
-            <div className="grid md:grid-cols-[9.5rem_minmax(0,1fr)]">
+            <div
+                className={
+                    hasVisibleImage
+                        ? 'grid md:grid-cols-[9.5rem_13rem_minmax(0,1fr)]'
+                        : 'grid md:grid-cols-[9.5rem_minmax(0,1fr)]'
+                }
+            >
                 {/* Date Block Sidebar - Centered Compact Calendar Block */}
                 <div
                     className={
@@ -42,6 +50,18 @@ export function VillageAgendaCard({ agenda }: { agenda: VillageAgenda }) {
                         {agenda.dateLabel.split(' ').slice(1).join(' ')}
                     </span>
                 </div>
+
+                {hasVisibleImage && (
+                    <figure className="relative min-h-48 overflow-hidden bg-slate-100 md:min-h-full">
+                        <img
+                            src={agenda.image ?? undefined}
+                            alt={agenda.imageAlt || agenda.title}
+                            loading="lazy"
+                            onError={() => setHasImageError(true)}
+                            className="absolute inset-0 size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                        />
+                    </figure>
+                )}
 
                 {/* Body Details Content */}
                 <div className="p-6 md:p-7">

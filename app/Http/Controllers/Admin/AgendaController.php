@@ -3,15 +3,22 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreAgendaRequest;
+use App\Http\Requests\Admin\UpdateAgendaRequest;
 use App\Models\Agenda;
+use App\Support\PublicImageStorage;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class AgendaController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $imageStorage) {}
+
     public function index(Request $request): Response
     {
         $search = $request->input('search');
@@ -20,13 +27,13 @@ class AgendaController extends Controller
         $query = Agenda::query();
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('title', 'like', "%{$search}%")
+            $query->where(function ($query) use ($search): void {
+                $query->where('title', 'like', "%{$search}%")
                     ->orWhere('location', 'like', "%{$search}%");
             });
         }
 
-        if ($status && in_array($status, ['upcoming', 'completed'])) {
+        if ($status && in_array($status, ['upcoming', 'completed'], true)) {
             $query->where('status', $status);
         }
 
@@ -45,54 +52,40 @@ class AgendaController extends Controller
 
     public function create(): Response
     {
-        return Inertia::render('admin/agenda/create');
+        return Inertia::render('admin/agenda/create', $this->categoryProps());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreAgendaRequest $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'max:100'],
-            'summary' => ['required', 'string', 'max:1000'],
-            'details' => ['nullable', 'array'],
-            'details.*' => ['nullable', 'string', 'max:500'],
-            'event_date' => ['required', 'date'],
-            'time_label' => ['required', 'string', 'max:100'],
-            'location' => ['required', 'string', 'max:255'],
-            'organizer' => ['required', 'string', 'max:255'],
-            'contact' => ['nullable', 'string', 'max:100'],
-            'registration_required' => ['boolean'],
-            'status' => ['required', 'string', 'in:upcoming,completed'],
-            'is_featured' => ['boolean'],
-        ]);
-
+        $validated = $request->validated();
         $eventDate = Carbon::parse($validated['event_date']);
-        $dayLabel = mb_strtoupper($eventDate->translatedFormat('l'));
-        $dateLabel = mb_strtoupper($eventDate->translatedFormat('j F Y'));
+        $imagePath = $this->resolveImagePath($request, $validated['image_url'] ?? null);
 
-        $slug = Agenda::generateUniqueSlug($validated['title']);
+        DB::transaction(function () use ($eventDate, $imagePath, $validated): void {
+            if (! empty($validated['is_featured'])) {
+                Agenda::query()->where('is_featured', true)->update(['is_featured' => false]);
+            }
 
-        if (! empty($validated['is_featured'])) {
-            Agenda::where('is_featured', true)->update(['is_featured' => false]);
-        }
-
-        Agenda::create([
-            'title' => $validated['title'],
-            'slug' => $slug,
-            'category' => $validated['category'],
-            'summary' => $validated['summary'],
-            'details' => array_values(array_filter($validated['details'] ?? [])),
-            'event_date' => $validated['event_date'],
-            'day_label' => $dayLabel,
-            'date_label' => $dateLabel,
-            'time_label' => $validated['time_label'],
-            'location' => $validated['location'],
-            'organizer' => $validated['organizer'],
-            'contact' => $validated['contact'] ?? null,
-            'registration_required' => $validated['registration_required'] ?? false,
-            'status' => $validated['status'],
-            'is_featured' => $validated['is_featured'] ?? false,
-        ]);
+            Agenda::query()->create([
+                'title' => $validated['title'],
+                'slug' => Agenda::generateUniqueSlug($validated['title']),
+                'category' => $validated['category'],
+                'summary' => $validated['summary'],
+                'image_path' => $imagePath,
+                'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+                'details' => array_values(array_filter($validated['details'] ?? [])),
+                'event_date' => $validated['event_date'],
+                'day_label' => mb_strtoupper($eventDate->translatedFormat('l')),
+                'date_label' => mb_strtoupper($eventDate->translatedFormat('j F Y')),
+                'time_label' => $validated['time_label'],
+                'location' => $validated['location'],
+                'organizer' => $validated['organizer'],
+                'contact' => $validated['contact'] ?? null,
+                'registration_required' => $validated['registration_required'] ?? false,
+                'status' => $validated['status'],
+                'is_featured' => $validated['is_featured'] ?? false,
+            ]);
+        });
 
         return redirect()->route('admin.agendas.index')
             ->with('success', 'Agenda desa berhasil dibuat.');
@@ -102,56 +95,54 @@ class AgendaController extends Controller
     {
         return Inertia::render('admin/agenda/edit', [
             'agendaItem' => $agenda,
+            ...$this->categoryProps(),
         ]);
     }
 
-    public function update(Request $request, Agenda $agenda): RedirectResponse
+    public function update(UpdateAgendaRequest $request, Agenda $agenda): RedirectResponse
     {
-        $validated = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'category' => ['required', 'string', 'max:100'],
-            'summary' => ['required', 'string', 'max:1000'],
-            'details' => ['nullable', 'array'],
-            'details.*' => ['nullable', 'string', 'max:500'],
-            'event_date' => ['required', 'date'],
-            'time_label' => ['required', 'string', 'max:100'],
-            'location' => ['required', 'string', 'max:255'],
-            'organizer' => ['required', 'string', 'max:255'],
-            'contact' => ['nullable', 'string', 'max:100'],
-            'registration_required' => ['boolean'],
-            'status' => ['required', 'string', 'in:upcoming,completed'],
-            'is_featured' => ['boolean'],
-        ]);
-
+        $validated = $request->validated();
         $eventDate = Carbon::parse($validated['event_date']);
-        $dayLabel = mb_strtoupper($eventDate->translatedFormat('l'));
-        $dateLabel = mb_strtoupper($eventDate->translatedFormat('j F Y'));
+        $previousImagePath = $agenda->image_path;
+        $imagePath = $this->resolveImagePath(
+            $request,
+            $validated['image_url'] ?? null,
+            $previousImagePath,
+        );
 
-        $slug = $agenda->title !== $validated['title']
-            ? Agenda::generateUniqueSlug($validated['title'], $agenda->id)
-            : $agenda->slug;
+        DB::transaction(function () use ($agenda, $eventDate, $imagePath, $validated): void {
+            if (! empty($validated['is_featured']) && ! $agenda->is_featured) {
+                Agenda::query()->where('is_featured', true)->update(['is_featured' => false]);
+            }
 
-        if (! empty($validated['is_featured']) && ! $agenda->is_featured) {
-            Agenda::where('is_featured', true)->update(['is_featured' => false]);
+            $slug = $agenda->title !== $validated['title']
+                ? Agenda::generateUniqueSlug($validated['title'], $agenda->id)
+                : $agenda->slug;
+
+            $agenda->update([
+                'title' => $validated['title'],
+                'slug' => $slug,
+                'category' => $validated['category'],
+                'summary' => $validated['summary'],
+                'image_path' => $imagePath,
+                'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+                'details' => array_values(array_filter($validated['details'] ?? [])),
+                'event_date' => $validated['event_date'],
+                'day_label' => mb_strtoupper($eventDate->translatedFormat('l')),
+                'date_label' => mb_strtoupper($eventDate->translatedFormat('j F Y')),
+                'time_label' => $validated['time_label'],
+                'location' => $validated['location'],
+                'organizer' => $validated['organizer'],
+                'contact' => $validated['contact'] ?? null,
+                'registration_required' => $validated['registration_required'] ?? false,
+                'status' => $validated['status'],
+                'is_featured' => $validated['is_featured'] ?? false,
+            ]);
+        });
+
+        if ($previousImagePath !== $imagePath) {
+            $this->imageStorage->delete($previousImagePath);
         }
-
-        $agenda->update([
-            'title' => $validated['title'],
-            'slug' => $slug,
-            'category' => $validated['category'],
-            'summary' => $validated['summary'],
-            'details' => array_values(array_filter($validated['details'] ?? [])),
-            'event_date' => $validated['event_date'],
-            'day_label' => $dayLabel,
-            'date_label' => $dateLabel,
-            'time_label' => $validated['time_label'],
-            'location' => $validated['location'],
-            'organizer' => $validated['organizer'],
-            'contact' => $validated['contact'] ?? null,
-            'registration_required' => $validated['registration_required'] ?? false,
-            'status' => $validated['status'],
-            'is_featured' => $validated['is_featured'] ?? false,
-        ]);
 
         return redirect()->route('admin.agendas.index')
             ->with('success', 'Agenda desa berhasil diperbarui.');
@@ -161,11 +152,13 @@ class AgendaController extends Controller
     {
         $newStatus = ! $agenda->is_featured;
 
-        if ($newStatus) {
-            Agenda::where('is_featured', true)->update(['is_featured' => false]);
-        }
+        DB::transaction(function () use ($agenda, $newStatus): void {
+            if ($newStatus) {
+                Agenda::query()->where('is_featured', true)->update(['is_featured' => false]);
+            }
 
-        $agenda->update(['is_featured' => $newStatus]);
+            $agenda->update(['is_featured' => $newStatus]);
+        });
 
         return redirect()->back()
             ->with('success', 'Status agenda utama berhasil diubah.');
@@ -173,9 +166,37 @@ class AgendaController extends Controller
 
     public function destroy(Agenda $agenda): RedirectResponse
     {
+        $imagePath = $agenda->image_path;
         $agenda->delete();
+        $this->imageStorage->delete($imagePath);
 
         return redirect()->route('admin.agendas.index')
             ->with('success', 'Agenda desa berhasil dihapus.');
+    }
+
+    /** @return array{categoryOptions: list<string>, otherCategoryLabel: string} */
+    private function categoryProps(): array
+    {
+        /** @var list<string> $categoryOptions */
+        $categoryOptions = config('village_agenda.categories', []);
+
+        return [
+            'categoryOptions' => $categoryOptions,
+            'otherCategoryLabel' => (string) config('village_agenda.other_category_label', 'Lainnya'),
+        ];
+    }
+
+    private function resolveImagePath(
+        StoreAgendaRequest $request,
+        ?string $imageUrl,
+        ?string $fallback = null,
+    ): ?string {
+        $image = $request->file('image');
+
+        if ($image instanceof UploadedFile) {
+            return $this->imageStorage->store($image, 'agendas');
+        }
+
+        return $imageUrl ?: $fallback;
     }
 }

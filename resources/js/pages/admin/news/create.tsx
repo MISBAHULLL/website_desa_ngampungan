@@ -5,7 +5,7 @@ import {
     index as newsIndex,
     store as newsStore,
 } from '@/actions/App/Http/Controllers/Admin/NewsController';
-import { AdminNewsImageField } from '@/components/admin-news-image-field';
+import { AdminImageUploadField } from '@/components/admin-news-image-field';
 import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
 import { newsContentTemplates } from '@/lib/news-templates';
@@ -479,7 +479,7 @@ export default function AdminNewsCreate({
                                     </div>
                                 </div>
 
-                                <AdminNewsImageField
+                                <AdminImageUploadField
                                     imageUrl={imageUrl}
                                     imageAlt={imageAlt}
                                     imageError={errors.image}

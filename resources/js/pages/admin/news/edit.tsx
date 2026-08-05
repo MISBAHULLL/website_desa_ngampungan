@@ -5,7 +5,7 @@ import {
     index as newsIndex,
     update as newsUpdate,
 } from '@/actions/App/Http/Controllers/Admin/NewsController';
-import { AdminNewsImageField } from '@/components/admin-news-image-field';
+import { AdminImageUploadField } from '@/components/admin-news-image-field';
 import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes';
@@ -419,7 +419,7 @@ export default function AdminNewsEdit({
                                     </div>
                                 </div>
 
-                                <AdminNewsImageField
+                                <AdminImageUploadField
                                     currentImage={newsItem.image_path}
                                     imageUrl={imageUrl}
                                     imageAlt={imageAlt}

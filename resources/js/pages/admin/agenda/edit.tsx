@@ -1,9 +1,11 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, Plus, Save, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import {
     index as agendaIndex,
     update as agendaUpdate,
 } from '@/actions/App/Http/Controllers/Admin/AgendaController';
+import { AdminImageUploadField } from '@/components/admin-news-image-field';
 import { dashboard } from '@/routes';
 
 type AgendaItemProps = {
@@ -21,10 +23,22 @@ type AgendaItemProps = {
         registration_required: boolean;
         status: 'upcoming' | 'completed';
         is_featured: boolean;
+        image_path: string | null;
+        image_alt: string | null;
     };
+    categoryOptions: string[];
+    otherCategoryLabel: string;
 };
 
-export default function AdminAgendaEdit({ agendaItem }: AgendaItemProps) {
+export default function AdminAgendaEdit({
+    agendaItem,
+    categoryOptions,
+    otherCategoryLabel,
+}: AgendaItemProps) {
+    const isStandardCategory = categoryOptions.includes(agendaItem.category);
+    const [categorySelection, setCategorySelection] = useState(
+        isStandardCategory ? agendaItem.category : otherCategoryLabel,
+    );
     const { data, setData, post, processing, errors } = useForm({
         _method: 'PUT',
         title: agendaItem.title,
@@ -44,6 +58,11 @@ export default function AdminAgendaEdit({ agendaItem }: AgendaItemProps) {
         registration_required: agendaItem.registration_required,
         status: agendaItem.status,
         is_featured: agendaItem.is_featured,
+        image: null as File | null,
+        image_url: agendaItem.image_path?.startsWith('http')
+            ? agendaItem.image_path
+            : '',
+        image_alt: agendaItem.image_alt || '',
     });
 
     function handleDetailChange(index: number, value: string) {
@@ -57,7 +76,10 @@ export default function AdminAgendaEdit({ agendaItem }: AgendaItemProps) {
     }
 
     function removeDetailField(index: number) {
-        if (data.details.length === 1) return;
+        if (data.details.length === 1) {
+return;
+}
+
         const updated = data.details.filter((_, i) => i !== index);
         setData('details', updated);
     }
@@ -123,24 +145,57 @@ export default function AdminAgendaEdit({ agendaItem }: AgendaItemProps) {
                                 </label>
                                 <select
                                     id="category"
-                                    value={data.category}
-                                    onChange={(e) =>
-                                        setData('category', e.target.value)
-                                    }
+                                    value={categorySelection}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        setCategorySelection(value);
+                                        setData(
+                                            'category',
+                                            value === otherCategoryLabel
+                                                ? ''
+                                                : value,
+                                        );
+                                    }}
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 >
-                                    <option value="Pelayanan">Pelayanan</option>
-                                    <option value="Musyawarah">
-                                        Musyawarah
-                                    </option>
-                                    <option value="Pemberdayaan">
-                                        Pemberdayaan
-                                    </option>
-                                    <option value="Kesehatan">Kesehatan</option>
-                                    <option value="Infrastruktur">
-                                        Infrastruktur
+                                    {categoryOptions.map((category) => (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                    <option value={otherCategoryLabel}>
+                                        {otherCategoryLabel}
                                     </option>
                                 </select>
+                                {categorySelection === otherCategoryLabel && (
+                                    <div className="mt-3">
+                                        <label
+                                            htmlFor="custom_category"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Nama kategori lainnya
+                                        </label>
+                                        <input
+                                            id="custom_category"
+                                            type="text"
+                                            required
+                                            maxLength={100}
+                                            value={data.category}
+                                            onChange={(event) =>
+                                                setData(
+                                                    'category',
+                                                    event.target.value,
+                                                )
+                                            }
+                                            className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
+                                        />
+                                    </div>
+                                )}
+                                {errors.category && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.category}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -271,7 +326,25 @@ export default function AdminAgendaEdit({ agendaItem }: AgendaItemProps) {
                             </div>
                         </div>
 
-                        <div className="grid gap-5 border-t border-sidebar-border/70 pt-2 sm:grid-cols-2">
+                        <AdminImageUploadField
+                            title="Foto / Dokumentasi Agenda"
+                            previewFallbackAlt="Pratinjau foto agenda"
+                            currentImage={agendaItem.image_path}
+                            imageUrl={data.image_url}
+                            imageAlt={data.image_alt}
+                            imageError={errors.image}
+                            imageUrlError={errors.image_url}
+                            imageAltError={errors.image_alt}
+                            onFileChange={(file) => setData('image', file)}
+                            onImageUrlChange={(value) =>
+                                setData('image_url', value)
+                            }
+                            onImageAltChange={(value) =>
+                                setData('image_alt', value)
+                            }
+                        />
+
+                        <div className="grid gap-5 border-t border-sidebar-border/70 pt-5 sm:grid-cols-2">
                             <div>
                                 <label
                                     htmlFor="organizer"

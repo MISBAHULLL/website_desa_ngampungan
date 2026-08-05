@@ -1,26 +1,61 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 import { ArrowLeft, CalendarDays, Plus, Trash2 } from 'lucide-react';
+import { useState } from 'react';
 import {
     index as agendaIndex,
     store as agendaStore,
 } from '@/actions/App/Http/Controllers/Admin/AgendaController';
+import { AdminImageUploadField } from '@/components/admin-news-image-field';
 import { dashboard } from '@/routes';
 
-export default function AdminAgendaCreate() {
-    const { data, setData, post, processing, errors } = useForm({
-        title: '',
-        category: 'Pelayanan',
-        summary: '',
-        details: [''],
-        event_date: new Date().toISOString().split('T')[0],
-        time_label: '08:00 WIB - Selesai',
-        location: 'Balai Desa Ngampungan',
-        organizer: 'Pemerintah Desa Ngampungan',
-        contact: '0812-3456-7890',
-        registration_required: false,
-        status: 'upcoming',
-        is_featured: false,
-    });
+type AgendaFormData = {
+    title: string;
+    category: string;
+    summary: string;
+    details: string[];
+    event_date: string;
+    time_label: string;
+    location: string;
+    organizer: string;
+    contact: string;
+    registration_required: boolean;
+    status: 'upcoming' | 'completed';
+    is_featured: boolean;
+    image: File | null;
+    image_url: string;
+    image_alt: string;
+};
+
+type AdminAgendaCreateProps = {
+    categoryOptions: string[];
+    otherCategoryLabel: string;
+};
+
+export default function AdminAgendaCreate({
+    categoryOptions,
+    otherCategoryLabel,
+}: AdminAgendaCreateProps) {
+    const initialCategory = categoryOptions[0] ?? 'Pelayanan';
+    const [categorySelection, setCategorySelection] = useState(initialCategory);
+    const { data, setData, post, processing, errors } = useForm<AgendaFormData>(
+        {
+            title: '',
+            category: initialCategory,
+            summary: '',
+            details: [''],
+            event_date: new Date().toISOString().split('T')[0],
+            time_label: '08:00 WIB - Selesai',
+            location: 'Balai Desa Ngampungan',
+            organizer: 'Pemerintah Desa Ngampungan',
+            contact: '0812-3456-7890',
+            registration_required: false,
+            status: 'upcoming',
+            is_featured: false,
+            image: null,
+            image_url: '',
+            image_alt: '',
+        },
+    );
 
     function handleDetailChange(index: number, value: string) {
         const updated = [...data.details];
@@ -33,7 +68,10 @@ export default function AdminAgendaCreate() {
     }
 
     function removeDetailField(index: number) {
-        if (data.details.length === 1) return;
+        if (data.details.length === 1) {
+return;
+}
+
         const updated = data.details.filter((_, i) => i !== index);
         setData('details', updated);
     }
@@ -100,24 +138,58 @@ export default function AdminAgendaCreate() {
                                 </label>
                                 <select
                                     id="category"
-                                    value={data.category}
-                                    onChange={(e) =>
-                                        setData('category', e.target.value)
-                                    }
+                                    value={categorySelection}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        setCategorySelection(value);
+                                        setData(
+                                            'category',
+                                            value === otherCategoryLabel
+                                                ? ''
+                                                : value,
+                                        );
+                                    }}
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 >
-                                    <option value="Pelayanan">Pelayanan</option>
-                                    <option value="Musyawarah">
-                                        Musyawarah
-                                    </option>
-                                    <option value="Pemberdayaan">
-                                        Pemberdayaan
-                                    </option>
-                                    <option value="Kesehatan">Kesehatan</option>
-                                    <option value="Infrastruktur">
-                                        Infrastruktur
+                                    {categoryOptions.map((category) => (
+                                        <option key={category} value={category}>
+                                            {category}
+                                        </option>
+                                    ))}
+                                    <option value={otherCategoryLabel}>
+                                        {otherCategoryLabel}
                                     </option>
                                 </select>
+                                {categorySelection === otherCategoryLabel && (
+                                    <div className="mt-3">
+                                        <label
+                                            htmlFor="custom_category"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Nama kategori lainnya
+                                        </label>
+                                        <input
+                                            id="custom_category"
+                                            type="text"
+                                            required
+                                            maxLength={100}
+                                            value={data.category}
+                                            onChange={(event) =>
+                                                setData(
+                                                    'category',
+                                                    event.target.value,
+                                                )
+                                            }
+                                            placeholder="Contoh: Pendidikan"
+                                            className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
+                                        />
+                                    </div>
+                                )}
+                                {errors.category && (
+                                    <p className="mt-1 text-xs text-red-600">
+                                        {errors.category}
+                                    </p>
+                                )}
                             </div>
 
                             <div>
@@ -256,7 +328,24 @@ export default function AdminAgendaCreate() {
                             </div>
                         </div>
 
-                        <div className="grid gap-5 border-t border-sidebar-border/70 pt-2 sm:grid-cols-2">
+                        <AdminImageUploadField
+                            title="Foto / Dokumentasi Agenda"
+                            previewFallbackAlt="Pratinjau foto agenda"
+                            imageUrl={data.image_url}
+                            imageAlt={data.image_alt}
+                            imageError={errors.image}
+                            imageUrlError={errors.image_url}
+                            imageAltError={errors.image_alt}
+                            onFileChange={(file) => setData('image', file)}
+                            onImageUrlChange={(value) =>
+                                setData('image_url', value)
+                            }
+                            onImageAltChange={(value) =>
+                                setData('image_alt', value)
+                            }
+                        />
+
+                        <div className="grid gap-5 border-t border-sidebar-border/70 pt-5 sm:grid-cols-2">
                             <div>
                                 <label
                                     htmlFor="organizer"

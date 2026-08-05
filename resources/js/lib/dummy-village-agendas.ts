@@ -4,6 +4,8 @@ export type VillageAgenda = {
     slug: string;
     title: string;
     summary: string;
+    image?: string | null;
+    imageAlt?: string | null;
     details: readonly string[];
     category: string;
     date: string;
@@ -18,7 +20,7 @@ export type VillageAgenda = {
     registrationRequired: boolean;
 };
 
-export const dummyVillageAgendas = [
+export const dummyVillageAgendas: readonly VillageAgenda[] = [
     {
         slug: 'musyawarah-perencanaan-pembangunan-desa-2027',
         title: 'Musyawarah Perencanaan Pembangunan Desa 2027',
@@ -187,7 +189,7 @@ export const dummyVillageAgendas = [
         featured: false,
         registrationRequired: false,
     },
-] satisfies readonly VillageAgenda[];
+];
 
 export const upcomingDummyVillageAgendas = dummyVillageAgendas.filter(
     (agenda) => agenda.status === 'upcoming',

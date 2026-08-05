@@ -2,7 +2,9 @@ import { Image as ImageIcon, Upload, X } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import InputError from '@/components/input-error';
 
-type AdminNewsImageFieldProps = {
+type AdminImageUploadFieldProps = {
+    title?: string;
+    previewFallbackAlt?: string;
     currentImage?: string | null;
     imageUrl: string;
     imageAlt: string;
@@ -11,9 +13,12 @@ type AdminNewsImageFieldProps = {
     imageAltError?: string;
     onImageUrlChange: (value: string) => void;
     onImageAltChange: (value: string) => void;
+    onFileChange?: (file: File | null) => void;
 };
 
-export function AdminNewsImageField({
+export function AdminImageUploadField({
+    title = 'Foto / Dokumentasi Berita',
+    previewFallbackAlt = 'Pratinjau gambar',
     currentImage,
     imageUrl,
     imageAlt,
@@ -22,7 +27,8 @@ export function AdminNewsImageField({
     imageAltError,
     onImageUrlChange,
     onImageAltChange,
-}: AdminNewsImageFieldProps) {
+    onFileChange,
+}: AdminImageUploadFieldProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const previewUrlRef = useRef<string | null>(null);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -46,6 +52,7 @@ export function AdminNewsImageField({
 
         setSelectedFile(null);
         setPreviewUrl(null);
+        onFileChange?.(null);
 
         if (inputRef.current) {
             inputRef.current.value = '';
@@ -61,22 +68,21 @@ export function AdminNewsImageField({
         previewUrlRef.current = nextPreviewUrl;
         setSelectedFile(file);
         setPreviewUrl(nextPreviewUrl);
+        onFileChange?.(file);
     }
 
     return (
         <div className="space-y-4 rounded-xl border border-sidebar-border/70 bg-background p-5">
             <div className="flex items-center gap-2">
                 <ImageIcon className="size-4 text-emerald-600" />
-                <h3 className="text-sm font-bold text-foreground">
-                    Foto / Dokumentasi Berita
-                </h3>
+                <h3 className="text-sm font-bold text-foreground">{title}</h3>
             </div>
 
             {visiblePreview && (
                 <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 bg-muted">
                     <img
                         src={visiblePreview}
-                        alt={imageAlt || 'Pratinjau foto berita'}
+                        alt={imageAlt || previewFallbackAlt}
                         className="size-full object-cover"
                     />
                     {selectedFile && (

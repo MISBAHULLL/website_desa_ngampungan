@@ -23,11 +23,15 @@ import { index as galleryIndex } from '@/routes/gallery';
 type AgendaIndexPageProps = {
     canonicalUrl: string;
     dbAgendas?: VillageAgenda[];
+    categoryOptions?: string[];
+    otherCategoryLabel?: string;
 };
 
 export default function AgendaIndex({
     canonicalUrl,
     dbAgendas,
+    categoryOptions = [],
+    otherCategoryLabel = 'Lainnya',
 }: AgendaIndexPageProps) {
     const [activeStatus, setActiveStatus] =
         useState<VillageAgendaStatus>('upcoming');
@@ -38,6 +42,7 @@ export default function AgendaIndex({
         if (dbAgendas && dbAgendas.length > 0) {
             return dbAgendas;
         }
+
         return dummyVillageAgendas;
     }, [dbAgendas]);
 
@@ -57,9 +62,22 @@ export default function AgendaIndex({
     );
 
     const categoriesList = useMemo(() => {
-        const cats = Array.from(new Set(agendasList.map((a) => a.category)));
-        return ['Semua', ...cats];
-    }, [agendasList]);
+        const agendaCategories = new Set(
+            agendasList.map((agenda) => agenda.category),
+        );
+        const visibleStandardCategories = categoryOptions.filter((category) =>
+            agendaCategories.has(category),
+        );
+        const hasOtherCategories = agendasList.some(
+            (agenda) => !categoryOptions.includes(agenda.category),
+        );
+
+        return [
+            'Semua',
+            ...visibleStandardCategories,
+            ...(hasOtherCategories ? [otherCategoryLabel] : []),
+        ];
+    }, [agendasList, categoryOptions, otherCategoryLabel]);
 
     const visibleAgendas = useMemo(() => {
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase('id-ID');
@@ -68,7 +86,9 @@ export default function AgendaIndex({
             const matchesStatus = agenda.status === activeStatus;
             const matchesCategory =
                 selectedCategory === 'Semua' ||
-                agenda.category === selectedCategory;
+                (selectedCategory === otherCategoryLabel
+                    ? !categoryOptions.includes(agenda.category)
+                    : agenda.category === selectedCategory);
             const matchesQuery =
                 normalizedQuery === '' ||
                 agenda.title
@@ -80,7 +100,14 @@ export default function AgendaIndex({
 
             return matchesStatus && matchesCategory && matchesQuery;
         });
-    }, [activeStatus, searchQuery, selectedCategory, agendasList]);
+    }, [
+        activeStatus,
+        agendasList,
+        categoryOptions,
+        otherCategoryLabel,
+        searchQuery,
+        selectedCategory,
+    ]);
 
     function changeStatus(status: VillageAgendaStatus) {
         setActiveStatus(status);
@@ -192,14 +219,23 @@ export default function AgendaIndex({
                     <div className="mx-auto max-w-[1280px] px-5 lg:px-12">
                         <div className="group grid overflow-hidden rounded-2xl border border-emerald-200 bg-white shadow-xs transition-all duration-300 hover:border-emerald-400 hover:shadow-xl hover:shadow-emerald-950/5 lg:grid-cols-[18rem_minmax(0,1fr)]">
                             {/* Date Badge Side Banner */}
-                            <div className="group-hover:bg-emerald-850 flex min-h-64 flex-col justify-between bg-emerald-800 p-8 text-white transition-colors duration-300">
-                                <div className="flex size-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 transition-transform duration-300 group-hover:scale-110">
+                            <div className="relative flex min-h-64 flex-col justify-between overflow-hidden bg-emerald-800 p-8 text-white transition-colors duration-300">
+                                {featuredAgenda.image && (
+                                    <img
+                                        src={featuredAgenda.image}
+                                        alt=""
+                                        aria-hidden="true"
+                                        className="absolute inset-0 size-full object-cover opacity-35 transition-transform duration-700 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                                    />
+                                )}
+                                <div className="absolute inset-0 bg-emerald-950/65" />
+                                <div className="relative flex size-12 items-center justify-center rounded-xl border border-white/20 bg-white/10 transition-transform duration-300 group-hover:scale-110">
                                     <CalendarCheck
                                         aria-hidden="true"
                                         className="size-6 text-emerald-200"
                                     />
                                 </div>
-                                <div>
+                                <div className="relative">
                                     <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold tracking-widest text-emerald-100 uppercase">
                                         Agenda Terdekat
                                     </span>

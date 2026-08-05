@@ -29,6 +29,8 @@ type AgendaItem = {
     slug: string;
     category: string;
     summary: string;
+    image_path: string | null;
+    image_alt: string | null;
     event_date: string;
     day_label: string;
     date_label: string;
@@ -228,18 +230,31 @@ export default function AdminAgendaIndex({
                                         >
                                             <td className="px-5 py-4">
                                                 <div className="flex items-start gap-3">
-                                                    <div className="flex size-11 shrink-0 flex-col items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-center text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                                                        <span className="text-[9px] font-black uppercase">
-                                                            {item.day_label}
-                                                        </span>
-                                                        <span className="text-base leading-none font-black">
-                                                            {
-                                                                item.date_label.split(
-                                                                    ' ',
-                                                                )[0]
+                                                    {item.image_path ? (
+                                                        <img
+                                                            src={
+                                                                item.image_path
                                                             }
-                                                        </span>
-                                                    </div>
+                                                            alt={
+                                                                item.image_alt ||
+                                                                item.title
+                                                            }
+                                                            className="size-12 shrink-0 rounded-lg object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="flex size-11 shrink-0 flex-col items-center justify-center rounded-lg border border-emerald-200 bg-emerald-50 text-center text-emerald-950 dark:border-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+                                                            <span className="text-[9px] font-black uppercase">
+                                                                {item.day_label}
+                                                            </span>
+                                                            <span className="text-base leading-none font-black">
+                                                                {
+                                                                    item.date_label.split(
+                                                                        ' ',
+                                                                    )[0]
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                     <div className="max-w-md min-w-0">
                                                         <span className="inline-block rounded-md bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
                                                             {item.category}
