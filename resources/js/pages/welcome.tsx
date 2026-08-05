@@ -323,7 +323,7 @@ function SiteLogo({ compact = false }: { compact?: boolean }) {
         <div className="flex items-center gap-3">
             <img
                 src="/assets/logo_kabupaten_jombang.png"
-                alt="Logo Kabupaten Jombang"
+                alt="Logo Desa Ngampungan"
                 className={`${compact ? 'h-10 w-8' : 'h-12 w-10'} shrink-0 object-contain drop-shadow-sm`}
             />
             <span className="text-lg leading-tight font-bold">
@@ -575,7 +575,7 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
                         aria-hidden="true"
                         className="mt-0.5 size-3.5 shrink-0 text-village-accent lg:mt-0"
                     />
-                    <span>Jl. Raya Ngampungan No. 1, Bareng, Jombang</span>
+                    <span>JL. JOBRANTI NO.01 DESA NGAMPUNGAN, BARENG, JOMBANG</span>
                 </div>
 
                 <div className="col-start-1 row-start-2 flex items-center gap-1.5 whitespace-nowrap lg:col-auto lg:row-auto lg:border-l lg:border-white/15 lg:pl-5">
@@ -594,7 +594,7 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
                         aria-hidden="true"
                         className="size-3.5 shrink-0 text-village-accent"
                     />
-                    <span>0812-3456-7890</span>
+                    <span>0821-3172-3433</span>
                 </a>
 
                 <Link
@@ -1427,7 +1427,7 @@ export default function Welcome({
                                         className="flex items-center gap-2 text-white transition-colors hover:text-[#39d353]"
                                     >
                                         <Sprout className="h-4 w-4 text-[#39d353]" />
-                                        <span>Lapor Panen</span>
+                                        <span>Lapor Pupuk</span>
                                     </a>
                                     <a
                                         href="#transparansi"
@@ -2167,24 +2167,24 @@ export default function Welcome({
 
                                 <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
                                     <a
-                                        href="tel:+6281234567890"
+                                        href="tel:+6292131723433"
                                         className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                                     >
                                         <PhoneCall
                                             aria-hidden="true"
                                             className="size-5 text-village-primary"
                                         />
-                                        0812-3456-7890
+                                        0821-3172-3433
                                     </a>
                                     <a
-                                        href="mailto:pemdes@ngampungan.desa.id"
+                                        href="mailto:desangampungan@gmail.com"
                                         className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                                     >
                                         <Mail
                                             aria-hidden="true"
                                             className="size-5 text-village-primary"
                                         />
-                                        pemdes@ngampungan.desa.id
+                                        desangampungan@gmail.com
                                     </a>
                                 </div>
                             </div>
@@ -2342,7 +2342,7 @@ export default function Welcome({
                                                                     : undefined
                                                             }
                                                             className="mt-2 w-full border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
-                                                            placeholder="0812... / nama@email.com"
+                                                            placeholder="082131723433 / desangampungan@gmail.com"
                                                         />
                                                         <InputError
                                                             message={
@@ -2535,7 +2535,7 @@ export default function Welcome({
                                             className="mt-0.5 size-4 shrink-0 text-village-accent"
                                         />
                                         <span>
-                                            Jl. Raya Ngampungan No. 1, Kec.
+                                            Jl. Jobranti No. 1, Kec.
                                             Bareng, Kab. Jombang, Jawa Timur
                                             61474
                                         </span>
@@ -2545,7 +2545,7 @@ export default function Welcome({
                                             aria-hidden="true"
                                             className="size-4 shrink-0 text-village-accent"
                                         />
-                                        <span>pemdes@ngampungan.desa.id</span>
+                                        <span>desangampungan@gmail.com</span>
                                     </li>
                                 </ul>
                                 <div className="mt-6 flex gap-4">

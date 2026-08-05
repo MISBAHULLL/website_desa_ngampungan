@@ -4,24 +4,30 @@ import {
     CalendarDays,
     Camera,
     ClipboardList,
+    FileText,
     Globe,
+    ImagePlay,
     Landmark,
     LayoutGrid,
     Megaphone,
     MessagesSquare,
     Network,
     Newspaper,
+    UserCog,
     Users,
 } from 'lucide-react';
 import { index as agendasIndex } from '@/actions/App/Http/Controllers/Admin/AgendaController';
 import { index as announcementsIndex } from '@/actions/App/Http/Controllers/Admin/AnnouncementController';
 import { index as contactMessagesIndex } from '@/actions/App/Http/Controllers/Admin/ContactMessageController';
 import { index as galleryIndex } from '@/actions/App/Http/Controllers/Admin/GalleryController';
+import { index as heroSlidesIndex } from '@/actions/App/Http/Controllers/Admin/HeroSlideController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsController';
 import { index as orgStructureIndex } from '@/actions/App/Http/Controllers/Admin/OrganizationStructureController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
 import { index as villageInstitutionsIndex } from '@/actions/App/Http/Controllers/Admin/VillageInstitutionController';
+import { index as villageLeadersIndex } from '@/actions/App/Http/Controllers/Admin/VillageLeaderController';
 import { index as villageOfficialsIndex } from '@/actions/App/Http/Controllers/Admin/VillageOfficialController';
+import { index as villageProfileIndex } from '@/actions/App/Http/Controllers/Admin/VillageProfileController';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -43,6 +49,21 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Profil Desa',
+        href: villageProfileIndex(),
+        icon: FileText,
+    },
+    {
+        title: 'Hero Slides',
+        href: heroSlidesIndex(),
+        icon: ImagePlay,
+    },
+    {
+        title: 'Kepala Desa',
+        href: villageLeadersIndex(),
+        icon: UserCog,
     },
     {
         title: 'Kelola Berita',

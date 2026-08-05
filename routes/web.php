@@ -1,11 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
+use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\OrganizationStructureController;
 use App\Http\Controllers\Admin\ServiceApplicationController as AdminServiceApplicationController;
 use App\Http\Controllers\Admin\ServiceApplicationDocumentController as AdminServiceApplicationDocumentController;
 use App\Http\Controllers\Admin\VillageInstitutionController;
+use App\Http\Controllers\Admin\VillageLeaderController;
 use App\Http\Controllers\Admin\VillageOfficialController;
+use App\Http\Controllers\Admin\VillageProfileController as AdminVillageProfileController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\ContactMessageController;
@@ -170,6 +173,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('admin.organization-structure.index');
     Route::patch('dashboard/struktur-organisasi', [OrganizationStructureController::class, 'updateStructure'])
         ->name('admin.organization-structure.update');
+
+    Route::get('dashboard/profil-desa', [AdminVillageProfileController::class, 'index'])
+        ->name('admin.village-profile.index');
+    Route::get('dashboard/profil-desa/edit', [AdminVillageProfileController::class, 'edit'])
+        ->name('admin.village-profile.edit');
+    Route::patch('dashboard/profil-desa', [AdminVillageProfileController::class, 'update'])
+        ->name('admin.village-profile.update');
+
+    Route::resource('dashboard/kepala-desa', VillageLeaderController::class)
+        ->parameters(['kepala-desa' => 'villageLeader'])
+        ->names('admin.village-leaders');
+
+    Route::resource('dashboard/hero-slides', HeroSlideController::class)
+        ->parameters(['hero-slides' => 'heroSlide'])
+        ->names('admin.hero-slides');
 });
 
 require __DIR__.'/settings.php';

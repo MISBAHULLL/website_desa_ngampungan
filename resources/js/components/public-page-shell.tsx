@@ -300,7 +300,7 @@ export function PublicPageShell({
                             aria-hidden="true"
                             className="size-3.5 text-village-accent"
                         />
-                        Jl. Raya Ngampungan No. 1, Bareng, Jombang
+                        Jl. JOBRANTI NO.01 DESA NGAMPUNGAN, Bareng, Jombang
                     </span>
                     <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                         <span className="flex items-center gap-2">
@@ -308,7 +308,7 @@ export function PublicPageShell({
                                 aria-hidden="true"
                                 className="size-3.5 text-village-accent"
                             />
-                            0812-3456-7890
+                            0821-3172-3433
                         </span>
                         <Link
                             href={trackServiceApplication()}
