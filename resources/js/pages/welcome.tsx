@@ -51,6 +51,7 @@ import {
 } from '@/lib/dummy-public-content';
 import type { Announcement, NewsArticle } from '@/lib/dummy-public-content';
 import { dummyApbdesSummaries } from '@/lib/dummy-transparency';
+import type { ApbdesSummaryRecord } from '@/lib/dummy-transparency';
 import {
     findVillagePotentialCategory,
     getDummyVillagePotentialEntries,
@@ -642,12 +643,20 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
     );
 }
 
-function TransparansiSummarySection() {
-    const [selectedYear, setSelectedYear] = useState('2026');
+function TransparansiSummarySection({
+    summaries: databaseSummaries,
+}: {
+    summaries?: ApbdesSummaryRecord[];
+}) {
+    const summaries =
+        databaseSummaries && databaseSummaries.length > 0
+            ? databaseSummaries
+            : dummyApbdesSummaries;
+    const [selectedYear, setSelectedYear] = useState(summaries[0].year);
 
     const currentSummary =
-        dummyApbdesSummaries.find((s) => s.year === selectedYear) ??
-        dummyApbdesSummaries[0];
+        summaries.find((summary) => summary.year === selectedYear) ??
+        summaries[0];
 
     const incomeMetric = currentSummary.metrics.find((m) => m.key === 'income');
     const expenseMetric = currentSummary.metrics.find(
@@ -714,7 +723,7 @@ function TransparansiSummarySection() {
                                     }
                                     className="cursor-pointer rounded-md border-0 bg-transparent py-0.5 pr-7 pl-0 text-sm font-extrabold text-gray-900 focus:ring-0 focus:outline-none"
                                 >
-                                    {dummyApbdesSummaries.map((item) => (
+                                    {summaries.map((item) => (
                                         <option
                                             key={item.year}
                                             value={item.year}
@@ -1063,12 +1072,14 @@ export default function Welcome({
     heroSlides,
     villageLeader,
     villageProfile,
+    apbdesSummaries,
 }: {
     dbArticles?: NewsArticle[];
     dbAnnouncements?: Announcement[];
     heroSlides?: HeroSlideData[];
     villageLeader?: VillageLeaderContent | null;
     villageProfile?: VillageProfileSummary | null;
+    apbdesSummaries?: ApbdesSummaryRecord[];
 }) {
     const { auth } = usePage().props;
     const [isScrolled, setIsScrolled] = useState(false);
@@ -1809,7 +1820,7 @@ export default function Welcome({
                         </div>
                     </section>
 
-                    <TransparansiSummarySection />
+                    <TransparansiSummarySection summaries={apbdesSummaries} />
 
                     <section
                         id="potensi"

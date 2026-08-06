@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\ApbdesController;
+use App\Http\Controllers\Admin\ApbdesDocumentController;
 use App\Http\Controllers\Admin\ContactMessageController as AdminContactMessageController;
 use App\Http\Controllers\Admin\HeroSlideController;
 use App\Http\Controllers\Admin\OrganizationStructureController;
@@ -22,6 +24,7 @@ use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
 use App\Models\Announcement;
+use App\Models\ApbdesSummary;
 use App\Models\HeroSlide;
 use App\Models\News;
 use App\Models\VillageLeader;
@@ -48,6 +51,10 @@ Route::get('/', function () {
             ? Storage::disk('public')->url($slide->background_image)
             : null,
     ]);
+    $apbdesSummaries = ApbdesSummary::with(['incomeSources', 'activities'])
+        ->orderByDesc('year')
+        ->get()
+        ->map(fn (ApbdesSummary $summary): array => $summary->toPublicData());
     $dbArticles = News::latestPublished()->get()->map(function ($article) {
         return [
             'id' => $article->id,
@@ -89,6 +96,7 @@ Route::get('/', function () {
         'dbArticles' => $dbArticles,
         'dbAnnouncements' => $dbAnnouncements,
         'heroSlides' => $heroSlides,
+        'apbdesSummaries' => $apbdesSummaries,
         'villageLeader' => $villageLeader?->toPublicData(),
         'villageProfile' => $villageProfile ? [
             'totalPopulation' => $villageProfile->total_population,
@@ -230,6 +238,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->parameters(['hero-slides' => 'heroSlide'])
         ->except(['show'])
         ->names('admin.hero-slides');
+
+    Route::resource('dashboard/apbdes', ApbdesController::class)
+        ->parameters(['apbdes' => 'apbdes'])
+        ->except(['show'])
+        ->names('admin.apbdes');
+
+    Route::resource('dashboard/apbdes-documents', ApbdesDocumentController::class)
+        ->parameters(['apbdes-documents' => 'apbdesDocument'])
+        ->only(['create', 'store', 'edit', 'update', 'destroy'])
+        ->names('admin.apbdes-documents');
 });
 
 require __DIR__.'/settings.php';

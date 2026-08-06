@@ -11,6 +11,7 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
+import { ApbdesTrendChart } from '@/components/apbdes-trend-chart';
 import { PublicPageShell } from '@/components/public-page-shell';
 import {
     dummyPublicDocuments,
@@ -93,7 +94,7 @@ export default function TransparencyIndex({
     dbPublicDocuments,
 }: TransparencyProps) {
     const latest5Years = useMemo(() => {
-        if (dbSummaries && dbSummaries.length > 0) {
+        if (dbSummaries !== undefined) {
             return dbSummaries;
         }
 
@@ -101,7 +102,7 @@ export default function TransparencyIndex({
     }, [dbSummaries]);
 
     const publicDocs = useMemo(() => {
-        if (dbPublicDocuments && dbPublicDocuments.length > 0) {
+        if (dbPublicDocuments !== undefined) {
             return dbPublicDocuments;
         }
 
@@ -163,6 +164,25 @@ export default function TransparencyIndex({
             return matchesCategory && matchesQuery;
         });
     }, [currentSummary, activeCategory, searchQuery]);
+
+    if (!currentSummary) {
+        return (
+            <PublicPageShell activeSection="transparency">
+                <Head title="Transparansi APBDes - Desa Ngampungan" />
+                <section className="bg-[#f8faf8] py-24">
+                    <div className="mx-auto max-w-2xl px-5 text-center">
+                        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+                            Data APBDes belum tersedia
+                        </h1>
+                        <p className="mt-3 text-sm leading-6 text-gray-600">
+                            Pemerintah desa sedang menyiapkan data anggaran yang
+                            telah diverifikasi untuk ditampilkan kepada warga.
+                        </p>
+                    </div>
+                </section>
+            </PublicPageShell>
+        );
+    }
 
     return (
         <PublicPageShell activeSection="transparency">
@@ -445,6 +465,12 @@ export default function TransparencyIndex({
                             </div>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <section className="border-b border-village-border bg-[#f8faf8] py-12 md:py-16">
+                <div className="mx-auto max-w-[1440px] px-5 lg:px-12 2xl:max-w-[1536px]">
+                    <ApbdesTrendChart summaries={latest5Years} />
                 </div>
             </section>
 
@@ -735,9 +761,10 @@ export default function TransparencyIndex({
                                     (alloc: ApbdesAllocation) => {
                                         const isHovered =
                                             hoveredAllocLabel === alloc.label;
-                                        const realPercent = Math.round(
-                                            alloc.percentage * 0.88,
-                                        );
+                                        const realPercent =
+                                            alloc.realizedPercentage ?? 0;
+                                        const absorptionPercentage =
+                                            alloc.absorptionPercentage ?? 0;
 
                                         return (
                                             <div
@@ -765,8 +792,13 @@ export default function TransparencyIndex({
                                                                 Serapan
                                                             </span>
                                                             <span className="text-xs font-bold text-emerald-700">
-                                                                {realPercent}% (
-                                                                {alloc.value})
+                                                                {
+                                                                    absorptionPercentage
+                                                                }
+                                                                % (
+                                                                {alloc.realizedValue ??
+                                                                    'Rp0'}
+                                                                )
                                                             </span>
                                                         </div>
                                                         <span className="h-4 w-px bg-gray-200" />
@@ -822,8 +854,8 @@ export default function TransparencyIndex({
                                                         </strong>
                                                     </span>
                                                     <span className="font-semibold text-emerald-700">
-                                                        Terserap: ~{realPercent}
-                                                        %
+                                                        Terserap:{' '}
+                                                        {absorptionPercentage}%
                                                     </span>
                                                 </div>
                                             </div>
@@ -1090,7 +1122,9 @@ export default function TransparencyIndex({
                                         aria-hidden="true"
                                         className="size-3.5"
                                     />
-                                    <span>Unduh Dokumen (PDF)</span>
+                                    <span>
+                                        Unduh Dokumen ({document.format})
+                                    </span>
                                 </a>
                             </StaggerItem>
                         ))}

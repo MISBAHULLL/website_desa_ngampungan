@@ -12,6 +12,9 @@ export type ApbdesAllocation = {
     label: string;
     value: string;
     percentage: number;
+    realizedValue?: string;
+    realizedPercentage?: number;
+    absorptionPercentage?: number;
 };
 
 export type DummyPublicDocument = {
@@ -21,7 +24,7 @@ export type DummyPublicDocument = {
     year: string;
     documentDate: string;
     documentDateLabel: string;
-    format: 'PDF';
+    format: 'PDF' | 'XLS' | 'XLSX';
     fileSize: string;
 };
 
@@ -55,6 +58,9 @@ export type ApbdesSummaryRecord = {
     updatedAt: string;
     updatedLabel: string;
     realizationPercentage: number;
+    incomeAmount?: number;
+    expenseAmount?: number;
+    realizedAmountValue?: number;
     realizedAmount: string;
     budgetAmount: string;
     incomeValue: string;

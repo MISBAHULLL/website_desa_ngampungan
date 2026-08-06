@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ApbdesDocument;
 use App\Models\ApbdesSummary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -39,13 +40,18 @@ class TransparencyController extends Controller
                 $allocations = [];
                 foreach ($categoryMap as $key => $label) {
                     $catBudget = $sum->activities->where('category', $key)->sum('budget');
+                    $catRealized = $sum->activities->where('category', $key)->sum('realized');
                     $pct = $totalBudget > 0 ? round(($catBudget / $totalBudget) * 100, 1) : 0;
                     $valJuta = number_format($catBudget / 1000000, 0, ',', '.');
+                    $realizedJuta = number_format($catRealized / 1000000, 0, ',', '.');
 
                     $allocations[] = [
                         'label' => $label,
                         'value' => "Rp{$valJuta} juta",
                         'percentage' => $pct,
+                        'realizedValue' => "Rp{$realizedJuta} juta",
+                        'realizedPercentage' => $totalBudget > 0 ? round(($catRealized / $totalBudget) * 100, 1) : 0,
+                        'absorptionPercentage' => $catBudget > 0 ? round(($catRealized / $catBudget) * 100, 1) : 0,
                     ];
                 }
 
@@ -95,6 +101,9 @@ class TransparencyController extends Controller
                     'updatedAt' => $sum->updated_date ? $sum->updated_date->format('Y-m-d') : '',
                     'updatedLabel' => $sum->updated_date ? $sum->updated_date->translatedFormat('d F Y') : '',
                     'realizationPercentage' => $realizationPercentage,
+                    'incomeAmount' => (int) $totalIncome,
+                    'expenseAmount' => (int) $totalBudget,
+                    'realizedAmountValue' => (int) $totalRealized,
                     'realizedAmount' => 'Rp'.number_format($totalRealized / 1000000000, 2, ',', '.').' miliar',
                     'budgetAmount' => $formattedExpense,
                     'incomeValue' => $formattedIncome,
@@ -142,7 +151,7 @@ class TransparencyController extends Controller
                     'year' => (string) $doc->year,
                     'documentDate' => $doc->document_date->format('Y-m-d'),
                     'documentDateLabel' => $doc->document_date->translatedFormat('d F Y'),
-                    'format' => 'PDF',
+                    'format' => $doc->file_format,
                     'fileSize' => $doc->file_size,
                     'downloadUrl' => route('transparency.documents.download', $doc->id),
                 ];
@@ -156,15 +165,24 @@ class TransparencyController extends Controller
 
     public function downloadDocument(ApbdesDocument $document)
     {
-        if ($document->file_path && file_exists(storage_path('app/public/'.$document->file_path))) {
-            return response()->download(storage_path('app/public/'.$document->file_path), $document->title.'.pdf');
+        $extension = mb_strtolower($document->file_format ?: 'PDF');
+        $downloadName = Str::slug($document->title).'.'.$extension;
+
+        if ($document->file_path && Storage::disk('public')->exists($document->file_path)) {
+            return Storage::disk('public')->download(
+                $document->file_path,
+                $downloadName,
+                array_filter(['Content-Type' => $document->mime_type]),
+            );
         }
+
+        abort_unless($extension === 'pdf', 404, 'File dokumen tidak ditemukan.');
 
         $content = "%PDF-1.4\n1 0 obj\n<< /Title (".$document->title.") >>\nendobj\n";
 
         return response($content, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="'.Str::slug($document->title).'.pdf"',
+            'Content-Disposition' => 'attachment; filename="'.$downloadName.'"',
         ]);
     }
 }

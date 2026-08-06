@@ -1,6 +1,5 @@
 import { Link } from '@inertiajs/react';
 import {
-    BookOpen,
     CalendarDays,
     Camera,
     ClipboardList,
@@ -13,11 +12,13 @@ import {
     MessagesSquare,
     Network,
     Newspaper,
+    WalletCards,
     UserCog,
     Users,
 } from 'lucide-react';
 import { index as agendasIndex } from '@/actions/App/Http/Controllers/Admin/AgendaController';
 import { index as announcementsIndex } from '@/actions/App/Http/Controllers/Admin/AnnouncementController';
+import { index as apbdesIndex } from '@/actions/App/Http/Controllers/Admin/ApbdesController';
 import { index as contactMessagesIndex } from '@/actions/App/Http/Controllers/Admin/ContactMessageController';
 import { index as galleryIndex } from '@/actions/App/Http/Controllers/Admin/GalleryController';
 import { index as heroSlidesIndex } from '@/actions/App/Http/Controllers/Admin/HeroSlideController';
@@ -99,6 +100,11 @@ const mainNavItems: NavItem[] = [
         title: 'Struktur Organisasi',
         href: orgStructureIndex(),
         icon: Network,
+    },
+    {
+        title: 'Kelola APBDes',
+        href: apbdesIndex(),
+        icon: WalletCards,
     },
     {
         title: 'Pesan Masuk',
