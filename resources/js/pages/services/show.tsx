@@ -17,30 +17,73 @@ import {
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageServiceApplicationForm } from '@/components/village-service-application-form';
 import type { ServiceApplicationSuccess } from '@/components/village-service-application-form';
-import {
-    findDummyVillageService,
-    findDummyVillageServiceApplicationDetail,
-    findVillageServiceCategory,
-    villageServiceProcessSteps,
-} from '@/lib/dummy-village-services';
+import { findVillageServiceCategory } from '@/pages/services/index';
 import { home } from '@/routes';
 import { index as servicesIndex } from '@/routes/services';
 
+const villageServiceProcessSteps = [
+    {
+        title: 'Pengajuan Online',
+        description:
+            'Warga mengisi formulir pengajuan dan mengunggah dokumen persyaratan melalui sistem secara online.',
+    },
+    {
+        title: 'Verifikasi Berkas',
+        description:
+            'Petugas desa memverifikasi kelengkapan dan keabsahan dokumen pengajuan.',
+    },
+    {
+        title: 'Proses Penerbitan',
+        description:
+            'Pembuatan draf surat, penandatanganan oleh Kepala Desa, dan stempel resmi.',
+    },
+    {
+        title: 'Pengambilan',
+        description:
+            'Warga mengambil berkas fisik di Balai Desa dengan membawa dokumen asli untuk pencocokan jika diperlukan.',
+    },
+];
+
+type ServiceData = {
+    slug: string;
+    title: string;
+    shortDescription: string;
+    category: string;
+    audience: string;
+    channel: string;
+    estimatedDuration: string;
+    fee: string;
+    serviceContact: string | null;
+    serviceHours: string | null;
+    notes: string[];
+};
+
+type DocumentRequirementData = {
+    key: string;
+    label: string;
+    description: string;
+    required: boolean;
+    acceptedFormats: string;
+};
+
 type ServiceShowPageProps = {
     slug: string;
+    service: ServiceData;
+    requirements: string[];
+    requiredDocuments: DocumentRequirementData[];
     canonicalUrl: string;
     serviceApplicationSuccess: ServiceApplicationSuccess | null;
 };
 
 export default function ServiceShow({
     slug,
+    service,
+    requirements,
+    requiredDocuments,
     canonicalUrl,
     serviceApplicationSuccess,
 }: ServiceShowPageProps) {
-    const service = findDummyVillageService(slug);
-    const detail = findDummyVillageServiceApplicationDetail(slug);
-
-    if (!service || !detail) {
+    if (!service) {
         return (
             <PublicPageShell activeSection="services">
                 <Head title="Layanan Tidak Ditemukan" />
@@ -240,7 +283,7 @@ export default function ServiceShow({
                             </div>
 
                             <ol className="grid gap-3.5 sm:grid-cols-2">
-                                {detail.requirements.map(
+                                {requirements.map(
                                     (requirement, index) => (
                                         <li
                                             key={requirement}
@@ -282,7 +325,7 @@ export default function ServiceShow({
                             </div>
 
                             <div className="grid gap-4 sm:grid-cols-2">
-                                {detail.requiredDocuments.map((document) => (
+                                {requiredDocuments.map((document) => (
                                     <article
                                         key={document.key}
                                         className="flex flex-col justify-between rounded-2xl border border-slate-200/80 bg-slate-50/50 p-5 shadow-2xs transition-all hover:border-emerald-300 hover:bg-white"
@@ -390,7 +433,7 @@ export default function ServiceShow({
                         <div className="mt-8 border-t border-slate-100 pt-6">
                             <VillageServiceApplicationForm
                                 service={service}
-                                detail={detail}
+                                detail={{ requiredDocuments }}
                                 submissionSuccess={serviceApplicationSuccess}
                             />
                         </div>

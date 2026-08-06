@@ -17,7 +17,7 @@ class ServiceApplicationController extends Controller
     ): RedirectResponse {
         $serviceSlug = (string) $request->route('slug');
 
-        abort_unless($serviceCatalog->exists($serviceSlug), 404);
+
 
         $serviceApplication = $createServiceApplication->handle(
             $serviceSlug,

@@ -12,24 +12,59 @@ import { useMemo, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
-import { CardSkeleton } from '@/components/ui/skeleton';
-import {
-    dummyVillageServices,
-    findVillageServiceCategory,
-    getDummyVillageServices,
-    villageServiceCategories,
-} from '@/lib/dummy-village-services';
-import type {
-    VillageServiceCategoryKey,
-    VillageServiceFilter,
-} from '@/lib/dummy-village-services';
 import { home } from '@/routes';
 import { index as servicesIndex, show as serviceShow } from '@/routes/services';
 
-type ServiceIndexPageProps = {
-    initialCategory: VillageServiceFilter;
-    canonicalUrl: string;
-};
+export type VillageServiceCategoryKey =
+    | 'administration'
+    | 'population'
+    | 'agriculture'
+    | 'reports';
+
+export type VillageServiceFilter = VillageServiceCategoryKey | 'all';
+
+export const villageServiceCategories: {
+    key: VillageServiceCategoryKey;
+    label: string;
+    shortLabel: string;
+    description: string;
+}[] = [
+    {
+        key: 'administration',
+        label: 'Administrasi Umum',
+        shortLabel: 'Administrasi',
+        description:
+            'Layanan persuratan dan administrasi umum untuk keperluan warga Desa Ngampungan.',
+    },
+    {
+        key: 'population',
+        label: 'Kependudukan',
+        shortLabel: 'Kependudukan',
+        description:
+            'Layanan pencatatan sipil dan kependudukan seperti KTP, KK, dan surat kelahiran.',
+    },
+    {
+        key: 'agriculture',
+        label: 'Pertanian & Peternakan',
+        shortLabel: 'Pertanian',
+        description:
+            'Layanan administrasi terkait kelompok tani, pupuk bersubsidi, dan usaha ternak.',
+    },
+    {
+        key: 'reports',
+        label: 'Pengaduan Masyarakat',
+        shortLabel: 'Pengaduan',
+        description:
+            'Layanan pengaduan terkait fasilitas umum, keamanan, dan ketertiban desa.',
+    },
+];
+
+export function findVillageServiceCategory(key: string) {
+    return (
+        villageServiceCategories.find((cat) => cat.key === key) ||
+        villageServiceCategories[0]
+    );
+}
 
 const categoryPresentation: Record<
     VillageServiceCategoryKey,
@@ -65,14 +100,40 @@ const categoryPresentation: Record<
     },
 };
 
+type ServiceData = {
+    slug: string;
+    title: string;
+    shortDescription: string;
+    category: string;
+    audience: string;
+    channel: string;
+    estimatedDuration: string;
+    fee: string;
+    requirementsCount: number;
+    documentRequirementsCount: number;
+};
+
+type ServiceIndexPageProps = {
+    services: ServiceData[];
+    initialCategory: VillageServiceFilter;
+    canonicalUrl: string;
+};
+
 export default function ServiceIndex({
+    services,
     initialCategory,
     canonicalUrl,
 }: ServiceIndexPageProps) {
     const [searchQuery, setSearchQuery] = useState('');
 
     const visibleServices = useMemo(() => {
-        const categoryServices = getDummyVillageServices(initialCategory);
+        let categoryServices = services;
+        if (initialCategory !== 'all') {
+            categoryServices = services.filter(
+                (s) => s.category === initialCategory,
+            );
+        }
+
         const normalizedQuery = searchQuery.trim().toLocaleLowerCase('id-ID');
 
         if (normalizedQuery === '') {
@@ -89,7 +150,7 @@ export default function ServiceIndex({
                 value.toLocaleLowerCase('id-ID').includes(normalizedQuery),
             ),
         );
-    }, [initialCategory, searchQuery]);
+    }, [services, initialCategory, searchQuery]);
 
     const activeCategory =
         initialCategory === 'all'
@@ -169,7 +230,7 @@ export default function ServiceIndex({
                         <div className="grid grid-cols-2 gap-4 lg:col-span-4">
                             <div className="rounded-3xl border border-emerald-100 bg-white p-6 text-center shadow-xl shadow-emerald-950/10 transition-all hover:-translate-y-1">
                                 <p className="text-4xl font-black text-emerald-950">
-                                    {dummyVillageServices.length}
+                                    {services.length}
                                 </p>
                                 <p className="mt-1.5 text-xs font-bold tracking-wider text-emerald-800 uppercase">
                                     Total Layanan Publik
@@ -238,13 +299,13 @@ export default function ServiceIndex({
                                                 : 'rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600'
                                         }
                                     >
-                                        {dummyVillageServices.length}
+                                        {services.length}
                                     </span>
                                 </Link>
 
                                 {villageServiceCategories.map((category) => {
-                                    const count = getDummyVillageServices(
-                                        category.key,
+                                    const count = services.filter(
+                                        (s) => s.category === category.key,
                                     ).length;
                                     const isSelected =
                                         initialCategory === category.key;
@@ -366,7 +427,9 @@ export default function ServiceIndex({
                                     service.category,
                                 );
                                 const presentation =
-                                    categoryPresentation[service.category];
+                                    categoryPresentation[
+                                        service.category as VillageServiceCategoryKey
+                                    ];
                                 return (
                                     <StaggerItem
                                         key={service.slug}
@@ -466,6 +529,7 @@ export default function ServiceIndex({
                                                     aria-hidden="true"
                                                     className="size-4 text-emerald-600"
                                                 />
+                                                {service.requirementsCount}{' '}
                                                 Persyaratan
                                             </span>
 

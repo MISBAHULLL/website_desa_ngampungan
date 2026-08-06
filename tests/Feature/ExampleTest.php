@@ -128,7 +128,7 @@ test('the homepage dummy village statistics match the PRD metrics', function () 
 
     $statisticsSource = Str::between(
         $homepageSource,
-        'const dummyVillageStatistics = [',
+        'const villageStatisticDefinitions = [',
         '] as const;',
     );
 
@@ -141,7 +141,7 @@ test('the homepage dummy village statistics match the PRD metrics', function () 
         ->not->toContain("label: 'UMKM'");
 
     expect($homepageSource)
-        ->toContain('dummyVillageStatistics.map')
+        ->toContain('villageStatisticDefinitions.map')
         ->toContain('sm:grid-cols-4');
 });
 

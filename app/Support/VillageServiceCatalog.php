@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use App\Models\VillageService;
+
 final class VillageServiceCatalog
 {
     /**
@@ -9,46 +11,35 @@ final class VillageServiceCatalog
      */
     public function find(string $slug): ?array
     {
-        $service = config("village_services.services.{$slug}");
+        $service = VillageService::query()
+            ->where('slug', $slug)
+            ->with('documentRequirements')
+            ->first();
 
-        if (! is_array($service)) {
-            return null;
-        }
-
-        $title = $service['title'] ?? null;
-        $documents = $service['documents'] ?? null;
-
-        if (! is_string($title) || ! is_array($documents)) {
+        if (! $service) {
             return null;
         }
 
         $normalizedDocuments = [];
 
-        foreach ($documents as $documentKey => $document) {
-            if (
-                ! is_string($documentKey)
-                || ! is_array($document)
-                || ! is_string($document['label'] ?? null)
-                || ! is_bool($document['required'] ?? null)
-            ) {
-                return null;
-            }
-
-            $normalizedDocuments[$documentKey] = [
-                'label' => $document['label'],
-                'required' => $document['required'],
+        foreach ($service->documentRequirements as $document) {
+            $normalizedDocuments[$document->key] = [
+                'label' => $document->label,
+                'required' => $document->is_required,
             ];
         }
 
         return [
-            'title' => $title,
+            'title' => $service->title,
             'documents' => $normalizedDocuments,
         ];
     }
 
     public function exists(string $slug): bool
     {
-        return $this->find($slug) !== null;
+        return VillageService::query()
+            ->where('slug', $slug)
+            ->exists();
     }
 
     /**

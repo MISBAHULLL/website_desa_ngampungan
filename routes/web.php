@@ -127,13 +127,13 @@ Route::get('layanan', [ServiceController::class, 'index'])
     ->name('services.index');
 Route::redirect('layanan/lacak', '/lacak-pengajuan', 301);
 Route::get('layanan/{slug}', [ServiceController::class, 'show'])
-    ->whereIn('slug', array_keys((array) config('village_services.services')))
+    ->where('slug', '[a-z0-9-]+')
     ->name('services.show');
 Route::post(
     'layanan/{slug}/pengajuan',
     ServiceApplicationController::class,
 )
-    ->whereIn('slug', array_keys((array) config('village_services.services')))
+    ->where('slug', '[a-z0-9-]+')
     ->middleware('throttle:service-applications')
     ->name('service-applications.store');
 Route::get('lacak-pengajuan', ServiceApplicationTrackingController::class)
@@ -248,6 +248,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->parameters(['apbdes-documents' => 'apbdesDocument'])
         ->only(['create', 'store', 'edit', 'update', 'destroy'])
         ->names('admin.apbdes-documents');
+
+    Route::resource('dashboard/kelola-layanan', App\Http\Controllers\Admin\VillageServiceController::class)
+        ->parameters(['kelola-layanan' => 'villageService'])
+        ->except(['show'])
+        ->names('admin.village-services');
+    Route::patch('dashboard/kelola-layanan/{villageService}/toggle-active', [App\Http\Controllers\Admin\VillageServiceController::class, 'toggleActive'])
+        ->name('admin.village-services.toggle-active');
 });
 
 require __DIR__.'/settings.php';

@@ -12,9 +12,16 @@ class StoreServiceApplicationRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize(VillageServiceCatalog $serviceCatalog): bool
     {
-        return true;
+        return $serviceCatalog->exists((string) $this->route('slug'));
+    }
+
+    protected function failedAuthorization(): void
+    {
+        throw new \Illuminate\Http\Exceptions\HttpResponseException(
+            redirect()->route('services.index')
+        );
     }
 
     /**

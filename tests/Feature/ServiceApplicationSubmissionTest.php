@@ -8,6 +8,19 @@ use Illuminate\Support\Facades\Storage;
 
 uses(LazilyRefreshDatabase::class);
 
+beforeEach(function () {
+    $service = \App\Models\VillageService::factory()->create([
+        'title' => 'Surat Keterangan Usaha',
+        'slug' => 'surat-keterangan-usaha',
+    ]);
+    
+    $service->documentRequirements()->createMany([
+        ['key' => 'identity-card', 'label' => 'KTP', 'is_required' => true, 'sort_order' => 1],
+        ['key' => 'family-card', 'label' => 'KK', 'is_required' => true, 'sort_order' => 2],
+        ['key' => 'neighbourhood-letter', 'label' => 'Pengantar RT', 'is_required' => true, 'sort_order' => 3],
+    ]);
+});
+
 function fakePdf(string $name): UploadedFile
 {
     return UploadedFile::fake()->createWithContent(
@@ -139,7 +152,8 @@ test('service application validation rejects unknown and disguised document file
 });
 
 test('unknown service slugs cannot be opened or submitted', function () {
-    $this->get('/layanan/layanan-tidak-ada')->assertNotFound();
-    $this->post('/layanan/layanan-tidak-ada/pengajuan', [])
-        ->assertNotFound();
+    $this->get('/layanan/layanan-tidak-ada')->assertRedirect(route('services.index'));
+    
+    $this->post('/layanan/layanan-tidak-ada/pengajuan', validServiceApplicationPayload())
+        ->assertRedirect(route('services.index'));
 });

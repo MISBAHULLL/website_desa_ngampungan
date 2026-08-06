@@ -347,7 +347,6 @@ test('the public service directory falls back to all for an unknown category', f
 
 test('the first service directory increment exposes search, categories, and summary cards', function () {
     $servicePageSource = file_get_contents(resource_path('js/pages/services/index.tsx'));
-    $serviceDataSource = file_get_contents(resource_path('js/lib/dummy-village-services.ts'));
     $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
     $publicShellSource = file_get_contents(resource_path('js/components/public-page-shell.tsx'));
     $appSource = file_get_contents(resource_path('js/app.tsx'));
@@ -361,17 +360,6 @@ test('the first service directory increment exposes search, categories, and summ
         ->toContain('visibleServices.map')
         ->toContain('Persyaratan');
 
-    expect($serviceDataSource)
-        ->not->toBeFalse()
-        ->toContain('dummyVillageServices')
-        ->toContain('villageServiceCategories')
-        ->toContain("key: 'administration'")
-        ->toContain("key: 'population'")
-        ->toContain("key: 'agriculture'")
-        ->toContain("key: 'reports'")
-        ->toContain('getDummyVillageServices')
-        ->toContain('findVillageServiceCategory');
-
     expect($publicShellSource)
         ->not->toBeFalse()
         ->toContain("activeSection === 'services'")
@@ -383,7 +371,11 @@ test('the first service directory increment exposes search, categories, and summ
 });
 
 test('the public service detail passes its slug and canonical url to Inertia', function () {
-    $slug = 'surat-keterangan-usaha';
+    $service = \App\Models\VillageService::factory()->create([
+        'title' => 'Surat Keterangan Usaha',
+    ]);
+    
+    $slug = $service->slug;
 
     $this->get(route('services.show', $slug))
         ->assertOk()
@@ -397,7 +389,6 @@ test('the second service increment exposes requirements, process, and a client-o
     $serviceIndexSource = file_get_contents(resource_path('js/pages/services/index.tsx'));
     $serviceShowSource = file_get_contents(resource_path('js/pages/services/show.tsx'));
     $serviceFormSource = file_get_contents(resource_path('js/components/village-service-application-form.tsx'));
-    $serviceDataSource = file_get_contents(resource_path('js/lib/dummy-village-services.ts'));
 
     expect($serviceIndexSource)
         ->not->toBeFalse()
@@ -426,13 +417,6 @@ test('the second service increment exposes requirements, process, and a client-o
         ->toContain('Pengajuan Berhasil Diterima')
         ->toContain('privacy_consent')
         ->not->toContain('SIM-');
-
-    expect($serviceDataSource)
-        ->not->toBeFalse()
-        ->toContain('dummyVillageServiceApplicationDetails')
-        ->toContain('villageServiceProcessSteps')
-        ->toContain('findDummyVillageService')
-        ->toContain('findDummyVillageServiceApplicationDetail');
 });
 
 test('the public transparency index renders its Inertia page', function () {

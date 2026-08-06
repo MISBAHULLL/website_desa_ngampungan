@@ -8,6 +8,7 @@ import {
     ImagePlay,
     Landmark,
     LayoutGrid,
+    LayoutList,
     Megaphone,
     MessagesSquare,
     Network,
@@ -26,6 +27,7 @@ import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsCon
 import { index as orgStructureIndex } from '@/actions/App/Http/Controllers/Admin/OrganizationStructureController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
 import { index as villageInstitutionsIndex } from '@/actions/App/Http/Controllers/Admin/VillageInstitutionController';
+import { index as villageServicesIndex } from '@/actions/App/Http/Controllers/Admin/VillageServiceController';
 import { index as villageLeadersIndex } from '@/actions/App/Http/Controllers/Admin/VillageLeaderController';
 import { index as villageOfficialsIndex } from '@/actions/App/Http/Controllers/Admin/VillageOfficialController';
 import { index as villageProfileIndex } from '@/actions/App/Http/Controllers/Admin/VillageProfileController';
@@ -110,6 +112,11 @@ const mainNavItems: NavItem[] = [
         title: 'Pesan Masuk',
         href: contactMessagesIndex(),
         icon: MessagesSquare,
+    },
+    {
+        title: 'Manajemen Layanan',
+        href: villageServicesIndex(),
+        icon: LayoutList,
     },
     {
         title: 'Pengajuan Layanan',

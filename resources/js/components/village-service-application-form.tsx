@@ -23,10 +23,6 @@ import { useRef, useState } from 'react';
 import type { ChangeEvent, FormEvent } from 'react';
 import ServiceApplicationController from '@/actions/App/Http/Controllers/Public/ServiceApplicationController';
 import InputError from '@/components/input-error';
-import type {
-    VillageService,
-    VillageServiceApplicationDetail,
-} from '@/lib/dummy-village-services';
 import { track as trackServiceApplication } from '@/routes/service-applications';
 
 export type ServiceApplicationSuccess = {
@@ -35,9 +31,33 @@ export type ServiceApplicationSuccess = {
     submittedAt: string;
 };
 
+type ServiceData = {
+    slug: string;
+    title: string;
+    shortDescription: string;
+    category: string;
+    audience: string;
+    channel: string;
+    estimatedDuration: string;
+    fee: string;
+    serviceContact: string | null;
+    serviceHours: string | null;
+    notes: string[];
+};
+
+type DocumentRequirementData = {
+    key: string;
+    label: string;
+    description: string;
+    required: boolean;
+    acceptedFormats: string;
+};
+
 type ApplicationFormProps = {
-    service: VillageService;
-    detail: VillageServiceApplicationDetail;
+    service: ServiceData;
+    detail: {
+        requiredDocuments: DocumentRequirementData[];
+    };
     submissionSuccess: ServiceApplicationSuccess | null;
 };
 
