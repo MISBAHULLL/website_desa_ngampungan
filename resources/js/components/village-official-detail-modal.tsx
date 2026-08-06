@@ -8,7 +8,7 @@ import {
     UserCheck,
     X,
 } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export type VillageOfficialData = {
     id?: number;
@@ -37,6 +37,35 @@ type VillageOfficialDetailModalProps = {
     onClose: () => void;
 };
 
+function OfficialPortrait({
+    photoSrc,
+    name,
+    initials,
+}: {
+    photoSrc: string | null | undefined;
+    name: string;
+    initials: string;
+}) {
+    const [hasImageError, setHasImageError] = useState(false);
+
+    if (photoSrc && !hasImageError) {
+        return (
+            <img
+                src={photoSrc}
+                alt={`Foto ${name}`}
+                className="h-full w-full rounded-xl object-cover object-top"
+                onError={() => setHasImageError(true)}
+            />
+        );
+    }
+
+    return (
+        <div className="flex size-full items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 via-teal-50 to-slate-100 text-3xl font-extrabold text-emerald-800 shadow-inner">
+            {initials}
+        </div>
+    );
+}
+
 export function VillageOfficialDetailModal({
     official,
     onClose,
@@ -59,11 +88,13 @@ export function VillageOfficialDetailModal({
         };
     }, [official, onClose]);
 
-    if (!official) return null;
+    if (!official) {
+        return null;
+    }
 
     const photoSrc = official.photo_url || official.photo;
     const employeeId =
-        official.employee_id || official.employeeId || 'Pertingkat Desa';
+        official.employee_id || official.employeeId || 'Perangkat Desa';
     const term = official.term || '2022–2028';
     const serviceFocusList =
         official.service_focus || official.serviceFocus || [];
@@ -109,17 +140,12 @@ export function VillageOfficialDetailModal({
                         <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
                             {/* Avatar / Photo Container */}
                             <div className="relative flex aspect-[4/5] w-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-1 shadow-sm sm:w-36">
-                                {photoSrc ? (
-                                    <img
-                                        src={photoSrc}
-                                        alt={`Foto ${official.name}`}
-                                        className="h-full w-full rounded-xl object-contain object-bottom"
-                                    />
-                                ) : (
-                                    <div className="flex size-full items-center justify-center rounded-xl bg-gradient-to-br from-emerald-100 via-teal-50 to-slate-100 text-3xl font-extrabold text-emerald-800 shadow-inner">
-                                        {initials}
-                                    </div>
-                                )}
+                                <OfficialPortrait
+                                    key={`${official.id ?? official.slug}-${photoSrc ?? 'initials'}`}
+                                    photoSrc={photoSrc}
+                                    name={official.name}
+                                    initials={initials}
+                                />
                             </div>
 
                             {/* Main Info */}

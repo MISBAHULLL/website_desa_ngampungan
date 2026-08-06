@@ -1,14 +1,51 @@
 import { Link } from '@inertiajs/react';
 import { ArrowRight, UserCheck } from 'lucide-react';
-import type { VillageOfficial } from '@/lib/dummy-village-government';
+import { useState } from 'react';
+import type { VillageOfficialData } from '@/components/village-official-detail-modal';
 import { show as officialShow } from '@/routes/government/officials';
+
+type VillageOfficialCardData = VillageOfficialData & {
+    slug: string;
+    initials: string;
+};
+
+function OfficialCardPortrait({
+    photoSrc,
+    name,
+    initials,
+}: {
+    photoSrc: string | null | undefined;
+    name: string;
+    initials: string;
+}) {
+    const [hasImageError, setHasImageError] = useState(false);
+
+    if (photoSrc && !hasImageError) {
+        return (
+            <img
+                src={photoSrc}
+                alt={`Profil ${name}`}
+                className="relative h-48 w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.04]"
+                onError={() => setHasImageError(true)}
+            />
+        );
+    }
+
+    return (
+        <div className="relative mb-6 flex size-24 items-center justify-center rounded-2xl border border-emerald-100 bg-white font-bold text-emerald-800 shadow-md transition-transform duration-300 group-hover:scale-105">
+            <span className="text-2xl font-extrabold tracking-wider">
+                {initials}
+            </span>
+        </div>
+    );
+}
 
 export function VillageOfficialCard({
     official,
     onOpenDetail,
 }: {
-    official: VillageOfficial;
-    onOpenDetail?: (official: VillageOfficial) => void;
+    official: VillageOfficialCardData;
+    onOpenDetail?: (official: VillageOfficialCardData) => void;
 }) {
     return (
         <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-xs transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/30 hover:shadow-xl hover:shadow-emerald-950/5">
@@ -20,19 +57,12 @@ export function VillageOfficialCard({
                     className="absolute -top-10 -right-10 size-36 rounded-full bg-emerald-500/5 blur-xl transition-all duration-500 group-hover:scale-125"
                 />
 
-                {official.photo_url || official.photo ? (
-                    <img
-                        src={official.photo_url || official.photo || ''}
-                        alt={`Profil ${official.name}`}
-                        className="relative h-48 w-full object-contain object-bottom transition-transform duration-300 group-hover:scale-[1.04]"
-                    />
-                ) : (
-                    <div className="relative mb-6 flex size-24 items-center justify-center rounded-2xl border border-emerald-100 bg-white font-bold text-emerald-800 shadow-md transition-transform duration-300 group-hover:scale-105">
-                        <span className="text-2xl font-extrabold tracking-wider">
-                            {official.initials}
-                        </span>
-                    </div>
-                )}
+                <OfficialCardPortrait
+                    key={`${official.id ?? official.slug}-${official.photo_url ?? official.photo ?? 'initials'}`}
+                    photoSrc={official.photo_url || official.photo}
+                    name={official.name}
+                    initials={official.initials}
+                />
 
                 {/* Unit Tag Badge */}
                 <span className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full border border-emerald-100 bg-white px-3 py-1 text-[11px] font-bold tracking-wider text-emerald-800 uppercase shadow-xs">

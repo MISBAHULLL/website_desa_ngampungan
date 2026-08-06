@@ -139,9 +139,26 @@ export default function VillageGovernmentIndex({
     const leaderPosition = villageLeader?.position ?? villageHead?.position;
     const leaderPhoto = villageLeader?.photo ?? villageHead?.photo_url;
     const leaderPeriod = villageLeader?.period ?? villageHead?.term;
+    const villageHeadDetail: VillageOfficialData | null = villageHead
+        ? {
+              ...villageHead,
+              name: leaderName ?? villageHead.name,
+              position: leaderPosition ?? villageHead.position,
+              photo_url: leaderPhoto ?? null,
+              term: leaderPeriod ?? villageHead.term,
+          }
+        : null;
     const villageApparatus = officials.all.filter(
         (o) => o.group !== 'leadership',
     );
+
+    function openOfficialDetail(official: VillageOfficialData) {
+        setSelectedOfficial(
+            official.id === villageHead?.id && villageHeadDetail
+                ? villageHeadDetail
+                : official,
+        );
+    }
 
     const visibleOfficials =
         activeOfficialFilter === 'all'
@@ -316,12 +333,12 @@ export default function VillageGovernmentIndex({
                                                 </p>
                                             </div>
 
-                                            {villageHead && (
+                                            {villageHeadDetail && (
                                                 <button
                                                     type="button"
                                                     onClick={() =>
                                                         setSelectedOfficial(
-                                                            villageHead as VillageOfficialData,
+                                                            villageHeadDetail,
                                                         )
                                                     }
                                                     className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-emerald-800"
@@ -457,9 +474,7 @@ export default function VillageGovernmentIndex({
                             <VillageOrganizationChart
                                 allOfficials={officials.all}
                                 tree={officials.orgTree}
-                                onOpenDetail={(official) =>
-                                    setSelectedOfficial(official as any)
-                                }
+                                onOpenDetail={openOfficialDetail}
                             />
                         </FadeIn>
                     </section>
@@ -505,10 +520,8 @@ export default function VillageGovernmentIndex({
                             {visibleOfficials.map((official) => (
                                 <StaggerItem key={official.slug}>
                                     <VillageOfficialCard
-                                        official={official as any}
-                                        onOpenDetail={(off) =>
-                                            setSelectedOfficial(off as any)
-                                        }
+                                        official={official}
+                                        onOpenDetail={openOfficialDetail}
                                     />
                                 </StaggerItem>
                             ))}
@@ -541,9 +554,7 @@ export default function VillageGovernmentIndex({
                                 <StaggerItem
                                     key={institution.id}
                                     onClick={() =>
-                                        setSelectedInstitution(
-                                            institution as any,
-                                        )
+                                        setSelectedInstitution(institution)
                                     }
                                     className="group flex cursor-pointer flex-col justify-between rounded-3xl border border-gray-200/90 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/40 hover:shadow-xl hover:shadow-emerald-950/5"
                                 >
@@ -558,6 +569,11 @@ export default function VillageGovernmentIndex({
                                                             }
                                                             alt={`Logo ${institution.name}`}
                                                             className="size-10 rounded-lg border border-slate-200 object-contain p-0.5"
+                                                            onError={(
+                                                                event,
+                                                            ) => {
+                                                                event.currentTarget.hidden = true;
+                                                            }}
                                                         />
                                                         <span
                                                             className={`inline-flex items-center justify-center rounded-md border px-2.5 py-1 text-xs font-bold tracking-wider ${getInstitutionBadgeStyle(institution.acronym)}`}
@@ -646,7 +662,7 @@ export default function VillageGovernmentIndex({
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setSelectedInstitution(
-                                                    institution as any,
+                                                    institution,
                                                 );
                                             }}
                                             className="inline-flex items-center gap-1 font-bold text-emerald-800 transition group-hover:text-emerald-600"

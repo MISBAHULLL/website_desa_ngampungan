@@ -136,6 +136,8 @@ test('the village government module exposes organization, officials, institution
     $governmentDataSource = file_get_contents(resource_path('js/lib/dummy-village-government.ts'));
     $organizationChartSource = file_get_contents(resource_path('js/components/village-organization-chart.tsx'));
     $officialCardSource = file_get_contents(resource_path('js/components/village-official-card.tsx'));
+    $officialModalSource = file_get_contents(resource_path('js/components/village-official-detail-modal.tsx'));
+    $institutionModalSource = file_get_contents(resource_path('js/components/village-institution-detail-modal.tsx'));
     $homepageSource = file_get_contents(resource_path('js/pages/welcome.tsx'));
     $appSource = file_get_contents(resource_path('js/app.tsx'));
 
@@ -150,7 +152,9 @@ test('the village government module exposes organization, officials, institution
         ->toContain('VillageOrganizationChart')
         ->toContain('VillageOfficialCard')
         ->toContain('officialFilters.map')
-        ->toContain('institutions.map');
+        ->toContain('institutions.map')
+        ->toContain('photo_url: leaderPhoto ?? null')
+        ->toContain('onOpenDetail={openOfficialDetail}');
 
     expect($governmentShowSource)
         ->not->toBeFalse()
@@ -179,7 +183,21 @@ test('the village government module exposes organization, officials, institution
     expect($officialCardSource)
         ->not->toBeFalse()
         ->toContain('officialShow(official.slug)')
-        ->toContain('Lihat Profil Lengkap');
+        ->toContain('Lihat Profil Lengkap')
+        ->toContain('function OfficialCardPortrait')
+        ->toContain('onError={() => setHasImageError(true)}');
+
+    expect($officialModalSource)
+        ->not->toBeFalse()
+        ->toContain('function OfficialPortrait')
+        ->toContain('onError={() => setHasImageError(true)}')
+        ->toContain('photoSrc={photoSrc}');
+
+    expect($institutionModalSource)
+        ->not->toBeFalse()
+        ->toContain('function InstitutionLogo')
+        ->toContain('onError={() => setHasImageError(true)}')
+        ->toContain('logoUrl={institution.logo_url}');
 
     expect($homepageSource)
         ->not->toBeFalse()

@@ -1,13 +1,5 @@
-import {
-    Check,
-    CheckCircle2,
-    Landmark,
-    ShieldCheck,
-    UserCheck,
-    Users,
-    X,
-} from 'lucide-react';
-import { useEffect } from 'react';
+import { CheckCircle2, Landmark, ShieldCheck, Users, X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export type InstitutionMember = {
     name: string;
@@ -33,6 +25,35 @@ type VillageInstitutionDetailModalProps = {
     onClose: () => void;
 };
 
+function InstitutionLogo({
+    logoUrl,
+    name,
+    acronym,
+}: {
+    logoUrl: string | null | undefined;
+    name: string;
+    acronym: string;
+}) {
+    const [hasImageError, setHasImageError] = useState(false);
+
+    if (logoUrl && !hasImageError) {
+        return (
+            <img
+                src={logoUrl}
+                alt={`Logo ${name}`}
+                className="h-full w-full object-contain"
+                onError={() => setHasImageError(true)}
+            />
+        );
+    }
+
+    return (
+        <div className="flex size-full items-center justify-center rounded-xl bg-emerald-800 text-xl font-black text-white shadow-xs">
+            {acronym}
+        </div>
+    );
+}
+
 export function VillageInstitutionDetailModal({
     institution,
     onClose,
@@ -55,7 +76,9 @@ export function VillageInstitutionDetailModal({
         };
     }, [institution, onClose]);
 
-    if (!institution) return null;
+    if (!institution) {
+        return null;
+    }
 
     const memberList = institution.members || [];
     const responsibilitiesList = institution.responsibilities || [];
@@ -90,17 +113,12 @@ export function VillageInstitutionDetailModal({
                         <div className="flex flex-col items-center gap-5 sm:flex-row sm:items-start">
                             {/* Logo or Badge Container */}
                             <div className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-2 border-slate-200 bg-white p-2 shadow-sm sm:size-24">
-                                {institution.logo_url ? (
-                                    <img
-                                        src={institution.logo_url}
-                                        alt={`Logo ${institution.name}`}
-                                        className="h-full w-full object-contain"
-                                    />
-                                ) : (
-                                    <div className="flex size-full items-center justify-center rounded-xl bg-emerald-800 text-xl font-black text-white shadow-xs">
-                                        {institution.acronym}
-                                    </div>
-                                )}
+                                <InstitutionLogo
+                                    key={`${institution.id}-${institution.logo_url ?? 'acronym'}`}
+                                    logoUrl={institution.logo_url}
+                                    name={institution.name}
+                                    acronym={institution.acronym}
+                                />
                             </div>
 
                             {/* Main Title & Meta */}
