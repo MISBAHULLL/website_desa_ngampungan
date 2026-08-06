@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import {
     index as heroSlideIndex,
     store as heroSlideStore,
+    update as heroSlideUpdate,
 } from '@/actions/App/Http/Controllers/Admin/HeroSlideController';
 import InputError from '@/components/input-error';
 import { Spinner } from '@/components/ui/spinner';
@@ -11,22 +12,40 @@ import { dashboard } from '@/routes';
 
 type Props = {
     nextOrder: number;
+    slide?: {
+        id: number;
+        title: string;
+        subtitle?: string | null;
+        description: string;
+        primaryCtaText?: string | null;
+        primaryCtaUrl?: string | null;
+        secondaryCtaText?: string | null;
+        secondaryCtaUrl?: string | null;
+        backgroundImage?: string | null;
+        order: number;
+        isActive: boolean;
+    };
 };
 
-export default function AdminHeroSlideCreate({ nextOrder }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
-        title: '',
-        subtitle: '',
-        description: '',
-        primary_cta_text: '',
-        primary_cta_url: '',
-        secondary_cta_text: '',
-        secondary_cta_url: '',
+export default function AdminHeroSlideCreate({ nextOrder, slide }: Props) {
+    const { data, setData, post, processing, progress, errors } = useForm({
+        _method: slide ? 'put' : 'post',
+        title: slide?.title ?? '',
+        subtitle: slide?.subtitle ?? '',
+        description: slide?.description ?? '',
+        primary_cta_text: slide?.primaryCtaText ?? '',
+        primary_cta_url: slide?.primaryCtaUrl ?? '',
+        secondary_cta_text: slide?.secondaryCtaText ?? '',
+        secondary_cta_url: slide?.secondaryCtaUrl ?? '',
         background_image: null as File | null,
-        order: nextOrder,
-        is_active: true,
+        remove_background_image: false,
+        order: slide?.order ?? nextOrder,
+        is_active: slide?.isActive ?? true,
     });
     const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const displayedImage =
+        imagePreview ??
+        (data.remove_background_image ? null : slide?.backgroundImage);
 
     useEffect(() => {
         return () => {
@@ -44,6 +63,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
         }
 
         setData('background_image', file);
+        setData('remove_background_image', false);
         setImagePreview(file ? URL.createObjectURL(file) : null);
     }
 
@@ -53,17 +73,20 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
         }
 
         setData('background_image', null);
+        setData('remove_background_image', Boolean(slide?.backgroundImage));
         setImagePreview(null);
     }
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
-        post(heroSlideStore.url(), { forceFormData: true });
+        post(slide ? heroSlideUpdate.url(slide.id) : heroSlideStore.url(), {
+            forceFormData: true,
+        });
     }
 
     return (
         <>
-            <Head title="Tambah Hero Slide" />
+            <Head title={slide ? 'Edit Hero Slide' : 'Tambah Hero Slide'} />
 
             <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
                 <header className="border-b border-sidebar-border/70 pb-6">
@@ -75,11 +98,12 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                         Kembali ke Hero Slides
                     </Link>
                     <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-                        Tambah Hero Slide
+                        {slide ? 'Edit Hero Slide' : 'Tambah Hero Slide'}
                     </h1>
                     <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                        Siapkan judul, deskripsi, gambar latar, dan tombol yang
-                        akan tampil pada hero halaman depan.
+                        {slide
+                            ? 'Perbarui konten, gambar latar, urutan, dan tombol CTA yang tampil pada halaman depan.'
+                            : 'Siapkan judul, deskripsi, gambar latar, dan tombol yang akan tampil pada hero halaman depan.'}
                     </p>
                 </header>
 
@@ -102,6 +126,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     </label>
                                     <input
                                         id="title"
+                                        maxLength={255}
                                         value={data.title}
                                         onChange={(event) =>
                                             setData('title', event.target.value)
@@ -124,6 +149,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     </label>
                                     <input
                                         id="subtitle"
+                                        maxLength={255}
                                         value={data.subtitle}
                                         onChange={(event) =>
                                             setData(
@@ -150,6 +176,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     <textarea
                                         id="description"
                                         rows={5}
+                                        maxLength={1000}
                                         value={data.description}
                                         onChange={(event) =>
                                             setData(
@@ -172,6 +199,11 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                             <h2 className="text-lg font-bold text-foreground">
                                 Tombol hero
                             </h2>
+                            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                                Isi teks dan tujuan secara berpasangan. Tujuan
+                                dapat berupa <code>/layanan</code>,{' '}
+                                <code>#kontak</code>, atau URL HTTPS.
+                            </p>
                             <div className="mt-5 grid gap-4 sm:grid-cols-2">
                                 <div>
                                     <label
@@ -182,6 +214,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     </label>
                                     <input
                                         id="primary_cta_text"
+                                        maxLength={100}
                                         value={data.primary_cta_text}
                                         onChange={(event) =>
                                             setData(
@@ -206,6 +239,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     </label>
                                     <input
                                         id="primary_cta_url"
+                                        maxLength={500}
                                         value={data.primary_cta_url}
                                         onChange={(event) =>
                                             setData(
@@ -230,6 +264,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     </label>
                                     <input
                                         id="secondary_cta_text"
+                                        maxLength={100}
                                         value={data.secondary_cta_text}
                                         onChange={(event) =>
                                             setData(
@@ -254,6 +289,7 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                     </label>
                                     <input
                                         id="secondary_cta_url"
+                                        maxLength={500}
                                         value={data.secondary_cta_url}
                                         onChange={(event) =>
                                             setData(
@@ -279,10 +315,10 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                 Gambar latar
                             </h2>
                             <div className="mt-4 overflow-hidden rounded-xl border border-dashed border-sidebar-border bg-muted/30">
-                                {imagePreview ? (
+                                {displayedImage ? (
                                     <div className="relative aspect-video">
                                         <img
-                                            src={imagePreview}
+                                            src={displayedImage}
                                             alt="Pratinjau gambar hero"
                                             className="size-full object-cover"
                                         />
@@ -317,6 +353,19 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                 message={errors.background_image}
                                 className="mt-1.5"
                             />
+                            {progress && (
+                                <div className="mt-3" aria-live="polite">
+                                    <div className="mb-1 flex items-center justify-between text-xs font-medium text-muted-foreground">
+                                        <span>Mengunggah gambar</span>
+                                        <span>{progress.percentage}%</span>
+                                    </div>
+                                    <progress
+                                        value={progress.percentage}
+                                        max={100}
+                                        className="h-1.5 w-full accent-emerald-700"
+                                    />
+                                </div>
+                            )}
                         </section>
 
                         <section className="rounded-xl border border-sidebar-border/70 bg-background p-5 shadow-xs">
@@ -379,7 +428,9 @@ export default function AdminHeroSlideCreate({ nextOrder }: Props) {
                                 ) : (
                                     <Save className="size-4" />
                                 )}
-                                Simpan Hero Slide
+                                {slide
+                                    ? 'Simpan Perubahan'
+                                    : 'Simpan Hero Slide'}
                             </button>
                         </section>
                     </aside>
@@ -393,6 +444,6 @@ AdminHeroSlideCreate.layout = {
     breadcrumbs: [
         { title: 'Dashboard', href: dashboard() },
         { title: 'Hero Slides', href: heroSlideIndex() },
-        { title: 'Tambah', href: '#' },
+        { title: 'Form Slide', href: '#' },
     ],
 };

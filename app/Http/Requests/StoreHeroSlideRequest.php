@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class StoreHeroSlideRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreHeroSlideRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return $this->user() !== null;
     }
 
     /**
@@ -31,8 +32,20 @@ class StoreHeroSlideRequest extends FormRequest
             'secondary_cta_text' => ['nullable', 'string', 'max:100'],
             'secondary_cta_url' => ['nullable', 'string', 'max:500'],
             'background_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:3072'],
+            'remove_background_image' => ['sometimes', 'boolean'],
             'order' => ['required', 'integer', 'min:0'],
             'is_active' => ['boolean'],
+        ];
+    }
+
+    /** @return array<int, callable(Validator): void> */
+    public function after(): array
+    {
+        return [
+            function (Validator $validator): void {
+                $this->validateCtaPair($validator, 'primary');
+                $this->validateCtaPair($validator, 'secondary');
+            },
         ];
     }
 
@@ -63,10 +76,48 @@ class StoreHeroSlideRequest extends FormRequest
             'background_image.image' => 'File gambar latar harus berupa gambar.',
             'background_image.mimes' => 'Gambar latar harus berformat JPEG, JPG, PNG, atau WebP.',
             'background_image.max' => 'Ukuran gambar latar maksimal 3 MB.',
+            'remove_background_image.boolean' => 'Pilihan hapus gambar tidak valid.',
             'order.required' => 'Urutan slide wajib diisi.',
             'order.integer' => 'Urutan slide harus berupa angka.',
             'order.min' => 'Urutan slide minimal bernilai 0.',
             'is_active.boolean' => 'Status aktif harus berupa nilai boolean.',
         ];
+    }
+
+    private function validateCtaPair(Validator $validator, string $prefix): void
+    {
+        $textField = "{$prefix}_cta_text";
+        $urlField = "{$prefix}_cta_url";
+        $text = trim((string) $this->input($textField, ''));
+        $url = trim((string) $this->input($urlField, ''));
+
+        if ($text !== '' && $url === '') {
+            $validator->errors()->add($urlField, 'Tujuan tombol wajib diisi ketika teks tombol digunakan.');
+        }
+
+        if ($url !== '' && $text === '') {
+            $validator->errors()->add($textField, 'Teks tombol wajib diisi ketika tujuan tombol digunakan.');
+        }
+
+        if ($url !== '' && ! $this->isAllowedCtaUrl($url)) {
+            $validator->errors()->add($urlField, 'Tujuan tombol harus berupa tautan internal, anchor, atau URL HTTP/HTTPS yang valid.');
+        }
+    }
+
+    private function isAllowedCtaUrl(string $url): bool
+    {
+        if (str_starts_with($url, '#')) {
+            return strlen($url) > 1;
+        }
+
+        if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
+            return true;
+        }
+
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+
+        return in_array(parse_url($url, PHP_URL_SCHEME), ['http', 'https'], true);
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,8 +31,12 @@ class HeroSlide extends Model
         ];
     }
 
-    public function scopeActive($query)
+    /** @param Builder<self> $query */
+    public function scopeActive(Builder $query): Builder
     {
-        return $query->where('is_active', true)->orderBy('order');
+        return $query
+            ->where('is_active', true)
+            ->orderBy('order')
+            ->orderBy('id');
     }
 }

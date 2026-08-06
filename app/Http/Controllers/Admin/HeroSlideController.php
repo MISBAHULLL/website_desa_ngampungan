@@ -50,7 +50,7 @@ class HeroSlideController extends Controller
                 'description' => $slide->description,
                 'primaryCtaText' => $slide->primary_cta_text,
                 'secondaryCtaText' => $slide->secondary_cta_text,
-                'backgroundImage' => $slide->background_image ? Storage::url($slide->background_image) : null,
+                'backgroundImage' => $this->backgroundImageUrl($slide),
                 'order' => $slide->order,
                 'isActive' => $slide->is_active,
                 'createdAt' => $slide->created_at?->toIso8601String(),
@@ -66,7 +66,7 @@ class HeroSlideController extends Controller
 
     public function create(): Response
     {
-        $nextOrder = HeroSlide::max('order') + 1;
+        $nextOrder = ((int) HeroSlide::max('order')) + 1;
 
         return Inertia::render('admin/hero-slides/create', [
             'nextOrder' => $nextOrder,
@@ -101,30 +101,10 @@ class HeroSlideController extends Controller
         return redirect()->route('admin.hero-slides.index');
     }
 
-    public function show(HeroSlide $heroSlide): Response
-    {
-        return Inertia::render('admin/hero-slides/show', [
-            'slide' => [
-                'id' => $heroSlide->id,
-                'title' => $heroSlide->title,
-                'subtitle' => $heroSlide->subtitle,
-                'description' => $heroSlide->description,
-                'primaryCtaText' => $heroSlide->primary_cta_text,
-                'primaryCtaUrl' => $heroSlide->primary_cta_url,
-                'secondaryCtaText' => $heroSlide->secondary_cta_text,
-                'secondaryCtaUrl' => $heroSlide->secondary_cta_url,
-                'backgroundImage' => $heroSlide->background_image ? Storage::url($heroSlide->background_image) : null,
-                'order' => $heroSlide->order,
-                'isActive' => $heroSlide->is_active,
-                'createdAt' => $heroSlide->created_at?->toIso8601String(),
-                'updatedAt' => $heroSlide->updated_at?->toIso8601String(),
-            ],
-        ]);
-    }
-
     public function edit(HeroSlide $heroSlide): Response
     {
-        return Inertia::render('admin/hero-slides/edit', [
+        return Inertia::render('admin/hero-slides/create', [
+            'nextOrder' => $heroSlide->order,
             'slide' => [
                 'id' => $heroSlide->id,
                 'title' => $heroSlide->title,
@@ -134,7 +114,7 @@ class HeroSlideController extends Controller
                 'primaryCtaUrl' => $heroSlide->primary_cta_url,
                 'secondaryCtaText' => $heroSlide->secondary_cta_text,
                 'secondaryCtaUrl' => $heroSlide->secondary_cta_url,
-                'backgroundImage' => $heroSlide->background_image ? Storage::url($heroSlide->background_image) : null,
+                'backgroundImage' => $this->backgroundImageUrl($heroSlide),
                 'order' => $heroSlide->order,
                 'isActive' => $heroSlide->is_active,
             ],
@@ -143,6 +123,7 @@ class HeroSlideController extends Controller
 
     public function update(UpdateHeroSlideRequest $request, HeroSlide $heroSlide): RedirectResponse
     {
+        $validated = $request->validated();
         $data = $request->safe()->only([
             'title',
             'subtitle',
@@ -155,16 +136,22 @@ class HeroSlideController extends Controller
             'is_active',
         ]);
 
-        if ($request->hasFile('background_image')) {
-            // Delete old image if exists
-            if ($heroSlide->background_image) {
-                Storage::disk('public')->delete($heroSlide->background_image);
-            }
+        $oldImage = $heroSlide->background_image;
+        $shouldDeleteOldImage = false;
 
+        if ($request->hasFile('background_image')) {
             $data['background_image'] = $request->file('background_image')->store('hero-slides', 'public');
+            $shouldDeleteOldImage = true;
+        } elseif (($validated['remove_background_image'] ?? false) === true) {
+            $data['background_image'] = null;
+            $shouldDeleteOldImage = true;
         }
 
         $heroSlide->update($data);
+
+        if ($oldImage && $shouldDeleteOldImage) {
+            Storage::disk('public')->delete($oldImage);
+        }
 
         Inertia::flash('toast', [
             'type' => 'success',
@@ -176,7 +163,6 @@ class HeroSlideController extends Controller
 
     public function destroy(HeroSlide $heroSlide): RedirectResponse
     {
-        // Delete image if exists
         if ($heroSlide->background_image) {
             Storage::disk('public')->delete($heroSlide->background_image);
         }
@@ -189,5 +175,14 @@ class HeroSlideController extends Controller
         ]);
 
         return back();
+    }
+
+    private function backgroundImageUrl(HeroSlide $heroSlide): ?string
+    {
+        if (! $heroSlide->background_image) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($heroSlide->background_image);
     }
 }

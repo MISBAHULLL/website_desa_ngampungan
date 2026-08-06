@@ -22,12 +22,27 @@ use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
 use App\Models\Announcement;
+use App\Models\HeroSlide;
 use App\Models\News;
 use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     $villageProfile = VillageProfile::query()->first();
+    $heroSlides = HeroSlide::active()->get()->map(fn (HeroSlide $slide): array => [
+        'id' => $slide->id,
+        'title' => $slide->title,
+        'subtitle' => $slide->subtitle,
+        'description' => $slide->description,
+        'primaryCtaText' => $slide->primary_cta_text,
+        'primaryCtaUrl' => $slide->primary_cta_url,
+        'secondaryCtaText' => $slide->secondary_cta_text,
+        'secondaryCtaUrl' => $slide->secondary_cta_url,
+        'backgroundImage' => $slide->background_image
+            ? Storage::disk('public')->url($slide->background_image)
+            : null,
+    ]);
     $dbArticles = News::latestPublished()->get()->map(function ($article) {
         return [
             'id' => $article->id,
@@ -68,6 +83,7 @@ Route::get('/', function () {
     return Inertia\Inertia::render('welcome', [
         'dbArticles' => $dbArticles,
         'dbAnnouncements' => $dbAnnouncements,
+        'heroSlides' => $heroSlides,
         'villageProfile' => $villageProfile ? [
             'totalPopulation' => $villageProfile->total_population,
             'totalFamilies' => $villageProfile->total_families,
@@ -95,6 +111,7 @@ Route::get('agenda', AgendaController::class)->name('agendas.index');
 Route::get('galeri', GalleryController::class)->name('gallery.index');
 Route::get('layanan', [ServiceController::class, 'index'])
     ->name('services.index');
+Route::redirect('layanan/lacak', '/lacak-pengajuan', 301);
 Route::get('layanan/{slug}', [ServiceController::class, 'show'])
     ->whereIn('slug', array_keys((array) config('village_services.services')))
     ->name('services.show');
@@ -201,6 +218,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('dashboard/hero-slides', HeroSlideController::class)
         ->parameters(['hero-slides' => 'heroSlide'])
+        ->except(['show'])
         ->names('admin.hero-slides');
 });
 

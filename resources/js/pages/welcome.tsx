@@ -20,7 +20,9 @@ import {
     MapPin,
     Menu,
     Newspaper,
+    Pause,
     PhoneCall,
+    Play,
     Ruler,
     Send,
     ShieldCheck,
@@ -93,6 +95,18 @@ type VillageProfileSummary = {
     totalFamilies: number | null;
     totalHamlets: number | null;
     totalAreaHectares: number | null;
+};
+
+type HeroSlideData = {
+    id: number;
+    title: string;
+    subtitle?: string | null;
+    description: string;
+    primaryCtaText?: string | null;
+    primaryCtaUrl?: string | null;
+    secondaryCtaText?: string | null;
+    secondaryCtaUrl?: string | null;
+    backgroundImage?: string | null;
 };
 
 const navigationItems: NavigationItem[] = [
@@ -984,21 +998,47 @@ const heroCarouselImages = [
     },
 ];
 
-function HeroBackgroundCarousel({ currentIndex }: { currentIndex: number }) {
+const fallbackHeroSlides: HeroSlideData[] = [
+    {
+        id: -1,
+        title: 'Harmoni Warga,',
+        subtitle: 'Kemajuan Bersama.',
+        description:
+            'Website resmi Desa Ngampungan. Melayani kebutuhan administrasi warga dan menyajikan informasi terkini seputar potensi, budaya, dan pembangunan desa.',
+        primaryCtaText: 'Kenali Desa',
+        primaryCtaUrl: '/profil-desa',
+        secondaryCtaText: 'Lihat Layanan',
+        secondaryCtaUrl: '/layanan',
+    },
+];
+
+function HeroBackgroundCarousel({
+    currentIndex,
+    slides,
+}: {
+    currentIndex: number;
+    slides: HeroSlideData[];
+}) {
     return (
         <div className="absolute inset-0 z-0 overflow-hidden">
-            {heroCarouselImages.map((image, index) => (
-                <img
-                    key={image.src}
-                    src={image.src}
-                    alt={image.alt}
-                    className={`absolute inset-0 size-full object-cover object-[center_35%] transition-opacity duration-700 ${
-                        index === currentIndex
-                            ? 'opacity-100'
-                            : 'pointer-events-none opacity-0'
-                    }`}
-                />
-            ))}
+            {slides.map((slide, index) => {
+                const fallbackImage =
+                    heroCarouselImages[index % heroCarouselImages.length];
+
+                return (
+                    <img
+                        key={slide.id}
+                        src={slide.backgroundImage ?? fallbackImage.src}
+                        alt=""
+                        aria-hidden="true"
+                        className={`absolute inset-0 size-full object-cover object-[center_35%] transition-[opacity,transform,filter] duration-700 ease-out ${
+                            index === currentIndex
+                                ? 'blur-0 scale-100 opacity-100'
+                                : 'pointer-events-none scale-[1.03] opacity-0 blur-sm'
+                        }`}
+                    />
+                );
+            })}
 
             <div className="absolute inset-0 bg-gradient-to-b from-[#0c1f16]/80 via-[#0c1f16]/65 to-[#0c1f16]/85" />
         </div>
@@ -1008,10 +1048,12 @@ function HeroBackgroundCarousel({ currentIndex }: { currentIndex: number }) {
 export default function Welcome({
     dbArticles,
     dbAnnouncements,
+    heroSlides,
     villageProfile,
 }: {
     dbArticles?: NewsArticle[];
     dbAnnouncements?: Announcement[];
+    heroSlides?: HeroSlideData[];
     villageProfile?: VillageProfileSummary | null;
 }) {
     const { auth } = usePage().props;
@@ -1028,6 +1070,16 @@ export default function Welcome({
         useState<VillagePotentialEntry | null>(null);
     const featuredImageRef = useRef<HTMLImageElement>(null);
     const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+    const [isHeroAutoplayPaused, setIsHeroAutoplayPaused] = useState(false);
+    const activeHeroSlides = useMemo(
+        () =>
+            heroSlides && heroSlides.length > 0
+                ? heroSlides
+                : fallbackHeroSlides,
+        [heroSlides],
+    );
+    const activeHeroSlide =
+        activeHeroSlides[heroSlideIndex] ?? activeHeroSlides[0];
     const activePotentialMetadata = findVillagePotentialCategory(
         activePotentialCategory,
     );
@@ -1057,8 +1109,7 @@ export default function Welcome({
 
         return [...activeDummyAnnouncements].sort(
             (a, b) =>
-                new Date(b.startsAt).getTime() -
-                new Date(a.startsAt).getTime(),
+                new Date(b.startsAt).getTime() - new Date(a.startsAt).getTime(),
         );
     }, [dbAnnouncements]);
 
@@ -1093,8 +1144,8 @@ export default function Welcome({
 
     const handleNewsPageChange = (page: number) => {
         if (page === newsCurrentPage || isNewsPageTransitioning) {
-return;
-}
+            return;
+        }
 
         setIsNewsPageTransitioning(true);
         setTimeout(() => {
@@ -1115,21 +1166,36 @@ return;
     };
 
     useEffect(() => {
+        if (
+            activeHeroSlides.length <= 1 ||
+            isHeroAutoplayPaused ||
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        ) {
+            return;
+        }
+
         const interval = setInterval(() => {
-            setHeroSlideIndex((prev) => (prev + 1) % heroCarouselImages.length);
+            setHeroSlideIndex(
+                (previousIndex) =>
+                    (previousIndex + 1) % activeHeroSlides.length,
+            );
         }, 3000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [activeHeroSlides.length, isHeroAutoplayPaused]);
 
     const goToPrevHeroSlide = () => {
-        setHeroSlideIndex((prev) =>
-            prev === 0 ? heroCarouselImages.length - 1 : prev - 1,
+        setHeroSlideIndex((previousIndex) =>
+            previousIndex === 0
+                ? activeHeroSlides.length - 1
+                : previousIndex - 1,
         );
     };
 
     const goToNextHeroSlide = () => {
-        setHeroSlideIndex((prev) => (prev + 1) % heroCarouselImages.length);
+        setHeroSlideIndex(
+            (previousIndex) => (previousIndex + 1) % activeHeroSlides.length,
+        );
     };
 
     const closeMobileNavigation = () => {
@@ -1339,6 +1405,7 @@ return;
                             {/* Carousel Background Images (3 gambar, auto delay 3s & kontrol manual) */}
                             <HeroBackgroundCarousel
                                 currentIndex={heroSlideIndex}
+                                slides={activeHeroSlides}
                             />
 
                             {/* Atmospheric Lighting Rays & Glows */}
@@ -1348,56 +1415,83 @@ return;
 
                             {/* Hero Main Grid */}
                             <FadeIn
+                                key={activeHeroSlide.id}
                                 direction="up"
                                 delay={0.1}
                                 duration={0.6}
                                 className="relative z-10 max-w-3xl pt-6 sm:pt-10 lg:pt-12"
                             >
-                                <div className="space-y-6 text-left sm:space-y-8">
+                                <div
+                                    className="min-w-0 space-y-6 text-left sm:space-y-8"
+                                    aria-live="polite"
+                                >
                                     {/* Main Headline */}
-                                    <h1 className="text-3xl leading-[1.08] font-bold tracking-tight text-balance text-white sm:text-5xl lg:text-6xl">
-                                        Harmoni Warga,
-                                        <br />
-                                        <span className="text-[#39d353]">
-                                            Kemajuan Bersama.
-                                        </span>
+                                    <h1 className="max-w-3xl text-3xl leading-[1.08] font-bold tracking-tight text-balance wrap-anywhere text-white sm:text-5xl lg:text-6xl">
+                                        {activeHeroSlide.title}
+                                        {activeHeroSlide.subtitle && (
+                                            <>
+                                                <br />
+                                                <span className="text-[#39d353]">
+                                                    {activeHeroSlide.subtitle}
+                                                </span>
+                                            </>
+                                        )}
                                     </h1>
 
                                     {/* Subtitle */}
                                     <p className="max-w-xl text-base leading-relaxed font-normal text-balance text-gray-200/90 sm:text-lg">
-                                        Website resmi Desa Ngampungan. Melayani
-                                        kebutuhan administrasi warga dan
-                                        menyajikan informasi terkini seputar
-                                        potensi, budaya, dan pembangunan desa.
+                                        {activeHeroSlide.description}
                                     </p>
 
                                     {/* Dual Action Buttons */}
                                     <div className="flex flex-col items-stretch gap-3 pt-6 sm:flex-row sm:items-center sm:gap-4 sm:pt-10">
                                         {/* Primary Button: White Pill + Green Arrow Circle Icon */}
-                                        <motion.a
-                                            whileHover={{ scale: 1.03, y: -2 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            href="#profil"
-                                            className="group flex items-center justify-center gap-3 rounded-full bg-white py-2 pr-2 pl-6 font-semibold text-gray-900 shadow-lg transition-all duration-200 hover:bg-gray-100 focus:ring-2 focus:ring-[#39d353]"
-                                        >
-                                            <span className="text-sm">
-                                                Kenali Desa
-                                            </span>
-                                            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-village-primary text-white transition-transform group-hover:scale-105 group-hover:bg-village-primary-dark">
-                                                <ArrowRight className="h-4 w-4 stroke-[2.5]" />
-                                            </div>
-                                        </motion.a>
+                                        {activeHeroSlide.primaryCtaText &&
+                                            activeHeroSlide.primaryCtaUrl && (
+                                                <motion.a
+                                                    whileHover={{
+                                                        scale: 1.03,
+                                                        y: -2,
+                                                    }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    href={
+                                                        activeHeroSlide.primaryCtaUrl
+                                                    }
+                                                    className="group flex min-h-12 items-center justify-center gap-3 rounded-full bg-white py-2 pr-2 pl-6 font-semibold text-gray-900 shadow-lg transition-all duration-200 hover:bg-gray-100 focus-visible:ring-2 focus-visible:ring-[#39d353] focus-visible:outline-none"
+                                                >
+                                                    <span className="max-w-56 text-sm text-balance">
+                                                        {
+                                                            activeHeroSlide.primaryCtaText
+                                                        }
+                                                    </span>
+                                                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-village-primary text-white transition-transform group-hover:scale-105 group-hover:bg-village-primary-dark">
+                                                        <ArrowRight className="size-4 stroke-[2.5]" />
+                                                    </span>
+                                                </motion.a>
+                                            )}
 
                                         {/* Secondary Glass Button */}
-                                        <motion.a
-                                            whileHover={{ scale: 1.03, y: -2 }}
-                                            whileTap={{ scale: 0.98 }}
-                                            href={servicesIndex.url()}
-                                            className="flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/15 px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-200 hover:border-white/35 hover:bg-white/25"
-                                        >
-                                            <ChevronDown className="h-4 w-4 text-[#39d353]" />
-                                            <span>Lihat Layanan</span>
-                                        </motion.a>
+                                        {activeHeroSlide.secondaryCtaText &&
+                                            activeHeroSlide.secondaryCtaUrl && (
+                                                <motion.a
+                                                    whileHover={{
+                                                        scale: 1.03,
+                                                        y: -2,
+                                                    }}
+                                                    whileTap={{ scale: 0.98 }}
+                                                    href={
+                                                        activeHeroSlide.secondaryCtaUrl
+                                                    }
+                                                    className="flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white/15 px-6 py-3 text-sm font-medium text-white backdrop-blur-md transition-all duration-200 hover:border-white/35 hover:bg-white/25 focus-visible:ring-2 focus-visible:ring-[#39d353] focus-visible:outline-none"
+                                                >
+                                                    <ChevronDown className="size-4 shrink-0 text-[#39d353]" />
+                                                    <span className="max-w-56 text-balance">
+                                                        {
+                                                            activeHeroSlide.secondaryCtaText
+                                                        }
+                                                    </span>
+                                                </motion.a>
+                                            )}
                                     </div>
                                 </div>
                             </FadeIn>
@@ -1410,50 +1504,80 @@ return;
                                 className="relative z-10 mt-10 border-t border-white/10 pt-8 sm:mt-14 sm:pt-10"
                             >
                                 {/* Centered Hero Carousel Controls */}
-                                <div className="mb-4 flex justify-center">
-                                    <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md">
-                                        <button
-                                            type="button"
-                                            onClick={goToPrevHeroSlide}
-                                            aria-label="Gambar sebelumnya"
-                                            className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
-                                        >
-                                            <ChevronLeft className="size-4" />
-                                        </button>
+                                {activeHeroSlides.length > 1 && (
+                                    <div className="mb-4 flex justify-center">
+                                        <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-black/40 px-3.5 py-1.5 backdrop-blur-md">
+                                            <button
+                                                type="button"
+                                                onClick={goToPrevHeroSlide}
+                                                aria-label="Slide sebelumnya"
+                                                className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                                            >
+                                                <ChevronLeft className="size-4" />
+                                            </button>
 
-                                        <div className="flex items-center gap-1.5">
-                                            {heroCarouselImages.map(
-                                                (_, idx) => (
-                                                    <button
-                                                        key={idx}
-                                                        type="button"
-                                                        onClick={() =>
-                                                            setHeroSlideIndex(
-                                                                idx,
-                                                            )
-                                                        }
-                                                        aria-label={`Slide ${idx + 1}`}
-                                                        className={`h-2 rounded-full transition-all duration-300 ${
-                                                            idx ===
-                                                            heroSlideIndex
-                                                                ? 'w-6 bg-[#39d353]'
-                                                                : 'w-2 bg-white/40 hover:bg-white/70'
-                                                        }`}
-                                                    />
-                                                ),
-                                            )}
+                                            <div className="flex items-center gap-1.5">
+                                                {activeHeroSlides.map(
+                                                    (slide, idx) => (
+                                                        <button
+                                                            key={slide.id}
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setHeroSlideIndex(
+                                                                    idx,
+                                                                )
+                                                            }
+                                                            aria-label={`Tampilkan slide ${idx + 1}: ${slide.title}`}
+                                                            className={`h-2 rounded-full transition-all duration-300 ${
+                                                                idx ===
+                                                                heroSlideIndex
+                                                                    ? 'w-6 bg-[#39d353]'
+                                                                    : 'w-2 bg-white/40 hover:bg-white/70'
+                                                            }`}
+                                                        />
+                                                    ),
+                                                )}
+                                            </div>
+
+                                            <button
+                                                type="button"
+                                                onClick={goToNextHeroSlide}
+                                                aria-label="Slide selanjutnya"
+                                                className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                                            >
+                                                <ChevronRight className="size-4" />
+                                            </button>
+
+                                            <span
+                                                aria-hidden="true"
+                                                className="h-4 w-px bg-white/20"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() =>
+                                                    setIsHeroAutoplayPaused(
+                                                        (isPaused) => !isPaused,
+                                                    )
+                                                }
+                                                aria-pressed={
+                                                    isHeroAutoplayPaused
+                                                }
+                                                aria-label={
+                                                    isHeroAutoplayPaused
+                                                        ? 'Lanjutkan perpindahan slide otomatis'
+                                                        : 'Jeda perpindahan slide otomatis'
+                                                }
+                                                className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
+                                            >
+                                                {isHeroAutoplayPaused ? (
+                                                    <Play className="size-3.5" />
+                                                ) : (
+                                                    <Pause className="size-3.5" />
+                                                )}
+                                            </button>
                                         </div>
-
-                                        <button
-                                            type="button"
-                                            onClick={goToNextHeroSlide}
-                                            aria-label="Gambar selanjutnya"
-                                            className="rounded-full p-1 text-white/80 transition-colors hover:bg-white/20 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
-                                        >
-                                            <ChevronRight className="size-4" />
-                                        </button>
                                     </div>
-                                </div>
+                                )}
 
                                 <p className="mb-6 text-center font-mono text-[0.6875rem] font-semibold tracking-widest text-emerald-400 uppercase">
                                     Layanan Digital & Informasi Terpadu Desa

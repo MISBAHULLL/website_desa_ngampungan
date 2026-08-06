@@ -28,7 +28,7 @@ class HeroSlideSeeder extends Seeder
             'primary_cta_text' => 'Ajukan Surat',
             'primary_cta_url' => '/layanan',
             'secondary_cta_text' => 'Lacak Status',
-            'secondary_cta_url' => '/layanan/lacak',
+            'secondary_cta_url' => '/lacak-pengajuan',
             'order' => 2,
             'is_active' => true,
         ]);
