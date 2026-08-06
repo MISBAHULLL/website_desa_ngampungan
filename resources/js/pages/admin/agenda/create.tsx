@@ -69,8 +69,8 @@ export default function AdminAgendaCreate({
 
     function removeDetailField(index: number) {
         if (data.details.length === 1) {
-return;
-}
+            return;
+        }
 
         const updated = data.details.filter((_, i) => i !== index);
         setData('details', updated);

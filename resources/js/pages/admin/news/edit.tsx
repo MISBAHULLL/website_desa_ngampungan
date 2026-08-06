@@ -406,15 +406,69 @@ export default function AdminNewsEdit({
                                         >
                                             Tanggal & Waktu Terbit
                                         </label>
+                                        <div className="mt-1.5 flex gap-2">
+                                            <input
+                                                id="published_at_date"
+                                                type="date"
+                                                value={
+                                                    publishedAt
+                                                        ? publishedAt.split(
+                                                              'T',
+                                                          )[0]
+                                                        : ''
+                                                }
+                                                onChange={(e) => {
+                                                    const date = e.target.value;
+                                                    const time =
+                                                        publishedAt &&
+                                                        publishedAt.includes(
+                                                            'T',
+                                                        )
+                                                            ? publishedAt.split(
+                                                                  'T',
+                                                              )[1]
+                                                            : '00:00';
+                                                    setPublishedAt(
+                                                        date
+                                                            ? `${date}T${time}`
+                                                            : '',
+                                                    );
+                                                }}
+                                                className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
+                                            />
+                                            <input
+                                                id="published_at_time"
+                                                type="time"
+                                                value={
+                                                    publishedAt &&
+                                                    publishedAt.includes('T')
+                                                        ? publishedAt.split(
+                                                              'T',
+                                                          )[1]
+                                                        : ''
+                                                }
+                                                onChange={(e) => {
+                                                    const time =
+                                                        e.target.value ||
+                                                        '00:00';
+                                                    const date = publishedAt
+                                                        ? publishedAt.split(
+                                                              'T',
+                                                          )[0]
+                                                        : new Date()
+                                                              .toISOString()
+                                                              .slice(0, 10);
+                                                    setPublishedAt(
+                                                        `${date}T${time}`,
+                                                    );
+                                                }}
+                                                className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
+                                            />
+                                        </div>
                                         <input
-                                            id="published_at"
+                                            type="hidden"
                                             name="published_at"
-                                            type="datetime-local"
                                             value={publishedAt}
-                                            onChange={(e) =>
-                                                setPublishedAt(e.target.value)
-                                            }
-                                            className="mt-1.5 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
                                     </div>
                                 </div>

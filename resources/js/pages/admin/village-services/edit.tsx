@@ -381,10 +381,7 @@ export default function VillageServiceEdit({
                                     type="text"
                                     value={data.service_hours}
                                     onChange={(e) =>
-                                        setData(
-                                            'service_hours',
-                                            e.target.value,
-                                        )
+                                        setData('service_hours', e.target.value)
                                     }
                                     className="min-h-11 w-full rounded-lg border border-input bg-transparent px-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-3 focus:ring-emerald-600/15"
                                 />
@@ -631,9 +628,7 @@ export default function VillageServiceEdit({
                             className="inline-flex min-h-11 items-center gap-2 rounded-xl bg-emerald-700 px-6 py-2.5 text-sm font-bold text-white shadow-xs transition hover:bg-emerald-800 disabled:opacity-60 dark:bg-emerald-600 dark:hover:bg-emerald-500"
                         >
                             <Save className="size-4" />
-                            {processing
-                                ? 'Menyimpan...'
-                                : 'Perbarui Layanan'}
+                            {processing ? 'Menyimpan...' : 'Perbarui Layanan'}
                         </button>
                     </div>
                 </form>

@@ -146,8 +146,9 @@ export default function VillageServiceIndex({
                             Kelola Layanan Desa
                         </h1>
                         <p className="mt-2 max-w-2xl text-sm leading-6 text-muted-foreground">
-                            Tambah, edit, hapus jenis layanan beserta persyaratan
-                            dan berkas pendukung yang harus dipenuhi warga.
+                            Tambah, edit, hapus jenis layanan beserta
+                            persyaratan dan berkas pendukung yang harus dipenuhi
+                            warga.
                         </p>
                     </div>
 
@@ -258,9 +259,7 @@ export default function VillageServiceIndex({
                             <button
                                 key={cat.key}
                                 type="button"
-                                onClick={() =>
-                                    handleCategoryChange(cat.key)
-                                }
+                                onClick={() => handleCategoryChange(cat.key)}
                                 className={
                                     filters.category === cat.key
                                         ? 'rounded-lg bg-foreground px-3 py-1.5 text-xs font-bold text-background'
@@ -280,28 +279,16 @@ export default function VillageServiceIndex({
                             <table className="w-full text-left text-sm">
                                 <thead className="border-b border-sidebar-border/70 bg-muted/40 text-xs font-bold tracking-wider text-muted-foreground uppercase">
                                     <tr>
-                                        <th
-                                            scope="col"
-                                            className="px-5 py-3.5"
-                                        >
+                                        <th scope="col" className="px-5 py-3.5">
                                             Layanan
                                         </th>
-                                        <th
-                                            scope="col"
-                                            className="px-4 py-3.5"
-                                        >
+                                        <th scope="col" className="px-4 py-3.5">
                                             Kategori
                                         </th>
-                                        <th
-                                            scope="col"
-                                            className="px-4 py-3.5"
-                                        >
+                                        <th scope="col" className="px-4 py-3.5">
                                             Persyaratan
                                         </th>
-                                        <th
-                                            scope="col"
-                                            className="px-4 py-3.5"
-                                        >
+                                        <th scope="col" className="px-4 py-3.5">
                                             Status
                                         </th>
                                         <th

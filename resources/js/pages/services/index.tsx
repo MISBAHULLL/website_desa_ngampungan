@@ -16,10 +16,7 @@ import { home } from '@/routes';
 import { index as servicesIndex, show as serviceShow } from '@/routes/services';
 
 export type VillageServiceCategoryKey =
-    | 'administration'
-    | 'population'
-    | 'agriculture'
-    | 'reports';
+    'administration' | 'population' | 'agriculture' | 'reports';
 
 export type VillageServiceFilter = VillageServiceCategoryKey | 'all';
 

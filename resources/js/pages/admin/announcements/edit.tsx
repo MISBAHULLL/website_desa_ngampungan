@@ -432,16 +432,59 @@ export default function AdminAnnouncementEdit({
                                                 *
                                             </span>
                                         </label>
-                                        <input
-                                            id="starts_at"
-                                            type="datetime-local"
-                                            value={startsAt}
-                                            onChange={(e) =>
-                                                setStartsAt(e.target.value)
-                                            }
-                                            className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
-                                            required
-                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                id="starts_at_date"
+                                                type="date"
+                                                value={
+                                                    startsAt
+                                                        ? startsAt.split('T')[0]
+                                                        : ''
+                                                }
+                                                onChange={(e) => {
+                                                    const date = e.target.value;
+                                                    const time =
+                                                        startsAt &&
+                                                        startsAt.includes('T')
+                                                            ? startsAt.split(
+                                                                  'T',
+                                                              )[1]
+                                                            : '00:00';
+                                                    setStartsAt(
+                                                        date
+                                                            ? `${date}T${time}`
+                                                            : '',
+                                                    );
+                                                }}
+                                                className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
+                                                required
+                                            />
+                                            <input
+                                                id="starts_at_time"
+                                                type="time"
+                                                value={
+                                                    startsAt &&
+                                                    startsAt.includes('T')
+                                                        ? startsAt.split('T')[1]
+                                                        : ''
+                                                }
+                                                onChange={(e) => {
+                                                    const time =
+                                                        e.target.value ||
+                                                        '00:00';
+                                                    const date = startsAt
+                                                        ? startsAt.split('T')[0]
+                                                        : new Date()
+                                                              .toISOString()
+                                                              .slice(0, 10);
+                                                    setStartsAt(
+                                                        `${date}T${time}`,
+                                                    );
+                                                }}
+                                                className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
+                                                required
+                                            />
+                                        </div>
                                         <InputError
                                             message={errors.starts_at}
                                         />
@@ -454,15 +497,55 @@ export default function AdminAnnouncementEdit({
                                         >
                                             Tanggal & Waktu Selesai (Opsional)
                                         </label>
-                                        <input
-                                            id="ends_at"
-                                            type="datetime-local"
-                                            value={endsAt}
-                                            onChange={(e) =>
-                                                setEndsAt(e.target.value)
-                                            }
-                                            className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
-                                        />
+                                        <div className="flex gap-2">
+                                            <input
+                                                id="ends_at_date"
+                                                type="date"
+                                                value={
+                                                    endsAt
+                                                        ? endsAt.split('T')[0]
+                                                        : ''
+                                                }
+                                                onChange={(e) => {
+                                                    const date = e.target.value;
+                                                    const time =
+                                                        endsAt &&
+                                                        endsAt.includes('T')
+                                                            ? endsAt.split(
+                                                                  'T',
+                                                              )[1]
+                                                            : '23:59';
+                                                    setEndsAt(
+                                                        date
+                                                            ? `${date}T${time}`
+                                                            : '',
+                                                    );
+                                                }}
+                                                className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
+                                            />
+                                            <input
+                                                id="ends_at_time"
+                                                type="time"
+                                                value={
+                                                    endsAt &&
+                                                    endsAt.includes('T')
+                                                        ? endsAt.split('T')[1]
+                                                        : ''
+                                                }
+                                                onChange={(e) => {
+                                                    const time = e.target.value;
+                                                    const date = endsAt
+                                                        ? endsAt.split('T')[0]
+                                                        : '';
+                                                    if (date) {
+                                                        setEndsAt(
+                                                            `${date}T${time || '23:59'}`,
+                                                        );
+                                                    }
+                                                }}
+                                                className="w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-medium outline-none focus:border-emerald-600"
+                                            />
+                                        </div>
                                         <InputError message={errors.ends_at} />
                                     </div>
                                 </div>

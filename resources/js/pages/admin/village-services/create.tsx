@@ -350,10 +350,7 @@ export default function VillageServiceCreate({
                                     type="text"
                                     value={data.service_hours}
                                     onChange={(e) =>
-                                        setData(
-                                            'service_hours',
-                                            e.target.value,
-                                        )
+                                        setData('service_hours', e.target.value)
                                     }
                                     className="min-h-11 w-full rounded-lg border border-input bg-transparent px-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-3 focus:ring-emerald-600/15"
                                 />

@@ -283,21 +283,19 @@ export default function ServiceShow({
                             </div>
 
                             <ol className="grid gap-3.5 sm:grid-cols-2">
-                                {requirements.map(
-                                    (requirement, index) => (
-                                        <li
-                                            key={requirement}
-                                            className="flex items-start gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 transition-all hover:border-emerald-200 hover:bg-emerald-50/30"
-                                        >
-                                            <span className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-xs font-black text-white shadow-xs">
-                                                {index + 1}
-                                            </span>
-                                            <span className="pt-0.5 text-xs leading-relaxed font-semibold text-slate-700">
-                                                {requirement}
-                                            </span>
-                                        </li>
-                                    ),
-                                )}
+                                {requirements.map((requirement, index) => (
+                                    <li
+                                        key={requirement}
+                                        className="flex items-start gap-3.5 rounded-2xl border border-slate-100 bg-slate-50/80 p-4 transition-all hover:border-emerald-200 hover:bg-emerald-50/30"
+                                    >
+                                        <span className="flex size-7 shrink-0 items-center justify-center rounded-xl bg-emerald-700 text-xs font-black text-white shadow-xs">
+                                            {index + 1}
+                                        </span>
+                                        <span className="pt-0.5 text-xs leading-relaxed font-semibold text-slate-700">
+                                            {requirement}
+                                        </span>
+                                    </li>
+                                ))}
                             </ol>
                         </div>
 
