@@ -12,6 +12,7 @@ class VillageLeaderSeeder extends Seeder
         VillageLeader::create([
             'name' => 'Budi Santoso, S.Sos',
             'position' => 'Kepala Desa Ngampungan',
+            'welcome_title' => 'Melayani dengan Transparan dan Dekat dengan Warga',
             'welcome_message' => 'Assalamu\'alaikum warahmatullahi wabarakatuh. Salam sejahtera untuk kita semua.
 
 Puji syukur kita panjatkan kepada Allah SWT atas segala limpahan rahmat dan karunia-Nya. Website resmi Desa Ngampungan hadir sebagai wujud komitmen kami dalam memberikan pelayanan terbaik kepada seluruh warga.

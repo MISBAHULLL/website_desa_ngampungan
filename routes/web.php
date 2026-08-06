@@ -24,12 +24,17 @@ use App\Http\Controllers\Public\VillageProfileController;
 use App\Models\Announcement;
 use App\Models\HeroSlide;
 use App\Models\News;
+use App\Models\VillageLeader;
 use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     $villageProfile = VillageProfile::query()->first();
+    $villageLeader = VillageLeader::query()
+        ->active()
+        ->latest('started_at')
+        ->first();
     $heroSlides = HeroSlide::active()->get()->map(fn (HeroSlide $slide): array => [
         'id' => $slide->id,
         'title' => $slide->title,
@@ -84,6 +89,7 @@ Route::get('/', function () {
         'dbArticles' => $dbArticles,
         'dbAnnouncements' => $dbAnnouncements,
         'heroSlides' => $heroSlides,
+        'villageLeader' => $villageLeader?->toPublicData(),
         'villageProfile' => $villageProfile ? [
             'totalPopulation' => $villageProfile->total_population,
             'totalFamilies' => $villageProfile->total_families,
@@ -215,6 +221,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('dashboard/kepala-desa', VillageLeaderController::class)
         ->parameters(['kepala-desa' => 'villageLeader'])
         ->names('admin.village-leaders');
+    Route::patch(
+        'dashboard/kepala-desa/{villageLeader}/sambutan',
+        [VillageLeaderController::class, 'updateWelcome'],
+    )->name('admin.village-leaders.update-welcome');
 
     Route::resource('dashboard/hero-slides', HeroSlideController::class)
         ->parameters(['hero-slides' => 'heroSlide'])

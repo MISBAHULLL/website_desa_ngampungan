@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVillageLeaderRequest;
 use App\Http\Requests\UpdateVillageLeaderRequest;
+use App\Http\Requests\UpdateVillageLeaderWelcomeRequest;
 use App\Models\VillageLeader;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +16,11 @@ class VillageLeaderController extends Controller
 {
     public function index(): Response
     {
+        $activeLeader = VillageLeader::query()
+            ->active()
+            ->latest('started_at')
+            ->first();
+
         $leaders = VillageLeader::query()
             ->select([
                 'id',
@@ -32,7 +38,7 @@ class VillageLeaderController extends Controller
                 'id' => $leader->id,
                 'name' => $leader->name,
                 'position' => $leader->position,
-                'photo' => $leader->photo ? Storage::url($leader->photo) : null,
+                'photo' => $leader->photo ? Storage::disk('public')->url($leader->photo) : null,
                 'startedAt' => $leader->started_at->format('d M Y'),
                 'endedAt' => $leader->ended_at?->format('d M Y'),
                 'isActive' => $leader->is_active,
@@ -41,6 +47,7 @@ class VillageLeaderController extends Controller
 
         return Inertia::render('admin/village-leaders/index', [
             'leaders' => $leaders,
+            'activeLeader' => $activeLeader ? $this->activeLeaderData($activeLeader) : null,
         ]);
     }
 
@@ -54,6 +61,7 @@ class VillageLeaderController extends Controller
         $data = $request->safe()->only([
             'name',
             'position',
+            'welcome_title',
             'welcome_message',
             'vision',
             'mission',
@@ -88,7 +96,8 @@ class VillageLeaderController extends Controller
                 'id' => $villageLeader->id,
                 'name' => $villageLeader->name,
                 'position' => $villageLeader->position,
-                'photo' => $villageLeader->photo ? Storage::url($villageLeader->photo) : null,
+                'photo' => $villageLeader->photo ? Storage::disk('public')->url($villageLeader->photo) : null,
+                'welcomeTitle' => $villageLeader->welcome_title,
                 'welcomeMessage' => $villageLeader->welcome_message,
                 'vision' => $villageLeader->vision,
                 'mission' => $villageLeader->mission,
@@ -108,7 +117,8 @@ class VillageLeaderController extends Controller
                 'id' => $villageLeader->id,
                 'name' => $villageLeader->name,
                 'position' => $villageLeader->position,
-                'photo' => $villageLeader->photo ? Storage::url($villageLeader->photo) : null,
+                'photo' => $villageLeader->photo ? Storage::disk('public')->url($villageLeader->photo) : null,
+                'welcomeTitle' => $villageLeader->welcome_title,
                 'welcomeMessage' => $villageLeader->welcome_message,
                 'vision' => $villageLeader->vision,
                 'mission' => $villageLeader->mission,
@@ -124,21 +134,17 @@ class VillageLeaderController extends Controller
         $data = $request->safe()->only([
             'name',
             'position',
-            'welcome_message',
-            'vision',
-            'mission',
             'started_at',
             'ended_at',
             'is_active',
         ]);
 
-        if ($request->hasFile('photo')) {
-            // Delete old photo if exists
-            if ($villageLeader->photo) {
-                Storage::disk('public')->delete($villageLeader->photo);
-            }
+        $previousPhoto = $villageLeader->photo;
 
+        if ($request->hasFile('photo')) {
             $data['photo'] = $request->file('photo')->store('village-leaders', 'public');
+        } elseif ($request->boolean('remove_photo')) {
+            $data['photo'] = null;
         }
 
         // If this leader is active, set others to inactive
@@ -150,9 +156,27 @@ class VillageLeaderController extends Controller
 
         $villageLeader->update($data);
 
+        if ($previousPhoto && array_key_exists('photo', $data) && $previousPhoto !== $data['photo']) {
+            Storage::disk('public')->delete($previousPhoto);
+        }
+
         Inertia::flash('toast', [
             'type' => 'success',
-            'message' => 'Data kepala desa berhasil diperbarui.',
+            'message' => 'Profil kepala desa berhasil diperbarui.',
+        ]);
+
+        return redirect()->route('admin.village-leaders.index');
+    }
+
+    public function updateWelcome(
+        UpdateVillageLeaderWelcomeRequest $request,
+        VillageLeader $villageLeader,
+    ): RedirectResponse {
+        $villageLeader->update($request->validated());
+
+        Inertia::flash('toast', [
+            'type' => 'success',
+            'message' => 'Sambutan kepala desa berhasil diperbarui.',
         ]);
 
         return redirect()->route('admin.village-leaders.index');
@@ -173,5 +197,25 @@ class VillageLeaderController extends Controller
         ]);
 
         return back();
+    }
+
+    /**
+     * @return array<string, bool|int|string|null>
+     */
+    private function activeLeaderData(VillageLeader $leader): array
+    {
+        return [
+            'id' => $leader->id,
+            'name' => $leader->name,
+            'position' => $leader->position,
+            'photo' => $leader->photo ? Storage::disk('public')->url($leader->photo) : null,
+            'welcomeTitle' => $leader->welcome_title,
+            'welcomeMessage' => $leader->welcome_message,
+            'vision' => $leader->vision,
+            'mission' => $leader->mission,
+            'startedAt' => $leader->started_at->format('Y-m-d'),
+            'endedAt' => $leader->ended_at?->format('Y-m-d'),
+            'isActive' => $leader->is_active,
+        ];
     }
 }

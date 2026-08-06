@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\VillageInstitution;
+use App\Models\VillageLeader;
 use App\Models\VillageOfficial;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,6 +33,10 @@ class VillageGovernmentController extends Controller
         $institutions = VillageInstitution::active()
             ->ordered()
             ->get();
+        $villageLeader = VillageLeader::query()
+            ->active()
+            ->latest('started_at')
+            ->first();
 
         return Inertia::render('government/index', [
             'canonicalUrl' => route('government.index'),
@@ -44,6 +49,7 @@ class VillageGovernmentController extends Controller
                 'orgTree' => $orgTree,
             ],
             'institutions' => $institutions,
+            'villageLeader' => $villageLeader?->toPublicData(),
         ]);
     }
 

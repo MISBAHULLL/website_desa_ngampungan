@@ -44,6 +44,18 @@ type InstitutionProp = {
     sort_order: number;
 };
 
+type VillageLeaderContent = {
+    id: number;
+    name: string;
+    position: string;
+    photo: string | null;
+    welcomeTitle: string | null;
+    welcomeMessage: string;
+    vision: string | null;
+    mission: string | null;
+    period: string;
+};
+
 type VillageGovernmentPageProps = {
     canonicalUrl: string;
     officials: {
@@ -55,6 +67,7 @@ type VillageGovernmentPageProps = {
         orgTree: OrganizationTreeNode[];
     };
     institutions: InstitutionProp[];
+    villageLeader: VillageLeaderContent | null;
 };
 
 type OfficialFilter = 'all' | 'secretariat' | 'technical' | 'territorial';
@@ -110,6 +123,7 @@ export default function VillageGovernmentIndex({
     canonicalUrl,
     officials,
     institutions,
+    villageLeader,
 }: VillageGovernmentPageProps) {
     const [activeOfficialFilter, setActiveOfficialFilter] =
         useState<OfficialFilter>('all');
@@ -121,6 +135,10 @@ export default function VillageGovernmentIndex({
     const villageHead =
         officials.leadership[0] ||
         officials.all.find((o) => o.group === 'leadership');
+    const leaderName = villageLeader?.name ?? villageHead?.name;
+    const leaderPosition = villageLeader?.position ?? villageHead?.position;
+    const leaderPhoto = villageLeader?.photo ?? villageHead?.photo_url;
+    const leaderPeriod = villageLeader?.period ?? villageHead?.term;
     const villageApparatus = officials.all.filter(
         (o) => o.group !== 'leadership',
     );
@@ -233,7 +251,7 @@ export default function VillageGovernmentIndex({
             <main className="bg-slate-50/60 pb-20">
                 <div className="mx-auto max-w-[1280px] space-y-16 px-5 pt-12 lg:px-12">
                     {/* SECTION 1: PROFIL & CARD KEPALA DESA */}
-                    {villageHead && (
+                    {(villageLeader || villageHead) && (
                         <section id="kepala-desa" className="scroll-mt-24">
                             <FadeIn
                                 direction="up"
@@ -260,10 +278,13 @@ export default function VillageGovernmentIndex({
                                     <div className="group relative flex h-[480px] w-full max-w-[380px] shrink-0 flex-col justify-end overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl sm:h-[500px]">
                                         <img
                                             src={
-                                                villageHead.photo_url ||
+                                                leaderPhoto ||
                                                 '/assets/simulasi_profl.png'
                                             }
-                                            alt={villageHead.name}
+                                            alt={
+                                                leaderName ??
+                                                'Kepala Desa Ngampungan'
+                                            }
                                             className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                             onError={(e) => {
                                                 (
@@ -278,37 +299,39 @@ export default function VillageGovernmentIndex({
                                         <div className="relative z-10 flex flex-col justify-end space-y-3 p-6 text-white sm:p-7">
                                             <div className="space-y-1 text-left">
                                                 <h3 className="text-2xl leading-snug font-black tracking-tight text-white drop-shadow-sm sm:text-3xl">
-                                                    {villageHead.name}
+                                                    {leaderName}
                                                 </h3>
 
                                                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-200">
                                                     <MapPin className="size-4 shrink-0 text-emerald-400" />
                                                     <span>
-                                                        {villageHead.position}
+                                                        {leaderPosition}
                                                     </span>
                                                 </div>
 
                                                 <p className="pl-6 text-xs font-medium text-slate-300">
                                                     Masa Jabatan{' '}
-                                                    {villageHead.term ||
+                                                    {leaderPeriod ||
                                                         '2022–2028'}
                                                 </p>
                                             </div>
 
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    setSelectedOfficial(
-                                                        villageHead as any,
-                                                    )
-                                                }
-                                                className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-emerald-800"
-                                            >
-                                                <span>
-                                                    Detail Profil Lengkap
-                                                </span>
-                                                <ArrowRight className="size-3.5" />
-                                            </button>
+                                            {villageHead && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() =>
+                                                        setSelectedOfficial(
+                                                            villageHead as VillageOfficialData,
+                                                        )
+                                                    }
+                                                    className="mt-2 inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-emerald-800"
+                                                >
+                                                    <span>
+                                                        Detail Profil Lengkap
+                                                    </span>
+                                                    <ArrowRight className="size-3.5" />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </FadeIn>
@@ -326,21 +349,23 @@ export default function VillageGovernmentIndex({
                                             </span>
                                             <div>
                                                 <h4 className="text-base font-bold text-gray-900">
-                                                    Visi & Komitmen Pelayanan
+                                                    {villageLeader?.welcomeTitle ??
+                                                        'Visi & Komitmen Pelayanan'}
                                                 </h4>
                                                 <p className="text-xs text-gray-500">
-                                                    Mewujudkan Desa Ngampungan
-                                                    yang Sejahtera & Mandiri
+                                                    {villageLeader?.vision ??
+                                                        'Mewujudkan Desa Ngampungan yang Sejahtera & Mandiri'}
                                                 </p>
                                             </div>
                                         </div>
 
                                         <p className="text-xs leading-relaxed text-gray-600 sm:text-sm">
-                                            {villageHead.about ||
+                                            {villageLeader?.welcomeMessage ||
+                                                villageHead?.about ||
                                                 'Pemerintah Desa Ngampungan berkomitmen tinggi untuk menghadirkan tata kelola pemerintahan yang terbuka, akuntabel, dan berorientasi penuh pada pelayanan masyarakat.'}
                                         </p>
 
-                                        {villageHead.responsibilities &&
+                                        {villageHead?.responsibilities &&
                                             villageHead.responsibilities
                                                 .length > 0 && (
                                                 <div className="space-y-2.5 border-t border-gray-100 pt-2">
@@ -375,7 +400,7 @@ export default function VillageGovernmentIndex({
                                                 </div>
                                             )}
 
-                                        {villageHead.service_focus &&
+                                        {villageHead?.service_focus &&
                                             villageHead.service_focus.length >
                                                 0 && (
                                                 <div className="border-t border-gray-100 pt-2">

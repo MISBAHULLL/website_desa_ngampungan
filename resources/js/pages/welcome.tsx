@@ -109,6 +109,18 @@ type HeroSlideData = {
     backgroundImage?: string | null;
 };
 
+type VillageLeaderContent = {
+    id: number;
+    name: string;
+    position: string;
+    photo: string | null;
+    welcomeTitle: string | null;
+    welcomeMessage: string;
+    vision: string | null;
+    mission: string | null;
+    period: string;
+};
+
 const navigationItems: NavigationItem[] = [
     { type: 'link', label: 'Beranda', href: '#beranda' },
     {
@@ -1049,11 +1061,13 @@ export default function Welcome({
     dbArticles,
     dbAnnouncements,
     heroSlides,
+    villageLeader,
     villageProfile,
 }: {
     dbArticles?: NewsArticle[];
     dbAnnouncements?: Announcement[];
     heroSlides?: HeroSlideData[];
+    villageLeader?: VillageLeaderContent | null;
     villageProfile?: VillageProfileSummary | null;
 }) {
     const { auth } = usePage().props;
@@ -1242,6 +1256,17 @@ export default function Welcome({
     }, [isMobileMenuOpen]);
 
     const hasSolidNavbar = isScrolled || isMobileMenuOpen;
+    const leaderName = villageLeader?.name ?? 'Bapak. Rohan';
+    const leaderPosition = villageLeader?.position ?? 'Kepala Desa Ngampungan';
+    const leaderWelcomeTitle =
+        villageLeader?.welcomeTitle ??
+        'Melayani dengan Transparan dan Dekat dengan Warga';
+    const leaderWelcomeParagraphs = (
+        villageLeader?.welcomeMessage ??
+        'Salam hangat bagi seluruh warga Desa Ngampungan. Kehadiran platform digital ini merupakan komitmen kami untuk menghadirkan tata kelola pemerintahan desa yang modern, terbuka, dan inklusif.\n\nKami percaya bahwa dengan teknologi, jarak antara pemerintah desa dan warga akan semakin dekat. Visi kami adalah membangun Ngampungan menjadi desa yang mandiri secara ekonomi, namun tetap menjunjung tinggi nilai-nilai kearifan lokal dan gotong royong.'
+    )
+        .split(/\n\s*\n/)
+        .filter(Boolean);
 
     return (
         <>
@@ -1706,8 +1731,11 @@ export default function Welcome({
                                 <div className="group relative h-[550px] w-full max-w-[390px] overflow-hidden rounded-[36px] border border-slate-800 bg-slate-900 shadow-2xl sm:h-[560px] sm:max-w-[420px]">
                                     {/* Background Image */}
                                     <img
-                                        src="/assets/simulasi_profl.png"
-                                        alt="Bapak. Rohan - Kepala Desa Ngampungan"
+                                        src={
+                                            villageLeader?.photo ??
+                                            '/assets/simulasi_profl.png'
+                                        }
+                                        alt={`${leaderName} - ${leaderPosition}`}
                                         className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                         onError={(e) => {
                                             (
@@ -1725,18 +1753,18 @@ export default function Welcome({
                                         {/* Main Info */}
                                         <div className="space-y-1 text-left">
                                             <h3 className="text-2xl leading-snug font-extrabold tracking-tight text-white drop-shadow-sm sm:text-3xl">
-                                                Bapak. Rohan
+                                                {leaderName}
                                             </h3>
 
                                             <div className="flex items-center gap-2 text-xs font-medium text-slate-200 sm:text-sm">
                                                 <MapPin className="size-4 shrink-0 text-emerald-400" />
-                                                <span>
-                                                    Kepala Desa Ngampungan
-                                                </span>
+                                                <span>{leaderPosition}</span>
                                             </div>
 
                                             <p className="pl-6 text-xs font-medium text-slate-300">
-                                                Periode 2020 – 2026
+                                                Periode{' '}
+                                                {villageLeader?.period ??
+                                                    '2020–2026'}
                                             </p>
                                         </div>
                                     </div>
@@ -1757,36 +1785,24 @@ export default function Welcome({
                                         id="sambutan-kepala-desa-heading"
                                         className="max-w-3xl text-3xl leading-tight font-bold tracking-tight text-village-ink sm:text-4xl lg:text-5xl"
                                     >
-                                        Melayani dengan Transparan dan Dekat
-                                        dengan Warga
+                                        {leaderWelcomeTitle}
                                     </h2>
                                 </blockquote>
 
                                 <div className="mt-7 max-w-3xl space-y-5 text-base leading-8 text-village-muted">
-                                    <p>
-                                        Salam hangat bagi seluruh warga Desa
-                                        Ngampungan. Kehadiran platform digital
-                                        ini merupakan komitmen kami untuk
-                                        menghadirkan tata kelola pemerintahan
-                                        desa yang modern, terbuka, dan inklusif.
-                                    </p>
-                                    <p>
-                                        Kami percaya bahwa dengan teknologi,
-                                        jarak antara pemerintah desa dan warga
-                                        akan semakin dekat. Visi kami adalah
-                                        membangun Ngampungan menjadi desa yang
-                                        mandiri secara ekonomi, namun tetap
-                                        menjunjung tinggi nilai-nilai kearifan
-                                        lokal dan gotong royong.
-                                    </p>
+                                    {leaderWelcomeParagraphs.map(
+                                        (paragraph) => (
+                                            <p key={paragraph}>{paragraph}</p>
+                                        ),
+                                    )}
                                 </div>
 
                                 <div className="mt-8 border-t border-village-border pt-6">
                                     <p className="text-base font-bold text-village-ink">
-                                        Bapak. Rohan
+                                        {leaderName}
                                     </p>
                                     <p className="mt-1 text-sm font-medium text-village-primary">
-                                        Kepala Desa Ngampungan
+                                        {leaderPosition}
                                     </p>
                                 </div>
                             </FadeIn>
