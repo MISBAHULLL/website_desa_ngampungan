@@ -18,10 +18,13 @@ class GalleryController extends Controller
                 'caption' => $photo->caption,
                 'category' => $photo->category,
                 'album' => $photo->album,
+                'mediaType' => $photo->media_type ?? 'photo',
                 'capturedAt' => $photo->captured_at ? $photo->captured_at->format('Y-m-d') : null,
                 'capturedLabel' => $photo->captured_at ? $photo->captured_at->translatedFormat('j F Y') : 'Terbaru',
                 'image' => $photo->image_path,
                 'alt' => $photo->image_alt ?: $photo->title,
+                'video' => $photo->video_path,
+                'videoUrl' => $photo->video_url,
                 'featured' => (bool) $photo->is_featured,
             ];
         });

@@ -20,6 +20,8 @@ class News extends Model
         'author',
         'image_path',
         'image_alt',
+        'video_path',
+        'video_url',
         'is_featured',
         'published_at',
     ];

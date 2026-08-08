@@ -621,14 +621,14 @@ function UtilityBar({ isAuthenticated }: { isAuthenticated: boolean }) {
                 </div>
 
                 <a
-                    href="tel:+6281234567890"
+                    href="tel:+6281556523279"
                     className="col-start-2 row-start-1 flex items-center gap-1.5 justify-self-end whitespace-nowrap transition-colors hover:text-white focus-visible:rounded-sm focus-visible:ring-2 focus-visible:ring-village-accent focus-visible:outline-none lg:col-auto lg:row-auto lg:ml-auto"
                 >
                     <PhoneCall
                         aria-hidden="true"
                         className="size-3.5 shrink-0 text-village-accent"
                     />
-                    <span>0821-3172-3433</span>
+                    <span>0815-5652-3279</span>
                 </a>
 
                 <Link
@@ -2356,15 +2356,14 @@ export default function Welcome({
 
                                 <div className="grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-1">
                                     <a
-                                        href="tel:+6292131723433"
+                                        href="tel:+6281556523279"
                                         className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
                                     >
                                         <PhoneCall
                                             aria-hidden="true"
                                             className="size-5 text-village-primary"
                                         />
-                                        0821-3172-3433
-                                    </a>
+                                        0815-5652-3279                                    </a>
                                     <a
                                         href="mailto:desangampungan@gmail.com"
                                         className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
@@ -2531,7 +2530,7 @@ export default function Welcome({
                                                                     : undefined
                                                             }
                                                             className="mt-2 w-full border border-village-border bg-white px-3.5 py-3 transition outline-none focus:border-village-primary focus:ring-2 focus:ring-village-primary/20"
-                                                            placeholder="082131723433 / desangampungan@gmail.com"
+                                                            placeholder="081556523279 / desangampungan@gmail.com"
                                                         />
                                                         <InputError
                                                             message={

@@ -76,8 +76,9 @@ class NewsController extends Controller
     {
         $validated = $request->validated();
         $imagePath = $this->resolveImagePath($request, $validated['image_url'] ?? null);
+        $videoPath = $this->resolveVideoPath($request, $validated['video_url'] ?? null);
 
-        DB::transaction(function () use ($validated, $imagePath): void {
+        DB::transaction(function () use ($validated, $imagePath, $videoPath): void {
             if (! empty($validated['is_featured'])) {
                 News::query()->where('is_featured', true)->update(['is_featured' => false]);
             }
@@ -91,6 +92,8 @@ class NewsController extends Controller
                 'author' => $validated['author'] ?: 'Admin Desa',
                 'image_path' => $imagePath,
                 'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+                'video_path' => $videoPath,
+                'video_url' => $validated['video_url'] ?? null,
                 'is_featured' => $validated['is_featured'] ?? false,
                 'published_at' => $validated['published_at'] ?? now(),
             ]);
@@ -112,13 +115,19 @@ class NewsController extends Controller
     {
         $validated = $request->validated();
         $previousImagePath = $news->image_path;
+        $previousVideoPath = $news->video_path;
         $imagePath = $this->resolveImagePath(
             $request,
             $validated['image_url'] ?? null,
             $previousImagePath,
         );
+        $videoPath = $this->resolveVideoPath(
+            $request,
+            $validated['video_url'] ?? null,
+            $previousVideoPath,
+        );
 
-        DB::transaction(function () use ($validated, $imagePath, $news): void {
+        DB::transaction(function () use ($validated, $imagePath, $videoPath, $news): void {
             if (! empty($validated['is_featured']) && ! $news->is_featured) {
                 News::query()->where('is_featured', true)->update(['is_featured' => false]);
             }
@@ -136,6 +145,8 @@ class NewsController extends Controller
                 'author' => $validated['author'] ?: 'Admin Desa',
                 'image_path' => $imagePath,
                 'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+                'video_path' => $videoPath,
+                'video_url' => $validated['video_url'] ?? null,
                 'is_featured' => $validated['is_featured'] ?? false,
                 'published_at' => $validated['published_at'] ?? $news->published_at,
             ]);
@@ -143,6 +154,10 @@ class NewsController extends Controller
 
         if ($previousImagePath !== $imagePath) {
             $this->imageStorage->delete($previousImagePath);
+        }
+
+        if ($previousVideoPath !== $videoPath && $previousVideoPath && str_starts_with($previousVideoPath, '/storage/')) {
+            $this->imageStorage->delete($previousVideoPath);
         }
 
         return redirect()->route('admin.news.index')
@@ -210,5 +225,19 @@ class NewsController extends Controller
         }
 
         return $imageUrl ?: $fallback;
+    }
+
+    private function resolveVideoPath(
+        StoreNewsRequest $request,
+        ?string $videoUrl,
+        ?string $fallback = null,
+    ): ?string {
+        $video = $request->file('video');
+
+        if ($video instanceof UploadedFile) {
+            return $this->imageStorage->store($video, 'news/videos');
+        }
+
+        return $videoUrl ?: $fallback;
     }
 }

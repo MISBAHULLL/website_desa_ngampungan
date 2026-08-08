@@ -47,7 +47,7 @@ export default function AdminAgendaCreate({
             time_label: '08:00 WIB - Selesai',
             location: 'Balai Desa Ngampungan',
             organizer: 'Pemerintah Desa Ngampungan',
-            contact: '0812-3456-7890',
+            contact: '0815-5652-3279',
             registration_required: false,
             status: 'upcoming',
             is_featured: false,
@@ -379,7 +379,7 @@ export default function AdminAgendaCreate({
                                     onChange={(e) =>
                                         setData('contact', e.target.value)
                                     }
-                                    placeholder="Contoh: 0812-3456-7890 (Sekretariat)"
+                                    placeholder="Contoh: 0815-5652-3279 (Sekretariat)"
                                     className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 />
                             </div>

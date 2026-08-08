@@ -30,7 +30,7 @@ class AgendaFactory extends Factory
             'time_label' => '08:00 WIB - Selesai',
             'location' => 'Balai Desa Ngampungan',
             'organizer' => 'Pemerintah Desa Ngampungan',
-            'contact' => '0812-3456-7890',
+            'contact' => '0815-5652-3279',
             'registration_required' => fake()->boolean(30),
             'status' => 'upcoming',
             'is_featured' => fake()->boolean(20),

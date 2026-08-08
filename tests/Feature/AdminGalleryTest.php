@@ -24,6 +24,7 @@ test('authenticated user can create a photo with valid data', function () {
 
     $response = $this->actingAs($user)->post(route('admin.gallery.store'), [
         'title' => 'Foto Baru Desa',
+        'media_type' => 'photo',
         'category' => 'Kegiatan Desa',
         'album' => 'Album 2026',
         'caption' => 'Keterangan foto desa terbaru',

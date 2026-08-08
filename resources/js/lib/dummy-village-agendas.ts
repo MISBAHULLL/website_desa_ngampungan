@@ -37,7 +37,7 @@ export const dummyVillageAgendas: readonly VillageAgenda[] = [
         timeLabel: '08.30–12.00 WIB',
         location: 'Balai Desa Ngampungan',
         organizer: 'Pemerintah Desa dan BPD',
-        contact: 'Sekretariat Desa · 0812-3456-7890',
+        contact: 'Sekretariat Desa · 0815-5652-3279',
         status: 'upcoming',
         featured: true,
         registrationRequired: true,

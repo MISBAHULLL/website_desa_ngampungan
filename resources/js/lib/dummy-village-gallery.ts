@@ -12,9 +12,12 @@ export type VillageGalleryPhoto = {
     image: string;
     alt: string;
     featured: boolean;
+    mediaType?: 'photo' | 'video';
+    video?: string | null;
+    videoUrl?: string | null;
 };
 
-export const dummyVillageGalleryPhotos = [
+export const dummyVillageGalleryPhotos: readonly VillageGalleryPhoto[] = [
     {
         id: 1,
         title: 'Panen Raya Padi Organik',
@@ -171,7 +174,7 @@ export const dummyVillageGalleryPhotos = [
         alt: 'Pertunjukan seni dan musik di ruang terbuka',
         featured: false,
     },
-] satisfies readonly VillageGalleryPhoto[];
+];
 
 export const featuredDummyVillageGalleryPhotos =
     dummyVillageGalleryPhotos.filter((photo) => photo.featured);

@@ -13,11 +13,14 @@ class GalleryPhoto extends Model
     protected $fillable = [
         'title',
         'slug',
+        'media_type',
         'category',
         'album',
         'caption',
         'image_path',
         'image_alt',
+        'video_path',
+        'video_url',
         'is_featured',
         'captured_at',
     ];

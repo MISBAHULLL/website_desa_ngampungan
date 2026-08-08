@@ -56,26 +56,53 @@ class GalleryController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'media_type' => ['required', 'in:photo,video'],
             'category' => ['required', 'string', 'max:100'],
             'album' => ['required', 'string', 'max:100'],
             'caption' => ['required', 'string', 'max:1000'],
             'image' => ['nullable', 'image', 'max:4096'], // 4MB max
             'image_url' => ['nullable', 'url', 'max:500'],
             'image_alt' => ['nullable', 'string', 'max:255'],
+            'video' => [
+                'nullable',
+                'file',
+                'mimes:mp4,webm,avi,mov',
+                'mimetypes:video/mp4,video/webm,video/x-msvideo,video/quicktime',
+                'max:102400', // 100MB
+            ],
+            'video_url' => ['nullable', 'url', 'max:500'],
             'is_featured' => ['boolean'],
             'captured_at' => ['nullable', 'date'],
         ]);
 
-        if (! $request->hasFile('image') && empty($validated['image_url'])) {
-            return back()->withErrors(['image' => 'Silakan unggah foto atau masukkan URL gambar.']);
+        // Validasi media berdasarkan tipe
+        if ($validated['media_type'] === 'photo') {
+            if (! $request->hasFile('image') && empty($validated['image_url'])) {
+                return back()->withErrors(['image' => 'Silakan unggah foto atau masukkan URL gambar.']);
+            }
+        } else {
+            if (! $request->hasFile('video') && empty($validated['video_url'])) {
+                return back()->withErrors(['video' => 'Silakan unggah video atau masukkan URL video (YouTube/Vimeo).']);
+            }
         }
 
         $imagePath = null;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('gallery', 'public');
-            $imagePath = Storage::url($path);
+        $videoPath = null;
+
+        if ($validated['media_type'] === 'photo') {
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('gallery/photos', 'public');
+                $imagePath = Storage::url($path);
+            } else {
+                $imagePath = $validated['image_url'];
+            }
         } else {
-            $imagePath = $validated['image_url'];
+            if ($request->hasFile('video')) {
+                $path = $request->file('video')->store('gallery/videos', 'public');
+                $videoPath = Storage::url($path);
+            } elseif (! empty($validated['video_url'])) {
+                $videoPath = $validated['video_url'];
+            }
         }
 
         $slug = GalleryPhoto::generateUniqueSlug($validated['title']);
@@ -83,17 +110,22 @@ class GalleryController extends Controller
         GalleryPhoto::create([
             'title' => $validated['title'],
             'slug' => $slug,
+            'media_type' => $validated['media_type'],
             'category' => $validated['category'],
             'album' => $validated['album'],
             'caption' => $validated['caption'],
             'image_path' => $imagePath,
             'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+            'video_path' => $videoPath,
+            'video_url' => $validated['video_url'] ?? null,
             'is_featured' => $validated['is_featured'] ?? false,
             'captured_at' => $validated['captured_at'] ?? now()->toDateString(),
         ]);
 
+        $mediaLabel = $validated['media_type'] === 'photo' ? 'Foto' : 'Video';
+
         return redirect()->route('admin.gallery.index')
-            ->with('success', 'Foto galeri berhasil ditambahkan.');
+            ->with('success', "{$mediaLabel} galeri berhasil ditambahkan.");
     }
 
     public function edit(GalleryPhoto $gallery): Response
@@ -107,22 +139,76 @@ class GalleryController extends Controller
     {
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'media_type' => ['required', 'in:photo,video'],
             'category' => ['required', 'string', 'max:100'],
             'album' => ['required', 'string', 'max:100'],
             'caption' => ['required', 'string', 'max:1000'],
             'image' => ['nullable', 'image', 'max:4096'],
             'image_url' => ['nullable', 'url', 'max:500'],
             'image_alt' => ['nullable', 'string', 'max:255'],
+            'video' => [
+                'nullable',
+                'file',
+                'mimes:mp4,webm,avi,mov',
+                'mimetypes:video/mp4,video/webm,video/x-msvideo,video/quicktime',
+                'max:102400',
+            ],
+            'video_url' => ['nullable', 'url', 'max:500'],
             'is_featured' => ['boolean'],
             'captured_at' => ['nullable', 'date'],
+            'remove_video' => ['nullable', 'boolean'],
         ]);
 
+        $removeVideo = filter_var($request->input('remove_video'), FILTER_VALIDATE_BOOLEAN);
+
+        // Validasi: pastikan ada media yang diupload sesuai tipe
+        if ($validated['media_type'] === 'photo') {
+            $hasNewPhoto = $request->hasFile('image') || ! empty($validated['image_url']);
+            $hasExistingPhoto = ! empty($gallery->image_path);
+
+            if (! $hasNewPhoto && ! $hasExistingPhoto) {
+                return back()->withErrors(['image' => 'Silakan unggah foto atau masukkan URL gambar.']);
+            }
+        } else {
+            if (! $removeVideo) {
+                $hasNewVideo = $request->hasFile('video') || ! empty($validated['video_url']);
+                $hasExistingVideo = ! empty($gallery->video_path) || ! empty($gallery->video_url);
+
+                if (! $hasNewVideo && ! $hasExistingVideo) {
+                    return back()->withErrors(['video' => 'Silakan unggah video atau masukkan URL video.']);
+                }
+            }
+        }
+
         $imagePath = $gallery->image_path;
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('gallery', 'public');
-            $imagePath = Storage::url($path);
-        } elseif (! empty($validated['image_url'])) {
-            $imagePath = $validated['image_url'];
+        $videoPath = $gallery->video_path;
+        $videoUrl = $gallery->video_url;
+
+        if ($validated['media_type'] === 'photo') {
+            if ($request->hasFile('image')) {
+                $path = $request->file('image')->store('gallery/photos', 'public');
+                $imagePath = Storage::url($path);
+            } elseif (! empty($validated['image_url'])) {
+                $imagePath = $validated['image_url'];
+            }
+            // Reset video paths when switching to photo
+            $videoPath = null;
+            $videoUrl = null;
+        } else {
+            if ($removeVideo) {
+                $videoPath = null;
+                $videoUrl = null;
+            } elseif ($request->hasFile('video')) {
+                $path = $request->file('video')->store('gallery/videos', 'public');
+                $videoPath = Storage::url($path);
+                // Clear video_url when uploading a new file
+                $videoUrl = null;
+            } elseif (! empty($validated['video_url'])) {
+                $videoUrl = $validated['video_url'];
+                // Don't override existing videoPath unless explicitly changed
+            }
+            // Reset image path when switching to video
+            $imagePath = null;
         }
 
         $slug = $gallery->title !== $validated['title']
@@ -132,17 +218,22 @@ class GalleryController extends Controller
         $gallery->update([
             'title' => $validated['title'],
             'slug' => $slug,
+            'media_type' => $validated['media_type'],
             'category' => $validated['category'],
             'album' => $validated['album'],
             'caption' => $validated['caption'],
             'image_path' => $imagePath,
             'image_alt' => ($validated['image_alt'] ?? null) ?: $validated['title'],
+            'video_path' => $videoPath,
+            'video_url' => $videoUrl,
             'is_featured' => $validated['is_featured'] ?? false,
             'captured_at' => $validated['captured_at'] ?? $gallery->captured_at,
         ]);
 
+        $mediaLabel = $validated['media_type'] === 'photo' ? 'Foto' : 'Video';
+
         return redirect()->route('admin.gallery.index')
-            ->with('success', 'Foto galeri berhasil diperbarui.');
+            ->with('success', "{$mediaLabel} galeri berhasil diperbarui.");
     }
 
     public function toggleFeatured(GalleryPhoto $gallery): RedirectResponse

@@ -25,7 +25,7 @@ class AgendaSeeder extends Seeder
                 'time_label' => '09:00 WIB - Selesai',
                 'location' => 'Balai Desa Ngampungan',
                 'organizer' => 'Pemerintah Desa & BPD',
-                'contact' => '0812-3456-7890 (Sekretariat Desa)',
+                'contact' => '0815-5652-3279 (Sekretariat Desa)',
                 'registration_required' => false,
                 'status' => 'upcoming',
                 'is_featured' => true,

@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, CalendarDays, Camera, X } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import type { VillageGalleryPhoto } from '@/lib/dummy-village-gallery';
 
 type VillageGalleryLightboxProps = {
@@ -21,6 +21,7 @@ export function VillageGalleryLightbox({
     const previousPhoto =
         photos[(currentIndex - 1 + photos.length) % photos.length];
     const nextPhoto = photos[(currentIndex + 1) % photos.length];
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     useEffect(() => {
         const previousOverflow = document.body.style.overflow;
@@ -48,11 +49,21 @@ export function VillageGalleryLightbox({
         };
     }, [nextPhoto, onClose, onNavigate, previousPhoto]);
 
+    const isVideo = photo.mediaType === 'video';
+    const videoSrc = photo.video || null;
+    const videoEmbedUrl = photo.videoUrl
+        ? photo.videoUrl.includes('youtube.com') || photo.videoUrl.includes('youtu.be')
+            ? photo.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')
+            : photo.videoUrl.includes('vimeo.com')
+            ? photo.videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')
+            : photo.videoUrl
+        : null;
+
     return (
         <div
             role="dialog"
             aria-modal="true"
-            aria-label={`Foto: ${photo.title}`}
+            aria-label={`${isVideo ? 'Video' : 'Foto'}: ${photo.title}`}
             onMouseDown={(event) => {
                 if (event.target === event.currentTarget) {
                     onClose();
@@ -72,13 +83,45 @@ export function VillageGalleryLightbox({
                 </button>
 
                 <div className="grid lg:grid-cols-[minmax(0,1fr)_22rem]">
-                    {/* Main Image Stage - Pure Light Stage */}
-                    <div className="relative flex min-h-[22rem] items-center justify-center bg-slate-950 p-4 lg:min-h-[38rem]">
-                        <img
-                            src={photo.image}
-                            alt={photo.alt}
-                            className="max-h-[75vh] w-full rounded-lg object-contain shadow-md transition-all duration-300"
-                        />
+                    {/* Main Media Stage */}
+                    <div className="relative flex min-h-[22rem] items-center justify-center bg-slate-950 lg:min-h-[38rem]">
+                        {isVideo ? (
+                            <>
+                                {videoSrc ? (
+                                    <video
+                                        ref={videoRef}
+                                        key={videoSrc}
+                                        src={videoSrc}
+                                        controls
+                                        autoPlay
+                                        className="h-full w-full object-cover"
+                                    />
+                                ) : videoEmbedUrl ? (
+                                    <div className="flex h-full w-full items-center justify-center" style={{ minHeight: '22rem' }}>
+                                        <iframe
+                                            src={videoEmbedUrl}
+                                            title={photo.title}
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            className="aspect-video w-full max-w-full"
+                                            style={{ maxHeight: '75vh' }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="flex aspect-video w-full items-center justify-center">
+                                        <svg className="size-24 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M8 5v14l11-7z" />
+                                        </svg>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <img
+                                src={photo.image}
+                                alt={photo.alt}
+                                className="max-h-[75vh] w-full rounded-lg object-contain p-4 shadow-md transition-all duration-300"
+                            />
+                        )}
 
                         {photos.length > 1 && (
                             <>
@@ -86,7 +129,7 @@ export function VillageGalleryLightbox({
                                     type="button"
                                     aria-label="Foto sebelumnya"
                                     onClick={() => onNavigate(previousPhoto)}
-                                    className="absolute top-1/2 left-4 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-lg transition hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
+                                    className="absolute top-1/2 left-4 z-10 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-lg transition hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                                 >
                                     <ArrowLeft
                                         aria-hidden="true"
@@ -97,7 +140,7 @@ export function VillageGalleryLightbox({
                                     type="button"
                                     aria-label="Foto berikutnya"
                                     onClick={() => onNavigate(nextPhoto)}
-                                    className="absolute top-1/2 right-4 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-lg transition hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
+                                    className="absolute top-1/2 right-4 z-10 flex size-12 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-800 shadow-lg transition hover:bg-emerald-700 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:outline-none"
                                 >
                                     <ArrowRight
                                         aria-hidden="true"
@@ -145,7 +188,7 @@ export function VillageGalleryLightbox({
                                 </dd>
                             </div>
                             <div className="mt-2 rounded-xl border border-slate-200 bg-slate-100 p-3 text-center text-xs font-semibold text-slate-600">
-                                Foto {currentIndex + 1} dari {photos.length}
+                                {isVideo ? 'Video' : 'Foto'} {currentIndex + 1} dari {photos.length}
                             </div>
                         </dl>
                     </div>

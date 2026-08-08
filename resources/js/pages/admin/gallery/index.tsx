@@ -25,11 +25,14 @@ type GalleryPhoto = {
     id: number;
     title: string;
     slug: string;
+    media_type?: 'photo' | 'video';
     category: string;
     album: string;
     caption: string;
-    image_path: string;
+    image_path: string | null;
     image_alt: string | null;
+    video_path: string | null;
+    video_url: string | null;
     is_featured: boolean;
     captured_at: string | null;
     created_at: string;
@@ -219,15 +222,31 @@ export default function AdminGalleryIndex({
                                             <td className="px-5 py-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-sidebar-border/60 bg-muted">
-                                                        {item.image_path ? (
+                                                        {item.media_type === 'video' ? (
+                                                            <>
+                                                                {item.video_path ? (
+                                                                    <video
+                                                                        src={item.video_path}
+                                                                        className="size-full object-cover"
+                                                                        muted
+                                                                    />
+                                                                ) : (
+                                                                    <div className="flex size-full items-center justify-center bg-gray-800 text-white">
+                                                                        <svg className="size-8" fill="currentColor" viewBox="0 0 24 24">
+                                                                            <path d="M8 5v14l11-7z" />
+                                                                        </svg>
+                                                                    </div>
+                                                                )}
+                                                                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                                                    <svg className="size-8 text-white drop-shadow" fill="currentColor" viewBox="0 0 24 24">
+                                                                        <path d="M8 5v14l11-7z" />
+                                                                    </svg>
+                                                                </div>
+                                                            </>
+                                                        ) : item.image_path ? (
                                                             <img
-                                                                src={
-                                                                    item.image_path
-                                                                }
-                                                                alt={
-                                                                    item.image_alt ||
-                                                                    item.title
-                                                                }
+                                                                src={item.image_path}
+                                                                alt={item.image_alt || item.title}
                                                                 className="size-full object-cover"
                                                             />
                                                         ) : (
@@ -237,9 +256,19 @@ export default function AdminGalleryIndex({
                                                         )}
                                                     </div>
                                                     <div className="max-w-md min-w-0">
-                                                        <h2 className="line-clamp-1 font-bold text-foreground">
-                                                            {item.title}
-                                                        </h2>
+                                                        <div className="flex items-center gap-2">
+                                                            <h2 className="line-clamp-1 font-bold text-foreground">
+                                                                {item.title}
+                                                            </h2>
+                                                            {item.media_type === 'video' && (
+                                                                <span className="inline-flex items-center gap-1 rounded-md bg-purple-100 px-2 py-0.5 text-xs font-bold text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                                                                    <svg className="size-3" fill="currentColor" viewBox="0 0 24 24">
+                                                                        <path d="M8 5v14l11-7z" />
+                                                                    </svg>
+                                                                    Video
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                         <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
                                                             {item.caption}
                                                         </p>

@@ -193,11 +193,34 @@ export default function GalleryIndex({
                                     index === 0 ? 'md:row-span-2' : ''
                                 }`}
                             >
-                                <img
-                                    src={photo.image}
-                                    alt={photo.alt}
-                                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
-                                />
+                                {photo.mediaType === 'video' ? (
+                                    <>
+                                        {photo.video ? (
+                                            <video
+                                                src={photo.video}
+                                                className="absolute inset-0 h-full w-full object-cover"
+                                                muted
+                                            />
+                                        ) : (
+                                            <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                                                <svg className="size-24 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                        <span className="absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity group-hover:bg-black/30">
+                                            <svg className="size-20 text-white drop-shadow-lg transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                                                <path d="M8 5v14l11-7z" />
+                                            </svg>
+                                        </span>
+                                    </>
+                                ) : (
+                                    <img
+                                        src={photo.image}
+                                        alt={photo.alt}
+                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+                                    />
+                                )}
                                 <span
                                     aria-hidden="true"
                                     className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent transition-opacity duration-300"
@@ -209,8 +232,18 @@ export default function GalleryIndex({
                                     />
                                 </span>
                                 <span className="absolute inset-x-0 bottom-0 p-6 md:p-8">
-                                    <span className="inline-block rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-bold text-white uppercase shadow-xs">
-                                        {photo.category}
+                                    <span className="flex items-center gap-2">
+                                        <span className="inline-block rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-bold text-white uppercase shadow-xs">
+                                            {photo.category}
+                                        </span>
+                                        {photo.mediaType === 'video' && (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-purple-600 px-2.5 py-1 text-[10px] font-bold text-white shadow-xs">
+                                                <svg className="size-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                                Video
+                                            </span>
+                                        )}
                                     </span>
                                     <span className="mt-3 block text-xl font-bold text-white drop-shadow-sm md:text-2xl">
                                         {photo.title}
@@ -297,12 +330,35 @@ export default function GalleryIndex({
                                             : 'aspect-[16/11]'
                                     }`}
                                 >
-                                    <img
-                                        src={photo.image}
-                                        alt={photo.alt}
-                                        loading="lazy"
-                                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                    />
+                                    {photo.mediaType === 'video' ? (
+                                        <>
+                                            {photo.video ? (
+                                                <video
+                                                    src={photo.video}
+                                                    className="absolute inset-0 h-full w-full object-cover"
+                                                    muted
+                                                />
+                                            ) : (
+                                                <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
+                                                    <svg className="size-20 text-white opacity-60" fill="currentColor" viewBox="0 0 24 24">
+                                                        <path d="M8 5v14l11-7z" />
+                                                    </svg>
+                                                </div>
+                                            )}
+                                            <span className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                                <svg className="size-16 text-white drop-shadow-lg transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                            </span>
+                                        </>
+                                    ) : (
+                                        <img
+                                            src={photo.image}
+                                            alt={photo.alt}
+                                            loading="lazy"
+                                            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                        />
+                                    )}
                                     <span className="absolute top-3 right-3 flex size-9 items-center justify-center rounded-lg bg-white/90 text-emerald-800 opacity-0 shadow-md transition-all duration-300 group-hover:opacity-100">
                                         <Expand
                                             aria-hidden="true"
@@ -311,8 +367,18 @@ export default function GalleryIndex({
                                     </span>
                                 </span>
                                 <span className="block p-6">
-                                    <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-900 uppercase">
-                                        {photo.album}
+                                    <span className="flex items-center gap-2">
+                                        <span className="inline-block rounded-full bg-emerald-100 px-3 py-1 text-[10px] font-bold text-emerald-900 uppercase">
+                                            {photo.album}
+                                        </span>
+                                        {photo.mediaType === 'video' && (
+                                            <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-[10px] font-bold text-purple-800">
+                                                <svg className="size-3" fill="currentColor" viewBox="0 0 24 24">
+                                                    <path d="M8 5v14l11-7z" />
+                                                </svg>
+                                                Video
+                                            </span>
+                                        )}
                                     </span>
                                     <span className="mt-3 block text-lg leading-snug font-bold text-slate-900 transition-colors group-hover:text-emerald-800">
                                         {photo.title}

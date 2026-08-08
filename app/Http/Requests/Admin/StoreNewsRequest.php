@@ -33,6 +33,14 @@ class StoreNewsRequest extends FormRequest
             ],
             'image_url' => ['nullable', 'url:http,https', 'max:500'],
             'image_alt' => ['nullable', 'string', 'max:255'],
+            'video' => [
+                'nullable',
+                'file',
+                'mimes:mp4,webm,avi,mov',
+                'mimetypes:video/mp4,video/webm,video/x-msvideo,video/quicktime',
+                'max:102400', // 100MB
+            ],
+            'video_url' => ['nullable', 'url:http,https', 'max:500'],
             'is_featured' => ['sometimes', 'boolean'],
             'published_at' => ['nullable', 'date'],
         ];
@@ -48,6 +56,11 @@ class StoreNewsRequest extends FormRequest
             'image.mimetypes' => 'Isi file tidak sesuai dengan format gambar yang didukung.',
             'image.max' => 'Ukuran gambar maksimal 3 MB.',
             'image_url.url' => 'URL gambar harus berupa alamat HTTP atau HTTPS yang valid.',
+            'video.file' => 'File yang dipilih harus berupa video.',
+            'video.mimes' => 'Video harus berformat MP4, WebM, AVI, atau MOV.',
+            'video.mimetypes' => 'Isi file tidak sesuai dengan format video yang didukung.',
+            'video.max' => 'Ukuran video maksimal 100 MB.',
+            'video_url.url' => 'URL video harus berupa alamat HTTP atau HTTPS yang valid.',
         ];
     }
 

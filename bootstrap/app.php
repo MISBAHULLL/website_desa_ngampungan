@@ -30,8 +30,12 @@ return Application::configure(basePath: dirname(__DIR__))
         );
 
         $exceptions->render(function (PostTooLargeException $e, Request $request) {
+            $message = 'Ukuran berkas yang diunggah melebihi batas maksimal server. Pastikan ukuran file tidak melebihi batas (video max 100MB, foto max 4MB). Jika masih gagal, hubungi administrator untuk menaikkan post_max_size di php.ini.';
+
             return back()->withErrors([
-                'documents' => 'Ukuran berkas yang diunggah melebihi batas maksimal konfigurasi server (PHP post_max_size).',
+                'documents' => $message,
+                'video' => $message,
+                'image' => $message,
             ]);
         });
     })->create();
