@@ -8,7 +8,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { register } from '@/routes';
 import { store } from '@/routes/login';
 import { request } from '@/routes/password';
 
@@ -112,16 +111,9 @@ export default function Login({ status, canResetPassword }: Props) {
                             </Button>
                         </div>
 
-                        <div className="border-t border-slate-100 pt-4 text-center text-sm font-medium text-slate-600">
-                            Belum memiliki akun?{' '}
-                            <TextLink
-                                href={register()}
-                                tabIndex={5}
-                                className="font-extrabold text-emerald-700 hover:text-emerald-800 hover:underline"
-                            >
-                                Daftar Akun Baru
-                            </TextLink>
-                        </div>
+                        <p className="border-t border-slate-100 pt-4 text-center text-sm font-medium text-slate-600">
+                            Akses khusus administrator Desa Ngampungan.
+                        </p>
                     </>
                 )}
             </Form>

@@ -25,6 +25,7 @@ use App\Http\Controllers\Public\ServiceController;
 use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
+use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Models\Announcement;
 use App\Models\ApbdesSummary;
 use App\Models\HeroSlide;
@@ -153,7 +154,7 @@ Route::post('kontak/pesan', [ContactMessageController::class, 'store'])
     ->middleware('throttle:contact-messages')
     ->name('contact-messages.store');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified', EnsureUserIsAdmin::class])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
     Route::get('dashboard/pesan', [AdminContactMessageController::class, 'index'])
         ->name('admin.contact-messages.index');
