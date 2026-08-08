@@ -202,14 +202,16 @@ test('homepage receives APBDes data managed by admin', function () {
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('welcome')
-            ->has('apbdesSummaries', 1)
-            ->where('apbdesSummaries.0.year', '2028')
-            ->where('apbdesSummaries.0.realizationPercentage', 50)
-            ->where('apbdesSummaries.0.incomeAmount', 2_000_000_000)
-            ->where('apbdesSummaries.0.expenseAmount', 1_000_000_000)
-            ->where('apbdesSummaries.0.realizedAmountValue', 500_000_000)
-            ->where('apbdesSummaries.0.allocations.1.absorptionPercentage', 50)
-            ->where('apbdesSummaries.0.incomeValue', 'Rp2,00 miliar'));
+            ->missing('apbdesSummaries')
+            ->reloadOnly('apbdesSummaries', fn (Assert $reload) => $reload
+                ->has('apbdesSummaries', 1)
+                ->where('apbdesSummaries.0.year', '2028')
+                ->where('apbdesSummaries.0.realizationPercentage', 50)
+                ->where('apbdesSummaries.0.incomeAmount', 2_000_000_000)
+                ->where('apbdesSummaries.0.expenseAmount', 1_000_000_000)
+                ->where('apbdesSummaries.0.realizedAmountValue', 500_000_000)
+                ->where('apbdesSummaries.0.allocations.1.absorptionPercentage', 50)
+                ->where('apbdesSummaries.0.incomeValue', 'Rp2,00 miliar')));
 });
 
 test('admin can upload PDF and Excel documents for an APBDes year', function (string $name, string $mime, string $format) {

@@ -1,10 +1,10 @@
 import { Link } from '@inertiajs/react';
 import { ArrowRight, CalendarDays } from 'lucide-react';
 import { NewsMediaThumbnail } from '@/components/news-media-thumbnail';
-import type { NewsArticle } from '@/lib/dummy-public-content';
+import type { NewsArticleSummary } from '@/lib/dummy-public-content';
 import { show as newsShow } from '@/routes/news';
 
-export function PublicNewsCard({ article }: { article: NewsArticle }) {
+export function PublicNewsCard({ article }: { article: NewsArticleSummary }) {
     return (
         <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-village-border bg-white transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-village-floating motion-reduce:transform-none motion-reduce:transition-none">
             <Link

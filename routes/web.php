@@ -17,6 +17,7 @@ use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\ContactMessageController;
 use App\Http\Controllers\Public\GalleryController;
+use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PotentialController;
 use App\Http\Controllers\Public\ServiceApplicationController;
@@ -26,91 +27,9 @@ use App\Http\Controllers\Public\TransparencyController;
 use App\Http\Controllers\Public\VillageGovernmentController;
 use App\Http\Controllers\Public\VillageProfileController;
 use App\Http\Middleware\EnsureUserIsAdmin;
-use App\Models\Announcement;
-use App\Models\ApbdesSummary;
-use App\Models\HeroSlide;
-use App\Models\News;
-use App\Models\VillageLeader;
-use App\Models\VillageProfile;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
-Route::get('/', function () {
-    $villageProfile = VillageProfile::query()->first();
-    $villageLeader = VillageLeader::query()
-        ->active()
-        ->latest('started_at')
-        ->first();
-    $heroSlides = HeroSlide::active()->get()->map(fn (HeroSlide $slide): array => [
-        'id' => $slide->id,
-        'title' => $slide->title,
-        'subtitle' => $slide->subtitle,
-        'description' => $slide->description,
-        'primaryCtaText' => $slide->primary_cta_text,
-        'primaryCtaUrl' => $slide->primary_cta_url,
-        'secondaryCtaText' => $slide->secondary_cta_text,
-        'secondaryCtaUrl' => $slide->secondary_cta_url,
-        'backgroundImage' => $slide->background_image
-            ? Storage::disk('public')->url($slide->background_image)
-            : null,
-    ]);
-    $apbdesSummaries = ApbdesSummary::with(['incomeSources', 'activities'])
-        ->orderByDesc('year')
-        ->get()
-        ->map(fn (ApbdesSummary $summary): array => $summary->toPublicData());
-    $dbArticles = News::latestPublished()->get()->map(function ($article) {
-        return [
-            'id' => $article->id,
-            'slug' => $article->slug,
-            'title' => $article->title,
-            'excerpt' => $article->excerpt,
-            'content' => $article->content,
-            'category' => $article->category,
-            'author' => $article->author,
-            'publishedAt' => $article->published_at->format('Y-m-d'),
-            'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
-            'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
-            'alt' => $article->image_alt ?: $article->title,
-            'video' => $article->video_path,
-            'videoUrl' => $article->video_url,
-            'featured' => (bool) $article->is_featured,
-        ];
-    });
-
-    $dbAnnouncements = Announcement::active()->latestFirst()->get()->map(function (Announcement $announcement): array {
-        $startsAtLabel = $announcement->starts_at->translatedFormat('j F Y');
-        $endsAtLabel = $announcement->ends_at ? $announcement->ends_at->translatedFormat('j F Y') : null;
-        $periodLabel = $endsAtLabel ? "{$startsAtLabel}–{$endsAtLabel}" : "Mulai {$startsAtLabel}";
-
-        return [
-            'id' => $announcement->id,
-            'title' => $announcement->title,
-            'slug' => $announcement->slug,
-            'summary' => $announcement->summary,
-            'content' => $announcement->content,
-            'priority' => $announcement->priority,
-            'status' => $announcement->effectiveStatus(),
-            'pinned' => (bool) $announcement->is_pinned,
-            'startsAt' => $announcement->starts_at->format('Y-m-d'),
-            'endsAt' => $announcement->ends_at?->format('Y-m-d'),
-            'periodLabel' => $periodLabel,
-        ];
-    });
-
-    return Inertia\Inertia::render('welcome', [
-        'dbArticles' => $dbArticles,
-        'dbAnnouncements' => $dbAnnouncements,
-        'heroSlides' => $heroSlides,
-        'apbdesSummaries' => $apbdesSummaries,
-        'villageLeader' => $villageLeader?->toPublicData(),
-        'villageProfile' => $villageProfile ? [
-            'totalPopulation' => $villageProfile->total_population,
-            'totalFamilies' => $villageProfile->total_families,
-            'totalHamlets' => $villageProfile->total_hamlets,
-            'totalAreaHectares' => $villageProfile->total_area_hectares,
-        ] : null,
-    ]);
-})->name('home');
+Route::get('/', HomeController::class)->name('home');
 
 Route::get('profil-desa', VillageProfileController::class)
     ->name('profile.index');

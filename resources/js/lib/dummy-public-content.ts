@@ -14,6 +14,8 @@ export type NewsArticle = {
     featured: boolean;
 };
 
+export type NewsArticleSummary = Omit<NewsArticle, 'content'>;
+
 export type AnnouncementPriority = 'normal' | 'important' | 'emergency';
 export type AnnouncementStatus = 'active' | 'archived';
 

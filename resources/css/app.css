@@ -183,6 +183,13 @@
     }
 }
 
+@layer utilities {
+    .village-deferred-section {
+        content-visibility: auto;
+        contain-intrinsic-size: auto 900px;
+    }
+}
+
 @keyframes pageFadeIn {
     from {
         opacity: 0;

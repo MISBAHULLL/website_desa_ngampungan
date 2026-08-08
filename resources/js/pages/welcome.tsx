@@ -1,4 +1,4 @@
-import { Form, Head, Link, usePage } from '@inertiajs/react';
+import { Form, Head, Link, usePage, WhenVisible } from '@inertiajs/react';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
     ArrowRight,
@@ -33,7 +33,7 @@ import {
     Youtube,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { store as storeContactMessage } from '@/actions/App/Http/Controllers/Public/ContactMessageController';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
@@ -43,13 +43,15 @@ import { PublicAnnouncementCard } from '@/components/public-announcement-card';
 import { PublicNewsCard } from '@/components/public-news-card';
 import { Spinner } from '@/components/ui/spinner';
 import { VillagePotentialCarousel } from '@/components/village-potential-carousel';
-import { VillagePotentialDetailModal } from '@/components/village-potential-detail-modal';
 import {
     activeDummyAnnouncements,
     featuredDummyNewsArticle,
     latestDummyNewsArticles,
 } from '@/lib/dummy-public-content';
-import type { Announcement, NewsArticle } from '@/lib/dummy-public-content';
+import type {
+    Announcement,
+    NewsArticleSummary,
+} from '@/lib/dummy-public-content';
 import { dummyApbdesSummaries } from '@/lib/dummy-transparency';
 import type { ApbdesSummaryRecord } from '@/lib/dummy-transparency';
 import {
@@ -72,6 +74,12 @@ import { index as villageProfileIndex } from '@/routes/profile';
 import { track as trackServiceApplication } from '@/routes/service-applications';
 import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
+
+const VillagePotentialDetailModal = lazy(() =>
+    import('@/components/village-potential-detail-modal').then((module) => ({
+        default: module.VillagePotentialDetailModal,
+    })),
+);
 
 type NavigationChild = {
     label: string;
@@ -1004,6 +1012,37 @@ function TransparansiSummarySection({
     );
 }
 
+function TransparansiSummarySkeleton() {
+    return (
+        <section
+            id="transparansi"
+            aria-labelledby="transparansi-loading-heading"
+            aria-busy="true"
+            className="village-deferred-section scroll-mt-48 border-y border-village-border bg-[#f8faf8] py-16 md:py-24 xl:scroll-mt-32"
+        >
+            <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
+                <p className="text-xs font-bold tracking-[0.2em] text-village-primary uppercase">
+                    Keterbukaan Anggaran
+                </p>
+                <h2
+                    id="transparansi-loading-heading"
+                    className="mt-3 text-3xl font-bold tracking-tight text-village-ink sm:text-4xl"
+                >
+                    Memuat ringkasan APBDes
+                </h2>
+                <div className="mt-8 grid gap-4 md:grid-cols-3">
+                    {[0, 1, 2].map((item) => (
+                        <div
+                            key={item}
+                            className="h-40 animate-pulse rounded-2xl border border-village-border bg-white"
+                        />
+                    ))}
+                </div>
+            </div>
+        </section>
+    );
+}
+
 const heroCarouselImages = [
     {
         src: 'https://images.unsplash.com/photo-1559884743-74a57598c6c7?q=80&w=2076&auto=format&fit=crop',
@@ -1040,26 +1079,30 @@ function HeroBackgroundCarousel({
     currentIndex: number;
     slides: HeroSlideData[];
 }) {
+    const slide = slides[currentIndex] ?? slides[0];
+    const fallbackImage =
+        heroCarouselImages[currentIndex % heroCarouselImages.length];
+
     return (
         <div className="absolute inset-0 z-0 overflow-hidden">
-            {slides.map((slide, index) => {
-                const fallbackImage =
-                    heroCarouselImages[index % heroCarouselImages.length];
-
-                return (
-                    <img
-                        key={slide.id}
-                        src={slide.backgroundImage ?? fallbackImage.src}
-                        alt=""
-                        aria-hidden="true"
-                        className={`absolute inset-0 size-full object-cover object-[center_35%] transition-[opacity,transform,filter] duration-700 ease-out ${
-                            index === currentIndex
-                                ? 'blur-0 scale-100 opacity-100'
-                                : 'pointer-events-none scale-[1.03] opacity-0 blur-sm'
-                        }`}
-                    />
-                );
-            })}
+            <AnimatePresence initial={false}>
+                <motion.img
+                    key={slide.id}
+                    src={slide.backgroundImage ?? fallbackImage.src}
+                    alt=""
+                    aria-hidden="true"
+                    width="1920"
+                    height="1080"
+                    decoding="async"
+                    loading="eager"
+                    fetchPriority={currentIndex === 0 ? 'high' : 'auto'}
+                    initial={{ opacity: 0, scale: 1.025 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.015 }}
+                    transition={{ duration: 0.7, ease: 'easeOut' }}
+                    className="absolute inset-0 size-full object-cover object-[center_35%]"
+                />
+            </AnimatePresence>
 
             <div className="absolute inset-0 bg-gradient-to-b from-[#0c1f16]/80 via-[#0c1f16]/65 to-[#0c1f16]/85" />
         </div>
@@ -1074,7 +1117,7 @@ export default function Welcome({
     villageProfile,
     apbdesSummaries,
 }: {
-    dbArticles?: NewsArticle[];
+    dbArticles?: NewsArticleSummary[];
     dbAnnouncements?: Announcement[];
     heroSlides?: HeroSlideData[];
     villageLeader?: VillageLeaderContent | null;
@@ -1278,6 +1321,8 @@ export default function Welcome({
     )
         .split(/\n\s*\n/)
         .filter(Boolean);
+    const initialHeroImage =
+        activeHeroSlides[0]?.backgroundImage ?? heroCarouselImages[0].src;
 
     return (
         <>
@@ -1286,6 +1331,7 @@ export default function Welcome({
                     name="description"
                     content="Pusat informasi dan layanan digital resmi Desa Ngampungan, Kecamatan Bareng, Kabupaten Jombang."
                 />
+                <link rel="preload" as="image" href={initialHeroImage} />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link
                     rel="preconnect"
@@ -1730,7 +1776,7 @@ export default function Welcome({
                     <section
                         id="sambutan-kepala-desa"
                         aria-labelledby="sambutan-kepala-desa-heading"
-                        className="scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
+                        className="village-deferred-section scroll-mt-48 overflow-hidden bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
                         <div className="mx-auto grid max-w-[1440px] items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-10 2xl:max-w-[1536px]">
                             <FadeIn
@@ -1747,6 +1793,10 @@ export default function Welcome({
                                             '/assets/simulasi_profl.png'
                                         }
                                         alt={`${leaderName} - ${leaderPosition}`}
+                                        width="1024"
+                                        height="1536"
+                                        loading="lazy"
+                                        decoding="async"
                                         className="absolute inset-0 h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                         onError={(e) => {
                                             (
@@ -1820,12 +1870,20 @@ export default function Welcome({
                         </div>
                     </section>
 
-                    <TransparansiSummarySection summaries={apbdesSummaries} />
+                    <WhenVisible
+                        data="apbdesSummaries"
+                        buffer={500}
+                        fallback={<TransparansiSummarySkeleton />}
+                    >
+                        <TransparansiSummarySection
+                            summaries={apbdesSummaries}
+                        />
+                    </WhenVisible>
 
                     <section
                         id="potensi"
                         aria-labelledby="potensi-heading"
-                        className="scroll-mt-48 overflow-hidden border-b border-village-border bg-white py-16 md:py-24 xl:scroll-mt-32"
+                        className="village-deferred-section scroll-mt-48 overflow-hidden border-b border-village-border bg-white py-16 md:py-24 xl:scroll-mt-32"
                     >
                         <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                             {/* Unified Header & Description */}
@@ -1941,7 +1999,7 @@ export default function Welcome({
                     <section
                         id="berita"
                         aria-labelledby="berita-heading"
-                        className="scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
+                        className="village-deferred-section scroll-mt-20 bg-village-surface-muted py-16 md:py-24"
                     >
                         <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                             <FadeIn
@@ -2000,6 +2058,10 @@ export default function Welcome({
                                                 featuredNewsArticle.alt ||
                                                 featuredNewsArticle.title
                                             }
+                                            width="1024"
+                                            height="1024"
+                                            loading="lazy"
+                                            decoding="async"
                                             onError={() =>
                                                 setIsFeaturedImageUnavailable(
                                                     true,
@@ -2218,7 +2280,7 @@ export default function Welcome({
                     <section
                         id="pengumuman"
                         aria-labelledby="pengumuman-heading"
-                        className="relative scroll-mt-20 overflow-hidden border-t border-village-border/80 bg-gradient-to-b from-emerald-50/50 via-white to-emerald-50/30 py-16 md:py-24"
+                        className="village-deferred-section relative scroll-mt-20 overflow-hidden border-t border-village-border/80 bg-gradient-to-b from-emerald-50/50 via-white to-emerald-50/30 py-16 md:py-24"
                     >
                         {/* Ambient Animated Aurora Mesh Blobs */}
                         <div
@@ -2332,7 +2394,7 @@ export default function Welcome({
                     <section
                         id="kontak"
                         aria-labelledby="kontak-heading"
-                        className="scroll-mt-48 border-t border-village-border bg-village-canvas py-16 md:py-24 xl:scroll-mt-32"
+                        className="village-deferred-section scroll-mt-48 border-t border-village-border bg-village-canvas py-16 md:py-24 xl:scroll-mt-32"
                     >
                         <div className="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-10 2xl:max-w-[1536px]">
                             <div className="grid gap-8 border-b border-village-border pb-9 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -2363,7 +2425,8 @@ export default function Welcome({
                                             aria-hidden="true"
                                             className="size-5 text-village-primary"
                                         />
-                                        0815-5652-3279                                    </a>
+                                        0815-5652-3279{' '}
+                                    </a>
                                     <a
                                         href="mailto:desangampungan@gmail.com"
                                         className="flex min-h-12 items-center gap-3 border border-village-border bg-white px-4 font-semibold text-village-ink transition hover:border-village-primary hover:text-village-primary focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none"
@@ -2775,10 +2838,16 @@ export default function Welcome({
                     </FadeIn>
                 </footer>
 
-                <VillagePotentialDetailModal
-                    entry={selectedPotentialDetailEntry}
-                    onClose={() => setSelectedPotentialDetailEntry(null)}
-                />
+                {selectedPotentialDetailEntry && (
+                    <Suspense fallback={null}>
+                        <VillagePotentialDetailModal
+                            entry={selectedPotentialDetailEntry}
+                            onClose={() =>
+                                setSelectedPotentialDetailEntry(null)
+                            }
+                        />
+                    </Suspense>
+                )}
             </div>
         </>
     );
