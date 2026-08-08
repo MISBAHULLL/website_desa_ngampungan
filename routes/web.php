@@ -10,7 +10,9 @@ use App\Http\Controllers\Admin\ServiceApplicationDocumentController as AdminServ
 use App\Http\Controllers\Admin\VillageInstitutionController;
 use App\Http\Controllers\Admin\VillageLeaderController;
 use App\Http\Controllers\Admin\VillageOfficialController;
+use App\Http\Controllers\Admin\VillagePotentialController;
 use App\Http\Controllers\Admin\VillageProfileController as AdminVillageProfileController;
+use App\Http\Controllers\Admin\VillageServiceController;
 use App\Http\Controllers\Public\AgendaController;
 use App\Http\Controllers\Public\AnnouncementController;
 use App\Http\Controllers\Public\ContactMessageController;
@@ -201,6 +203,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::patch('dashboard/agenda/{agenda}/toggle-featured', [App\Http\Controllers\Admin\AgendaController::class, 'toggleFeatured'])
         ->name('admin.agendas.toggle-featured');
 
+    Route::resource('dashboard/potensi', VillagePotentialController::class)
+        ->parameters(['potensi' => 'potential'])
+        ->except(['show'])
+        ->names('admin.potentials');
+
     Route::resource('dashboard/perangkat-desa', VillageOfficialController::class)
         ->parameters(['perangkat-desa' => 'villageOfficial'])
         ->except(['show'])
@@ -249,11 +256,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->only(['create', 'store', 'edit', 'update', 'destroy'])
         ->names('admin.apbdes-documents');
 
-    Route::resource('dashboard/kelola-layanan', App\Http\Controllers\Admin\VillageServiceController::class)
+    Route::resource('dashboard/kelola-layanan', VillageServiceController::class)
         ->parameters(['kelola-layanan' => 'villageService'])
         ->except(['show'])
         ->names('admin.village-services');
-    Route::patch('dashboard/kelola-layanan/{villageService}/toggle-active', [App\Http\Controllers\Admin\VillageServiceController::class, 'toggleActive'])
+    Route::patch('dashboard/kelola-layanan/{villageService}/toggle-active', [VillageServiceController::class, 'toggleActive'])
         ->name('admin.village-services.toggle-active');
 });
 

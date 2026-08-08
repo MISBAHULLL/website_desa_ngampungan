@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Support\VillageServiceCatalog;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\UploadedFile;
 
 class StoreServiceApplicationRequest extends FormRequest
@@ -19,7 +20,7 @@ class StoreServiceApplicationRequest extends FormRequest
 
     protected function failedAuthorization(): void
     {
-        throw new \Illuminate\Http\Exceptions\HttpResponseException(
+        throw new HttpResponseException(
             redirect()->route('services.index')
         );
     }

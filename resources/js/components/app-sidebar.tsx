@@ -13,6 +13,7 @@ import {
     MessagesSquare,
     Network,
     Newspaper,
+    Store,
     WalletCards,
     UserCog,
     Users,
@@ -25,6 +26,7 @@ import { index as galleryIndex } from '@/actions/App/Http/Controllers/Admin/Gall
 import { index as heroSlidesIndex } from '@/actions/App/Http/Controllers/Admin/HeroSlideController';
 import { index as newsIndex } from '@/actions/App/Http/Controllers/Admin/NewsController';
 import { index as orgStructureIndex } from '@/actions/App/Http/Controllers/Admin/OrganizationStructureController';
+import { index as potentialsIndex } from '@/actions/App/Http/Controllers/Admin/VillagePotentialController';
 import { index as serviceApplicationsIndex } from '@/actions/App/Http/Controllers/Admin/ServiceApplicationController';
 import { index as villageInstitutionsIndex } from '@/actions/App/Http/Controllers/Admin/VillageInstitutionController';
 import { index as villageServicesIndex } from '@/actions/App/Http/Controllers/Admin/VillageServiceController';
@@ -87,6 +89,11 @@ const mainNavItems: NavItem[] = [
         title: 'Kelola Agenda',
         href: agendasIndex(),
         icon: CalendarDays,
+    },
+    {
+        title: 'Potensi Desa',
+        href: potentialsIndex(),
+        icon: Store,
     },
     {
         title: 'Perangkat Desa',

@@ -28,14 +28,14 @@ import { index as potentialsIndex } from '@/routes/potentials';
 
 type PotentialIndexProps = {
     initialCategory: VillagePotentialFilter;
-    entries?: readonly VillagePotentialEntry[];
+    dbPotentials?: VillagePotentialEntry[];
 };
 
 const ITEMS_PER_PAGE = 9;
 
 export default function PotentialIndex({
     initialCategory,
-    entries,
+    dbPotentials,
 }: PotentialIndexProps) {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
@@ -43,18 +43,21 @@ export default function PotentialIndex({
         useState<VillagePotentialEntry | null>(null);
 
     const baseEntries = useMemo(() => {
-        if (entries && entries.length > 0) {
-            return entries;
+        if (dbPotentials) {
+            if (initialCategory === 'all') {
+                return dbPotentials;
+            }
+            return dbPotentials.filter((p) => p.category === initialCategory);
         }
-        return getDummyVillagePotentialEntries(initialCategory);
-    }, [entries, initialCategory]);
+        return [];
+    }, [dbPotentials, initialCategory]);
 
     const totalCount = useMemo(() => {
-        if (entries && entries.length > 0) {
-            return entries.length;
+        if (dbPotentials) {
+            return dbPotentials.length;
         }
-        return dummyVillagePotentialEntries.length;
-    }, [entries]);
+        return 0;
+    }, [dbPotentials]);
 
     const filteredEntries = useMemo(() => {
         const categoryEntries = baseEntries;

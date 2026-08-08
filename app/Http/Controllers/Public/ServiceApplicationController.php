@@ -17,8 +17,6 @@ class ServiceApplicationController extends Controller
     ): RedirectResponse {
         $serviceSlug = (string) $request->route('slug');
 
-
-
         $serviceApplication = $createServiceApplication->handle(
             $serviceSlug,
             $request->applicationData($serviceCatalog),

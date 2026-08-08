@@ -2,6 +2,7 @@
 
 use App\Models\VillageOfficial;
 use App\Models\VillageProfile;
+use App\Models\VillageService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 
@@ -371,10 +372,10 @@ test('the first service directory increment exposes search, categories, and summ
 });
 
 test('the public service detail passes its slug and canonical url to Inertia', function () {
-    $service = \App\Models\VillageService::factory()->create([
+    $service = VillageService::factory()->create([
         'title' => 'Surat Keterangan Usaha',
     ]);
-    
+
     $slug = $service->slug;
 
     $this->get(route('services.show', $slug))

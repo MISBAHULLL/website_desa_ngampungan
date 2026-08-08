@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\ServiceApplication;
+use App\Models\VillageService;
 use App\ServiceApplicationStatus;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -9,11 +10,11 @@ use Illuminate\Support\Facades\Storage;
 uses(LazilyRefreshDatabase::class);
 
 beforeEach(function () {
-    $service = \App\Models\VillageService::factory()->create([
+    $service = VillageService::factory()->create([
         'title' => 'Surat Keterangan Usaha',
         'slug' => 'surat-keterangan-usaha',
     ]);
-    
+
     $service->documentRequirements()->createMany([
         ['key' => 'identity-card', 'label' => 'KTP', 'is_required' => true, 'sort_order' => 1],
         ['key' => 'family-card', 'label' => 'KK', 'is_required' => true, 'sort_order' => 2],
@@ -153,7 +154,7 @@ test('service application validation rejects unknown and disguised document file
 
 test('unknown service slugs cannot be opened or submitted', function () {
     $this->get('/layanan/layanan-tidak-ada')->assertRedirect(route('services.index'));
-    
+
     $this->post('/layanan/layanan-tidak-ada/pengajuan', validServiceApplicationPayload())
         ->assertRedirect(route('services.index'));
 });
