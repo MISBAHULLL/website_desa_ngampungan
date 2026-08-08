@@ -14,6 +14,8 @@ type AdminImageUploadFieldProps = {
     onImageUrlChange: (value: string) => void;
     onImageAltChange: (value: string) => void;
     onFileChange?: (file: File | null) => void;
+    onRemoveImage?: (remove: boolean) => void;
+    removeImage?: boolean;
 };
 
 export function AdminImageUploadField({
@@ -28,6 +30,8 @@ export function AdminImageUploadField({
     onImageUrlChange,
     onImageAltChange,
     onFileChange,
+    onRemoveImage,
+    removeImage = false,
 }: AdminImageUploadFieldProps) {
     const inputRef = useRef<HTMLInputElement>(null);
     const previewUrlRef = useRef<string | null>(null);
@@ -42,7 +46,7 @@ export function AdminImageUploadField({
         };
     }, []);
 
-    const visiblePreview = previewUrl || imageUrl || currentImage;
+    const visiblePreview = previewUrl || (!removeImage ? (imageUrl || currentImage) : null);
 
     function clearSelectedFile() {
         if (previewUrlRef.current) {
@@ -53,6 +57,8 @@ export function AdminImageUploadField({
         setSelectedFile(null);
         setPreviewUrl(null);
         onFileChange?.(null);
+        onImageUrlChange('');
+        onRemoveImage?.(true);
 
         if (inputRef.current) {
             inputRef.current.value = '';
@@ -69,6 +75,7 @@ export function AdminImageUploadField({
         setSelectedFile(file);
         setPreviewUrl(nextPreviewUrl);
         onFileChange?.(file);
+        onRemoveImage?.(false);
     }
 
     return (
@@ -85,16 +92,14 @@ export function AdminImageUploadField({
                         alt={imageAlt || previewFallbackAlt}
                         className="size-full object-cover"
                     />
-                    {selectedFile && (
-                        <button
-                            type="button"
-                            onClick={clearSelectedFile}
-                            className="absolute top-3 right-3 inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-black focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                            aria-label="Batalkan gambar yang dipilih"
-                        >
-                            <X className="size-4" />
-                        </button>
-                    )}
+                    <button
+                        type="button"
+                        onClick={clearSelectedFile}
+                        className="absolute top-3 right-3 inline-flex size-9 items-center justify-center rounded-full bg-black/70 text-white transition hover:bg-red-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                        aria-label="Batalkan atau hapus gambar"
+                    >
+                        <X className="size-4" />
+                    </button>
                 </div>
             )}
 
@@ -146,7 +151,10 @@ export function AdminImageUploadField({
                     name="image_url"
                     type="url"
                     value={imageUrl}
-                    onChange={(event) => onImageUrlChange(event.target.value)}
+                    onChange={(event) => {
+                        onImageUrlChange(event.target.value);
+                        if (event.target.value) onRemoveImage?.(false);
+                    }}
                     placeholder="https://..."
                     className="mt-1 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-xs outline-none focus:border-emerald-600"
                 />

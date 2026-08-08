@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StoreNewsRequest extends FormRequest
 {
@@ -18,6 +19,7 @@ class StoreNewsRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'media_type' => ['required', Rule::in(['photo', 'video'])],
             'title' => ['required', 'string', 'max:255'],
             'category' => ['required', 'string', 'max:100'],
             'excerpt' => ['required', 'string', 'max:500'],
@@ -41,6 +43,8 @@ class StoreNewsRequest extends FormRequest
                 'max:102400', // 100MB
             ],
             'video_url' => ['nullable', 'url:http,https', 'max:500'],
+            'remove_video' => ['nullable', 'boolean'],
+            'remove_image' => ['nullable', 'boolean'],
             'is_featured' => ['sometimes', 'boolean'],
             'published_at' => ['nullable', 'date'],
         ];
@@ -66,8 +70,17 @@ class StoreNewsRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $mediaType = $this->string('media_type')->toString();
+
+        if ($mediaType === '') {
+            $mediaType = $this->hasFile('video') || $this->filled('video_url')
+                ? 'video'
+                : 'photo';
+        }
+
         $this->merge([
             'category' => Str::squish($this->string('category')->toString()),
+            'media_type' => $mediaType,
         ]);
     }
 }

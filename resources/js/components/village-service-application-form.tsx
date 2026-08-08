@@ -779,11 +779,7 @@ export function VillageServiceApplicationForm({
                                 const hasError = Boolean(
                                     fieldError(clientErrorKey, serverErrorKey),
                                 );
-                                const isSelected = Boolean(
-                                    selectedFile &&
-                                    (selectedFile instanceof File ||
-                                        selectedFile instanceof Blob),
-                                );
+                                const isSelected = selectedFile instanceof File;
 
                                 return (
                                     <div

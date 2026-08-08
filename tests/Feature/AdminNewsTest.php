@@ -123,6 +123,69 @@ test('authenticated users can upload supported news images', function (string $e
     Storage::disk('public')->assertExists(Str::after($news->image_path, '/storage/'));
 })->with(['jpg', 'png']);
 
+test('authenticated users can publish a video url without storing it as an uploaded video path', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)
+        ->post(route('admin.news.store'), validNewsPayload([
+            'media_type' => 'video',
+            'video_url' => 'https://www.youtube.com/watch?v=abc123xyz90',
+        ]))
+        ->assertRedirect(route('admin.news.index'))
+        ->assertSessionHasNoErrors();
+
+    $news = News::query()
+        ->where('title', 'Kerja Bakti Desa Ngampungan 2026')
+        ->firstOrFail();
+
+    expect($news)
+        ->image_path->toBeNull()
+        ->video_path->toBeNull()
+        ->video_url->toBe('https://www.youtube.com/watch?v=abc123xyz90');
+});
+
+test('public and admin news listings expose uploaded video media for thumbnails', function () {
+    $user = User::factory()->create();
+    $news = News::factory()->create([
+        'title' => 'POPSMART',
+        'image_path' => null,
+        'video_path' => '/storage/news/videos/popsmart.mp4',
+        'video_url' => null,
+    ]);
+
+    $this->get(route('news.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('news/index')
+            ->where('dbArticles.0.id', $news->id)
+            ->where('dbArticles.0.video', '/storage/news/videos/popsmart.mp4')
+            ->where('dbArticles.0.videoUrl', null));
+
+    $this->actingAs($user)
+        ->get(route('admin.news.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('admin/news/index')
+            ->where('news.data.0.id', $news->id)
+            ->where('news.data.0.video_path', '/storage/news/videos/popsmart.mp4'));
+});
+
+test('deleting a video news article removes its local video file', function () {
+    Storage::fake('public');
+    Storage::disk('public')->put('news/videos/popsmart.mp4', 'video content');
+    $user = User::factory()->create();
+    $news = News::factory()->create([
+        'image_path' => null,
+        'video_path' => '/storage/news/videos/popsmart.mp4',
+    ]);
+
+    $this->actingAs($user)
+        ->delete(route('admin.news.destroy', $news))
+        ->assertRedirect(route('admin.news.index'));
+
+    Storage::disk('public')->assertMissing('news/videos/popsmart.mp4');
+});
+
 test('replacing an uploaded news image removes the old local file', function () {
     Storage::fake('public');
     Storage::disk('public')->put('news/old.jpg', 'old image');

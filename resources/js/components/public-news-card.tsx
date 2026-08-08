@@ -1,12 +1,10 @@
-import { useState } from 'react';
 import { Link } from '@inertiajs/react';
 import { ArrowRight, CalendarDays } from 'lucide-react';
+import { NewsMediaThumbnail } from '@/components/news-media-thumbnail';
 import type { NewsArticle } from '@/lib/dummy-public-content';
 import { show as newsShow } from '@/routes/news';
 
 export function PublicNewsCard({ article }: { article: NewsArticle }) {
-    const [imgError, setImgError] = useState(false);
-
     return (
         <article className="group flex h-full flex-col overflow-hidden rounded-3xl border border-village-border bg-white transition-[transform,box-shadow,border-color] duration-300 ease-out hover:-translate-y-1 hover:border-village-primary/30 hover:shadow-village-floating motion-reduce:transform-none motion-reduce:transition-none">
             <Link
@@ -14,16 +12,13 @@ export function PublicNewsCard({ article }: { article: NewsArticle }) {
                 prefetch
                 className="relative block aspect-4/3 overflow-hidden focus-visible:ring-2 focus-visible:ring-village-primary focus-visible:outline-none focus-visible:ring-inset"
             >
-                <img
-                    src={
-                        !imgError && article.image
-                            ? article.image
-                            : '/images/news/default.png'
-                    }
+                <NewsMediaThumbnail
+                    image={article.image}
+                    video={article.video}
+                    videoUrl={article.videoUrl}
                     alt={article.alt || article.title}
-                    loading="lazy"
-                    onError={() => setImgError(true)}
-                    className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+                    className="size-full"
+                    imageClassName="transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
                 />
                 <span className="absolute top-4 left-4 rounded-full border border-white/60 bg-white/90 px-3 py-1.5 text-xs font-bold text-village-primary-dark shadow-sm backdrop-blur">
                     {article.category}

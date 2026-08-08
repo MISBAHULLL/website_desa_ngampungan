@@ -70,6 +70,8 @@ Route::get('/', function () {
             'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
             'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
             'alt' => $article->image_alt ?: $article->title,
+            'video' => $article->video_path,
+            'videoUrl' => $article->video_url,
             'featured' => (bool) $article->is_featured,
         ];
     });

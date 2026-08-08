@@ -18,6 +18,7 @@ import {
     index as newsIndex,
     toggleFeatured,
 } from '@/actions/App/Http/Controllers/Admin/NewsController';
+import { NewsMediaThumbnail } from '@/components/news-media-thumbnail';
 import { Spinner } from '@/components/ui/spinner';
 import { dashboard } from '@/routes';
 
@@ -30,6 +31,8 @@ type NewsItem = {
     author: string;
     image_path: string | null;
     image_alt: string | null;
+    video_path: string | null;
+    video_url: string | null;
     is_featured: boolean;
     published_at: string;
     created_at: string;
@@ -223,16 +226,27 @@ export default function AdminNewsIndex({
                                             <td className="px-5 py-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="relative size-14 shrink-0 overflow-hidden rounded-lg border border-sidebar-border/60 bg-muted">
-                                                        {item.image_path ? (
-                                                            <img
-                                                                src={
+                                                        {item.image_path ||
+                                                        item.video_path ||
+                                                        item.video_url ? (
+                                                            <NewsMediaThumbnail
+                                                                image={
                                                                     item.image_path
+                                                                }
+                                                                video={
+                                                                    item.video_path
+                                                                }
+                                                                videoUrl={
+                                                                    item.video_url
                                                                 }
                                                                 alt={
                                                                     item.image_alt ||
                                                                     item.title
                                                                 }
-                                                                className="size-full object-cover"
+                                                                className="size-full"
+                                                                showVideoLabel={
+                                                                    false
+                                                                }
                                                             />
                                                         ) : (
                                                             <div className="flex size-full items-center justify-center text-muted-foreground">

@@ -9,6 +9,8 @@ export type NewsArticle = {
     publishedLabel: string;
     image: string;
     alt: string;
+    video?: string | null;
+    videoUrl?: string | null;
     featured: boolean;
 };
 

@@ -20,6 +20,7 @@ import {
     findDummyNewsArticle,
     getRelatedDummyNewsArticles,
 } from '@/lib/dummy-public-content';
+import { getVideoEmbedUrl, isDirectVideoUrl } from '@/lib/video-media';
 import { index as newsIndex } from '@/routes/news';
 
 export default function NewsShow({
@@ -32,6 +33,7 @@ export default function NewsShow({
     relatedArticles?: NewsArticle[];
 }) {
     const article = dbArticle || findDummyNewsArticle(slug);
+    const videoEmbedUrl = getVideoEmbedUrl(article?.videoUrl);
     const relatedArticles =
         dbRelatedArticles && dbRelatedArticles.length > 0
             ? dbRelatedArticles
@@ -261,8 +263,45 @@ export default function NewsShow({
 
                 {/* Main Content & Cover Image Container */}
                 <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6 md:py-14 lg:px-8">
-                    {/* Featured Image */}
-                    {article.image && (
+                    {/* Media: Video or Featured Image */}
+                    {article.video ? (
+                        <figure className="overflow-hidden rounded-3xl border border-village-border bg-slate-950 shadow-village-floating">
+                            <video
+                                src={article.video}
+                                controls
+                                className="aspect-video w-full object-cover"
+                            />
+                            {article.alt && (
+                                <figcaption className="border-t border-slate-800 bg-slate-900 px-5 py-3 text-center text-xs font-medium text-slate-300">
+                                    {article.alt}
+                                </figcaption>
+                            )}
+                        </figure>
+                    ) : article.videoUrl ? (
+                        <figure className="overflow-hidden rounded-3xl border border-village-border bg-slate-950 shadow-village-floating">
+                            {isDirectVideoUrl(article.videoUrl) ? (
+                                <video
+                                    src={article.videoUrl}
+                                    controls
+                                    playsInline
+                                    className="aspect-video w-full object-cover"
+                                />
+                            ) : (
+                                <iframe
+                                    src={videoEmbedUrl ?? undefined}
+                                    title={article.title}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowFullScreen
+                                    className="aspect-video w-full"
+                                />
+                            )}
+                            {article.alt && (
+                                <figcaption className="border-t border-slate-800 bg-slate-900 px-5 py-3 text-center text-xs font-medium text-slate-300">
+                                    {article.alt}
+                                </figcaption>
+                            )}
+                        </figure>
+                    ) : article.image ? (
                         <figure className="overflow-hidden rounded-3xl border border-village-border bg-slate-100 shadow-village-floating">
                             <img
                                 src={article.image}
@@ -275,7 +314,7 @@ export default function NewsShow({
                                 </figcaption>
                             )}
                         </figure>
-                    )}
+                    ) : null}
 
                     {/* Article Body Content */}
                     <div className="mx-auto mt-10 space-y-7 text-base leading-relaxed text-slate-800 md:text-lg md:leading-loose">
