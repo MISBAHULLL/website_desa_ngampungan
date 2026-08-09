@@ -10,7 +10,7 @@ uses(LazilyRefreshDatabase::class);
 test('the admin seeder migrates the legacy account and replaces its default password', function () {
     config()->set('village_admin.name', 'Admin Desa Ngampungan');
     config()->set('village_admin.email', 'admin@desangampungan.id');
-    config()->set('village_admin.password', 'Sandi-Acak-Kuat!2026');
+    config()->set('village_admin.password', 'Contoh-Sandi/Kuat//2026!');
     config()->set('village_admin.legacy_emails', ['test@example.com']);
 
     $legacyAdmin = User::factory()->nonAdmin()->create([
@@ -28,7 +28,7 @@ test('the admin seeder migrates the legacy account and replaces its default pass
         ->name->toBe('Admin Desa Ngampungan')
         ->is_admin->toBeTrue()
         ->email_verified_at->not->toBeNull()
-        ->and(Hash::check('Sandi-Acak-Kuat!2026', $admin->password))->toBeTrue()
+        ->and(Hash::check('Contoh-Sandi/Kuat//2026!', $admin->password))->toBeTrue()
         ->and(User::query()->where('email', 'test@example.com')->exists())->toBeFalse();
 });
 

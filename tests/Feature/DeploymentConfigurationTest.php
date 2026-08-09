@@ -36,6 +36,8 @@ test('railway deployment files retain the required production commands', functio
         ->toHaveKey('deploy.healthcheckPath', '/up')
         ->toHaveKey('deploy.restartPolicyType', 'ON_FAILURE')
         ->and(file_get_contents(base_path('docker/deployment-start.sh')))
+        ->toContain('php artisan config:clear')
+        ->toContain('php artisan db:seed --class=AdminUserSeeder --force')
         ->toContain('php artisan optimize')
         ->toContain('SERVER_NAME=":${PORT:-10000}"')
         ->toContain('frankenphp run --config /etc/frankenphp/Caddyfile')
