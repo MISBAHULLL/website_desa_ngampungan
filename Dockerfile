@@ -68,9 +68,9 @@ ENV APP_ENV=production \
     LOG_STACK=stderr
 
 COPY --from=build --chown=www-data:www-data /var/www/html /var/www/html
-COPY docker/render-start.sh /usr/local/bin/render-start
+COPY docker/deployment-start.sh /usr/local/bin/deployment-start
 
-RUN chmod +x /usr/local/bin/render-start \
+RUN chmod +x /usr/local/bin/deployment-start \
     && mkdir -p \
         storage/framework/cache/data \
         storage/framework/sessions \
@@ -81,4 +81,4 @@ RUN chmod +x /usr/local/bin/render-start \
 
 EXPOSE 10000
 
-CMD ["render-start"]
+CMD ["deployment-start"]
