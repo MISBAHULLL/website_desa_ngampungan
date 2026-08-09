@@ -1,19 +1,11 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.3-apache-bookworm AS php-base
+FROM dunglas/frankenphp:1-php8.3-bookworm AS php-base
 
 ENV PORT=10000
 
-RUN apt-get update \
-    && apt-get install --no-install-recommends -y \
-        ca-certificates \
-        libcurl4-openssl-dev \
-        libicu-dev \
-        libonig-dev \
-        libxml2-dev \
-        libzip-dev \
-        unzip \
-    && docker-php-ext-install -j"$(nproc)" \
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && install-php-extensions \
         bcmath \
         curl \
         intl \
@@ -21,22 +13,12 @@ RUN apt-get update \
         opcache \
         pdo_mysql \
         xml \
-        zip \
-    && rm -f \
-        /etc/apache2/mods-enabled/mpm_event.conf \
-        /etc/apache2/mods-enabled/mpm_event.load \
-        /etc/apache2/mods-enabled/mpm_worker.conf \
-        /etc/apache2/mods-enabled/mpm_worker.load \
-    && a2enmod mpm_prefork expires headers rewrite \
-    && rm -rf /var/lib/apt/lists/*
+        zip
 
-WORKDIR /var/www/html
+WORKDIR /app
 
-COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
-COPY docker/ports.conf /etc/apache2/ports.conf
+COPY docker/Caddyfile /etc/frankenphp/Caddyfile
 COPY docker/php-production.ini /usr/local/etc/php/conf.d/99-production.ini
-
-RUN apache2ctl configtest
 
 FROM php-base AS build
 
@@ -74,7 +56,7 @@ ENV APP_ENV=production \
     LOG_CHANNEL=stderr \
     LOG_STACK=stderr
 
-COPY --from=build --chown=www-data:www-data /var/www/html /var/www/html
+COPY --from=build --chown=www-data:www-data /app /app
 COPY docker/deployment-start.sh /usr/local/bin/deployment-start
 
 RUN chmod +x /usr/local/bin/deployment-start \
