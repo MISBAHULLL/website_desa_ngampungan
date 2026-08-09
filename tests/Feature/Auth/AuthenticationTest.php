@@ -51,6 +51,8 @@ test('users can not authenticate with invalid password', function () {
     $this->post(route('login.store'), [
         'email' => $user->email,
         'password' => 'wrong-password',
+    ])->assertSessionHasErrors([
+        'email' => 'Alamat email atau kata sandi tidak sesuai.',
     ]);
 
     $this->assertGuest();
