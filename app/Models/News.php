@@ -2,13 +2,17 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\NewsFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/** @property CarbonImmutable $published_at */
 class News extends Model
 {
+    /** @use HasFactory<NewsFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -52,11 +56,19 @@ class News extends Model
         return $slug;
     }
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeFeatured(Builder $query): Builder
     {
         return $query->where('is_featured', true);
     }
 
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeLatestPublished(Builder $query): Builder
     {
         return $query->orderByDesc('published_at')->orderByDesc('id');

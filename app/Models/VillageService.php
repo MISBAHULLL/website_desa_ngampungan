@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\VillageServiceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -25,8 +26,8 @@ use Illuminate\Support\Str;
  * @property list<string>|null $notes
  * @property bool $is_active
  * @property int $sort_order
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable([
     'slug',
@@ -45,6 +46,7 @@ use Illuminate\Support\Str;
 ])]
 class VillageService extends Model
 {
+    /** @use HasFactory<VillageServiceFactory> */
     use HasFactory;
 
     /**

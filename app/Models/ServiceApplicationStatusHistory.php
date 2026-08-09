@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\ServiceApplicationStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\ServiceApplicationStatusHistoryFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -16,8 +16,8 @@ use Illuminate\Support\Carbon;
  * @property ServiceApplicationStatus $status
  * @property string|null $public_notes
  * @property int|null $changed_by
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable([
     'status',

@@ -39,7 +39,8 @@ class AgendaController extends Controller
 
         $agendas = $query->orderBy('event_date', 'desc')
             ->paginate(10)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (Agenda $item): array => $this->withResolvedImage($item));
 
         return Inertia::render('admin/agenda/index', [
             'agendas' => $agendas,
@@ -94,7 +95,7 @@ class AgendaController extends Controller
     public function edit(Agenda $agenda): Response
     {
         return Inertia::render('admin/agenda/edit', [
-            'agendaItem' => $agenda,
+            'agendaItem' => $this->withResolvedImage($agenda),
             ...$this->categoryProps(),
         ]);
     }
@@ -198,5 +199,14 @@ class AgendaController extends Controller
         }
 
         return $imageUrl ?: $fallback;
+    }
+
+    /** @return array<string, mixed> */
+    private function withResolvedImage(Agenda $agenda): array
+    {
+        return [
+            ...$agenda->toArray(),
+            'image_path' => $this->imageStorage->url($agenda->image_path),
+        ];
     }
 }

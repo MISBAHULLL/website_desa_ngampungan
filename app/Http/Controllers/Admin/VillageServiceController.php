@@ -217,7 +217,7 @@ class VillageServiceController extends Controller
         $service->requirements()->delete();
 
         foreach ($requirements as $index => $requirement) {
-            $description = trim($requirement['description'] ?? '');
+            $description = trim($requirement['description']);
 
             if ($description === '') {
                 continue;

@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Database\Factories\VillageInstitutionFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property int $id
@@ -23,6 +25,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class VillageInstitution extends Model
 {
+    /** @use HasFactory<VillageInstitutionFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -67,7 +70,7 @@ class VillageInstitution extends Model
             return $this->logo_path;
         }
 
-        return asset('storage/'.$this->logo_path);
+        return Storage::disk('public')->url($this->logo_path);
     }
 
     /**

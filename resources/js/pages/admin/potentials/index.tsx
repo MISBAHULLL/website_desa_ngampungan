@@ -19,6 +19,7 @@ type PotentialItem = {
     address: string;
     phone: string;
     image_path: string | null;
+    image_url: string | null;
 };
 
 type AdminPotentialsIndexProps = {
@@ -41,12 +42,12 @@ export default function AdminPotentialsIndex({
         if (debounceTimeout.current) {
             clearTimeout(debounceTimeout.current);
         }
-        
+
         debounceTimeout.current = setTimeout(() => {
             router.get(
                 potentialsIndex.url(),
                 { search: query, category: cat },
-                { preserveState: true, replace: true }
+                { preserveState: true, replace: true },
             );
         }, 300);
     }, []);
@@ -89,7 +90,8 @@ export default function AdminPotentialsIndex({
                             Kelola Potensi Desa
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Kelola data UMKM, hasil bumi, pariwisata, budaya, kuliner, dan jasa warga.
+                            Kelola data UMKM, hasil bumi, pariwisata, budaya,
+                            kuliner, dan jasa warga.
                         </p>
                     </div>
                     <Link
@@ -104,19 +106,19 @@ export default function AdminPotentialsIndex({
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div className="flex flex-1 flex-col gap-4 md:flex-row md:items-center">
                         <div className="relative w-full md:w-80">
-                            <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                            <Search className="absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                             <input
                                 type="text"
                                 placeholder="Cari nama, alamat, pengelola..."
                                 value={search}
                                 onChange={handleSearchChange}
-                                className="h-10 w-full rounded-lg border border-sidebar-border/70 bg-background pl-10 pr-4 text-sm outline-none transition focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                                className="h-10 w-full rounded-lg border border-sidebar-border/70 bg-background pr-4 pl-10 text-sm transition outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
                             />
                         </div>
                         <select
                             value={category}
                             onChange={handleCategoryChange}
-                            className="h-10 rounded-lg border border-sidebar-border/70 bg-background px-3 text-sm outline-none transition focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
+                            className="h-10 rounded-lg border border-sidebar-border/70 bg-background px-3 text-sm transition outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-600"
                         >
                             <option value="all">Semua Kategori</option>
                             <option value="umkm">UMKM</option>
@@ -139,7 +141,8 @@ export default function AdminPotentialsIndex({
                                 Belum ada Potensi Desa
                             </h3>
                             <p className="mt-2 text-sm text-muted-foreground">
-                                Tambahkan data potensi desa pertama untuk ditampilkan di website.
+                                Tambahkan data potensi desa pertama untuk
+                                ditampilkan di website.
                             </p>
                             <Link
                                 href={potentialsCreate()}
@@ -172,14 +175,16 @@ export default function AdminPotentialsIndex({
                                     {potentials.map((item) => (
                                         <tr
                                             key={item.id}
-                                            className="border-b border-sidebar-border/70 transition hover:bg-muted/30 last:border-0"
+                                            className="border-b border-sidebar-border/70 transition last:border-0 hover:bg-muted/30"
                                         >
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="size-12 shrink-0 overflow-hidden rounded-md border border-sidebar-border/70 bg-muted">
-                                                        {item.image_path ? (
+                                                        {item.image_url ? (
                                                             <img
-                                                                src={item.image_path.startsWith('http') ? item.image_path : `/storage/${item.image_path}`}
+                                                                src={
+                                                                    item.image_url
+                                                                }
                                                                 alt={item.name}
                                                                 className="size-full object-cover"
                                                             />
@@ -201,7 +206,9 @@ export default function AdminPotentialsIndex({
                                             </td>
                                             <td className="px-6 py-4">
                                                 <span className="inline-flex items-center rounded-md bg-emerald-100 px-2 py-1 text-xs font-semibold text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-300">
-                                                    {categoryLabels[item.category] || item.category}
+                                                    {categoryLabels[
+                                                        item.category
+                                                    ] || item.category}
                                                 </span>
                                             </td>
                                             <td className="px-6 py-4">
@@ -228,7 +235,9 @@ export default function AdminPotentialsIndex({
                                                     <button
                                                         type="button"
                                                         onClick={() =>
-                                                            handleDelete(item.id)
+                                                            handleDelete(
+                                                                item.id,
+                                                            )
                                                         }
                                                         className="inline-flex size-8 items-center justify-center rounded-md border border-red-200 text-red-600 transition hover:bg-red-50 dark:border-red-900/50 dark:text-red-400 dark:hover:bg-red-900/20"
                                                     >

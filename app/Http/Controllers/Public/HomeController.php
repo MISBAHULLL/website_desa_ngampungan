@@ -9,12 +9,14 @@ use App\Models\HeroSlide;
 use App\Models\News;
 use App\Models\VillageLeader;
 use App\Models\VillageProfile;
-use Illuminate\Support\Facades\Storage;
+use App\Support\PublicImageStorage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class HomeController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $mediaStorage) {}
+
     public function __invoke(): Response
     {
         $villageProfile = VillageProfile::query()->first([
@@ -49,9 +51,7 @@ class HomeController extends Controller
                 'primaryCtaUrl' => $slide->primary_cta_url,
                 'secondaryCtaText' => $slide->secondary_cta_text,
                 'secondaryCtaUrl' => $slide->secondary_cta_url,
-                'backgroundImage' => $slide->background_image
-                    ? Storage::disk('public')->url($slide->background_image)
-                    : null,
+                'backgroundImage' => $this->mediaStorage->url($slide->background_image),
             ]);
 
         $dbArticles = News::query()
@@ -71,9 +71,10 @@ class HomeController extends Controller
                 'author' => $article->author,
                 'publishedAt' => $article->published_at->format('Y-m-d'),
                 'publishedLabel' => $article->published_at->translatedFormat('d F Y'),
-                'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
+                'image' => $this->mediaStorage->url($article->image_path)
+                    ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
                 'alt' => $article->image_alt ?: $article->title,
-                'video' => $article->video_path,
+                'video' => $this->mediaStorage->url($article->video_path),
                 'videoUrl' => $article->video_url,
                 'featured' => (bool) $article->is_featured,
             ]);

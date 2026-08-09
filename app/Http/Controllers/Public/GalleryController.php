@@ -4,11 +4,14 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\GalleryPhoto;
+use App\Support\PublicImageStorage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class GalleryController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $mediaStorage) {}
+
     public function __invoke(): Response
     {
         $dbPhotos = GalleryPhoto::latest('captured_at')->latest('id')->get()->map(function ($photo) {
@@ -21,9 +24,9 @@ class GalleryController extends Controller
                 'mediaType' => $photo->media_type ?? 'photo',
                 'capturedAt' => $photo->captured_at ? $photo->captured_at->format('Y-m-d') : null,
                 'capturedLabel' => $photo->captured_at ? $photo->captured_at->translatedFormat('j F Y') : 'Terbaru',
-                'image' => $photo->image_path,
+                'image' => $this->mediaStorage->url($photo->image_path),
                 'alt' => $photo->image_alt ?: $photo->title,
-                'video' => $photo->video_path,
+                'video' => $this->mediaStorage->url($photo->video_path),
                 'videoUrl' => $photo->video_url,
                 'featured' => (bool) $photo->is_featured,
             ];

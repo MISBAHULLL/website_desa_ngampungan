@@ -3,6 +3,7 @@
 use App\Models\ApbdesDocument;
 use App\Models\ApbdesSummary;
 use App\Models\User;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -78,6 +79,7 @@ test('admin can create APBDes with income sources and activities', function () {
     expect($summary)
         ->year->toBe('2027')
         ->net_financing->toBe(30_000_000)
+        ->updated_date->toBeInstanceOf(CarbonImmutable::class)
         ->and($summary->incomeSources()->count())->toBe(2)
         ->and($summary->activities()->count())->toBe(1);
 

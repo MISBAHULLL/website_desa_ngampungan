@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
 use Database\Factories\AnnouncementFactory;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -19,8 +19,8 @@ use Illuminate\Support\Str;
  * @property string $priority
  * @property string $status
  * @property bool $is_pinned
- * @property Carbon $starts_at
- * @property Carbon|null $ends_at
+ * @property CarbonImmutable $starts_at
+ * @property CarbonImmutable|null $ends_at
  */
 class Announcement extends Model
 {
@@ -68,7 +68,7 @@ class Announcement extends Model
 
     public static function resolveStatusForPeriod(string $status, DateTimeInterface|string|null $endsAt): string
     {
-        if ($status === 'active' && $endsAt !== null && Carbon::parse($endsAt)->isPast()) {
+        if ($status === 'active' && $endsAt !== null && CarbonImmutable::parse($endsAt)->isPast()) {
             return 'archived';
         }
 

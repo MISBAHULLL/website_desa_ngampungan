@@ -2,6 +2,7 @@
 
 use App\Models\News;
 use App\Models\User;
+use App\Support\PublicImageStorage;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -152,13 +153,14 @@ test('public and admin news listings expose uploaded video media for thumbnails'
         'video_path' => '/storage/news/videos/popsmart.mp4',
         'video_url' => null,
     ]);
+    $resolvedVideoUrl = app(PublicImageStorage::class)->url($news->video_path);
 
     $this->get(route('news.index'))
         ->assertOk()
         ->assertInertia(fn (Assert $page) => $page
             ->component('news/index')
             ->where('dbArticles.0.id', $news->id)
-            ->where('dbArticles.0.video', '/storage/news/videos/popsmart.mp4')
+            ->where('dbArticles.0.video', $resolvedVideoUrl)
             ->where('dbArticles.0.videoUrl', null));
 
     $this->actingAs($user)
@@ -167,7 +169,7 @@ test('public and admin news listings expose uploaded video media for thumbnails'
         ->assertInertia(fn (Assert $page) => $page
             ->component('admin/news/index')
             ->where('news.data.0.id', $news->id)
-            ->where('news.data.0.video_path', '/storage/news/videos/popsmart.mp4'));
+            ->where('news.data.0.video_path', $resolvedVideoUrl));
 });
 
 test('deleting a video news article removes its local video file', function () {

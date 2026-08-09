@@ -2,14 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $year
+ * @property CarbonImmutable|null $updated_date
+ * @property int $net_financing
+ * @property-read Collection<int, ApbdesIncomeSource> $incomeSources
+ * @property-read Collection<int, ApbdesActivityItem> $activities
+ */
 class ApbdesSummary extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'year',
         'updated_date',
@@ -24,11 +31,13 @@ class ApbdesSummary extends Model
         ];
     }
 
+    /** @return HasMany<ApbdesIncomeSource, $this> */
     public function incomeSources(): HasMany
     {
         return $this->hasMany(ApbdesIncomeSource::class);
     }
 
+    /** @return HasMany<ApbdesActivityItem, $this> */
     public function activities(): HasMany
     {
         return $this->hasMany(ApbdesActivityItem::class);
@@ -96,7 +105,7 @@ class ApbdesSummary extends Model
                 'code' => $activity->code,
                 'name' => $activity->name,
                 'category' => $activity->category,
-                'categoryLabel' => $categoryLabels[$activity->category] ?? $activity->category,
+                'categoryLabel' => $categoryLabels[$activity->category],
                 'budget' => $this->formatRupiah((int) $activity->budget),
                 'realized' => $this->formatRupiah((int) $activity->realized),
                 'percentage' => $percentage,

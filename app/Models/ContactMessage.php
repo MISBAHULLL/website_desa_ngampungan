@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\ContactMessageStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\ContactMessageFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -18,10 +18,10 @@ use Illuminate\Support\Carbon;
  * @property ContactMessageStatus $status
  * @property string|null $ip_address
  * @property string|null $user_agent
- * @property Carbon|null $read_at
- * @property Carbon|null $resolved_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable|null $read_at
+ * @property CarbonImmutable|null $resolved_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable([
     'name',

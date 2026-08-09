@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\VillageService;
 use App\Models\VillageServiceDocumentRequirement;
 use App\Models\VillageServiceRequirement;
-use App\Support\VillageServiceCatalog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -14,10 +13,6 @@ use Inertia\Response;
 
 class ServiceController extends Controller
 {
-    public function __construct(
-        private VillageServiceCatalog $serviceCatalog,
-    ) {}
-
     public function index(Request $request): Response
     {
         $requestedCategory = $request->string('category')->toString();

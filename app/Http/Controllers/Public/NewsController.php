@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\News;
+use App\Support\PublicImageStorage;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Inertia\Inertia;
@@ -12,6 +13,8 @@ use UnexpectedValueException;
 
 class NewsController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $mediaStorage) {}
+
     /**
      * Display the public news index.
      */
@@ -30,9 +33,10 @@ class NewsController extends Controller
                 'author' => $article->author,
                 'publishedAt' => $publishedAt->format('Y-m-d'),
                 'publishedLabel' => $publishedAt->translatedFormat('d F Y'),
-                'image' => $article->image_path ?: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1400&auto=format&fit=crop',
+                'image' => $this->mediaStorage->url($article->image_path)
+                    ?: 'https://images.unsplash.com/photo-1590059346282-3f136e053912?q=80&w=1400&auto=format&fit=crop',
                 'alt' => $article->image_alt ?: $article->title,
-                'video' => $article->video_path,
+                'video' => $this->mediaStorage->url($article->video_path),
                 'videoUrl' => $article->video_url,
                 'featured' => (bool) $article->is_featured,
             ];
@@ -63,9 +67,10 @@ class NewsController extends Controller
             'author' => $article->author,
             'publishedAt' => $articlePublishedAt->format('Y-m-d'),
             'publishedLabel' => $articlePublishedAt->translatedFormat('d F Y'),
-            'image' => $article->image_path ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
+            'image' => $this->mediaStorage->url($article->image_path)
+                ?: ($article->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
             'alt' => $article->image_alt ?: $article->title,
-            'video' => $article->video_path,
+            'video' => $this->mediaStorage->url($article->video_path),
             'videoUrl' => $article->video_url,
             'featured' => (bool) $article->is_featured,
         ] : null;
@@ -88,9 +93,10 @@ class NewsController extends Controller
                     'author' => $item->author,
                     'publishedAt' => $publishedAt->format('Y-m-d'),
                     'publishedLabel' => $publishedAt->translatedFormat('d F Y'),
-                    'image' => $item->image_path ?: ($item->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
+                    'image' => $this->mediaStorage->url($item->image_path)
+                        ?: ($item->is_featured ? '/images/news/featured.png' : '/images/news/default.png'),
                     'alt' => $item->image_alt ?: $item->title,
-                    'video' => $item->video_path,
+                    'video' => $this->mediaStorage->url($item->video_path),
                     'videoUrl' => $item->video_url,
                     'featured' => (bool) $item->is_featured,
                 ];

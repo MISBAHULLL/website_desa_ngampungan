@@ -6,14 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreVillagePotentialRequest;
 use App\Http\Requests\UpdateVillagePotentialRequest;
 use App\Models\VillagePotential;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class VillagePotentialController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $search = $request->input('search');
         $category = $request->input('category');
@@ -42,12 +44,12 @@ class VillagePotentialController extends Controller
         ]);
     }
 
-    public function create()
+    public function create(): Response
     {
         return Inertia::render('admin/potentials/create');
     }
 
-    public function store(StoreVillagePotentialRequest $request)
+    public function store(StoreVillagePotentialRequest $request): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -80,7 +82,7 @@ class VillagePotentialController extends Controller
             ->with('success', 'Potensi desa berhasil ditambahkan.');
     }
 
-    public function edit(VillagePotential $potential)
+    public function edit(VillagePotential $potential): Response
     {
         $potential->load('offerings');
 
@@ -89,7 +91,7 @@ class VillagePotentialController extends Controller
         ]);
     }
 
-    public function update(UpdateVillagePotentialRequest $request, VillagePotential $potential)
+    public function update(UpdateVillagePotentialRequest $request, VillagePotential $potential): RedirectResponse
     {
         $validated = $request->validated();
 
@@ -129,7 +131,7 @@ class VillagePotentialController extends Controller
             ->with('success', 'Data potensi desa berhasil diperbarui.');
     }
 
-    public function destroy(VillagePotential $potential)
+    public function destroy(VillagePotential $potential): RedirectResponse
     {
         if ($potential->image_path) {
             Storage::disk('public')->delete($potential->image_path);

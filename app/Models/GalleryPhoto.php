@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\GalleryPhotoFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+/** @property CarbonImmutable|null $captured_at */
 class GalleryPhoto extends Model
 {
+    /** @use HasFactory<GalleryPhotoFactory> */
     use HasFactory;
 
     protected $fillable = [

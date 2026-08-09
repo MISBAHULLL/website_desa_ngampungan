@@ -69,10 +69,6 @@ class CreateServiceApplicationAction
                 ]);
 
                 foreach ($data['documents'] as $documentKey => $uploadedFile) {
-                    if (! $uploadedFile instanceof UploadedFile) {
-                        continue;
-                    }
-
                     $storagePath = $uploadedFile->store(
                         $storageDirectory,
                         'local',

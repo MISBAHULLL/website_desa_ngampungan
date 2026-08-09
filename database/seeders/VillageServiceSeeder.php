@@ -52,7 +52,7 @@ class VillageServiceSeeder extends Seeder
                     'village_service_id' => $service->id,
                     'key' => $document['key'],
                     'label' => $document['label'],
-                    'description' => $document['description'] ?? null,
+                    'description' => $document['description'],
                     'is_required' => $document['required'],
                     'accepted_formats' => $document['accepted_formats'] ?? '.pdf,.jpg,.jpeg,.png',
                     'sort_order' => $docIndex,

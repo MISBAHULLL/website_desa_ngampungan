@@ -4,14 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\GalleryPhoto;
+use App\Support\PublicImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class GalleryController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $mediaStorage) {}
+
     public function index(Request $request): Response
     {
         $search = $request->input('search');
@@ -33,7 +35,8 @@ class GalleryController extends Controller
         $photos = $query->latest('captured_at')
             ->latest('id')
             ->paginate(12)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (GalleryPhoto $item): array => $this->withResolvedMedia($item));
 
         $categories = GalleryPhoto::select('category')->distinct()->pluck('category');
 
@@ -91,15 +94,13 @@ class GalleryController extends Controller
 
         if ($validated['media_type'] === 'photo') {
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('gallery/photos', 'public');
-                $imagePath = Storage::url($path);
+                $imagePath = $this->mediaStorage->store($request->file('image'), 'gallery/photos');
             } else {
                 $imagePath = $validated['image_url'];
             }
         } else {
             if ($request->hasFile('video')) {
-                $path = $request->file('video')->store('gallery/videos', 'public');
-                $videoPath = Storage::url($path);
+                $videoPath = $this->mediaStorage->store($request->file('video'), 'gallery/videos');
             } elseif (! empty($validated['video_url'])) {
                 $videoPath = $validated['video_url'];
             }
@@ -131,7 +132,7 @@ class GalleryController extends Controller
     public function edit(GalleryPhoto $gallery): Response
     {
         return Inertia::render('admin/gallery/edit', [
-            'photo' => $gallery,
+            'photo' => $this->withResolvedMedia($gallery),
         ]);
     }
 
@@ -186,28 +187,30 @@ class GalleryController extends Controller
 
         if ($validated['media_type'] === 'photo') {
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('gallery/photos', 'public');
-                $imagePath = Storage::url($path);
+                $this->mediaStorage->delete($gallery->image_path);
+                $imagePath = $this->mediaStorage->store($request->file('image'), 'gallery/photos');
             } elseif (! empty($validated['image_url'])) {
+                $this->mediaStorage->delete($gallery->image_path);
                 $imagePath = $validated['image_url'];
             }
-            // Reset video paths when switching to photo
+
+            $this->mediaStorage->delete($gallery->video_path);
             $videoPath = null;
             $videoUrl = null;
         } else {
             if ($removeVideo) {
+                $this->mediaStorage->delete($gallery->video_path);
                 $videoPath = null;
                 $videoUrl = null;
             } elseif ($request->hasFile('video')) {
-                $path = $request->file('video')->store('gallery/videos', 'public');
-                $videoPath = Storage::url($path);
-                // Clear video_url when uploading a new file
+                $this->mediaStorage->delete($gallery->video_path);
+                $videoPath = $this->mediaStorage->store($request->file('video'), 'gallery/videos');
                 $videoUrl = null;
             } elseif (! empty($validated['video_url'])) {
                 $videoUrl = $validated['video_url'];
-                // Don't override existing videoPath unless explicitly changed
             }
-            // Reset image path when switching to video
+
+            $this->mediaStorage->delete($gallery->image_path);
             $imagePath = null;
         }
 
@@ -246,9 +249,21 @@ class GalleryController extends Controller
 
     public function destroy(GalleryPhoto $gallery): RedirectResponse
     {
+        $this->mediaStorage->delete($gallery->image_path);
+        $this->mediaStorage->delete($gallery->video_path);
         $gallery->delete();
 
         return redirect()->route('admin.gallery.index')
             ->with('success', 'Foto galeri berhasil dihapus.');
+    }
+
+    /** @return array<string, mixed> */
+    private function withResolvedMedia(GalleryPhoto $gallery): array
+    {
+        return [
+            ...$gallery->toArray(),
+            'image_path' => $this->mediaStorage->url($gallery->image_path),
+            'video_path' => $this->mediaStorage->url($gallery->video_path),
+        ];
     }
 }

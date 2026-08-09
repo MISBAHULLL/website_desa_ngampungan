@@ -2,13 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $category
+ * @property string $year
+ * @property CarbonImmutable $document_date
+ * @property string|null $file_path
+ * @property string $file_format
+ * @property string $original_name
+ * @property string|null $mime_type
+ * @property string $file_size
+ */
 class ApbdesDocument extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
         'title',
         'category',

@@ -2,11 +2,18 @@
 
 namespace App\Models;
 
+use Carbon\CarbonImmutable;
+use Database\Factories\VillageLeaderFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property CarbonImmutable $started_at
+ * @property CarbonImmutable|null $ended_at
+ */
 #[Fillable([
     'name',
     'position',
@@ -21,6 +28,7 @@ use Illuminate\Support\Facades\Storage;
 ])]
 class VillageLeader extends Model
 {
+    /** @use HasFactory<VillageLeaderFactory> */
     use HasFactory;
 
     protected function casts(): array
@@ -32,7 +40,11 @@ class VillageLeader extends Model
         ];
     }
 
-    public function scopeActive($query)
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }

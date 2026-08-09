@@ -13,9 +13,14 @@ class VillagePotentialSeeder extends Seeder
     public function run(): void
     {
         $json = file_get_contents(storage_path('app/potentials.json'));
+
+        if ($json === false) {
+            return;
+        }
+
         $potentials = json_decode($json, true);
 
-        if (! $potentials) {
+        if (! is_array($potentials)) {
             return;
         }
 

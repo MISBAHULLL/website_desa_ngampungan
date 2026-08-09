@@ -3,13 +3,13 @@
 namespace App\Models;
 
 use App\ServiceApplicationStatus;
+use Carbon\CarbonImmutable;
 use Database\Factories\ServiceApplicationFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
@@ -25,12 +25,12 @@ use Illuminate\Support\Carbon;
  * @property string|null $admin_notes
  * @property string|null $public_notes
  * @property int|null $reviewed_by
- * @property Carbon|null $reviewed_at
+ * @property CarbonImmutable|null $reviewed_at
  * @property string|null $ip_address
  * @property string|null $user_agent
- * @property Carbon $submitted_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property CarbonImmutable $submitted_at
+ * @property CarbonImmutable|null $created_at
+ * @property CarbonImmutable|null $updated_at
  */
 #[Fillable([
     'reference_number',

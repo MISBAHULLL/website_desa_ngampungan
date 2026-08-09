@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\HeroSlideFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,6 +22,7 @@ use Illuminate\Database\Eloquent\Model;
 ])]
 class HeroSlide extends Model
 {
+    /** @use HasFactory<HeroSlideFactory> */
     use HasFactory;
 
     protected function casts(): array
@@ -31,7 +33,10 @@ class HeroSlide extends Model
         ];
     }
 
-    /** @param Builder<self> $query */
+    /**
+     * @param  Builder<self>  $query
+     * @return Builder<self>
+     */
     public function scopeActive(Builder $query): Builder
     {
         return $query

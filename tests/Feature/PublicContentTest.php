@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Agenda;
+use App\Models\GalleryPhoto;
+use App\Models\News;
 use App\Models\VillageOfficial;
 use App\Models\VillageProfile;
 use App\Models\VillageService;
@@ -251,6 +254,39 @@ test('the public gallery index renders its Inertia page with a canonical URL', f
         ->assertInertia(fn (Assert $page) => $page
             ->component('gallery/index')
             ->where('canonicalUrl', route('gallery.index')));
+});
+
+test('public content resolves legacy local media URLs through the configured public disk', function () {
+    config()->set('filesystems.disks.public.url', 'https://media.example.test');
+
+    $news = News::factory()->create([
+        'image_path' => 'http://localhost:8000/storage/news/berita.jpg',
+        'video_path' => 'http://localhost:8000/storage/news/videos/berita.mp4',
+    ]);
+    Agenda::factory()->create([
+        'image_path' => 'http://localhost:8000/storage/agendas/kegiatan.jpg',
+    ]);
+    GalleryPhoto::factory()->create([
+        'media_type' => 'video',
+        'image_path' => null,
+        'video_path' => '/storage/gallery/videos/kegiatan.mp4',
+    ]);
+
+    $this->get(route('news.show', $news->slug))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('dbArticle.image', 'https://media.example.test/news/berita.jpg')
+            ->where('dbArticle.video', 'https://media.example.test/news/videos/berita.mp4'));
+
+    $this->get(route('agendas.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('dbAgendas.0.image', 'https://media.example.test/agendas/kegiatan.jpg'));
+
+    $this->get(route('gallery.index'))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->where('dbPhotos.0.video', 'https://media.example.test/gallery/videos/kegiatan.mp4'));
 });
 
 test('the agenda and gallery modules expose filters, inline details, and an accessible lightbox', function () {

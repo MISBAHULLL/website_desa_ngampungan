@@ -42,7 +42,8 @@ class NewsController extends Controller
             })
             ->latestPublished()
             ->paginate(10)
-            ->withQueryString();
+            ->withQueryString()
+            ->through(fn (News $item): array => $this->withResolvedMedia($item));
 
         $storedCategories = News::query()
             ->distinct()
@@ -112,7 +113,7 @@ class NewsController extends Controller
     public function edit(News $news): Response
     {
         return Inertia::render('admin/news/edit', [
-            'newsItem' => $news,
+            'newsItem' => $this->withResolvedMedia($news),
             ...$this->categoryProps(),
         ]);
     }
@@ -183,7 +184,7 @@ class NewsController extends Controller
             $this->imageStorage->delete($previousImagePath);
         }
 
-        if ($previousVideoPath !== $videoPath && $previousVideoPath && str_starts_with($previousVideoPath, '/storage/')) {
+        if ($previousVideoPath !== $videoPath) {
             $this->imageStorage->delete($previousVideoPath);
         }
 
@@ -266,5 +267,15 @@ class NewsController extends Controller
         }
 
         return null;
+    }
+
+    /** @return array<string, mixed> */
+    private function withResolvedMedia(News $news): array
+    {
+        return [
+            ...$news->toArray(),
+            'image_path' => $this->imageStorage->url($news->image_path),
+            'video_path' => $this->imageStorage->url($news->video_path),
+        ];
     }
 }

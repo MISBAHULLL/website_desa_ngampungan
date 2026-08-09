@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use Database\Factories\VillageProfileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class VillageProfile extends Model
 {
+    /** @use HasFactory<VillageProfileFactory> */
     use HasFactory;
 
     protected $fillable = [

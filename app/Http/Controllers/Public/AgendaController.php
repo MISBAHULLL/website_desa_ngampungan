@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Agenda;
+use App\Support\PublicImageStorage;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Inertia\Inertia;
@@ -12,6 +13,8 @@ use UnexpectedValueException;
 
 class AgendaController extends Controller
 {
+    public function __construct(private readonly PublicImageStorage $mediaStorage) {}
+
     public function __invoke(): Response
     {
         $dbAgendas = Agenda::orderBy('event_date', 'asc')->get()->map(function (Agenda $agenda): array {
@@ -23,7 +26,7 @@ class AgendaController extends Controller
                 'title' => $agenda->title,
                 'category' => $agenda->category,
                 'summary' => $agenda->summary,
-                'image' => $agenda->image_path,
+                'image' => $this->mediaStorage->url($agenda->image_path),
                 'imageAlt' => $agenda->image_alt ?: $agenda->title,
                 'details' => $agenda->details ?? [],
                 'eventDate' => $eventDate->format('Y-m-d'),
