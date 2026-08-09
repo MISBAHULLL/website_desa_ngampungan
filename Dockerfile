@@ -22,7 +22,12 @@ RUN apt-get update \
         pdo_mysql \
         xml \
         zip \
-    && a2enmod expires headers rewrite \
+    && rm -f \
+        /etc/apache2/mods-enabled/mpm_event.conf \
+        /etc/apache2/mods-enabled/mpm_event.load \
+        /etc/apache2/mods-enabled/mpm_worker.conf \
+        /etc/apache2/mods-enabled/mpm_worker.load \
+    && a2enmod mpm_prefork expires headers rewrite \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /var/www/html
@@ -30,6 +35,8 @@ WORKDIR /var/www/html
 COPY docker/apache-vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY docker/ports.conf /etc/apache2/ports.conf
 COPY docker/php-production.ini /usr/local/etc/php/conf.d/99-production.ini
+
+RUN apache2ctl configtest
 
 FROM php-base AS build
 

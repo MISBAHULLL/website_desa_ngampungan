@@ -39,6 +39,9 @@ test('railway deployment files retain the required production commands', functio
         ->toContain('php artisan optimize')
         ->not->toContain('php artisan migrate')
         ->and(file_get_contents(base_path('Dockerfile')))
+        ->toContain('/etc/apache2/mods-enabled/mpm_event.load')
+        ->toContain('a2enmod mpm_prefork expires headers rewrite')
+        ->toContain('apache2ctl configtest')
         ->toContain('EXPOSE 10000')
         ->toContain('CMD ["deployment-start"]');
 });
