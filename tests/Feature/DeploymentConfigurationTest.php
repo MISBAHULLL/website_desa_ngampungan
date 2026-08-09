@@ -29,7 +29,10 @@ test('railway deployment files retain the required production commands', functio
     expect($railway)
         ->toHaveKey('build.builder', 'DOCKERFILE')
         ->toHaveKey('build.dockerfilePath', 'Dockerfile')
-        ->toHaveKey('deploy.preDeployCommand', 'php artisan migrate --force')
+        ->toHaveKey(
+            'deploy.preDeployCommand',
+            'php artisan migrate --force && php artisan db:seed --class=AdminUserSeeder --force',
+        )
         ->toHaveKey('deploy.healthcheckPath', '/up')
         ->toHaveKey('deploy.restartPolicyType', 'ON_FAILURE')
         ->and(file_get_contents(base_path('docker/deployment-start.sh')))
