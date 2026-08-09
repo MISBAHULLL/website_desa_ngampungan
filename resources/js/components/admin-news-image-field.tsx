@@ -46,7 +46,8 @@ export function AdminImageUploadField({
         };
     }, []);
 
-    const visiblePreview = previewUrl || (!removeImage ? (imageUrl || currentImage) : null);
+    const visiblePreview =
+        previewUrl || (!removeImage ? imageUrl || currentImage : null);
 
     function clearSelectedFile() {
         if (previewUrlRef.current) {
@@ -153,7 +154,10 @@ export function AdminImageUploadField({
                     value={imageUrl}
                     onChange={(event) => {
                         onImageUrlChange(event.target.value);
-                        if (event.target.value) onRemoveImage?.(false);
+
+                        if (event.target.value) {
+                            onRemoveImage?.(false);
+                        }
                     }}
                     placeholder="https://..."
                     className="mt-1 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-xs outline-none focus:border-emerald-600"

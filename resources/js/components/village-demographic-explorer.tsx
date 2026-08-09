@@ -26,7 +26,9 @@ export function VillageDemographicExplorer({
         datasets.find((dataset) => dataset.key === activeDemographicKey) ??
         datasets[0];
 
-    if (!activeDataset) return null;
+    if (!activeDataset) {
+        return null;
+    }
 
     return (
         <div className="rounded-3xl border border-village-border/80 bg-white p-5 shadow-sm transition-all duration-500 hover:border-emerald-300/80 hover:shadow-md sm:p-7">
@@ -42,6 +44,7 @@ export function VillageDemographicExplorer({
                     </span>
                     {datasets.map((dataset) => {
                         const isSelected = activeDemographicKey === dataset.key;
+
                         return (
                             <button
                                 key={dataset.key}

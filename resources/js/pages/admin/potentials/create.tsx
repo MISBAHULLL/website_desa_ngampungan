@@ -33,7 +33,7 @@ export default function AdminPotentialsCreate() {
     const [longitude, setLongitude] = useState<string>('');
     const [locationLabel, setLocationLabel] = useState('');
     const [tags, setTags] = useState<string[]>(['']);
-    
+
     // Offerings state
     const [offerings, setOfferings] = useState<
         { name: string; description: string; image?: File | null }[]
@@ -50,7 +50,10 @@ export default function AdminPotentialsCreate() {
     }
 
     function removeParagraph(index: number) {
-        if (description.length <= 1) return;
+        if (description.length <= 1) {
+            return;
+        }
+
         setDescription(description.filter((_, i) => i !== index));
     }
 
@@ -65,12 +68,18 @@ export default function AdminPotentialsCreate() {
     }
 
     function removeTag(index: number) {
-        if (tags.length <= 1) return;
+        if (tags.length <= 1) {
+            return;
+        }
+
         setTags(tags.filter((_, i) => i !== index));
     }
 
     function addOffering() {
-        setOfferings([...offerings, { name: '', description: '', image: null }]);
+        setOfferings([
+            ...offerings,
+            { name: '', description: '', image: null },
+        ]);
     }
 
     function updateOfferingName(index: number, value: string) {
@@ -92,7 +101,10 @@ export default function AdminPotentialsCreate() {
     }
 
     function removeOffering(index: number) {
-        if (offerings.length <= 1) return;
+        if (offerings.length <= 1) {
+            return;
+        }
+
         setOfferings(offerings.filter((_, i) => i !== index));
     }
 
@@ -114,7 +126,8 @@ export default function AdminPotentialsCreate() {
                             Tambah Potensi Desa
                         </h1>
                         <p className="mt-1 text-sm text-muted-foreground">
-                            Masukkan data UMKM, wisata, atau potensi warga lainnya.
+                            Masukkan data UMKM, wisata, atau potensi warga
+                            lainnya.
                         </p>
                     </div>
                 </header>
@@ -128,11 +141,17 @@ export default function AdminPotentialsCreate() {
                                     <h2 className="mb-4 text-base font-bold text-foreground">
                                         Informasi Utama
                                     </h2>
-                                    
+
                                     <div className="space-y-4">
                                         <div>
-                                            <label htmlFor="name" className="block text-sm font-bold text-foreground">
-                                                Nama Potensi / Usaha <span className="text-red-500">*</span>
+                                            <label
+                                                htmlFor="name"
+                                                className="block text-sm font-bold text-foreground"
+                                            >
+                                                Nama Potensi / Usaha{' '}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
                                             </label>
                                             <input
                                                 id="name"
@@ -141,15 +160,26 @@ export default function AdminPotentialsCreate() {
                                                 required
                                                 maxLength={255}
                                                 value={name}
-                                                onChange={(e) => setName(e.target.value)}
+                                                onChange={(e) =>
+                                                    setName(e.target.value)
+                                                }
                                                 className="mt-1 min-h-11 w-full rounded-lg border border-sidebar-border/70 bg-background px-4 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                             />
-                                            <InputError message={errors.name} className="mt-1" />
+                                            <InputError
+                                                message={errors.name}
+                                                className="mt-1"
+                                            />
                                         </div>
 
                                         <div>
-                                            <label htmlFor="short_description" className="block text-sm font-bold text-foreground">
-                                                Ringkasan Singkat <span className="text-red-500">*</span>
+                                            <label
+                                                htmlFor="short_description"
+                                                className="block text-sm font-bold text-foreground"
+                                            >
+                                                Ringkasan Singkat{' '}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
                                             </label>
                                             <textarea
                                                 id="short_description"
@@ -158,10 +188,19 @@ export default function AdminPotentialsCreate() {
                                                 required
                                                 maxLength={500}
                                                 value={shortDescription}
-                                                onChange={(e) => setShortDescription(e.target.value)}
+                                                onChange={(e) =>
+                                                    setShortDescription(
+                                                        e.target.value,
+                                                    )
+                                                }
                                                 className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                             />
-                                            <InputError message={errors.short_description} className="mt-1" />
+                                            <InputError
+                                                message={
+                                                    errors.short_description
+                                                }
+                                                className="mt-1"
+                                            />
                                         </div>
                                     </div>
                                 </div>
@@ -171,7 +210,10 @@ export default function AdminPotentialsCreate() {
                                     <div className="flex items-center justify-between border-b border-sidebar-border/70 pb-4">
                                         <div>
                                             <h2 className="text-base font-bold text-foreground">
-                                                Deskripsi Lengkap (Paragraf) <span className="text-red-500">*</span>
+                                                Deskripsi Lengkap (Paragraf){' '}
+                                                <span className="text-red-500">
+                                                    *
+                                                </span>
                                             </h2>
                                         </div>
                                         <button
@@ -186,13 +228,22 @@ export default function AdminPotentialsCreate() {
 
                                     <div className="mt-4 space-y-4">
                                         {description.map((paragraph, index) => (
-                                            <div key={index} className="group relative rounded-xl border border-sidebar-border/60 bg-muted/20 p-3">
+                                            <div
+                                                key={index}
+                                                className="group relative rounded-xl border border-sidebar-border/60 bg-muted/20 p-3"
+                                            >
                                                 <div className="mb-2 flex items-center justify-between">
-                                                    <span className="text-xs font-bold text-muted-foreground">Paragraf #{index + 1}</span>
+                                                    <span className="text-xs font-bold text-muted-foreground">
+                                                        Paragraf #{index + 1}
+                                                    </span>
                                                     {description.length > 1 && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => removeParagraph(index)}
+                                                            onClick={() =>
+                                                                removeParagraph(
+                                                                    index,
+                                                                )
+                                                            }
                                                             className="text-xs text-red-500 hover:underline"
                                                         >
                                                             Hapus
@@ -204,13 +255,21 @@ export default function AdminPotentialsCreate() {
                                                     rows={3}
                                                     required
                                                     value={paragraph}
-                                                    onChange={(e) => updateParagraph(index, e.target.value)}
+                                                    onChange={(e) =>
+                                                        updateParagraph(
+                                                            index,
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     className="w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm outline-none focus:border-emerald-600"
                                                 />
                                             </div>
                                         ))}
                                     </div>
-                                    <InputError message={errors.description} className="mt-2" />
+                                    <InputError
+                                        message={errors.description}
+                                        className="mt-2"
+                                    />
                                 </div>
 
                                 {/* Offerings */}
@@ -220,7 +279,10 @@ export default function AdminPotentialsCreate() {
                                             <h2 className="text-base font-bold text-foreground">
                                                 Produk & Layanan (Offerings)
                                             </h2>
-                                            <p className="text-xs text-muted-foreground mt-1">Daftar layanan atau produk unggulan yang ditawarkan.</p>
+                                            <p className="mt-1 text-xs text-muted-foreground">
+                                                Daftar layanan atau produk
+                                                unggulan yang ditawarkan.
+                                            </p>
                                         </div>
                                         <button
                                             type="button"
@@ -234,13 +296,22 @@ export default function AdminPotentialsCreate() {
 
                                     <div className="mt-4 space-y-4">
                                         {offerings.map((offering, index) => (
-                                            <div key={index} className="rounded-xl border border-sidebar-border/60 p-4">
+                                            <div
+                                                key={index}
+                                                className="rounded-xl border border-sidebar-border/60 p-4"
+                                            >
                                                 <div className="mb-3 flex items-center justify-between">
-                                                    <span className="text-xs font-bold text-muted-foreground">Layanan #{index + 1}</span>
+                                                    <span className="text-xs font-bold text-muted-foreground">
+                                                        Layanan #{index + 1}
+                                                    </span>
                                                     {offerings.length > 1 && (
                                                         <button
                                                             type="button"
-                                                            onClick={() => removeOffering(index)}
+                                                            onClick={() =>
+                                                                removeOffering(
+                                                                    index,
+                                                                )
+                                                            }
                                                             className="text-xs text-red-500 hover:underline"
                                                         >
                                                             Hapus
@@ -249,34 +320,70 @@ export default function AdminPotentialsCreate() {
                                                 </div>
                                                 <div className="space-y-3">
                                                     <div>
-                                                        <label className="block text-xs font-semibold text-muted-foreground">Nama Layanan/Produk <span className="text-red-500">*</span></label>
+                                                        <label className="block text-xs font-semibold text-muted-foreground">
+                                                            Nama Layanan/Produk{' '}
+                                                            <span className="text-red-500">
+                                                                *
+                                                            </span>
+                                                        </label>
                                                         <input
                                                             name={`offerings[${index}][name]`}
                                                             type="text"
                                                             required
-                                                            value={offering.name}
-                                                            onChange={(e) => updateOfferingName(index, e.target.value)}
+                                                            value={
+                                                                offering.name
+                                                            }
+                                                            onChange={(e) =>
+                                                                updateOfferingName(
+                                                                    index,
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
                                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs font-semibold text-muted-foreground">Deskripsi Singkat <span className="text-red-500">*</span></label>
+                                                        <label className="block text-xs font-semibold text-muted-foreground">
+                                                            Deskripsi Singkat{' '}
+                                                            <span className="text-red-500">
+                                                                *
+                                                            </span>
+                                                        </label>
                                                         <textarea
                                                             name={`offerings[${index}][description]`}
                                                             rows={2}
                                                             required
-                                                            value={offering.description}
-                                                            onChange={(e) => updateOfferingDesc(index, e.target.value)}
+                                                            value={
+                                                                offering.description
+                                                            }
+                                                            onChange={(e) =>
+                                                                updateOfferingDesc(
+                                                                    index,
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
                                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background p-2 text-sm outline-none focus:border-emerald-600"
                                                         />
                                                     </div>
                                                     <div>
-                                                        <label className="block text-xs font-semibold text-muted-foreground">Foto Produk/Layanan (Opsional)</label>
+                                                        <label className="block text-xs font-semibold text-muted-foreground">
+                                                            Foto Produk/Layanan
+                                                            (Opsional)
+                                                        </label>
                                                         <input
                                                             type="file"
                                                             name={`offerings[${index}][image]`}
                                                             accept="image/jpeg,image/png,image/webp"
-                                                            onChange={(e) => updateOfferingImage(index, e.target.files?.[0] || null)}
+                                                            onChange={(e) =>
+                                                                updateOfferingImage(
+                                                                    index,
+                                                                    e.target
+                                                                        .files?.[0] ||
+                                                                        null,
+                                                                )
+                                                            }
                                                             className="mt-1 w-full text-xs text-muted-foreground file:mr-4 file:rounded-full file:border-0 file:bg-emerald-50 file:px-4 file:py-1 file:text-xs file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
                                                         />
                                                     </div>
@@ -284,7 +391,10 @@ export default function AdminPotentialsCreate() {
                                             </div>
                                         ))}
                                     </div>
-                                    <InputError message={errors.offerings} className="mt-2" />
+                                    <InputError
+                                        message={errors.offerings}
+                                        className="mt-2"
+                                    />
                                 </div>
                             </div>
 
@@ -293,60 +403,111 @@ export default function AdminPotentialsCreate() {
                                 {/* Category */}
                                 <div className="space-y-4 rounded-xl border border-sidebar-border/70 bg-background p-5">
                                     <div>
-                                        <label htmlFor="category" className="block text-xs font-bold text-muted-foreground uppercase">
-                                            Kategori Potensi <span className="text-red-500">*</span>
+                                        <label
+                                            htmlFor="category"
+                                            className="block text-xs font-bold text-muted-foreground uppercase"
+                                        >
+                                            Kategori Potensi{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
                                         </label>
                                         <select
                                             id="category"
                                             name="category"
                                             value={category}
-                                            onChange={(e) => setCategory(e.target.value)}
+                                            onChange={(e) =>
+                                                setCategory(e.target.value)
+                                            }
                                             className="mt-1.5 min-h-10 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm font-semibold outline-none focus:border-emerald-600"
                                         >
                                             {categoryOptions.map((cat) => (
-                                                <option key={cat.value} value={cat.value}>
+                                                <option
+                                                    key={cat.value}
+                                                    value={cat.value}
+                                                >
                                                     {cat.label}
                                                 </option>
                                             ))}
                                         </select>
-                                        <InputError message={errors.category} className="mt-1" />
+                                        <InputError
+                                            message={errors.category}
+                                            className="mt-1"
+                                        />
                                     </div>
                                 </div>
 
                                 {/* Management & Contact Info */}
                                 <div className="space-y-4 rounded-xl border border-sidebar-border/70 bg-background p-5">
-                                    <h3 className="text-sm font-bold text-foreground">Kontak & Pengelola</h3>
-                                    
+                                    <h3 className="text-sm font-bold text-foreground">
+                                        Kontak & Pengelola
+                                    </h3>
+
                                     <div>
-                                        <label htmlFor="manager_name" className="block text-xs font-semibold text-muted-foreground">Nama Pengelola <span className="text-red-500">*</span></label>
+                                        <label
+                                            htmlFor="manager_name"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Nama Pengelola{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
                                         <input
                                             id="manager_name"
                                             name="manager_name"
                                             type="text"
                                             required
                                             value={managerName}
-                                            onChange={(e) => setManagerName(e.target.value)}
+                                            onChange={(e) =>
+                                                setManagerName(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
-                                        <InputError message={errors.manager_name} className="mt-1" />
+                                        <InputError
+                                            message={errors.manager_name}
+                                            className="mt-1"
+                                        />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="manager_label" className="block text-xs font-semibold text-muted-foreground">Label Jabatan (Contoh: Pemilik Usaha) <span className="text-red-500">*</span></label>
+                                        <label
+                                            htmlFor="manager_label"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Label Jabatan (Contoh: Pemilik
+                                            Usaha){' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
                                         <input
                                             id="manager_label"
                                             name="manager_label"
                                             type="text"
                                             required
                                             value={managerLabel}
-                                            onChange={(e) => setManagerLabel(e.target.value)}
+                                            onChange={(e) =>
+                                                setManagerLabel(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
-                                        <InputError message={errors.manager_label} className="mt-1" />
+                                        <InputError
+                                            message={errors.manager_label}
+                                            className="mt-1"
+                                        />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="phone" className="block text-xs font-semibold text-muted-foreground">Nomor Telepon/WhatsApp <span className="text-red-500">*</span></label>
+                                        <label
+                                            htmlFor="phone"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Nomor Telepon/WhatsApp{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
                                         <input
                                             id="phone"
                                             name="phone"
@@ -354,21 +515,33 @@ export default function AdminPotentialsCreate() {
                                             required
                                             placeholder="+628123456789"
                                             value={phone}
-                                            onChange={(e) => setPhone(e.target.value)}
+                                            onChange={(e) =>
+                                                setPhone(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
-                                        <InputError message={errors.phone} className="mt-1" />
+                                        <InputError
+                                            message={errors.phone}
+                                            className="mt-1"
+                                        />
                                     </div>
-                                    
+
                                     <div>
-                                        <label htmlFor="phone_label" className="block text-xs font-semibold text-muted-foreground">Label Telepon Tampil (Opsional)</label>
+                                        <label
+                                            htmlFor="phone_label"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Label Telepon Tampil (Opsional)
+                                        </label>
                                         <input
                                             id="phone_label"
                                             name="phone_label"
                                             type="text"
                                             placeholder="0812-3456-789"
                                             value={phoneLabel}
-                                            onChange={(e) => setPhoneLabel(e.target.value)}
+                                            onChange={(e) =>
+                                                setPhoneLabel(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
                                     </div>
@@ -378,69 +551,112 @@ export default function AdminPotentialsCreate() {
                                 <div className="space-y-4 rounded-xl border border-sidebar-border/70 bg-background p-5">
                                     <div className="flex items-center gap-2">
                                         <MapPin className="size-4 text-emerald-600" />
-                                        <h3 className="text-sm font-bold text-foreground">Lokasi & Jam Operasional</h3>
+                                        <h3 className="text-sm font-bold text-foreground">
+                                            Lokasi & Jam Operasional
+                                        </h3>
                                     </div>
-                                    
+
                                     <div>
-                                        <label htmlFor="address" className="block text-xs font-semibold text-muted-foreground">Alamat Lengkap <span className="text-red-500">*</span></label>
+                                        <label
+                                            htmlFor="address"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Alamat Lengkap{' '}
+                                            <span className="text-red-500">
+                                                *
+                                            </span>
+                                        </label>
                                         <textarea
                                             id="address"
                                             name="address"
                                             rows={2}
                                             required
                                             value={address}
-                                            onChange={(e) => setAddress(e.target.value)}
+                                            onChange={(e) =>
+                                                setAddress(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background p-2 text-sm outline-none focus:border-emerald-600"
                                         />
-                                        <InputError message={errors.address} className="mt-1" />
+                                        <InputError
+                                            message={errors.address}
+                                            className="mt-1"
+                                        />
                                     </div>
 
                                     <div>
-                                        <label htmlFor="opening_hours" className="block text-xs font-semibold text-muted-foreground">Jam Operasional (Opsional)</label>
+                                        <label
+                                            htmlFor="opening_hours"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Jam Operasional (Opsional)
+                                        </label>
                                         <input
                                             id="opening_hours"
                                             name="opening_hours"
                                             type="text"
                                             placeholder="Senin-Sabtu, 08:00 - 16:00"
                                             value={openingHours}
-                                            onChange={(e) => setOpeningHours(e.target.value)}
+                                            onChange={(e) =>
+                                                setOpeningHours(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-2">
                                         <div>
-                                            <label htmlFor="latitude" className="block text-xs font-semibold text-muted-foreground">Latitude</label>
+                                            <label
+                                                htmlFor="latitude"
+                                                className="block text-xs font-semibold text-muted-foreground"
+                                            >
+                                                Latitude
+                                            </label>
                                             <input
                                                 id="latitude"
                                                 name="latitude"
                                                 type="text"
                                                 value={latitude}
-                                                onChange={(e) => setLatitude(e.target.value)}
+                                                onChange={(e) =>
+                                                    setLatitude(e.target.value)
+                                                }
                                                 className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                             />
                                         </div>
                                         <div>
-                                            <label htmlFor="longitude" className="block text-xs font-semibold text-muted-foreground">Longitude</label>
+                                            <label
+                                                htmlFor="longitude"
+                                                className="block text-xs font-semibold text-muted-foreground"
+                                            >
+                                                Longitude
+                                            </label>
                                             <input
                                                 id="longitude"
                                                 name="longitude"
                                                 type="text"
                                                 value={longitude}
-                                                onChange={(e) => setLongitude(e.target.value)}
+                                                onChange={(e) =>
+                                                    setLongitude(e.target.value)
+                                                }
                                                 className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                             />
                                         </div>
                                     </div>
-                                    
+
                                     <div>
-                                        <label htmlFor="location_label" className="block text-xs font-semibold text-muted-foreground">Label Titik Peta</label>
+                                        <label
+                                            htmlFor="location_label"
+                                            className="block text-xs font-semibold text-muted-foreground"
+                                        >
+                                            Label Titik Peta
+                                        </label>
                                         <input
                                             id="location_label"
                                             name="location_label"
                                             type="text"
                                             value={locationLabel}
-                                            onChange={(e) => setLocationLabel(e.target.value)}
+                                            onChange={(e) =>
+                                                setLocationLabel(e.target.value)
+                                            }
                                             className="mt-1 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600"
                                         />
                                     </div>
@@ -449,7 +665,9 @@ export default function AdminPotentialsCreate() {
                                 {/* Tags */}
                                 <div className="space-y-4 rounded-xl border border-sidebar-border/70 bg-background p-5">
                                     <div className="flex items-center justify-between">
-                                        <h3 className="text-sm font-bold text-foreground">Tags (Kata Kunci)</h3>
+                                        <h3 className="text-sm font-bold text-foreground">
+                                            Tags (Kata Kunci)
+                                        </h3>
                                         <button
                                             type="button"
                                             onClick={addTag}
@@ -458,22 +676,32 @@ export default function AdminPotentialsCreate() {
                                             + Tambah Tag
                                         </button>
                                     </div>
-                                    
+
                                     <div className="flex flex-wrap gap-2">
                                         {tags.map((tag, index) => (
-                                            <div key={index} className="flex items-center gap-1 rounded-md border border-sidebar-border/70 bg-background p-1">
+                                            <div
+                                                key={index}
+                                                className="flex items-center gap-1 rounded-md border border-sidebar-border/70 bg-background p-1"
+                                            >
                                                 <input
                                                     name={`tags[${index}]`}
                                                     type="text"
                                                     value={tag}
-                                                    onChange={(e) => updateTag(index, e.target.value)}
+                                                    onChange={(e) =>
+                                                        updateTag(
+                                                            index,
+                                                            e.target.value,
+                                                        )
+                                                    }
                                                     className="w-24 bg-transparent px-1 text-xs outline-none"
                                                     placeholder="tag..."
                                                 />
                                                 {tags.length > 1 && (
                                                     <button
                                                         type="button"
-                                                        onClick={() => removeTag(index)}
+                                                        onClick={() =>
+                                                            removeTag(index)
+                                                        }
                                                         className="text-muted-foreground hover:text-red-500"
                                                     >
                                                         <Trash2 className="size-3" />
@@ -486,14 +714,20 @@ export default function AdminPotentialsCreate() {
 
                                 {/* Image Upload */}
                                 <div className="rounded-xl border border-sidebar-border/70 bg-background p-5">
-                                    <h3 className="text-sm font-bold text-foreground mb-3">Foto / Gambar Cover <span className="text-red-500">*</span></h3>
+                                    <h3 className="mb-3 text-sm font-bold text-foreground">
+                                        Foto / Gambar Cover{' '}
+                                        <span className="text-red-500">*</span>
+                                    </h3>
                                     <input
                                         type="file"
                                         name="image"
                                         accept="image/jpeg,image/png,image/webp"
                                         className="w-full text-sm text-muted-foreground file:mr-4 file:rounded-full file:border-0 file:bg-emerald-50 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100"
                                     />
-                                    <InputError message={errors.image} className="mt-2" />
+                                    <InputError
+                                        message={errors.image}
+                                        className="mt-2"
+                                    />
                                 </div>
 
                                 {/* Submit Action Button */}
@@ -503,7 +737,11 @@ export default function AdminPotentialsCreate() {
                                         disabled={processing}
                                         className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-emerald-800 disabled:opacity-60 dark:bg-emerald-600 dark:hover:bg-emerald-500"
                                     >
-                                        {processing ? <Spinner /> : <FileText className="size-4" />}
+                                        {processing ? (
+                                            <Spinner />
+                                        ) : (
+                                            <FileText className="size-4" />
+                                        )}
                                         <span>Simpan Potensi Desa</span>
                                     </button>
                                 </div>

@@ -52,11 +52,14 @@ export function VillageGalleryLightbox({
     const isVideo = photo.mediaType === 'video';
     const videoSrc = photo.video || null;
     const videoEmbedUrl = photo.videoUrl
-        ? photo.videoUrl.includes('youtube.com') || photo.videoUrl.includes('youtu.be')
-            ? photo.videoUrl.replace('watch?v=', 'embed/').replace('youtu.be/', 'youtube.com/embed/')
+        ? photo.videoUrl.includes('youtube.com') ||
+          photo.videoUrl.includes('youtu.be')
+            ? photo.videoUrl
+                  .replace('watch?v=', 'embed/')
+                  .replace('youtu.be/', 'youtube.com/embed/')
             : photo.videoUrl.includes('vimeo.com')
-            ? photo.videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')
-            : photo.videoUrl
+              ? photo.videoUrl.replace('vimeo.com/', 'player.vimeo.com/video/')
+              : photo.videoUrl
         : null;
 
     return (
@@ -97,7 +100,10 @@ export function VillageGalleryLightbox({
                                         className="h-full w-full object-cover"
                                     />
                                 ) : videoEmbedUrl ? (
-                                    <div className="flex h-full w-full items-center justify-center" style={{ minHeight: '22rem' }}>
+                                    <div
+                                        className="flex h-full w-full items-center justify-center"
+                                        style={{ minHeight: '22rem' }}
+                                    >
                                         <iframe
                                             src={videoEmbedUrl}
                                             title={photo.title}
@@ -109,7 +115,11 @@ export function VillageGalleryLightbox({
                                     </div>
                                 ) : (
                                     <div className="flex aspect-video w-full items-center justify-center">
-                                        <svg className="size-24 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                                        <svg
+                                            className="size-24 text-white opacity-50"
+                                            fill="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
                                             <path d="M8 5v14l11-7z" />
                                         </svg>
                                     </div>
@@ -188,7 +198,8 @@ export function VillageGalleryLightbox({
                                 </dd>
                             </div>
                             <div className="mt-2 rounded-xl border border-slate-200 bg-slate-100 p-3 text-center text-xs font-semibold text-slate-600">
-                                {isVideo ? 'Video' : 'Foto'} {currentIndex + 1} dari {photos.length}
+                                {isVideo ? 'Video' : 'Foto'} {currentIndex + 1}{' '}
+                                dari {photos.length}
                             </div>
                         </dl>
                     </div>

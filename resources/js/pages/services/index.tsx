@@ -5,7 +5,6 @@ import {
     FileCheck2,
     Filter,
     Search,
-    Sparkles,
     X,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
@@ -125,6 +124,7 @@ export default function ServiceIndex({
 
     const visibleServices = useMemo(() => {
         let categoryServices = services;
+
         if (initialCategory !== 'all') {
             categoryServices = services.filter(
                 (s) => s.category === initialCategory,
@@ -427,6 +427,7 @@ export default function ServiceIndex({
                                     categoryPresentation[
                                         service.category as VillageServiceCategoryKey
                                     ];
+
                                 return (
                                     <StaggerItem
                                         key={service.slug}

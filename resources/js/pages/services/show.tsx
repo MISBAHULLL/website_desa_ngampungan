@@ -3,14 +3,10 @@ import {
     AlertTriangle,
     ArrowDown,
     ArrowLeft,
-    CheckCircle2,
     ChevronRight,
     Clock3,
-    FileCheck2,
-    FileText,
     Headphones,
     Info,
-    ShieldAlert,
     Sparkles,
     UsersRound,
 } from 'lucide-react';
@@ -76,7 +72,6 @@ type ServiceShowPageProps = {
 };
 
 export default function ServiceShow({
-    slug,
     service,
     requirements,
     requiredDocuments,

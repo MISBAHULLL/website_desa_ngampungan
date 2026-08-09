@@ -123,8 +123,8 @@ export default function AdminPotentialsEdit({
 
     function removeParagraph(index: number) {
         if (description.length <= 1) {
-return;
-}
+            return;
+        }
 
         setDescription(description.filter((_, i) => i !== index));
     }
@@ -141,8 +141,8 @@ return;
 
     function removeTag(index: number) {
         if (tags.length <= 1) {
-return;
-}
+            return;
+        }
 
         setTags(tags.filter((_, i) => i !== index));
     }
@@ -174,8 +174,8 @@ return;
 
     function removeOffering(index: number) {
         if (offerings.length <= 1) {
-return;
-}
+            return;
+        }
 
         setOfferings(offerings.filter((_, i) => i !== index));
     }

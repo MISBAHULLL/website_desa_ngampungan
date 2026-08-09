@@ -1,6 +1,6 @@
 import { Link } from '@inertiajs/react';
-import type { PropsWithChildren } from 'react';
 import { ArrowLeft, ShieldCheck } from 'lucide-react';
+import type { PropsWithChildren } from 'react';
 import {
     Card,
     CardContent,

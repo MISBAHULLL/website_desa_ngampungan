@@ -488,6 +488,7 @@ export default function VillageServiceCreate({
                                                         'label',
                                                         e.target.value,
                                                     );
+
                                                     if (!doc.key) {
                                                         autoGenerateKey(
                                                             index,

@@ -54,7 +54,7 @@ function validServiceApplicationPayload(array $overrides = []): array
 }
 
 test('a public visitor can submit a service application with private documents', function () {
-    Storage::fake('local');
+    Storage::fake('private');
 
     $response = $this->post(
         route('service-applications.store', 'surat-keterangan-usaha'),
@@ -91,14 +91,15 @@ test('a public visitor can submit a service application with private documents',
         ->not->toBe('3517123456789012');
 
     foreach ($serviceApplication->documents as $document) {
-        Storage::disk('local')->assertExists($document->storage_path);
+        Storage::disk('private')->assertExists($document->storage_path);
+        expect($document->storage_disk)->toBe('private');
         expect($document->getRawOriginal('original_name'))
             ->not->toBe($document->original_name);
     }
 });
 
 test('service application validation rejects incomplete applicant data and documents', function () {
-    Storage::fake('local');
+    Storage::fake('private');
 
     $response = $this
         ->from(route('services.show', 'surat-keterangan-usaha'))
@@ -124,11 +125,11 @@ test('service application validation rejects incomplete applicant data and docum
         ]);
 
     expect(ServiceApplication::query()->count())->toBe(0);
-    Storage::disk('local')->assertDirectoryEmpty('/');
+    Storage::disk('private')->assertDirectoryEmpty('/');
 });
 
 test('service application validation rejects unknown and disguised document files', function () {
-    Storage::fake('local');
+    Storage::fake('private');
 
     $payload = validServiceApplicationPayload();
     $payload['documents']['unexpected-document'] = fakePdf('unknown.pdf');

@@ -276,6 +276,7 @@ export default function AdminVillageInstitutionsIndex({
                             const isPrevious = index === 0;
                             const isNext =
                                 index === institutions.links.length - 1;
+
                             if (!link.url) {
                                 return (
                                     <span
@@ -292,6 +293,7 @@ export default function AdminVillageInstitutionsIndex({
                                     </span>
                                 );
                             }
+
                             return (
                                 <Link
                                     key={`${link.label}-${index}`}

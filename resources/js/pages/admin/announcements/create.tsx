@@ -492,6 +492,7 @@ export default function AdminAnnouncementCreate() {
                                                 const date = data.ends_at
                                                     ? data.ends_at.split('T')[0]
                                                     : '';
+
                                                 if (date) {
                                                     setData(
                                                         'ends_at',

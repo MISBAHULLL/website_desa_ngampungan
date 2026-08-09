@@ -537,6 +537,7 @@ export default function AdminAnnouncementEdit({
                                                     const date = endsAt
                                                         ? endsAt.split('T')[0]
                                                         : '';
+
                                                     if (date) {
                                                         setEndsAt(
                                                             `${date}T${time || '23:59'}`,

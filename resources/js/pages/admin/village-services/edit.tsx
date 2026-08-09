@@ -519,6 +519,7 @@ export default function VillageServiceEdit({
                                                         'label',
                                                         e.target.value,
                                                     );
+
                                                     if (!doc.key) {
                                                         autoGenerateKey(
                                                             index,

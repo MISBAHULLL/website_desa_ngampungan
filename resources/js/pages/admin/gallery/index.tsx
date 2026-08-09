@@ -222,31 +222,47 @@ export default function AdminGalleryIndex({
                                             <td className="px-5 py-4">
                                                 <div className="flex items-center gap-4">
                                                     <div className="relative size-16 shrink-0 overflow-hidden rounded-lg border border-sidebar-border/60 bg-muted">
-                                                        {item.media_type === 'video' ? (
+                                                        {item.media_type ===
+                                                        'video' ? (
                                                             <>
                                                                 {item.video_path ? (
                                                                     <video
-                                                                        src={item.video_path}
+                                                                        src={
+                                                                            item.video_path
+                                                                        }
                                                                         className="size-full object-cover"
                                                                         muted
                                                                     />
                                                                 ) : (
                                                                     <div className="flex size-full items-center justify-center bg-gray-800 text-white">
-                                                                        <svg className="size-8" fill="currentColor" viewBox="0 0 24 24">
+                                                                        <svg
+                                                                            className="size-8"
+                                                                            fill="currentColor"
+                                                                            viewBox="0 0 24 24"
+                                                                        >
                                                                             <path d="M8 5v14l11-7z" />
                                                                         </svg>
                                                                     </div>
                                                                 )}
                                                                 <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                                                                    <svg className="size-8 text-white drop-shadow" fill="currentColor" viewBox="0 0 24 24">
+                                                                    <svg
+                                                                        className="size-8 text-white drop-shadow"
+                                                                        fill="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
                                                                         <path d="M8 5v14l11-7z" />
                                                                     </svg>
                                                                 </div>
                                                             </>
                                                         ) : item.image_path ? (
                                                             <img
-                                                                src={item.image_path}
-                                                                alt={item.image_alt || item.title}
+                                                                src={
+                                                                    item.image_path
+                                                                }
+                                                                alt={
+                                                                    item.image_alt ||
+                                                                    item.title
+                                                                }
                                                                 className="size-full object-cover"
                                                             />
                                                         ) : (
@@ -260,9 +276,14 @@ export default function AdminGalleryIndex({
                                                             <h2 className="line-clamp-1 font-bold text-foreground">
                                                                 {item.title}
                                                             </h2>
-                                                            {item.media_type === 'video' && (
+                                                            {item.media_type ===
+                                                                'video' && (
                                                                 <span className="inline-flex items-center gap-1 rounded-md bg-purple-100 px-2 py-0.5 text-xs font-bold text-purple-800 dark:bg-purple-950 dark:text-purple-300">
-                                                                    <svg className="size-3" fill="currentColor" viewBox="0 0 24 24">
+                                                                    <svg
+                                                                        className="size-3"
+                                                                        fill="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
                                                                         <path d="M8 5v14l11-7z" />
                                                                     </svg>
                                                                     Video

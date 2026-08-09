@@ -6,7 +6,6 @@ import {
     Plus,
     Trash2,
     UserPlus,
-    Users,
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -39,6 +38,7 @@ export default function AdminVillageInstitutionCreate() {
 
     function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
         const file = e.target.files?.[0];
+
         if (file) {
             setData('logo', file);
             setLogoPreview(URL.createObjectURL(file));
@@ -57,7 +57,10 @@ export default function AdminVillageInstitutionCreate() {
     }
 
     function removeResponsibility(index: number) {
-        if (data.responsibilities.length === 1) return;
+        if (data.responsibilities.length === 1) {
+            return;
+        }
+
         const updated = data.responsibilities.filter((_, i) => i !== index);
         setData('responsibilities', updated);
     }
@@ -78,7 +81,10 @@ export default function AdminVillageInstitutionCreate() {
     }
 
     function removeMember(index: number) {
-        if (data.members.length === 1) return;
+        if (data.members.length === 1) {
+            return;
+        }
+
         const updated = data.members.filter((_, i) => i !== index);
         setData('members', updated);
     }

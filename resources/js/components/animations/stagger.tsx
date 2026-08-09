@@ -1,4 +1,5 @@
-import { motion, type HTMLMotionProps, type Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
+import type { HTMLMotionProps, Variants } from 'framer-motion';
 import type { ReactNode } from 'react';
 
 interface StaggerContainerProps extends HTMLMotionProps<'div'> {

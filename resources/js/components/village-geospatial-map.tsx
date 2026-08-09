@@ -1,16 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
 import {
     Compass,
     ExternalLink,
     Download,
-    MapPin,
-    Building2,
-    Home,
-    Landmark,
-    Sparkles,
     Layers,
     RotateCcw,
 } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 
 interface MapPOI {
@@ -137,13 +132,17 @@ export function VillageGeospatialMap({
 
     // Dynamic Leaflet Map Initialization
     useEffect(() => {
-        if (!mapContainerRef.current) return;
+        if (!mapContainerRef.current) {
+            return;
+        }
 
         let isMounted = true;
 
         // Dynamically import Leaflet to avoid SSR window errors
         import('leaflet').then((L) => {
-            if (!isMounted || !mapContainerRef.current) return;
+            if (!isMounted || !mapContainerRef.current) {
+                return;
+            }
 
             // Fix default marker icon issues in Webpack/Vite
             delete (L.Icon.Default.prototype as any)._getIconUrl;
@@ -185,6 +184,7 @@ export function VillageGeospatialMap({
 
         return () => {
             isMounted = false;
+
             if (mapInstanceRef.current) {
                 mapInstanceRef.current.remove();
                 mapInstanceRef.current = null;
@@ -194,7 +194,9 @@ export function VillageGeospatialMap({
 
     // Update Markers when Filter or Map Ready changes
     useEffect(() => {
-        if (!mapInstanceRef.current || !isMapReady) return;
+        if (!mapInstanceRef.current || !isMapReady) {
+            return;
+        }
 
         import('leaflet').then((L) => {
             const map = mapInstanceRef.current;
@@ -256,6 +258,7 @@ export function VillageGeospatialMap({
 
     const handleFocusPoi = (poi: MapPOI) => {
         setSelectedPoi(poi);
+
         if (mapInstanceRef.current) {
             mapInstanceRef.current.flyTo([poi.lat, poi.lng], 17, {
                 duration: 1.2,
@@ -266,6 +269,7 @@ export function VillageGeospatialMap({
                     m.getLatLng().lat === poi.lat &&
                     m.getLatLng().lng === poi.lng,
             );
+
             if (targetMarker) {
                 targetMarker.openPopup();
             }
@@ -274,6 +278,7 @@ export function VillageGeospatialMap({
 
     const handleResetView = () => {
         setSelectedPoi(null);
+
         if (mapInstanceRef.current) {
             mapInstanceRef.current.flyTo([centerLat, centerLng], initialZoom, {
                 duration: 1,

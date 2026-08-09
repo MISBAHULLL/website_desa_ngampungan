@@ -6,7 +6,7 @@ import {
     Search,
     Store,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PotentialCategoryIcon } from '@/components/potential-category-icon';
@@ -14,11 +14,7 @@ import { PublicPageShell } from '@/components/public-page-shell';
 import { CardSkeleton } from '@/components/ui/skeleton';
 import { VillagePotentialCard } from '@/components/village-potential-card';
 import { VillagePotentialDetailModal } from '@/components/village-potential-detail-modal';
-import {
-    dummyVillagePotentialEntries,
-    getDummyVillagePotentialEntries,
-    villagePotentialCategories,
-} from '@/lib/dummy-village-potentials';
+import { villagePotentialCategories } from '@/lib/dummy-village-potentials';
 import type {
     VillagePotentialEntry,
     VillagePotentialFilter,
@@ -47,8 +43,10 @@ export default function PotentialIndex({
             if (initialCategory === 'all') {
                 return dbPotentials;
             }
+
             return dbPotentials.filter((p) => p.category === initialCategory);
         }
+
         return [];
     }, [dbPotentials, initialCategory]);
 
@@ -56,6 +54,7 @@ export default function PotentialIndex({
         if (dbPotentials) {
             return dbPotentials.length;
         }
+
         return 0;
     }, [dbPotentials]);
 
@@ -83,11 +82,6 @@ export default function PotentialIndex({
         );
     }, [baseEntries, searchQuery]);
 
-    // Reset pagination to page 1 whenever category or search query changes
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [initialCategory, searchQuery]);
-
     const totalPages = Math.max(
         1,
         Math.ceil(filteredEntries.length / ITEMS_PER_PAGE),
@@ -95,13 +89,17 @@ export default function PotentialIndex({
 
     const paginatedEntries = useMemo(() => {
         const start = (currentPage - 1) * ITEMS_PER_PAGE;
+
         return filteredEntries.slice(start, start + ITEMS_PER_PAGE);
     }, [filteredEntries, currentPage]);
 
     const [isPageTransitioning, setIsPageTransitioning] = useState(false);
 
     const handlePageChange = (page: number) => {
-        if (page === currentPage || isPageTransitioning) return;
+        if (page === currentPage || isPageTransitioning) {
+            return;
+        }
+
         setIsPageTransitioning(true);
         setTimeout(() => {
             setCurrentPage(page);
@@ -111,6 +109,7 @@ export default function PotentialIndex({
         const headingElement = document.getElementById(
             'potential-directory-heading',
         );
+
         if (headingElement) {
             headingElement.scrollIntoView({
                 behavior: 'smooth',
@@ -196,9 +195,10 @@ export default function PotentialIndex({
                             <input
                                 type="search"
                                 value={searchQuery}
-                                onChange={(event) =>
-                                    setSearchQuery(event.target.value)
-                                }
+                                onChange={(event) => {
+                                    setSearchQuery(event.target.value);
+                                    setCurrentPage(1);
+                                }}
                                 placeholder="Cari nama, produk, pengelola..."
                                 className="h-11 w-full rounded-xl border border-gray-200 bg-white py-2 pr-4 pl-10 text-xs text-gray-900 shadow-2xs transition-all outline-none placeholder:text-gray-400 focus:border-village-primary focus:ring-2 focus:ring-village-primary/15"
                             />
@@ -269,7 +269,10 @@ export default function PotentialIndex({
                         {searchQuery !== '' && (
                             <button
                                 type="button"
-                                onClick={() => setSearchQuery('')}
+                                onClick={() => {
+                                    setSearchQuery('');
+                                    setCurrentPage(1);
+                                }}
                                 className="text-xs font-bold text-village-primary hover:underline focus-visible:outline-none"
                             >
                                 Hapus pencarian
@@ -357,6 +360,7 @@ export default function PotentialIndex({
                                             const pageNumber = index + 1;
                                             const isActive =
                                                 pageNumber === currentPage;
+
                                             return (
                                                 <button
                                                     key={pageNumber}

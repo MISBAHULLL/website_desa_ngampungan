@@ -10,5 +10,7 @@ test('application uses village branding in the document title', function () {
         ->assertSee('<title>Desa Ngampungan</title>', false)
         ->assertDontSee(' - Laravel</title>', false);
 
-    expect(config('app.name'))->toBe('Desa Ngampungan');
+    expect(config('app.name'))->toBe('Desa Ngampungan')
+        ->and(config('app.timezone'))->toBe('Asia/Jakarta')
+        ->and(config('app.locale'))->toBe('id');
 });

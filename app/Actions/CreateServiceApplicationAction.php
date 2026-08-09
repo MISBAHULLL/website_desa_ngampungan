@@ -14,6 +14,8 @@ use Throwable;
 
 class CreateServiceApplicationAction
 {
+    private const DOCUMENT_STORAGE_DISK = 'private';
+
     public function __construct(
         private VillageServiceCatalog $serviceCatalog,
     ) {}
@@ -71,7 +73,7 @@ class CreateServiceApplicationAction
                 foreach ($data['documents'] as $documentKey => $uploadedFile) {
                     $storagePath = $uploadedFile->store(
                         $storageDirectory,
-                        'local',
+                        self::DOCUMENT_STORAGE_DISK,
                     );
 
                     if ($storagePath === false) {
@@ -87,7 +89,7 @@ class CreateServiceApplicationAction
                             $uploadedFile->getClientOriginalName(),
                             255,
                         ),
-                        'storage_disk' => 'local',
+                        'storage_disk' => self::DOCUMENT_STORAGE_DISK,
                         'storage_path' => $storagePath,
                         'mime_type' => $uploadedFile->getMimeType()
                             ?? 'application/octet-stream',
@@ -104,7 +106,7 @@ class CreateServiceApplicationAction
                 return $serviceApplication;
             });
         } catch (Throwable $exception) {
-            Storage::disk('local')->deleteDirectory($storageDirectory);
+            Storage::disk(self::DOCUMENT_STORAGE_DISK)->deleteDirectory($storageDirectory);
 
             throw $exception;
         }

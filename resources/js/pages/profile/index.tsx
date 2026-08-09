@@ -1,12 +1,11 @@
 import { Head } from '@inertiajs/react';
-import { ArrowRight, Info, LandPlot, LocateFixed, MapPin } from 'lucide-react';
+import { ArrowRight, MapPin } from 'lucide-react';
 import { FadeIn } from '@/components/animations/fade-in';
 import { StaggerContainer, StaggerItem } from '@/components/animations/stagger';
 import { PublicPageShell } from '@/components/public-page-shell';
-import { VillageAdministrativeMap } from '@/components/village-administrative-map';
 import { VillageDemographicExplorer } from '@/components/village-demographic-explorer';
 import { VillageGeospatialMap } from '@/components/village-geospatial-map';
-import { DemographicDataset } from '@/lib/dummy-village-profile';
+import type { DemographicDataset } from '@/lib/dummy-village-profile';
 
 type HamletData = {
     code: string;
@@ -242,6 +241,7 @@ function getLandUseStyle(key: string, index: number): LandUseStyle {
     if (landUsePresentation[key]) {
         return landUsePresentation[key];
     }
+
     return fallbackLandUseStyles[index % fallbackLandUseStyles.length];
 }
 

@@ -20,6 +20,7 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
             <SidebarMenu className="gap-1">
                 {items.map((item) => {
                     const active = isCurrentUrl(item.href);
+
                     return (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton

@@ -104,6 +104,10 @@ export default [
     },
     {
         ignores: [
+            '.agents/**',
+            '.codex/**',
+            '.github/skills/**',
+            '.impeccable/**',
             'vendor',
             'node_modules',
             'public',

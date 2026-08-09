@@ -1,4 +1,5 @@
 import { Link, router } from '@inertiajs/react';
+import { AnimatePresence, motion } from 'framer-motion';
 import {
     ArrowLeft,
     ChevronDown,
@@ -11,7 +12,7 @@ import {
 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { PageTransition } from '@/components/animations/page-transition';
 import { Skeleton } from '@/components/ui/skeleton';
 import { home } from '@/routes';
 import { index as agendasIndex } from '@/routes/agendas';
@@ -24,7 +25,6 @@ import { index as villageProfileIndex } from '@/routes/profile';
 import { track as trackServiceApplication } from '@/routes/service-applications';
 import { index as servicesIndex } from '@/routes/services';
 import { index as transparencyIndex } from '@/routes/transparency';
-import { PageTransition } from '@/components/animations/page-transition';
 
 type PublicSection =
     | 'government'

@@ -42,7 +42,9 @@ export default function AdminGalleryCreate() {
                             <span>Kembali ke Kelola Galeri</span>
                         </Link>
                         <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground">
-                            Unggah {data.media_type === 'photo' ? 'Foto' : 'Video'} Galeri Baru
+                            Unggah{' '}
+                            {data.media_type === 'photo' ? 'Foto' : 'Video'}{' '}
+                            Galeri Baru
                         </h1>
                     </div>
                 </header>
@@ -51,39 +53,53 @@ export default function AdminGalleryCreate() {
                     <div className="space-y-5 rounded-xl border border-sidebar-border/70 bg-background p-6 shadow-xs">
                         {/* Media Type Selector */}
                         <div>
-                            <label className="block text-xs font-bold tracking-wider text-foreground uppercase mb-3">
+                            <label className="mb-3 block text-xs font-bold tracking-wider text-foreground uppercase">
                                 Tipe Media *
                             </label>
                             <div className="flex gap-4">
-                                <label className="flex items-center gap-2 cursor-pointer">
+                                <label className="flex cursor-pointer items-center gap-2">
                                     <input
                                         type="radio"
                                         name="media_type"
                                         value="photo"
                                         checked={data.media_type === 'photo'}
-                                        onChange={(e) =>
+                                        onChange={() =>
                                             setData('media_type', 'photo')
                                         }
                                         className="size-4 text-emerald-700 focus:ring-emerald-600"
                                     />
                                     <Camera className="size-4" />
-                                    <span className="text-sm font-semibold">Foto</span>
+                                    <span className="text-sm font-semibold">
+                                        Foto
+                                    </span>
                                 </label>
-                                <label className="flex items-center gap-2 cursor-pointer">
+                                <label className="flex cursor-pointer items-center gap-2">
                                     <input
                                         type="radio"
                                         name="media_type"
                                         value="video"
                                         checked={data.media_type === 'video'}
-                                        onChange={(e) =>
+                                        onChange={() =>
                                             setData('media_type', 'video')
                                         }
                                         className="size-4 text-emerald-700 focus:ring-emerald-600"
                                     />
-                                    <svg className="size-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                                    <svg
+                                        className="size-4"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        stroke="currentColor"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
+                                        />
                                     </svg>
-                                    <span className="text-sm font-semibold">Video</span>
+                                    <span className="text-sm font-semibold">
+                                        Video
+                                    </span>
                                 </label>
                             </div>
                         </div>
@@ -93,7 +109,9 @@ export default function AdminGalleryCreate() {
                                 htmlFor="title"
                                 className="block text-xs font-bold tracking-wider text-foreground uppercase"
                             >
-                                Judul {data.media_type === 'photo' ? 'Foto' : 'Video'} *
+                                Judul{' '}
+                                {data.media_type === 'photo' ? 'Foto' : 'Video'}{' '}
+                                *
                             </label>
                             <input
                                 id="title"
@@ -102,7 +120,11 @@ export default function AdminGalleryCreate() {
                                 onChange={(e) =>
                                     setData('title', e.target.value)
                                 }
-                                placeholder={data.media_type === 'photo' ? 'Contoh: Panen Raya Padi Organik...' : 'Contoh: Dokumentasi Musyawarah Desa...'}
+                                placeholder={
+                                    data.media_type === 'photo'
+                                        ? 'Contoh: Panen Raya Padi Organik...'
+                                        : 'Contoh: Dokumentasi Musyawarah Desa...'
+                                }
                                 className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 required
                             />
@@ -178,7 +200,9 @@ export default function AdminGalleryCreate() {
                                 htmlFor="caption"
                                 className="block text-xs font-bold tracking-wider text-foreground uppercase"
                             >
-                                Keterangan {data.media_type === 'photo' ? 'Foto' : 'Video'} (Caption) *
+                                Keterangan{' '}
+                                {data.media_type === 'photo' ? 'Foto' : 'Video'}{' '}
+                                (Caption) *
                             </label>
                             <textarea
                                 id="caption"
@@ -187,7 +211,11 @@ export default function AdminGalleryCreate() {
                                 onChange={(e) =>
                                     setData('caption', e.target.value)
                                 }
-                                placeholder={data.media_type === 'photo' ? 'Jelaskan ringkas mengenai foto atau momen kegiatan yang tertangkap...' : 'Jelaskan ringkas mengenai isi video atau momen kegiatan...'}
+                                placeholder={
+                                    data.media_type === 'photo'
+                                        ? 'Jelaskan ringkas mengenai foto atau momen kegiatan yang tertangkap...'
+                                        : 'Jelaskan ringkas mengenai isi video atau momen kegiatan...'
+                                }
                                 className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background p-3 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
                                 required
                             />
@@ -241,7 +269,10 @@ export default function AdminGalleryCreate() {
                                             type="url"
                                             value={data.image_url}
                                             onChange={(e) =>
-                                                setData('image_url', e.target.value)
+                                                setData(
+                                                    'image_url',
+                                                    e.target.value,
+                                                )
                                             }
                                             placeholder="https://..."
                                             className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
@@ -299,7 +330,10 @@ export default function AdminGalleryCreate() {
                                             type="url"
                                             value={data.video_url}
                                             onChange={(e) =>
-                                                setData('video_url', e.target.value)
+                                                setData(
+                                                    'video_url',
+                                                    e.target.value,
+                                                )
                                             }
                                             placeholder="https://youtube.com/watch?v=..."
                                             className="mt-1.5 w-full rounded-lg border border-sidebar-border/70 bg-background px-3 py-2 text-sm outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"

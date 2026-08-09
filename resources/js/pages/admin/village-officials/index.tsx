@@ -3,7 +3,6 @@ import {
     ChevronLeft,
     ChevronRight,
     Edit3,
-    ImageIcon,
     Plus,
     Search,
     Trash2,
@@ -321,6 +320,7 @@ export default function AdminVillageOfficialsIndex({
                             const label = paginationLabel(link.label);
                             const isPrevious = index === 0;
                             const isNext = index === officials.links.length - 1;
+
                             if (!link.url) {
                                 return (
                                     <span
@@ -337,6 +337,7 @@ export default function AdminVillageOfficialsIndex({
                                     </span>
                                 );
                             }
+
                             return (
                                 <Link
                                     key={`${link.label}-${index}`}

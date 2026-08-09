@@ -1,4 +1,4 @@
-import { ArrowRight, Heart, MapPin, UserRound } from 'lucide-react';
+import { ArrowRight, Heart, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import {
     PotentialCategoryIcon,

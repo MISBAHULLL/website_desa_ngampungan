@@ -1,5 +1,13 @@
 <?php
 
+$localPrivateDisk = [
+    'driver' => 'local',
+    'root' => storage_path('app/private'),
+    'serve' => true,
+    'throw' => false,
+    'report' => false,
+];
+
 $localPublicDisk = [
     'driver' => 'local',
     'root' => storage_path('app/public'),
@@ -17,7 +25,7 @@ $r2Disk = [
     'bucket' => env('R2_BUCKET'),
     'url' => env('R2_URL'),
     'endpoint' => env('R2_ENDPOINT'),
-    'use_path_style_endpoint' => false,
+    'use_path_style_endpoint' => env('R2_USE_PATH_STYLE_ENDPOINT', false),
     'throw' => true,
     'report' => true,
 ];
@@ -25,6 +33,17 @@ $r2Disk = [
 $publicDisk = env('PUBLIC_FILESYSTEM_DRIVER', 'local') === 'r2'
     ? $r2Disk
     : $localPublicDisk;
+
+$privateR2Disk = [
+    ...$r2Disk,
+    'bucket' => env('R2_PRIVATE_BUCKET'),
+    'url' => null,
+    'visibility' => 'private',
+];
+
+$privateDisk = env('PRIVATE_FILESYSTEM_DRIVER', 'local') === 'r2'
+    ? $privateR2Disk
+    : [...$localPrivateDisk, 'serve' => false];
 
 return [
 
@@ -56,19 +75,17 @@ return [
 
     'disks' => [
 
-        'local' => [
-            'driver' => 'local',
-            'root' => storage_path('app/private'),
-            'serve' => true,
-            'throw' => false,
-            'report' => false,
-        ],
+        'local' => $localPrivateDisk,
+
+        'private' => $privateDisk,
 
         'public' => $publicDisk,
 
         'public_local' => $localPublicDisk,
 
         'r2' => $r2Disk,
+
+        'r2_private' => $privateR2Disk,
 
         's3' => [
             'driver' => 's3',

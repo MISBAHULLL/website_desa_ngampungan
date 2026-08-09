@@ -9,10 +9,7 @@ import {
 import { useMemo, useState } from 'react';
 import { PublicPageShell } from '@/components/public-page-shell';
 import { VillageGalleryLightbox } from '@/components/village-gallery-lightbox';
-import {
-    dummyVillageGalleryCategories,
-    dummyVillageGalleryPhotos,
-} from '@/lib/dummy-village-gallery';
+import { dummyVillageGalleryPhotos } from '@/lib/dummy-village-gallery';
 import type { VillageGalleryPhoto } from '@/lib/dummy-village-gallery';
 import { home } from '@/routes';
 
@@ -33,16 +30,19 @@ export default function GalleryIndex({
         if (dbPhotos && dbPhotos.length > 0) {
             return dbPhotos;
         }
+
         return dummyVillageGalleryPhotos;
     }, [dbPhotos]);
 
     const categoriesList = useMemo(() => {
         const cats = Array.from(new Set(photosList.map((p) => p.category)));
+
         return ['Semua', ...cats];
     }, [photosList]);
 
     const featuredPhotos = useMemo(() => {
         const featured = photosList.filter((p) => p.featured);
+
         return featured.length > 0
             ? featured.slice(0, 3)
             : photosList.slice(0, 3);
@@ -203,13 +203,21 @@ export default function GalleryIndex({
                                             />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                                                <svg className="size-24 text-white opacity-50" fill="currentColor" viewBox="0 0 24 24">
+                                                <svg
+                                                    className="size-24 text-white opacity-50"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
                                                     <path d="M8 5v14l11-7z" />
                                                 </svg>
                                             </div>
                                         )}
                                         <span className="absolute inset-0 flex items-center justify-center bg-black/40 transition-opacity group-hover:bg-black/30">
-                                            <svg className="size-20 text-white drop-shadow-lg transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                                            <svg
+                                                className="size-20 text-white drop-shadow-lg transition-transform group-hover:scale-110"
+                                                fill="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
                                                 <path d="M8 5v14l11-7z" />
                                             </svg>
                                         </span>
@@ -238,7 +246,11 @@ export default function GalleryIndex({
                                         </span>
                                         {photo.mediaType === 'video' && (
                                             <span className="inline-flex items-center gap-1 rounded-full bg-purple-600 px-2.5 py-1 text-[10px] font-bold text-white shadow-xs">
-                                                <svg className="size-3" fill="currentColor" viewBox="0 0 24 24">
+                                                <svg
+                                                    className="size-3"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
                                                     <path d="M8 5v14l11-7z" />
                                                 </svg>
                                                 Video
@@ -340,13 +352,21 @@ export default function GalleryIndex({
                                                 />
                                             ) : (
                                                 <div className="absolute inset-0 flex items-center justify-center bg-gray-800">
-                                                    <svg className="size-20 text-white opacity-60" fill="currentColor" viewBox="0 0 24 24">
+                                                    <svg
+                                                        className="size-20 text-white opacity-60"
+                                                        fill="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
                                                         <path d="M8 5v14l11-7z" />
                                                     </svg>
                                                 </div>
                                             )}
                                             <span className="absolute inset-0 flex items-center justify-center bg-black/30">
-                                                <svg className="size-16 text-white drop-shadow-lg transition-transform group-hover:scale-110" fill="currentColor" viewBox="0 0 24 24">
+                                                <svg
+                                                    className="size-16 text-white drop-shadow-lg transition-transform group-hover:scale-110"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
                                                     <path d="M8 5v14l11-7z" />
                                                 </svg>
                                             </span>
@@ -373,7 +393,11 @@ export default function GalleryIndex({
                                         </span>
                                         {photo.mediaType === 'video' && (
                                             <span className="inline-flex items-center gap-1 rounded-full bg-purple-100 px-2.5 py-1 text-[10px] font-bold text-purple-800">
-                                                <svg className="size-3" fill="currentColor" viewBox="0 0 24 24">
+                                                <svg
+                                                    className="size-3"
+                                                    fill="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
                                                     <path d="M8 5v14l11-7z" />
                                                 </svg>
                                                 Video

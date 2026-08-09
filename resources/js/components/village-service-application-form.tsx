@@ -1,20 +1,14 @@
 import { Link, useForm } from '@inertiajs/react';
 import {
-    AlertCircle,
     ArrowLeft,
     ArrowRight,
     Check,
     CheckCircle2,
     Copy,
     ExternalLink,
-    Eye,
     FileText,
     Image as ImageIcon,
-    Info,
     LoaderCircle,
-    LockKeyhole,
-    RefreshCw,
-    ShieldAlert,
     Trash2,
     Upload,
     UserRound,
@@ -123,7 +117,10 @@ export function VillageServiceApplicationForm({
     >(null);
 
     const handleCopyReference = (refNo: string) => {
-        if (!refNo) return;
+        if (!refNo) {
+            return;
+        }
+
         navigator.clipboard.writeText(refNo);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -203,7 +200,9 @@ export function VillageServiceApplicationForm({
     };
 
     const confirmDeleteDocument = () => {
-        if (!deletingDocumentKey) return;
+        if (!deletingDocumentKey) {
+            return;
+        }
 
         form.setData('documents', {
             ...form.data.documents,
@@ -214,6 +213,7 @@ export function VillageServiceApplicationForm({
         const fileInput = document.getElementById(
             `document-${deletingDocumentKey}`,
         ) as HTMLInputElement | null;
+
         if (fileInput) {
             fileInput.value = '';
         }

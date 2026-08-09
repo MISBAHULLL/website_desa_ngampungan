@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import {
-    BriefcaseBusiness,
     Clock3,
     ExternalLink,
     Eye,
@@ -238,6 +237,7 @@ export function VillagePotentialDetailModal({
                                         {entry.offerings.map((offering) => {
                                             const productImg =
                                                 offering.image || entry.image;
+
                                             return (
                                                 <button
                                                     type="button"
