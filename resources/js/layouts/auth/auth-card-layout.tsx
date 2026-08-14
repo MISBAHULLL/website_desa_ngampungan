@@ -20,7 +20,7 @@ export default function AuthCardLayout({
     description?: string;
 }>) {
     return (
-        <div className="flex min-h-screen bg-slate-100/90 font-sans text-slate-900 selection:bg-emerald-500 selection:text-white">
+        <div className="flex min-h-screen bg-slate-100/90 font-sans text-slate-900 scheme-light selection:bg-emerald-500 selection:text-white">
             <div className="grid min-h-screen w-full lg:grid-cols-12">
                 {/* Left Visual Hero Column with Agriculture Unsplash Photo Background */}
                 <div className="relative hidden flex-col justify-between overflow-hidden bg-slate-950 p-12 text-white lg:col-span-5 lg:flex xl:col-span-5">

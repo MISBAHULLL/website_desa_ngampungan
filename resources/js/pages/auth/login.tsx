@@ -47,7 +47,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     tabIndex={1}
                                     autoComplete="email"
                                     placeholder="nama@contoh.com"
-                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
+                                    className="auth-input h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -77,7 +77,7 @@ export default function Login({ status, canResetPassword }: Props) {
                                     tabIndex={2}
                                     autoComplete="current-password"
                                     placeholder="••••••••"
-                                    className="h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
+                                    className="auth-input h-12 rounded-2xl border-slate-200 bg-slate-50/60 px-4.5 text-base font-medium transition-all focus:border-emerald-500 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 sm:h-13"
                                 />
                                 <InputError message={errors.password} />
                             </div>

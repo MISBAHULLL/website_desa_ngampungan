@@ -164,6 +164,24 @@
 }
 
 @layer components {
+    .auth-input {
+        @apply text-slate-900 caret-emerald-700 placeholder:text-slate-500;
+        -webkit-text-fill-color: var(--color-slate-900);
+    }
+
+    .auth-input::placeholder {
+        -webkit-text-fill-color: var(--color-slate-500);
+        opacity: 1;
+    }
+
+    .auth-input:-webkit-autofill,
+    .auth-input:-webkit-autofill:hover,
+    .auth-input:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0 1000px var(--color-slate-50) inset;
+        -webkit-text-fill-color: var(--color-slate-900);
+        caret-color: var(--color-emerald-700);
+    }
+
     .village-landing {
         font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
     }
