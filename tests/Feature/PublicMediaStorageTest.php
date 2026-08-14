@@ -57,6 +57,15 @@ test('public media storage resolves legacy local URLs through the configured pub
         ->toBe('/images/news/default.png');
 });
 
+test('public media storage replaces a cached localhost media URL with a same origin URL', function () {
+    Storage::fake('public', ['url' => '/media']);
+    config()->set('app.url', 'https://website.example.test');
+
+    expect(app(PublicImageStorage::class)->url(
+        'http://localhost/media/news/foto-teman.jpg',
+    ))->toBe('/media/news/foto-teman.jpg');
+});
+
 test('models expose configured public disk URLs for stored media paths', function () {
     Storage::fake('public');
 

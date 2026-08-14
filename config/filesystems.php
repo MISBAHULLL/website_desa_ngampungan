@@ -30,10 +30,10 @@ $r2Disk = [
     'report' => true,
 ];
 
-$publicMediaUrl = env('PUBLIC_MEDIA_URL');
+$publicMediaUrl = env('PUBLIC_MEDIA_URL', '/media');
 
 if (! is_string($publicMediaUrl) || trim($publicMediaUrl) === '') {
-    $publicMediaUrl = rtrim((string) env('APP_URL', 'http://localhost'), '/').'/media';
+    $publicMediaUrl = '/media';
 }
 
 $publicR2Disk = [
