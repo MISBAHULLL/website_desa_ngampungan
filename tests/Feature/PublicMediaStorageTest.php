@@ -36,6 +36,8 @@ test('public media storage deletes files referenced by an R2 public URL', functi
 
 test('public media storage resolves legacy local URLs through the configured public disk', function () {
     Storage::fake('public', ['url' => 'https://media.example.test']);
+    config()->set('app.url', 'https://website.example.test');
+    config()->set('filesystems.disks.r2.url', 'https://pub-example.r2.dev');
 
     $mediaStorage = app(PublicImageStorage::class);
 
@@ -45,6 +47,10 @@ test('public media storage resolves legacy local URLs through the configured pub
         ->toBe('https://media.example.test/news/foto desa.jpg')
         ->and($mediaStorage->url('hero-slides/sawah.jpg'))
         ->toBe('https://media.example.test/hero-slides/sawah.jpg')
+        ->and($mediaStorage->url('https://pub-example.r2.dev/news/foto%20lama.jpg'))
+        ->toBe('https://media.example.test/news/foto lama.jpg')
+        ->and($mediaStorage->url('https://website.example.test/media/gallery/foto.jpg'))
+        ->toBe('https://media.example.test/gallery/foto.jpg')
         ->and($mediaStorage->url('https://images.unsplash.com/photo.jpg'))
         ->toBe('https://images.unsplash.com/photo.jpg')
         ->and($mediaStorage->url('/images/news/default.png'))

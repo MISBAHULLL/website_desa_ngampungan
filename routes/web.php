@@ -20,6 +20,7 @@ use App\Http\Controllers\Public\GalleryController;
 use App\Http\Controllers\Public\HomeController;
 use App\Http\Controllers\Public\NewsController;
 use App\Http\Controllers\Public\PotentialController;
+use App\Http\Controllers\Public\PublicMediaController;
 use App\Http\Controllers\Public\ServiceApplicationController;
 use App\Http\Controllers\Public\ServiceApplicationTrackingController;
 use App\Http\Controllers\Public\ServiceController;
@@ -30,6 +31,10 @@ use App\Http\Middleware\EnsureUserIsAdmin;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
+
+Route::get('media/{path}', PublicMediaController::class)
+    ->where('path', '.*')
+    ->name('public-media.show');
 
 Route::get('profil-desa', VillageProfileController::class)
     ->name('profile.index');

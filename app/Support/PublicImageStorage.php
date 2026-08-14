@@ -21,17 +21,10 @@ class PublicImageStorage
             return $storedValue;
         }
 
-        $urlPath = parse_url($storedValue, PHP_URL_PATH);
+        $managedPath = $this->managedPath($storedValue);
 
-        if (is_string($urlPath) && Str::startsWith($urlPath, '/storage/')) {
-            $host = parse_url($storedValue, PHP_URL_HOST);
-            $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
-
-            if (! is_string($host) || in_array($host, ['localhost', '127.0.0.1', $appHost], true)) {
-                return Storage::disk('public')->url(
-                    rawurldecode(Str::after($urlPath, '/storage/')),
-                );
-            }
+        if ($managedPath !== null) {
+            return Storage::disk('public')->url($managedPath);
         }
 
         if (Str::startsWith($storedValue, ['http://', 'https://', '/'])) {
@@ -65,21 +58,11 @@ class PublicImageStorage
             return;
         }
 
-        $configuredUrl = rtrim((string) config('filesystems.disks.public.url'), '/');
+        $managedPath = $this->managedPath($publicUrl);
 
-        if ($configuredUrl !== '' && Str::startsWith($publicUrl, $configuredUrl.'/')) {
-            $this->deletePath(rawurldecode(Str::after($publicUrl, $configuredUrl.'/')));
-
-            return;
+        if ($managedPath !== null) {
+            $this->deletePath($managedPath);
         }
-
-        $urlPath = parse_url($publicUrl, PHP_URL_PATH);
-
-        if (! is_string($urlPath) || ! Str::startsWith($urlPath, '/storage/')) {
-            return;
-        }
-
-        $this->deletePath(Str::after($urlPath, '/storage/'));
     }
 
     public function deletePath(?string $storedPath): void
@@ -89,5 +72,45 @@ class PublicImageStorage
         }
 
         Storage::disk('public')->delete($storedPath);
+    }
+
+    private function managedPath(string $storedValue): ?string
+    {
+        $managedBaseUrls = array_filter([
+            rtrim((string) config('filesystems.disks.public.url'), '/'),
+            rtrim((string) config('filesystems.disks.r2.url'), '/'),
+        ]);
+
+        foreach ($managedBaseUrls as $baseUrl) {
+            if (Str::startsWith($storedValue, $baseUrl.'/')) {
+                return rawurldecode(Str::after($storedValue, $baseUrl.'/'));
+            }
+        }
+
+        $urlPath = parse_url($storedValue, PHP_URL_PATH);
+
+        if (! is_string($urlPath)) {
+            return null;
+        }
+
+        $host = parse_url($storedValue, PHP_URL_HOST);
+        $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
+        $allowedHosts = ['localhost', '127.0.0.1'];
+
+        if (is_string($appHost)) {
+            $allowedHosts[] = $appHost;
+        }
+
+        if (is_string($host) && ! in_array($host, $allowedHosts, true)) {
+            return null;
+        }
+
+        foreach (['/storage/', '/media/'] as $prefix) {
+            if (Str::startsWith($urlPath, $prefix)) {
+                return rawurldecode(Str::after($urlPath, $prefix));
+            }
+        }
+
+        return null;
     }
 }

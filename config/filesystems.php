@@ -30,8 +30,19 @@ $r2Disk = [
     'report' => true,
 ];
 
+$publicMediaUrl = env('PUBLIC_MEDIA_URL');
+
+if (! is_string($publicMediaUrl) || trim($publicMediaUrl) === '') {
+    $publicMediaUrl = rtrim((string) env('APP_URL', 'http://localhost'), '/').'/media';
+}
+
+$publicR2Disk = [
+    ...$r2Disk,
+    'url' => rtrim($publicMediaUrl, '/'),
+];
+
 $publicDisk = env('PUBLIC_FILESYSTEM_DRIVER', 'local') === 'r2'
-    ? $r2Disk
+    ? $publicR2Disk
     : $localPublicDisk;
 
 $privateR2Disk = [
